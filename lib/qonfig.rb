@@ -1,5 +1,6 @@
-require "qonfig/version"
+# frozen_string_literal: true
+
+require 'qonfig/version'
 
 module Qonfig
-  # Your code goes here...
 end
