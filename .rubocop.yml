@@ -1,0 +1,38 @@
+require: rubocop-rspec
+
+AllCops:
+  DisplayCopNames:   true
+  DisplayStyleGuide: true
+  TargetRubyVersion: 2.5.1
+  Include:
+    - lib/**/*
+    - spec/**/*
+  Exclude:
+    - bin/**/*
+    - Gemfile
+    - Rakefile
+    - qonfig.gemspec
+
+Style/SingleLineMethods:
+  Exclude:
+    - spec/**/*
+
+Style/RescueModifier:
+  Exclude:
+    - spec/**/*
+
+Metrics/BlockLength:
+  Exclude:
+    - spec/**/*
+
+Naming/VariableNumber:
+  EnforcedStyle: snake_case
+
+Style/AsciiComments:
+  Enabled: false
+
+Layout/IndentArray:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
