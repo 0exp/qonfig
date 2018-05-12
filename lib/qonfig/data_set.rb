@@ -10,6 +10,7 @@ class Qonfig::DataSet
     # @since 0.1.0
     def inherited(child_klass)
       child_klass.definitions.concat(definitions)
+      child_klass.compositors.concat(compositors)
     end
 
     # @return [Array]
@@ -17,7 +18,11 @@ class Qonfig::DataSet
     # @api private
     # @since 0.1.0
     def definitions
-      @definitions ||= Qonfig::DefinitionSet.new
+      @definitions ||= Qonfig::Definitions.new
+    end
+
+    def compositors
+      @compositors ||= []
     end
 
     # @param key [Symbol]
@@ -30,17 +35,21 @@ class Qonfig::DataSet
     def setting(key, value = nil, &nested_settings)
       option = begin
         if block_given?
-          data_set = Class.new(Qonfig::DataSet).tap do |klass|
-            klass.instance_eval(&nested_settings)
-          end.new
+          nested_dataset = Class.new(Qonfig::DataSet).tap do |data_set|
+            data_set.instance_eval(&nested_settings)
+          end
 
-          Qonfig::Option.new(key, data_set)
+          Qonfig::NestedOption.new(key, nested_dataset)
         else
           Qonfig::Option.new(key, value)
         end
       end
 
       definitions << option
+    end
+
+    def compose(data_set_class)
+      compositors << data_set_class
     end
   end
 
@@ -53,6 +62,38 @@ class Qonfig::DataSet
   # @api public
   # @since 0.1.0
   def initialize
-    @settings = Qonfig::SettingsBuilder.build(self.class.definitions)
+    @settings = Qonfig::SettingsBuilder.build(definitions)
   end
+
+  # @return [Qonfig::Definitions]
+  #
+  # @api private
+  # @since 0.1.0
+  def definitions
+    option_collection = Qonfig::Definitions.new
+
+    own_definitions        = self.class.definitions
+    composable_definitions = self.class.compositors.map(&:definitions)
+
+    composable_definitions.each do |definition|
+      definition.each do |option|
+        option_collection << option
+      end
+    end
+
+    own_definitions.each do |option|
+      option_collection << option
+    end
+
+    option_collection
+  end
+
+  def configure
+    block_given? ? yield(settings) : settings
+  end
+
+  def to_h
+    settings.to_h
+  end
+  alias_method :to_hash, :to_h
 end

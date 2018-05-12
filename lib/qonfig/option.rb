@@ -21,6 +21,10 @@ class Qonfig::Option
   # @api private
   # @since 0.1.0
   def initialize(key, value)
+    unless key.is_a?(Symbol) || key.is_a?(String)
+      raise Qonfig::SettingDefinitionError, 'Setting key should be a symbol or a string!'
+    end
+
     @key   = key
     @value = value
   end

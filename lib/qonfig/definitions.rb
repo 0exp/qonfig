@@ -2,36 +2,36 @@
 
 # @api private
 # @since 0.1.0
-class Qonfig::DefinitionSet
+class Qonfig::Definitions
   # @return [Array]
   #
   # @api private
   # @since 0.1.0
-  attr_reader :definitions
+  attr_reader :options
 
   # @api private
   # @since 0.1.0
   def initialize
-    @definitions = []
+    @options = []
   end
 
-  # @param definition [Qonfig::Option]
-  # @return void
-  #
-  # @api private
-  # @since 0.1.0
-  def add_definition(definition)
-    @definitions << definition
-  end
-  alias_method :<<, :add_definition
-
-  # @param definition_set [Qonfig::DefinitionSet]
+  # @param option [Qonfig::Option]
   # @return [void]
   #
   # @api private
   # @since 0.1.0
-  def concat(definition_set)
-    definitions.concat(definition_set.definitions)
+  def add_option(option)
+    options << option
+  end
+  alias_method :<<, :add_option
+
+  # @param another_definitions [Qonfig::Definitions]
+  # @return [void]
+  #
+  # @api private
+  # @since 0.1.0
+  def concat(another_definitions)
+    options.concat(another_definitions.options)
   end
 
   # @param block [Proc]
@@ -40,6 +40,6 @@ class Qonfig::DefinitionSet
   # @api private
   # @since 0.1.0
   def each(&block)
-    definitions.each(&block)
+    options.each(&block)
   end
 end

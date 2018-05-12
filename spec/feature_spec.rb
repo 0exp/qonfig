@@ -15,5 +15,15 @@ describe 'Initial implementation' do
         end
       end
     end
+
+    class AnotherConfig < Config
+      setting :serializers do
+        setting :json do
+          setting :pekakeka, :chukap
+        end
+      end
+
+      compose Config
+    end
   end
 end
