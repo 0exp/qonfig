@@ -56,6 +56,10 @@ module Qonfig
     # @api private
     # @since 0.1.0
     def [](key)
+      unless __options_.key?(key)
+        raise Qonfig::UnknownSettingError, "Setting with <#{key}> key does not exist!"
+      end
+
       __options__[key]
     end
 

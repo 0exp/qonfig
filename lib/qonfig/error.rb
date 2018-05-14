@@ -8,5 +8,9 @@ module Qonfig
   # @api public
   # @since 0.1.0
   ArgumentError = Class.new(Error)
+
+  # @api public
+  # @since 0.1.0
+  UnknownSettingError = Class.new(Error)
 end
 
