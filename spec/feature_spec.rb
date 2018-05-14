@@ -22,8 +22,11 @@ describe 'Initial implementation' do
           setting :pekakeka, :chukap
         end
       end
+    end
 
+    class ComposableConfig < Qonfig::DataSet
       compose Config
+      compose AnotherConfig
     end
   end
 end

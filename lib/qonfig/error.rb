@@ -7,5 +7,6 @@ module Qonfig
 
   # @api public
   # @since 0.1.0
-  SettingDefinitionError = Class.new(Error)
+  ArgumentError = Class.new(Error)
 end
+
