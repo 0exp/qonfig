@@ -56,19 +56,44 @@ module Qonfig
     # @api private
     # @since 0.1.0
     def [](key)
-      unless __options_.key?(key)
+      unless __options__.key?(key)
         raise Qonfig::UnknownSettingError, "Setting with <#{key}> key does not exist!"
       end
 
       __options__[key]
     end
 
+    # @return [Hash]
+    #
+    # @api public
+    # @since 0.1.0
     def __to_hash__
       __options__.dup.tap do |hash|
         __options__.each_pair do |key, value|
           hash[key] = value.is_a?(Qonfig::Settings) ? value.__to_hash__ : value
         end
       end
+    end
+
+    # @param method_name [String, Symbol]
+    # @param arguments [Array<Object>]
+    # @param block [Proc]
+    # @return [void]
+    #
+    # @api public
+    # @since 0.1.0
+    def method_missing(method_name, *arguments, &block)
+      super
+    rescue NoMethodError
+      raise Qonfig::UnknownSettingError, "Setting with <#{method_name}> ley doesnt exist!"
+    end
+
+    # @return [Boolean]
+    #
+    # @api public
+    # @since 0.1.0
+    def respond_to_missing?(method_name, include_private = false)
+      __options__.key?(method_name.to_s) || __options__.key?(method_name.to_sym) || super
     end
 
     private
