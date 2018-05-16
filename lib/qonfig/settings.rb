@@ -104,8 +104,15 @@ module Qonfig
     # @api private
     # @since 0.1.0
     def __define_accessor__(key)
-      singleton_class.send(:undef_method, key)       rescue NameError
-      singleton_class.send(:undef_method, "#{key}=") rescue NameError
+      begin
+        singleton_class.send(:undef_method, key)
+      rescue NameError
+      end
+
+      begin
+        singleton_class.send(:undef_method, "#{key}=")
+      rescue NameError
+      end
 
       define_singleton_method(key) { __options__[key] }
       define_singleton_method("#{key}=") do |value|

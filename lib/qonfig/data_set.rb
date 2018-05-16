@@ -19,13 +19,12 @@ module Qonfig
       @settings = Qonfig::SettingsBuilder.build(self.class.commands)
     end
 
-    # @param block [Proc]
     # @return [void]
     #
     # @api public
     # @since 0.1.0
-    def configure(&block)
-      block.call(settings) if block_given?
+    def configure
+      yield(settings) if block_given?
     end
 
     # @return [Hash]

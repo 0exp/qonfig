@@ -36,3 +36,36 @@ Layout/IndentArray:
 
 Style/Documentation:
   Enabled: false
+
+RSpec/DescribeClass:
+  Enabled: false
+
+Style/ConditionalAssignment:
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 100
+
+Style/Alias:
+  EnforcedStyle: prefer_alias_method
+
+Style/MultilineIfModifier:
+  Enabled: false
+
+Lint/HandleExceptions:
+  Enabled: false
+
+Metrics/MethodLength:
+  Max: 20
+
+Style/EmptyCaseCondition:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+Metrics/AbcSize:
+  Max: 17

@@ -13,4 +13,3 @@ module Qonfig
   # @since 0.1.0
   UnknownSettingError = Class.new(Error)
 end
-

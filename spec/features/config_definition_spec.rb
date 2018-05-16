@@ -36,7 +36,6 @@ describe 'Definition' do
         setting :convert, false
       end
 
-
       # setting without nested options
       setting :steps, 22
     end
