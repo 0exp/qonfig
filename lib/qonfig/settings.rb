@@ -23,9 +23,11 @@ module Qonfig
     # @api private
     # @since 0.1.0
     def __define_setting__(key, value)
+      # :nocov:
       unless key.is_a?(Symbol) || key.is_a?(String)
         raise Qonfig::ArgumentError, 'Setting key should be a symbol or a string'
       end
+      # :nocov:
 
       case
       when !__options__.key?(key)
@@ -53,7 +55,7 @@ module Qonfig
     # @param key [Symbol,String]
     # @return [Object]
     #
-    # @api private
+    # @api public
     # @since 0.1.0
     def [](key)
       unless __options__.key?(key)

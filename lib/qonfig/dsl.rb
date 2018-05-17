@@ -35,7 +35,7 @@ module Qonfig
     # @param nested_settings [Proc]
     # @return [void]
     #
-    # @api private
+    # @api public
     # @since 0.1.0
     def setting(key, initial_value = nil, &nested_settings)
       unless key.is_a?(Symbol) || key.is_a?(String)
