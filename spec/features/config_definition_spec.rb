@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe 'Definition' do
+describe 'Config definition' do
   specify 'config object definition, instantiation, settings access and mutation' do
     class Config < Qonfig::DataSet
       # setting with nested options
@@ -92,8 +92,5 @@ describe 'Definition' do
     expect { config.settings.mutations.global }.to raise_error(Qonfig::UnknownSettingError)
     expect { config.settings[:deserialization] }.to raise_error(Qonfig::UnknownSettingError)
     expect { config.settings.mutations[:global] }.to raise_error(Qonfig::UnknownSettingError)
-  end
-
-  specify 'hash representation' do
   end
 end
