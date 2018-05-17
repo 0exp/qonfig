@@ -119,4 +119,19 @@ describe 'Config definition' do
       steps: nil
     )
   end
+
+  specify 'only string and symbol keys are supported' do
+    [1, 1.0, Object.new, true, false, Class.new, Module.new, (proc {}), (-> {})].each do |key|
+      expect do
+        Class.new(Qonfig::DataSet) { setting(key) }
+      end.to raise_error(Qonfig::ArgumentError)
+    end
+
+    expect do
+      Class.new(Qonfig::DataSet) do
+        setting :a
+        setting 'b'
+      end
+    end.not_to raise_error
+  end
 end

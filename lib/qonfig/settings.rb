@@ -95,7 +95,9 @@ module Qonfig
     # @api public
     # @since 0.1.0
     def respond_to_missing?(method_name, include_private = false)
+      # :nocov:
       __options__.key?(method_name.to_s) || __options__.key?(method_name.to_sym) || super
+      # :nocov:
     end
 
     private
