@@ -56,15 +56,31 @@ describe 'Inheritance' do
       # own composition
       expect(config.unkown_data).to eq(true)
       expect(config[:unkown_data]).to eq(true)
+    end
 
-      # re-configuration
+    # hash representation
+    expect(client_config.to_h).to match(
+      google_api: {
+        client_token: 'client-test-google-api',
+        token: 'test-google-api',
+      },
+      defaults: nil,
+      admin_access_required: false,
+      version: '0.1.0',
+      unkown_data: true
+    )
+
+    # reconfigure
+    client_config.configure do |config|
       config.google_api.client_token = 'none'
       config.defaults = { a: 1 }
       config.google_api.token = 'anti-hype'
       config.admin_access_required = true
       config.version = '0.2.0'
       config.unkown_data = nil
+    end
 
+    client_config.settings.tap do |config|
       expect(config.google_api.client_token).to eq('none')
       expect(config.defaults).to match(a: 1)
       expect(config.google_api.token).to eq('anti-hype')
@@ -79,5 +95,16 @@ describe 'Inheritance' do
       expect(config[:version]).to eq('0.2.0')
       expect(config[:unkown_data]).to eq(nil)
     end
+
+    expect(client_config.to_h).to match(
+      google_api: {
+        client_token: 'none',
+        token: 'anti-hype',
+      },
+      defaults: { a: 1 },
+      admin_access_required: true,
+      version: '0.2.0',
+      unkown_data: nil
+    )
   end
 end
