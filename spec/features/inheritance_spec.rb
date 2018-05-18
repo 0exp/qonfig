@@ -62,7 +62,7 @@ describe 'Inheritance' do
     expect(client_config.to_h).to match(
       google_api: {
         client_token: 'client-test-google-api',
-        token: 'test-google-api',
+        token: 'test-google-api'
       },
       defaults: nil,
       admin_access_required: false,
@@ -99,7 +99,7 @@ describe 'Inheritance' do
     expect(client_config.to_h).to match(
       google_api: {
         client_token: 'none',
-        token: 'anti-hype',
+        token: 'anti-hype'
       },
       defaults: { a: 1 },
       admin_access_required: true,

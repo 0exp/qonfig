@@ -5,7 +5,7 @@ describe 'Definition order' do
     class FirstConfig < Qonfig::DataSet
       setting :default, 100_500
       setting :default do
-        setting :options, { defined: true }
+        setting :options, defined: true
       end
     end
 
@@ -16,7 +16,7 @@ describe 'Definition order' do
 
     class SecondConfig < Qonfig::DataSet
       setting :default do
-        setting :options, { defined: true }
+        setting :options, defined: true
       end
       setting :default, 100_500
     end
@@ -62,7 +62,7 @@ describe 'Definition order' do
     end
 
     SecondAllInConfig.new.settings.tap do |config|
-     # own setting (own setting is the last)
+      # own setting (own setting is the last)
       expect(config.default).to eq(123)
     end
   end

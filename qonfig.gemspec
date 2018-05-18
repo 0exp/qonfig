@@ -11,8 +11,11 @@ Gem::Specification.new do |spec|
   spec.version     = Qonfig::VERSION
   spec.authors     = ['Rustam Ibragimov']
   spec.email       = ['iamdaiver@icloud.com']
-  spec.summary     = 'Soon'
-  spec.description = 'Soon'
+  spec.summary     = 'Config object'
+  spec.description = 'Config. Defined as a class. Used as an instance. ' \
+                     'Support for inheritance and composition. ' \
+                     'Command-style DSL. Lazy instantiation.' \
+                     'Extremely simple to define. Extremely simple to use. That\'s all.'
   spec.homepage    = 'https://github.com/0exp/qonfig'
   spec.license     = 'MIT'
 

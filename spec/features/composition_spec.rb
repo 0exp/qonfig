@@ -77,7 +77,7 @@ describe 'Composition' do
       db: {
         username: 'kek',
         password: 'pek',
-        connection: { address: 'google.com', port: 12_345 },
+        connection: { address: 'google.com', port: 12_345 }
       },
       port: 8080,
       host: '0.0.0.0',
@@ -87,7 +87,7 @@ describe 'Composition' do
         version: '0.1.0',
         header: 'app.vendor',
         strategy: { format: :json }
-      },
+      }
     )
 
     # reconfgure
@@ -138,7 +138,7 @@ describe 'Composition' do
       db: {
         username: 'che',
         password: 'burek',
-        connection: { address: 'db.google.com', port: 666 },
+        connection: { address: 'db.google.com', port: 666 }
       },
       port: 8081,
       host: 'app.google.com',
