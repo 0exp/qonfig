@@ -2,7 +2,7 @@
 
 describe 'Config definition' do
   specify 'config object definition, instantiation, settings access and mutation' do
-    class Config < Qonfig::DataSet
+    class SimpleConfig < Qonfig::DataSet
       # setting with nested options
       setting :serializers do
         # :native by default
@@ -41,7 +41,7 @@ describe 'Config definition' do
     end
 
     # instantiation
-    config = Config.new
+    config = SimpleConfig.new
 
     # access via method named as a setting key
     expect(config.settings.serializers.json).to eq(:native)
@@ -104,19 +104,38 @@ describe 'Config definition' do
     expect(config.settings[:mutations][:action][:query]).to eq(:update)
     expect(config.settings[:steps]).to eq(nil)
 
+    # configuration via index accessing
+    config.settings[:serializers][:json] = 'pararam'
+    config.settings[:serializers][:xml] = 'tratata'
+    config.settings[:mutations][:action][:query] = :upsert
+    config.settings[:steps] = 1234
+
+    # access via method named as a setting key
+    expect(config.settings.serializers.json).to eq('pararam')
+    expect(config.settings.serializers.xml).to eq('tratata')
+    expect(config.settings.mutations.action.query).to eq(:upsert)
+    expect(config.settings.steps).to eq(1234)
+
+    # access via option index named as a setting key
+    expect(config.settings[:serializers][:json]).to eq('pararam')
+    expect(config.settings[:serializers][:xml]).to eq('tratata')
+    expect(config.settings[:mutations][:action][:query]).to eq(:upsert)
+    expect(config.settings[:steps]).to eq(1234)
+
     # attempt to get an access to the unexistent setting
     expect { config.settings.deserialization }.to raise_error(Qonfig::UnknownSettingError)
     expect { config.settings.mutations.global }.to raise_error(Qonfig::UnknownSettingError)
     expect { config.settings[:deserialization] }.to raise_error(Qonfig::UnknownSettingError)
     expect { config.settings.mutations[:global] }.to raise_error(Qonfig::UnknownSettingError)
+    expect { config.settings.mutations[:global] = 1 }.to raise_error(Qonfig::UnknownSettingError)
 
     # hash representation
     expect(config.to_h).to match(
-      serializers: { json: 'circular', xml: 'angular' },
+      serializers: { json: 'pararam', xml: 'tratata' },
       defaults: nil,
       shared: { convert: false },
-      mutations: { action: { query: :update } },
-      steps: nil
+      mutations: { action: { query: :upsert } },
+      steps: 1234
     )
   end
 
@@ -133,5 +152,29 @@ describe 'Config definition' do
         setting 'b'
       end
     end.not_to raise_error
+  end
+
+  specify 'freezing' do
+    class FrozenableConfig < Qonfig::DataSet
+      setting :api_mode_enabled, true
+
+      setting :api do
+        setting :format, :json
+      end
+    end
+
+    frozen_config = FrozenableConfig.new
+
+    frozen_config.configure do |conf|
+      expect { conf.api_mode_enabled = nil }.not_to raise_error
+      expect { conf.api.format = :plain_text }.not_to raise_error
+    end
+
+    frozen_config.freeze!
+
+    frozen_config.configure do |conf|
+      expect { conf.api_mode_enabled = false }.to raise_error(Qonfig::FrozenSettingsError)
+      expect { conf.api.format = :xml }.to raise_error(Qonfig::FrozenSettingsError)
+    end
   end
 end

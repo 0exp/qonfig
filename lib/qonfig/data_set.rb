@@ -23,6 +23,14 @@ module Qonfig
     #
     # @api public
     # @since 0.1.0
+    def freeze!
+      settings.__freeze__
+    end
+
+    # @return [void]
+    #
+    # @api public
+    # @since 0.1.0
     def configure
       yield(settings) if block_given?
     end

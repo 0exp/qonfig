@@ -16,7 +16,7 @@ describe 'Composition' do
       setting :enable_middlewares, true
     end
 
-    class DataBaseConfig < Qonfig::DataSet
+    class DatabaseConfig < Qonfig::DataSet
       setting :username, 'kek'
       setting :password, 'pek'
       setting :connection do
@@ -33,7 +33,7 @@ describe 'Composition' do
       end
 
       setting :db do
-        compose DataBaseConfig
+        compose DatabaseConfig
       end
 
       setting :limits do

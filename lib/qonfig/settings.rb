@@ -65,6 +65,22 @@ module Qonfig
       __options__[key]
     end
 
+    # @param key [String, Symbol]
+    # @param value [Object]
+    # @return [void]
+    #
+    # @api public
+    # @since 0.1.0
+    def []=(key, value)
+      unless __options__.key?(key)
+        raise Qonfig::UnknownSettingError, "Setting with <#{key}> key does not exist!"
+      end
+
+      __options__[key] = value
+    rescue FrozenError
+      raise Qonfig::FrozenSettingsError, 'Can not modify frozen Settings'
+    end
+
     # @return [Hash]
     #
     # @api public
@@ -100,6 +116,18 @@ module Qonfig
       # :nocov:
     end
 
+    # @return [void]
+    #
+    # @api private
+    # @since 0.1.0
+    def __freeze__
+      __options__.freeze
+
+      __options__.each_value do |value|
+        value.__freeze__ if value.is_a?(Qonfig::Settings)
+      end
+    end
+
     private
 
     # @param key [Symbol,String]
@@ -118,9 +146,9 @@ module Qonfig
       rescue NameError
       end
 
-      define_singleton_method(key) { __options__[key] }
+      define_singleton_method(key) { self.[](key) }
       define_singleton_method("#{key}=") do |value|
-        __options__[key] = value
+        self.[]=(key, value)
       end unless __options__[key].is_a?(Qonfig::Settings)
     end
   end
