@@ -122,7 +122,10 @@ end
 
 project_config = ProjectConfig.new
 
+# inherited setting
 project_config.settings.uploader # => :fog
+
+# own setting
 project_config.settings.auth_provider # => :github
 ```
 
@@ -131,18 +134,18 @@ project_config.settings.auth_provider # => :github
 ### Composition
 
 ```ruby
-class ServerConfig < Qonfig::DataSet
+class SharedConfig < Qonfig::DataSet
   setting :logger, Logger.new
+end
+
+class ServerConfig < Qonfig::DataSet
+  setting :port, 12345
+  setting :address, '0.0.0.0'
 end
 
 class DatabaseConfig < Qonfig::DataSet
   setting :user, 'test'
   setting :password, 'testpaswd'
-end
-
-class SharedConfig < Qonfig::DataSet
-  setting :uploader, :fog
-  setting :auth_provider, :github
 end
 
 class ProjectConfig < Qonfig::DataSet
@@ -157,7 +160,7 @@ class ProjectConfig < Qonfig::DataSet
   end
 end
 
-config = ProjectConfig.new
+project_config = ProjectConfig.new
 
 # fields from SharedConfig
 project_config.settings.logger # => #<Logger:0x66f57048>
