@@ -76,9 +76,11 @@ module Qonfig
         raise Qonfig::UnknownSettingError, "Setting with <#{key}> key does not exist!"
       end
 
+      if __options__.frozen?
+        raise Qonfig::FrozenSettingsError, 'Can not modify frozen Settings'
+      end
+
       __options__[key] = value
-    rescue ::FrozenError
-      raise Qonfig::FrozenSettingsError, 'Can not modify frozen Settings'
     end
 
     # @return [Hash]

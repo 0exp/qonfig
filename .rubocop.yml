@@ -21,6 +21,9 @@ Style/RescueModifier:
   Exclude:
     - spec/**/*
 
+Style/IfUnlessModifier:
+  Enabled: false
+
 Metrics/BlockLength:
   Exclude:
     - spec/**/*
