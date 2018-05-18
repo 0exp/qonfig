@@ -77,7 +77,7 @@ module Qonfig
       end
 
       __options__[key] = value
-    rescue FrozenError
+    rescue ::FrozenError
       raise Qonfig::FrozenSettingsError, 'Can not modify frozen Settings'
     end
 
