@@ -1,4 +1,4 @@
-# Qonfig &middot; [![Gem Version](https://badge.fury.io/rb/qonfig.svg)](https://badge.fury.io/rb/qonfig) [![Build Status](https://travis-ci.org/0exp/qonfig.svg?branch=master)](https://travis-ci.org/0exp/qonfig) [![Coverage Status](https://coveralls.io/repos/github/0exp/qonfig/badge.svg)](https://coveralls.io/github/0exp/qonfig)
+# Qonfig &middot; [![Gem Version](https://badge.fury.io/rb/qonfig.svg)](https://badge.fury.io/rb/qonfig) [![Build Status](https://travis-ci.org/0exp/qonfig.svg?branch=master)](https://travis-ci.org/0exp/qonfig) [![Coverage Status](https://coveralls.io/repos/github/0exp/qonfig/badge.svg?branch=master)](https://coveralls.io/github/0exp/qonfig?branch=master)
 
 Config. Defined as a class. Used as an instance. Support for inheritance and composition.
 Lazy instantiation. Command-style DSL. Extremely simple to define. Extremely simple to use. That's all.
@@ -12,7 +12,7 @@ gem 'qonfig'
 ```shell
 $ bundle install
 # --- or ---
-gem install 'qonfig'
+$ gem install 'qonfig'
 ```
 
 ```ruby
@@ -234,4 +234,4 @@ Released under MIT License.
 
 ## Authors
 
-Rustam Ibragimov.
+[Rustam Ibragimov](https://github.com/0exp)
