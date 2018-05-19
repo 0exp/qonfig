@@ -89,7 +89,7 @@ end
 
 config = Config.new
 
-# configure via block
+# configure via proc
 config.configure do |conf|
   conf.enable_middlewares = true
   conf.geo_api.provider = :yandex_maps
@@ -105,6 +105,13 @@ config.settings.testing.engine = :ultra_test
 config.settings[:enable_middlewares] = true
 config.settings[:geo_api][:provider] = :rambler_maps
 config.settings[:testing][:engine] = :mega_test
+
+# instant configuration via proc
+config = Config.new do |conf|
+  conf.enable_middlewares = false
+  conf.geo_api.provider = :amazon_maps
+  conf.testing.engine = :crypto_test
+end
 ```
 
 ---

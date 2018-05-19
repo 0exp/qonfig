@@ -13,10 +13,13 @@ module Qonfig
     # @since 0.1.0
     attr_reader :settings
 
+    # @param configurations [Proc]
+    #
     # @api public
     # @since 0.1.0
-    def initialize
+    def initialize(&configurations)
       @settings = Qonfig::SettingsBuilder.build(self.class.commands)
+      configure(&configurations) if block_given?
     end
 
     # @return [void]
