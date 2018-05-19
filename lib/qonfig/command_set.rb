@@ -36,7 +36,7 @@ module Qonfig
     end
 
     # @param command_set [Qonfig::CommandSet]
-    # @return [Qonfig::CommandSet]
+    # @return [void]
     #
     # @api private
     # @since 0.1.0
