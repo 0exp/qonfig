@@ -122,6 +122,26 @@ describe 'Config definition' do
     expect(config.settings[:mutations][:action][:query]).to eq(:upsert)
     expect(config.settings[:steps]).to eq(1234)
 
+    # instant configuration via proc
+    config = SimpleConfig.new do |conf|
+      conf.serializers.json = :native
+      conf.serializers.xml = :native
+      conf.mutations.action.query = 'delete'
+      conf.steps = 0
+    end
+
+    # access via method named as a setting key
+    expect(config.settings.serializers.json).to eq(:native)
+    expect(config.settings.serializers.xml).to eq(:native)
+    expect(config.settings.mutations.action.query).to eq('delete')
+    expect(config.settings.steps).to eq(0)
+
+    # access via option index named as a setting key
+    expect(config.settings[:serializers][:json]).to eq(:native)
+    expect(config.settings[:serializers][:xml]).to eq(:native)
+    expect(config.settings[:mutations][:action][:query]).to eq('delete')
+    expect(config.settings[:steps]).to eq(0)
+
     # attempt to get an access to the unexistent setting
     expect { config.settings.deserialization }.to raise_error(Qonfig::UnknownSettingError)
     expect { config.settings.mutations.global }.to raise_error(Qonfig::UnknownSettingError)
@@ -131,11 +151,11 @@ describe 'Config definition' do
 
     # hash representation
     expect(config.to_h).to match(
-      serializers: { json: 'pararam', xml: 'tratata' },
+      serializers: { json: :native, xml: :native },
       defaults: nil,
       shared: { convert: false },
-      mutations: { action: { query: :upsert } },
-      steps: 1234
+      mutations: { action: { query: 'delete' } },
+      steps: 0
     )
   end
 

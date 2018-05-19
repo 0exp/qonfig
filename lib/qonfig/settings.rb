@@ -133,7 +133,7 @@ module Qonfig
     private
 
     # @param key [Symbol,String]
-    # @return [Object]
+    # @return [void]
     #
     # @api private
     # @since 0.1.0
