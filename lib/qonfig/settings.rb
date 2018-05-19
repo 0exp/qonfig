@@ -105,7 +105,7 @@ module Qonfig
     def method_missing(method_name, *arguments, &block)
       super
     rescue NoMethodError
-      raise Qonfig::UnknownSettingError, "Setting with <#{method_name}> ley doesnt exist!"
+      raise Qonfig::UnknownSettingError, "Setting with <#{method_name}> key doesnt exist!"
     end
 
     # @return [Boolean]

@@ -55,14 +55,14 @@ end
 config = Config.new
 
 config.settings.project_id # => nil
-config.settings.vendor_api.host # => 'api.service.com'
+config.settings.vendor_api.host # => 'app.service.com'
 config.settings.vendor_api.port # => 12345
 config.settings.vendor_api.user # => 'test_user'
 config.settings.vendor_api.password # => 'test_password'
 config.settings.enable_graphql # => false
 
 config.settings[:project_id] # => nil
-config.settings[:vendor_api][:host] # => 'api.service.com'
+config.settings[:vendor_api][:host] # => 'app.service.com'
 config.settings[:vendor_api][:port] # => 12345
 config.settings[:vendor_api][:user] # => 'test_user'
 config.settings[:vendor_api][:password] # => 'test_password'
@@ -217,6 +217,9 @@ Config.new.to_h
 class Config < Qonfig::DataSet
   setting :logger, Logger.new(STDOUT)
   setting :worker, :sidekiq
+  setting :db do
+    setting :adapter, 'postgresql'
+  end
 end
 
 config = Config.new
@@ -224,6 +227,7 @@ config.freeze!
 
 config.settings.logger = Logger.new(StringIO.new) # => Qonfig::FrozenSettingsError
 config.settings.worker = :que # => Qonfig::FrozenSettingsError
+config.settings.db.adapter = 'mongoid' # => Qonfig::FrozenSettingsError
 ```
 
 ---
