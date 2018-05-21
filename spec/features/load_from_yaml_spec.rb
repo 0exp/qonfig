@@ -23,8 +23,6 @@ describe 'Load from YAML' do
       end
     end
 
-
-
     CISettings.new.settings.tap do |conf|
       expect(conf.enable_api).to eq(false)
       expect(conf.run_sidekiq).to eq(true)

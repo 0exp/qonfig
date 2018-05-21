@@ -133,13 +133,13 @@ module Qonfig
 
     private
 
-    # @param __options_part__ [Hash]
+    # @param options_part [Hash]
     # @return [Hash]
     #
     # @api private
     # @since 0.2.0
-    def __build_hash_representation__(__options_part__ = __options__)
-      __options_part__.each_with_object({}) do |(key, value), hash|
+    def __build_hash_representation__(options_part = __options__)
+      options_part.each_with_object({}) do |(key, value), hash|
         case
         when value.is_a?(Hash)
           hash[key] = __build_hash_representation__(value)

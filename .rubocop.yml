@@ -5,8 +5,8 @@ AllCops:
   DisplayStyleGuide: true
   TargetRubyVersion: 2.5.1
   Include:
-    - lib/**/*
-    - spec/**/*
+    - lib/**/*.rb
+    - spec/**/*.rb
   Exclude:
     - bin/**/*
     - Gemfile
