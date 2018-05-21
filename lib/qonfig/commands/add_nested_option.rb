@@ -5,7 +5,7 @@ module Qonfig
     # @api private
     # @since 0.1.0
     class AddNestedOption < Base
-      # @return [String,Symbol]
+      # @return [Symbol, String]
       #
       # @api private
       # @since 0.1.0
@@ -17,7 +17,7 @@ module Qonfig
       # @since 0.1.0
       attr_reader :nested_definitions
 
-      # @param key [String,Symbol]
+      # @param key [Symbol, String]
       # @param nested_definitions [Proc]
       #
       # @api private
