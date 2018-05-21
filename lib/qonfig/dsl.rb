@@ -58,14 +58,13 @@ module Qonfig
       commands << Qonfig::Commands::Compose.new(data_set_klass)
     end
 
-    # @option format [Symbol]
-    # @option path [String]
+    # @param file_path [String]
     # @return [void]
     #
     # @api public
     # @since 0.2.0
-    def load_from_file(format:, path:)
-      commands << Qonfig::Commands::LoadFromFile.new(format, path)
+    def load_from_yaml(file_path)
+      commands << Qonfig::Commands::LoadFromYAML.new(file_path)
     end
   end
 end

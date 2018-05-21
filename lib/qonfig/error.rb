@@ -5,15 +5,28 @@ module Qonfig
   # @since 0.1.0
   Error = Class.new(StandardError)
 
+  # @see Qonfig::Settings
+  # @see Qonfig::DSL
+  #
   # @api public
   # @since 0.1.0
   ArgumentError = Class.new(Error)
 
+  # @see Qonfig::Settings
+  #
   # @api public
   # @since 0.1.0
   UnknownSettingError = Class.new(Error)
 
+  # @see Qonfig::Settings
+  #
   # @api public
   # @since 0.1.0
   FrozenSettingsError = Class.new(Error)
+
+  # @see Qonfig::Commands::LoadFromYAML
+  #
+  # @api public
+  # @since 0.2.0
+  IncompatibleYAMLError = Class.new(Error)
 end
