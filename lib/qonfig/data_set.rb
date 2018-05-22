@@ -18,8 +18,7 @@ module Qonfig
     # @api public
     # @since 0.1.0
     def initialize(&configurations)
-      @settings = Qonfig::SettingsBuilder.build(self.class.commands)
-      configure(&configurations) if block_given?
+      load!(&configurations)
     end
 
     # @return [void]
@@ -29,6 +28,17 @@ module Qonfig
     def freeze!
       settings.__freeze__
     end
+
+    # @param configurations [Proc]
+    # @return [void]
+    #
+    # @api public
+    # @since 0.2.0
+    def load!(&configurations)
+      @settings = build_settings
+      configure(&configurations) if block_given?
+    end
+    alias_method :reload!, :load!
 
     # @return [void]
     #
@@ -46,5 +56,15 @@ module Qonfig
       settings.__to_hash__
     end
     alias_method :to_hash, :to_h
+
+    private
+
+    # @return [Qonfig::Settings]
+    #
+    # @api private
+    # @since 0.2.0
+    def build_settings
+      Qonfig::SettingsBuilder.build(self.class.commands)
+    end
   end
 end

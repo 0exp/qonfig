@@ -28,6 +28,7 @@ require 'qonfig'
 - [Load from YAML](#load-from-yaml)
 - [Hash representation](#hash-representation)
 - [State freeze](#state-freeze)
+- [Reload](#reload)
 
 ---
 
@@ -253,6 +254,52 @@ Config.new.to_h
   adapter: { default: :memory_sync },
   logger: #<Logger:0x4b0d79fc>
 }
+```
+
+---
+
+### Reload
+
+```ruby
+class Config < Qonfig::DataSet
+  setting :db do
+    setting :adapter, 'postgresql'
+  end
+
+  setting :logger, Logger.new(STDOUT)
+end
+
+config = Config.new
+
+config.settings.db.adapter # => 'postgresql'
+config.settings.logger # => #<Logger:0x00007ff9>
+
+config.configure { |conf| conf.logger = nil } # redefine some settings (will be reloaded)
+
+# re-define and append settings
+class Config
+  setting :db do
+    setting :adapter, 'mongoid' # re-define defaults
+  end
+
+  setting :enable_api, false # append new setting
+end
+
+# reload settings
+config.reload!
+
+config.settings.db.adapter # => 'mongoid'
+config.settings.logger # => #<Logger:0x00007ff9> (reloaded from defaults)
+config.enable_api # => false
+
+# reload with instant configuration
+config.reload! do |conf|
+  conf.enable_api = true # changed instantly
+end
+
+conf.settings.db.adapter # => 'mongoid'
+conf.settings.logger = # => #<Logger:0x00007ff9>
+config.enable_api # => true # value from instant change
 ```
 
 ---
