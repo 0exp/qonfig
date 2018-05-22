@@ -238,7 +238,7 @@ class Config < Qonfig::DataSet
   end
 
   setting :adapter do
-    setting :default: :memory_sync
+    setting :default, :memory_sync
   end
 
   setting :logger, Logger.new(STDOUT)
