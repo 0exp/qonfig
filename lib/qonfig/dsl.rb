@@ -30,7 +30,7 @@ module Qonfig
       @commands
     end
 
-    # @param key [String,Symbol]
+    # @param key [Symbol, String]
     # @param initial_value [Object]
     # @param nested_settings [Proc]
     # @return [void]
@@ -56,6 +56,15 @@ module Qonfig
     # @sine 0.1.0
     def compose(data_set_klass)
       commands << Qonfig::Commands::Compose.new(data_set_klass)
+    end
+
+    # @param file_path [String]
+    # @return [void]
+    #
+    # @api public
+    # @since 0.2.0
+    def load_from_yaml(file_path)
+      commands << Qonfig::Commands::LoadFromYAML.new(file_path)
     end
   end
 end

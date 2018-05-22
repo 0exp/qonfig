@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
+require 'yaml'
+
 module Qonfig
   require_relative 'qonfig/error'
   require_relative 'qonfig/commands/base'
   require_relative 'qonfig/commands/add_option'
   require_relative 'qonfig/commands/add_nested_option'
   require_relative 'qonfig/commands/compose'
+  require_relative 'qonfig/commands/load_from_yaml'
   require_relative 'qonfig/command_set'
   require_relative 'qonfig/settings'
   require_relative 'qonfig/settings_builder'

@@ -5,7 +5,7 @@ module Qonfig
     # @api private
     # @since 0.1.0
     class AddOption < Base
-      # @return [String,Symbol]
+      # @return [Symbol, String]
       #
       # @api private
       # @since 0.1.0
@@ -17,7 +17,7 @@ module Qonfig
       # @since 0.1.0
       attr_reader :value
 
-      # @param key [String,Symbol]
+      # @param key [Symbol, String]
       # @param value [Object]
       #
       # @api private

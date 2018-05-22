@@ -25,6 +25,7 @@ require 'qonfig'
 - [Configuration](#configuration)
 - [Inheritance](#inheritance)
 - [Composition](#composition)
+- [Load from YAML](#load-from-yaml)
 - [Hash representation](#hash-representation)
 - [State freeze](#state-freeze)
 
@@ -179,6 +180,44 @@ project_config.settings.server.address # => '0.0.0.0'
 # fields from DatabaseConfig
 project_config.settings.db.user # => 'test'
 project_config.settings.db.password # => 'testpaswd'
+```
+
+---
+
+### Load from YAML
+
+```yaml
+<!-- travis.yml -->
+sudo: false
+language: ruby
+rvm:
+  - ruby-head
+  - jruby-head
+```
+
+```yaml
+<!-- project.yml -->
+enable_api: false
+Sidekiq/Scheduler:
+  enable: true
+```
+
+```ruby
+class Config < Qonfig::DataSet
+  setting :travis do
+    load_from_yaml 'travis.yml'
+  end
+
+  load_from_yaml 'project.yml'
+end
+
+config = Config.new
+
+config.settings.travis.sudo # => false
+config.settings.travis.language # => 'ruby'
+config.settings.travis.rvm # => ['ruby-head', 'jruby-head']
+config.settings.enable_api # => false
+config.settings['Sidekiq/Scheduler']['enable'] #=> true
 ```
 
 ---

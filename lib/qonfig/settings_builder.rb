@@ -8,7 +8,7 @@ module Qonfig
       # @param [Qonfig::CommandSet]
       # @return [Qonfig::Settings]
       #
-      # @ api private
+      # @api private
       # @since 0.1.0
       def build(commands)
         Qonfig::Settings.new.tap do |settings|

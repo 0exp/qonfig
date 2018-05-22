@@ -16,8 +16,9 @@ module Qonfig
       @__options__ = {}
     end
 
-    # @param key [Symbol,String]
+    # @param key [Symbol, String]
     # @param value [Object]
+    # @raise [Qonfig::ArgumentError]
     # @return [void]
     #
     # @api private
@@ -52,7 +53,8 @@ module Qonfig
       end
     end
 
-    # @param key [Symbol,String]
+    # @param key [Symbol, String]
+    # @raise [Qonfig::UnknownSettingError]
     # @return [Object]
     #
     # @api public
@@ -67,6 +69,8 @@ module Qonfig
 
     # @param key [String, Symbol]
     # @param value [Object]
+    # @raise [Qonfig::UnknownSettingError]
+    # @raise [Qonfig::FrozenSettingsError]
     # @return [void]
     #
     # @api public
@@ -88,16 +92,13 @@ module Qonfig
     # @api public
     # @since 0.1.0
     def __to_hash__
-      __options__.dup.tap do |hash|
-        __options__.each_pair do |key, value|
-          hash[key] = value.is_a?(Qonfig::Settings) ? value.__to_hash__ : value
-        end
-      end
+      __build_hash_representation__
     end
 
     # @param method_name [String, Symbol]
     # @param arguments [Array<Object>]
     # @param block [Proc]
+    # @raise [Qonfig::UnknownSettingError]
     # @return [void]
     #
     # @api public
@@ -132,7 +133,25 @@ module Qonfig
 
     private
 
-    # @param key [Symbol,String]
+    # @param options_part [Hash]
+    # @return [Hash]
+    #
+    # @api private
+    # @since 0.2.0
+    def __build_hash_representation__(options_part = __options__)
+      options_part.each_with_object({}) do |(key, value), hash|
+        case
+        when value.is_a?(Hash)
+          hash[key] = __build_hash_representation__(value)
+        when value.is_a?(Qonfig::Settings)
+          hash[key] = value.__to_hash__
+        else
+          hash[key] = value
+        end
+      end
+    end
+
+    # @param key [Symbol, String]
     # @return [void]
     #
     # @api private
