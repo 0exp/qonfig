@@ -274,7 +274,7 @@ config = Config.new
 config.settings.db.adapter # => 'postgresql'
 config.settings.logger # => #<Logger:0x00007ff9>
 
-config.configure { |conf| conf.logger = nil } # redefine some settings
+config.configure { |conf| conf.logger = nil } # redefine some settings (will be reloaded)
 
 # re-define and append settings
 class Config
@@ -289,17 +289,17 @@ end
 config.reload!
 
 config.settings.db.adapter # => 'mongoid'
-config.settings.logger # => #<Logger:0x00007ff9> (reloaded)
+config.settings.logger # => #<Logger:0x00007ff9> (reloaded from defaults)
 config.enable_api # => false
 
 # reload with instant configuration
 config.reload! do |conf|
-  conf.enable_api = true
+  conf.enable_api = true # changed instantly
 end
 
 conf.settings.db.adapter # => 'mongoid'
 conf.settings.logger = # => #<Logger:0x00007ff9>
-config.enable_api # => true
+config.enable_api # => true # value from instant change
 ```
 
 ---
