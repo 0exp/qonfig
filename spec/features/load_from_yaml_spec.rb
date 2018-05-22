@@ -37,4 +37,15 @@ describe 'Load from YAML' do
       expect(conf['rubocop']['Metrics/LineLength']['Max']).to eq(100)
     end
   end
+
+  specify 'fails when yaml settings is not represented as a hash' do
+    class IncompatibleYAMLConfig < Qonfig::DataSet
+      load_from_yaml File.expand_path(
+        File.join('..', '..', 'fixtures', 'array_settings.yml'),
+        Pathname.new(__FILE__).realpath
+      )
+    end
+
+    expect { IncompatibleYAMLConfig.new }.to raise_error(Qonfig::IncompatibleYAMLError)
+  end
 end
