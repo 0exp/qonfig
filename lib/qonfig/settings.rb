@@ -81,7 +81,7 @@ module Qonfig
       end
 
       if __options__.frozen?
-        raise Qonfig::FrozenSettingsError, 'Can not modify frozen Settings'
+        raise Qonfig::FrozenSettingsError, 'Can not modify frozen settings'
       end
 
       __options__[key] = value
@@ -129,6 +129,14 @@ module Qonfig
       __options__.each_value do |value|
         value.__freeze__ if value.is_a?(Qonfig::Settings)
       end
+    end
+
+    # @return [Boolean]
+    #
+    # @api private
+    # @since 0.2.0
+    def __is_frozen__
+      __options__.frozen?
     end
 
     private

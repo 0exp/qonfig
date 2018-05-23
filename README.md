@@ -25,10 +25,10 @@ require 'qonfig'
 - [Configuration](#configuration)
 - [Inheritance](#inheritance)
 - [Composition](#composition)
-- [Load from YAML](#load-from-yaml)
 - [Hash representation](#hash-representation)
 - [State freeze](#state-freeze)
 - [Reload](#reload)
+- [Load from .yml](#load-from-yml)
 
 ---
 
@@ -185,44 +185,6 @@ project_config.settings.db.password # => 'testpaswd'
 
 ---
 
-### Load from YAML
-
-```yaml
-<!-- travis.yml -->
-sudo: false
-language: ruby
-rvm:
-  - ruby-head
-  - jruby-head
-```
-
-```yaml
-<!-- project.yml -->
-enable_api: false
-Sidekiq/Scheduler:
-  enable: true
-```
-
-```ruby
-class Config < Qonfig::DataSet
-  setting :travis do
-    load_from_yaml 'travis.yml'
-  end
-
-  load_from_yaml 'project.yml'
-end
-
-config = Config.new
-
-config.settings.travis.sudo # => false
-config.settings.travis.language # => 'ruby'
-config.settings.travis.rvm # => ['ruby-head', 'jruby-head']
-config.settings.enable_api # => false
-config.settings['Sidekiq/Scheduler']['enable'] #=> true
-```
-
----
-
 ### Hash representation
 
 ```ruby
@@ -290,7 +252,7 @@ config.reload!
 
 config.settings.db.adapter # => 'mongoid'
 config.settings.logger # => #<Logger:0x00007ff9> (reloaded from defaults)
-config.enable_api # => false
+config.enable_api # => false (new setting)
 
 # reload with instant configuration
 config.reload! do |conf|
@@ -321,6 +283,47 @@ config.freeze!
 config.settings.logger = Logger.new(StringIO.new) # => Qonfig::FrozenSettingsError
 config.settings.worker = :que # => Qonfig::FrozenSettingsError
 config.settings.db.adapter = 'mongoid' # => Qonfig::FrozenSettingsError
+
+config.reload! # => Qonfig::FrozenSettingsError
+```
+
+---
+
+### Load from .yml
+
+
+```yaml
+<!-- travis.yml -->
+sudo: false
+language: ruby
+rvm:
+  - ruby-head
+  - jruby-head
+```
+
+```yaml
+<!-- project.yml -->
+enable_api: false
+Sidekiq/Scheduler:
+  enable: true
+```
+
+```ruby
+class Config < Qonfig::DataSet
+  setting :travis do
+    load_from_yaml 'travis.yml'
+  end
+
+  load_from_yaml 'project.yml'
+end
+
+config = Config.new
+
+config.settings.travis.sudo # => false
+config.settings.travis.language # => 'ruby'
+config.settings.travis.rvm # => ['ruby-head', 'jruby-head']
+config.settings.enable_api # => false
+config.settings['Sidekiq/Scheduler']['enable'] #=> true
 ```
 
 ---

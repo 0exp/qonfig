@@ -173,28 +173,4 @@ describe 'Config definition' do
       end
     end.not_to raise_error
   end
-
-  specify 'freezing' do
-    class FrozenableConfig < Qonfig::DataSet
-      setting :api_mode_enabled, true
-
-      setting :api do
-        setting :format, :json
-      end
-    end
-
-    frozen_config = FrozenableConfig.new
-
-    frozen_config.configure do |conf|
-      expect { conf.api_mode_enabled = nil }.not_to raise_error
-      expect { conf.api.format = :plain_text }.not_to raise_error
-    end
-
-    frozen_config.freeze!
-
-    frozen_config.configure do |conf|
-      expect { conf.api_mode_enabled = false }.to raise_error(Qonfig::FrozenSettingsError)
-      expect { conf.api.format = :xml }.to raise_error(Qonfig::FrozenSettingsError)
-    end
-  end
 end
