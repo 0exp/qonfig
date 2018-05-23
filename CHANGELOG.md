@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Instant configuration via block `config = Config.new { |conf| <<your configuration code>> }`;
 - `.load_from_yaml` command - an ability to define config settings by loading them from a yaml file;
-- `#reload` - an ability to reload config isntance after any config class changes and updates;
+- `#reload!` - an ability to reload config isntance after any config class changes and updates;
 
 ### Fixed
 - Recoursive hash representation with deep nested `Qonfig::Settings` values (does not work);

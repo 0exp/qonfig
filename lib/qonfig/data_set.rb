@@ -29,16 +29,23 @@ module Qonfig
       settings.__freeze__
     end
 
+    # @return [void]
+    #
+    # @api public
+    # @since 0.2.0
+    def frozen?
+      settings.__is_frozen__
+    end
+
     # @param configurations [Proc]
     # @return [void]
     #
     # @api public
     # @since 0.2.0
-    def load!(&configurations)
-      @settings = build_settings
-      configure(&configurations) if block_given?
+    def reload!(&configurations)
+      raise Qonfig::FrozenSettingsError, 'Frozen config can not be reloaded' if frozen?
+      load!(&configurations)
     end
-    alias_method :reload!, :load!
 
     # @return [void]
     #
@@ -65,6 +72,16 @@ module Qonfig
     # @since 0.2.0
     def build_settings
       Qonfig::SettingsBuilder.build(self.class.commands)
+    end
+
+    # @param configurations [Proc]
+    # @return [void]
+    #
+    # @api public
+    # @since 0.2.0
+    def load!(&configurations)
+      @settings = build_settings
+      configure(&configurations) if block_given?
     end
   end
 end
