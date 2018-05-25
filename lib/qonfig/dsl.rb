@@ -66,5 +66,10 @@ module Qonfig
     def load_from_yaml(file_path)
       commands << Qonfig::Commands::LoadFromYAML.new(file_path)
     end
+
+    def load_from_self
+      caller_location = caller(1, 1).first
+      commands << Qonfig::Commands::LoadFromSelf.new(caller_location)
+    end
   end
 end
