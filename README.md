@@ -28,7 +28,8 @@ require 'qonfig'
 - [Hash representation](#hash-representation)
 - [State freeze](#state-freeze)
 - [Reload](#reload)
-- [Load from .yml](#load-from-yml)
+- [Load from YAML file](#load-from-yaml-file)
+- [Load from self](#load-from-self)
 
 ---
 
@@ -289,8 +290,7 @@ config.reload! # => Qonfig::FrozenSettingsError
 
 ---
 
-### Load from .yml
-
+### Load from YAML file
 
 ```yaml
 <!-- travis.yml -->
@@ -324,6 +324,42 @@ config.settings.travis.language # => 'ruby'
 config.settings.travis.rvm # => ['ruby-head', 'jruby-head']
 config.settings.enable_api # => false
 config.settings['Sidekiq/Scheduler']['enable'] #=> true
+```
+
+---
+
+### Load from self
+
+```ruby
+class Config < Qonfig::DataSet
+  load_from_self # on the root
+
+  setting :clowd do
+    load_from_self # nested
+  end
+end
+
+config = Config.new
+
+# on the root
+config.settings.secret_key # => 'top-mega-secret'
+config.settings.api_host # => 'super.puper-google.com'
+config.settings.connection_timeout.seconds # => 10
+config.settings.connection_timeout.enabled # => false
+
+# nested
+config.settings.nested.secret_key # => 'top-mega-secret'
+config.settings.nested.api_host # => 'super.puper-google.com'
+config.settings.nested.connection_timeout.seconds # => 10
+config.settings.nested.connection_timeout.enabled # => false
+
+__END__
+
+secret_key: top-mega-secret
+api_host: super.puper-google.com
+connection_timeout:
+   seconds: 10
+   enabled: false
 ```
 
 ---

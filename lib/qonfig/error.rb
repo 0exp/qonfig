@@ -29,4 +29,10 @@ module Qonfig
   # @api public
   # @since 0.2.0
   IncompatibleYAMLError = Class.new(Error)
+
+  # @see Qonfig::Commands::LoadFromSelf
+  #
+  # @api public
+  # @since 0.2.0
+  SelfDataNotFoundError = Class.new(Error)
 end

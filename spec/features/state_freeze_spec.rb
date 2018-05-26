@@ -42,11 +42,9 @@ describe 'State freeze' do
     expect { frozen_config.reload! }.to raise_error(Qonfig::FrozenSettingsError)
 
     expect(frozen_config.to_h).to match(
-      {
-        api_mode_enabled: true,
-        api: { format: :json },
-        additionals: false
-      }
+      api_mode_enabled: true,
+      api: { format: :json },
+      additionals: false
     )
   end
 end

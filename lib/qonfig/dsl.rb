@@ -35,6 +35,9 @@ module Qonfig
     # @param nested_settings [Proc]
     # @return [void]
     #
+    # @see Qonfig::Commands::AddNestedOption
+    # @see Qonfig::Commands::AddOption
+    #
     # @api public
     # @since 0.1.0
     def setting(key, initial_value = nil, &nested_settings)
@@ -52,6 +55,8 @@ module Qonfig
     # @param data_set_klass [Class{Qonfig::DataSet}]
     # @return [void]
     #
+    # @see Qonfig::Comamnds::Compose
+    #
     # @api private
     # @sine 0.1.0
     def compose(data_set_klass)
@@ -61,10 +66,23 @@ module Qonfig
     # @param file_path [String]
     # @return [void]
     #
+    # @see Qonfig::Commands::LoadFromYAML
+    #
     # @api public
     # @since 0.2.0
     def load_from_yaml(file_path)
       commands << Qonfig::Commands::LoadFromYAML.new(file_path)
+    end
+
+    # @return [void]
+    #
+    # @see Qonfig::Commands::LoadFromSelf
+    #
+    # @api public
+    # @since 0.2.0
+    def load_from_self
+      caller_location = caller(1, 1).first
+      commands << Qonfig::Commands::LoadFromSelf.new(caller_location)
     end
   end
 end
