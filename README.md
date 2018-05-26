@@ -292,7 +292,6 @@ config.reload! # => Qonfig::FrozenSettingsError
 
 ### Load from YAML file
 
-
 ```yaml
 <!-- travis.yml -->
 sudo: false
@@ -362,6 +361,8 @@ connection_timeout:
    seconds: 10
    enabled: false
 ```
+
+---
 
 ## License
 

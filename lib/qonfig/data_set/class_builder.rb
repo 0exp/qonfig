@@ -9,8 +9,8 @@ module Qonfig
         # @param hash [Hash]
         # @return [Class<Qonfig::DataSet>]
         #
-        # @see [Qonfig::DataSet]
-        # @see [Qonfig::DSL]
+        # @see Qonfig::DataSet
+        # @see Qonfig::DSL
         #
         # @api private
         # @since 0.2.0
