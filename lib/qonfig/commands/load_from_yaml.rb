@@ -32,29 +32,20 @@ module Qonfig
           raise Qonfig::IncompatibleYAMLError, 'YAML file should have a hash-like structure'
         end
 
-        yaml_based_settings = build_data_set_klass(yaml_data).new.settings
+        yaml_based_settings = build_data_set_class(yaml_data).new.settings
+
         settings.__append_settings__(yaml_based_settings)
       end
 
       private
 
-      # @param [Hash]
+      # @param yaml_data [Hash]
       # @return [Class<Qonfig::DataSet>]
       #
       # @api private
       # @since 0.2.0
-      def build_data_set_klass(hash)
-        Class.new(Qonfig::DataSet).tap do |data_set_klass|
-          hash.each_pair do |key, value|
-            if value.is_a?(Hash)
-              sub_data_set_klass = build_data_set_klass(hash[key])
-
-              data_set_klass.setting(key) { compose sub_data_set_klass }
-            else
-              data_set_klass.setting key, value
-            end
-          end
-        end
+      def build_data_set_class(yaml_data)
+        Qonfig::DataSet::ClassBuilder.build_from_hash(yaml_data)
       end
     end
   end
