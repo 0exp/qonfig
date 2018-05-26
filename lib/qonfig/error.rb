@@ -22,7 +22,7 @@ module Qonfig
   #
   # @api public
   # @since 0.1.0
-  FrozenSettingsError = Class.new(Error)
+  FrozenSettingsError = Class.new(FrozenError)
 
   # @see Qonfig::Commands::LoadFromYAML
   #

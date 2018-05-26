@@ -30,8 +30,12 @@ describe 'State freeze' do
     # cannot modify config values
     frozen_config.configure do |conf|
       expect { conf.api_mode_enabled = false }.to raise_error(Qonfig::FrozenSettingsError)
-      expect { conf.api.format = :xml }.to raise_error(Qonfig::FrozenSettingsError)
-      expect { conf.additionals = true }.to raise_error(Qonfig::FrozenSettingsError)
+      expect { conf.api.format = :xml }.to        raise_error(Qonfig::FrozenSettingsError)
+      expect { conf.additionals = true }.to       raise_error(Qonfig::FrozenSettingsError)
+
+      expect { conf.api_mode_enabled = false }.to raise_error(FrozenError)
+      expect { conf.api.format = :xml }.to        raise_error(FrozenError)
+      expect { conf.additionals = true }.to       raise_error(FrozenError)
     end
 
     # cannot reload config object
@@ -40,6 +44,7 @@ describe 'State freeze' do
     end
 
     expect { frozen_config.reload! }.to raise_error(Qonfig::FrozenSettingsError)
+    expect { frozen_config.reload! }.to raise_error(FrozenError)
 
     expect(frozen_config.to_h).to match(
       {
