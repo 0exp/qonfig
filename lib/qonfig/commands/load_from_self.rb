@@ -43,12 +43,15 @@ module Qonfig
       # @since 0.2.0
       def load_self_placed_yaml_data
         caller_file = caller_location.split(':').first
+
+        # :nocov:
         unless File.exist?(caller_file)
           raise(
             Qonfig::SelfDataNotFoundError,
             "Caller file does not exist! (location: #{caller_location})"
           )
         end
+        # :nocov:
 
         data_match = IO.read(caller_file).match(/\n__END__\n(?<end_data>.*)/m)
         raise Qonfig::SelfDataNotFoundError, '__END__ data not found!' unless data_match

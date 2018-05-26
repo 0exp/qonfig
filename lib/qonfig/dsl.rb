@@ -67,6 +67,10 @@ module Qonfig
       commands << Qonfig::Commands::LoadFromYAML.new(file_path)
     end
 
+    # @return [void]
+    #
+    # @api public
+    # @since 0.2.0
     def load_from_self
       caller_location = caller(1, 1).first
       commands << Qonfig::Commands::LoadFromSelf.new(caller_location)
