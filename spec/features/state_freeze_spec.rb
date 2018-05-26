@@ -33,9 +33,15 @@ describe 'State freeze' do
       expect { conf.api.format = :xml }.to        raise_error(Qonfig::FrozenSettingsError)
       expect { conf.additionals = true }.to       raise_error(Qonfig::FrozenSettingsError)
 
-      expect { conf.api_mode_enabled = false }.to raise_error(FrozenError)
-      expect { conf.api.format = :xml }.to        raise_error(FrozenError)
-      expect { conf.additionals = true }.to       raise_error(FrozenError)
+      if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.5.0')
+        expect { conf.api_mode_enabled = false }.to raise_error(::FrozenError)
+        expect { conf.api.format = :xml }.to        raise_error(::FrozenError)
+        expect { conf.additionals = true }.to       raise_error(::FrozenError)
+      else
+        expect { conf.api_mode_enabled = false }.to raise_error(::RuntimeError)
+        expect { conf.api.format = :xml }.to        raise_error(::RuntimeError)
+        expect { conf.additionals = true }.to       raise_error(::RuntimeError)
+      end
     end
 
     # cannot reload config object
@@ -44,7 +50,12 @@ describe 'State freeze' do
     end
 
     expect { frozen_config.reload! }.to raise_error(Qonfig::FrozenSettingsError)
-    expect { frozen_config.reload! }.to raise_error(FrozenError)
+
+    if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.5.0')
+      expect { frozen_config.reload! }.to raise_error(::FrozenError)
+    else
+      expect { frozen_config.reload! }.to raise_error(::RuntimeError)
+    end
 
     expect(frozen_config.to_h).to match(
       {

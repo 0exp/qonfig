@@ -22,7 +22,13 @@ module Qonfig
   #
   # @api public
   # @since 0.1.0
-  FrozenSettingsError = Class.new(FrozenError)
+  FrozenSettingsError = begin
+    if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.5.0')
+      Class.new(::FrozenError)
+    else
+      Class.new(::RuntimeError)
+    end
+  end
 
   # @see Qonfig::Commands::LoadFromYAML
   #
