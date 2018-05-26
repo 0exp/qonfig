@@ -9,6 +9,11 @@ All notable changes to this project will be documented in this file.
   instructions written in the file where your config class is defined;
 - `#reload!` - an ability to reload config isntance after any config class changes and updates;
 
+### Changed
+- Superclass of `Qonfig::FrozenSettingsError` (it was `Qonfig::Error` before):
+  - `ruby >= 2.5` - inherited from `::FrozenError`;
+  - `ruby < 2.5` - inherited from `::RuntimeError`;
+
 ### Fixed
 - Recoursive hash representation with deep nested `Qonfig::Settings` values (does not work);
 
