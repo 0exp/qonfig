@@ -4,29 +4,40 @@ describe 'Load from self (hash-like __END__ data representation)' do
   specify 'defines config object by self-contained __END__ yaml data' do
     class SelfDefinedConfig < Qonfig::DataSet
       load_from_self
+
+      setting :with_nesting do
+        load_from_self
+      end
     end
 
     SelfDefinedConfig.new.settings.tap do |conf|
-      expect(conf.database.user).to     eq('admin')
-      expect(conf.database.password).to eq('admin')
-      expect(conf.database.host).to     eq('1.2.3.4')
-      expect(conf.database.port).to     eq(666)
-      expect(conf.enable_api).to        eq(true)
+      expect(conf.secret_key).to eq('top-mega-secret')
+      expect(conf.api_host).to eq('super.puper-google.com')
+      expect(conf.connection_timeout.seconds).to eq(10)
+      expect(conf.connection_timeout.enabled).to eq(false)
 
-      expect(conf['database']['user']).to     eq('admin')
-      expect(conf['database']['password']).to eq('admin')
-      expect(conf['database']['host']).to     eq('1.2.3.4')
-      expect(conf['database']['port']).to     eq(666)
-      expect(conf[:enable_api]).to            eq(true)
+      expect(conf['secret_key']).to eq('top-mega-secret')
+      expect(conf['api_host']).to eq('super.puper-google.com')
+      expect(conf[:connection_timeout]['seconds']).to eq(10)
+      expect(conf[:connection_timeout]['enabled']).to eq(false)
+
+      expect(conf.with_nesting.secret_key).to eq('top-mega-secret')
+      expect(conf.with_nesting.api_host).to eq('super.puper-google.com')
+      expect(conf.with_nesting.connection_timeout.seconds).to eq(10)
+      expect(conf.with_nesting.connection_timeout.enabled).to eq(false)
+
+      expect(conf[:with_nesting]['secret_key']).to eq('top-mega-secret')
+      expect(conf[:with_nesting]['api_host']).to eq('super.puper-google.com')
+      expect(conf[:with_nesting][:connection_timeout]['seconds']).to eq(10)
+      expect(conf[:with_nesting][:connection_timeout]['enabled']).to eq(false)
     end
   end
 end
 
 __END__
 
-database:
-  user: admin
-  password: admin
-  host: 1.2.3.4
-  port: 666
-:enable_api: true
+secret_key: top-mega-secret
+api_host: super.puper-google.com
+:connection_timeout:
+   seconds: 10
+   enabled: false
