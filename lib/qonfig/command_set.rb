@@ -14,6 +14,7 @@ module Qonfig
     # @since 0.1.0
     def initialize
       @commands = []
+      @lock = Mutex.new
     end
 
     # @param command [Qonfig::Commands::Base]
@@ -22,7 +23,7 @@ module Qonfig
     # @api private
     # @since 0.1.0
     def add_command(command)
-      commands << command
+      thread_safe { commands << command }
     end
     alias_method :<<, :add_command
 
@@ -41,7 +42,18 @@ module Qonfig
     # @api private
     # @since 0.1.0
     def concat(command_set)
-      commands.concat(command_set.commands)
+      thread_safe { commands.concat(command_set.commands) }
+    end
+
+    private
+
+    # @param block [Proc]
+    # @return [Object]
+    #
+    # @api private
+    # @since 0.2.0
+    def thread_safe(&block)
+      @lock.synchronize(&block)
     end
   end
 end

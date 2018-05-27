@@ -14,6 +14,7 @@ module Qonfig
     # @since 0.1.0
     def initialize
       @__options__ = {}
+      @__lock__ = Mutex.new
     end
 
     # @param key [Symbol, String]
@@ -179,6 +180,15 @@ module Qonfig
       define_singleton_method("#{key}=") do |value|
         self.[]=(key, value)
       end unless __options__[key].is_a?(Qonfig::Settings)
+    end
+
+    # @param __instructions__ [Proc]
+    # @return [Object]
+    #
+    # @api private
+    # @since 0.2.0
+    def __thread_safe__(&__instructions__)
+      @__lock__.synchronize(&__instructions__)
     end
   end
 end
