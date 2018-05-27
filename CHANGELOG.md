@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - `.load_from_self` command - an ability to load config definitions form the YAML
   instructions written in the file where the config class is defined;
 - `#reload!` - an ability to reload config isntance after any config class changes and updates;
+- Support for ERB instructions in YAML;
 
 ### Changed
 - Superclass of `Qonfig::FrozenSettingsError` (it was `Qonfig::Error` before):
