@@ -14,7 +14,8 @@ module Qonfig
     # @since 0.1.0
     def initialize
       @__options__ = {}
-      @__lock__ = Mutex.new
+      @__definition_lock__ = Mutex.new
+      @__access_lock__ = Mutex.new
     end
 
     # @param key [Symbol, String]
@@ -187,8 +188,17 @@ module Qonfig
     #
     # @api private
     # @since 0.2.0
-    def __thread_safe__(&__instructions__)
-      @__lock__.synchronize(&__instructions__)
+    def __thread_safe_definition__(&__instructions__)
+      @__definition_lock__.synchronize(&__instructions__)
+    end
+
+    # @param __instructions__ [Proc]
+    # @return [Object]
+    #
+    # @api private
+    # @since 0.2.0
+    def __thread_safe_access__(&__instructions__)
+      @__access_lock__.synchronize(&__instructions__)
     end
   end
 end
