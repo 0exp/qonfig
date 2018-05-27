@@ -15,7 +15,7 @@ All notable changes to this project will be documented in this file.
   - `ruby < 2.5` - inherited from `::RuntimeError`;
 
 ### Fixed
-- Recoursive hash representation with deep nested `Qonfig::Settings` values (does not work);
+- Recoursive hash representation with deep nested `Qonfig::Settings` values (infinite loop);
 
 ## [0.1.0] - 2018-05-18
 - Release :)
