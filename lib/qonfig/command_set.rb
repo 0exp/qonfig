@@ -14,7 +14,7 @@ module Qonfig
     # @since 0.1.0
     def initialize
       @commands = []
-      @lock = Mutex.new
+      @__access_lock__ = Mutex.new
     end
 
     # @param command [Qonfig::Commands::Base]
@@ -50,7 +50,9 @@ module Qonfig
     # @api private
     # @since 0.2.0
     def dup
-      thread_safe { self.class.new.concat(self) }
+      thread_safe do
+        self.class.new.tap { |duplicate| duplicate.concat(self) }
+      end
     end
 
     private
@@ -61,7 +63,7 @@ module Qonfig
     # @api private
     # @since 0.2.0
     def thread_safe(&block)
-      @lock.synchronize(&block)
+      @__access_lock__.synchronize(&block)
     end
   end
 end
