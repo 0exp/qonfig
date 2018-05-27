@@ -59,7 +59,7 @@ module Qonfig
         end_data = data_match[:end_data]
         raise Qonfig::SelfDataNotFoundError, '__END__ data not found!' unless end_data
 
-        yaml_data = Psych.load(end_data)
+        yaml_data = Qonfig::Loaders::YAML.load(end_data)
         unless yaml_data.is_a?(Hash)
           raise Qonfig::IncompatibleYAMLError, 'YAML data should have a hash-like structure'
         end
