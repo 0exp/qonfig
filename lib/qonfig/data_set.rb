@@ -71,7 +71,7 @@ module Qonfig
     # @api private
     # @since 0.2.0
     def build_settings
-      Qonfig::SettingsBuilder.build(self.class.commands)
+      Qonfig::SettingsBuilder.build(self.class.commands.dup)
     end
 
     # @param configurations [Proc]

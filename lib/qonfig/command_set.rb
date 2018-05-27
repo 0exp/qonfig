@@ -45,6 +45,14 @@ module Qonfig
       thread_safe { commands.concat(command_set.commands) }
     end
 
+    # @return [Qonfig::CommandSet]
+    #
+    # @api private
+    # @since 0.2.0
+    def dup
+      thread_safe { self.class.new.concat(self) }
+    end
+
     private
 
     # @param block [Proc]
