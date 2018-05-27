@@ -21,6 +21,13 @@ describe 'Load from YAML' do
           Pathname.new(__FILE__).realpath
         )
       end
+
+      setting 'with_erb' do
+        load_from_yaml File.expand_path(
+          File.join('..', '..', 'fixtures', 'with_erb_instructions.yml'),
+          Pathname.new(__FILE__).realpath
+        )
+      end
     end
 
     CISettings.new.settings.tap do |conf|
@@ -42,6 +49,11 @@ describe 'Load from YAML' do
       expect(conf['rubocop']['AllCops']['Include']).to contain_exactly('lib/**/*', 'spec/**/*')
       expect(conf['rubocop']['AllCops']['Exclude']).to contain_exactly('bin/**/*', 'Gemfile')
       expect(conf['rubocop']['Metrics/LineLength']['Max']).to eq(100)
+
+      # with_erb_instructions.yml
+      expect(conf['with_erb']['user']).to eq('D@iVeR')
+      expect(conf['with_erb']['max_auth_count']).to eq(2)
+      expect(conf['with_erb']['ruby_version']).to eq(RUBY_VERSION)
     end
   end
 
