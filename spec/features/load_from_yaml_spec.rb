@@ -4,7 +4,7 @@ describe 'Load from YAML' do
   specify 'defines config object by yaml instructions' do
     class CISettings < Qonfig::DataSet
       load_from_yaml File.expand_path(
-        File.join('..', '..', 'fixtures', 'shared_settings.yml'),
+        File.join('..', '..', 'fixtures', 'shared_settings_with_aliases.yml'),
         Pathname.new(__FILE__).realpath
       )
 
@@ -21,20 +21,39 @@ describe 'Load from YAML' do
           Pathname.new(__FILE__).realpath
         )
       end
+
+      setting 'with_erb' do
+        load_from_yaml File.expand_path(
+          File.join('..', '..', 'fixtures', 'with_erb_instructions.yml'),
+          Pathname.new(__FILE__).realpath
+        )
+      end
     end
 
     CISettings.new.settings.tap do |conf|
+      # shared_settings_with_aliases.yml
       expect(conf.enable_api).to eq(false)
       expect(conf.run_sidekiq).to eq(true)
+      expect(conf.default.test).to eq(true)
+      expect(conf.default.engine).to eq('rspec')
+      expect(conf.staging.test).to eq(true)
+      expect(conf.staging.engine).to eq('minitest')
 
+      # travis_settings.yml
       expect(conf.travis.language).to eq('ruby')
       expect(conf.travis.rvm).to contain_exactly('2.5.1', 'ruby-head', 'jruby-head')
       expect(conf.travis.sudo).to eq(false)
 
+      # rubocop_settings.yml
       expect(conf['rubocop']['require']).to eq('rubocop-rspec')
       expect(conf['rubocop']['AllCops']['Include']).to contain_exactly('lib/**/*', 'spec/**/*')
       expect(conf['rubocop']['AllCops']['Exclude']).to contain_exactly('bin/**/*', 'Gemfile')
       expect(conf['rubocop']['Metrics/LineLength']['Max']).to eq(100)
+
+      # with_erb_instructions.yml
+      expect(conf['with_erb']['user']).to eq('D@iVeR')
+      expect(conf['with_erb']['max_auth_count']).to eq(2)
+      expect(conf['with_erb']['ruby_version']).to eq(RUBY_VERSION)
     end
   end
 

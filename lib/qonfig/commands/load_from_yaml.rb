@@ -26,7 +26,7 @@ module Qonfig
       # @api private
       # @since 0.2.0
       def call(settings)
-        yaml_data = Psych.load_file(file_path)
+        yaml_data = Qonfig::Loaders::YAML.load_file(file_path)
 
         unless yaml_data.is_a?(Hash)
           raise Qonfig::IncompatibleYAMLError, 'YAML file should have a hash-like structure'

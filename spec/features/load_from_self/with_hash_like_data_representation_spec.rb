@@ -11,15 +11,25 @@ describe 'Load from self (hash-like __END__ data representation)' do
     end
 
     SelfDefinedConfig.new.settings.tap do |conf|
+      # access via method
       expect(conf.secret_key).to eq('top-mega-secret')
       expect(conf.api_host).to eq('super.puper-google.com')
       expect(conf.connection_timeout.seconds).to eq(10)
       expect(conf.connection_timeout.enabled).to eq(false)
+      expect(conf.defaults.port).to eq(12345)
+      expect(conf.defaults.host).to eq('localhost')
+      expect(conf.staging.port).to eq(12345)
+      expect(conf.staging.host).to eq('google.kek')
 
+      # access via index
       expect(conf['secret_key']).to eq('top-mega-secret')
       expect(conf['api_host']).to eq('super.puper-google.com')
       expect(conf[:connection_timeout]['seconds']).to eq(10)
       expect(conf[:connection_timeout]['enabled']).to eq(false)
+      expect(conf['defaults']['port']).to eq(12345)
+      expect(conf['defaults']['host']).to eq('localhost')
+      expect(conf['staging']['port']).to eq(12345)
+      expect(conf['staging']['host']).to eq('google.kek')
 
       expect(conf.with_nesting.secret_key).to eq('top-mega-secret')
       expect(conf.with_nesting.api_host).to eq('super.puper-google.com')
@@ -35,6 +45,14 @@ describe 'Load from self (hash-like __END__ data representation)' do
 end
 
 __END__
+
+defaults: &defaults
+  port: 12345
+  host: 'localhost'
+
+staging:
+  <<: *defaults
+  host: 'google.kek'
 
 secret_key: top-mega-secret
 api_host: super.puper-google.com
