@@ -14,8 +14,10 @@ module Qonfig
     # @since 0.1.0
     def initialize
       @__options__ = {}
+
       @__definition_lock__ = Mutex.new
       @__access_lock__ = Mutex.new
+      @__merge_lock__ = Mutex.new
     end
 
     # @param key [Symbol, String]
@@ -26,22 +28,24 @@ module Qonfig
     # @api private
     # @since 0.1.0
     def __define_setting__(key, value)
-      # :nocov:
-      unless key.is_a?(Symbol) || key.is_a?(String)
-        raise Qonfig::ArgumentError, 'Setting key should be a symbol or a string'
-      end
-      # :nocov:
+      __thread_safe_definition__ do
+        # :nocov:
+        unless key.is_a?(Symbol) || key.is_a?(String)
+          raise Qonfig::ArgumentError, 'Setting key should be a symbol or a string'
+        end
+        # :nocov:
 
-      case
-      when !__options__.key?(key)
-        __options__[key] = value
-      when __options__[key].is_a?(Qonfig::Settings) && value.is_a?(Qonfig::Settings)
-        __options__[key].__append_settings__(value)
-      else
-        __options__[key] = value
-      end
+        case
+        when !__options__.key?(key)
+          __options__[key] = value
+        when __options__[key].is_a?(Qonfig::Settings) && value.is_a?(Qonfig::Settings)
+          __options__[key].__append_settings__(value)
+        else
+          __options__[key] = value
+        end
 
-      __define_accessor__(key)
+        __define_accessor__(key)
+      end
     end
 
     # @param settings [Qonfig::Settings]
@@ -50,8 +54,10 @@ module Qonfig
     # @api private
     # @since 0.1.0
     def __append_settings__(settings)
-      settings.__options__.each_pair do |key, value|
-        __define_setting__(key, value)
+      __thread_safe_merge__ do
+        settings.__options__.each_pair do |key, value|
+          __define_setting__(key, value)
+        end
       end
     end
 
@@ -62,11 +68,13 @@ module Qonfig
     # @api public
     # @since 0.1.0
     def [](key)
-      unless __options__.key?(key)
-        raise Qonfig::UnknownSettingError, "Setting with <#{key}> key does not exist!"
-      end
+      __thread_safe_access__ do
+        unless __options__.key?(key)
+          raise Qonfig::UnknownSettingError, "Setting with <#{key}> key does not exist!"
+        end
 
-      __options__[key]
+        __options__[key]
+      end
     end
 
     # @param key [String, Symbol]
@@ -78,15 +86,17 @@ module Qonfig
     # @api public
     # @since 0.1.0
     def []=(key, value)
-      unless __options__.key?(key)
-        raise Qonfig::UnknownSettingError, "Setting with <#{key}> key does not exist!"
-      end
+      __thread_safe_access__ do
+        unless __options__.key?(key)
+          raise Qonfig::UnknownSettingError, "Setting with <#{key}> key does not exist!"
+        end
 
-      if __options__.frozen?
-        raise Qonfig::FrozenSettingsError, 'Can not modify frozen settings'
-      end
+        if __options__.frozen?
+          raise Qonfig::FrozenSettingsError, 'Can not modify frozen settings'
+        end
 
-      __options__[key] = value
+        __options__[key] = value
+      end
     end
 
     # @return [Hash]
@@ -94,7 +104,7 @@ module Qonfig
     # @api public
     # @since 0.1.0
     def __to_hash__
-      __build_hash_representation__
+      __thread_safe_access__ { __build_hash_representation__ }
     end
 
     # @param method_name [String, Symbol]
@@ -126,10 +136,12 @@ module Qonfig
     # @api private
     # @since 0.1.0
     def __freeze__
-      __options__.freeze
+      __thread_safe_access__ do
+        __options__.freeze
 
-      __options__.each_value do |value|
-        value.__freeze__ if value.is_a?(Qonfig::Settings)
+        __options__.each_value do |value|
+          value.__freeze__ if value.is_a?(Qonfig::Settings)
+        end
       end
     end
 
@@ -138,7 +150,7 @@ module Qonfig
     # @api private
     # @since 0.2.0
     def __is_frozen__
-      __options__.frozen?
+      __thread_safe_access__ { __options__.frozen? }
     end
 
     private
@@ -199,6 +211,15 @@ module Qonfig
     # @since 0.2.0
     def __thread_safe_access__(&__instructions__)
       @__access_lock__.synchronize(&__instructions__)
+    end
+
+    # @param __instructions__ [Proc]
+    # @return [Object]
+    #
+    # @api private
+    # @since 0.2.0
+    def __thread_safe_merge__(&__instructions__)
+      @__merge_lock__.synchronize(&__instructions__)
     end
   end
 end
