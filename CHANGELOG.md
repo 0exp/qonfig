@@ -6,10 +6,11 @@ All notable changes to this project will be documented in this file.
 - Instant configuration via block `config = Config.new { |conf| <<your configuration code>> }`;
 - `.load_from_yaml` command - an ability to define config settings by loading them from a yaml file;
 - `.load_from_self` command - an ability to load config definitions form the YAML
-  instructions written in the file where the config class is defined;
+  instructions written in the file where the config class is defined (`__END__` section);
 - `#reload!` - an ability to reload config isntance after any config class changes and updates;
 - Support for ERB instructions in YAML;
-- Thread-safe implementation;
+- Support for `HashWithIndifferentAccess`-like behaviour;
+- Refactoring: thread-safe implementation;
 
 ### Changed
 - Superclass of `Qonfig::FrozenSettingsError` (it was `Qonfig::Error` before):

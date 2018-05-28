@@ -28,7 +28,7 @@ require 'qonfig'
 - [Hash representation](#hash-representation)
 - [State freeze](#state-freeze)
 - [Reload](#reload)
-- [Load from YAML](#load-from-yaml)
+- [Load from YAML file](#load-from-yaml-file)
 - [Load from self](#load-from-self)
 
 ---
@@ -57,6 +57,7 @@ end
 
 config = Config.new
 
+# get option value via method
 config.settings.project_id # => nil
 config.settings.vendor_api.host # => 'app.service.com'
 config.settings.vendor_api.port # => 12345
@@ -64,12 +65,27 @@ config.settings.vendor_api.user # => 'test_user'
 config.settings.vendor_api.password # => 'test_password'
 config.settings.enable_graphql # => false
 
+# get option value via index (with indifferent access)
 config.settings[:project_id] # => nil
 config.settings[:vendor_api][:host] # => 'app.service.com'
 config.settings[:vendor_api][:port] # => 12345
 config.settings[:vendor_api][:user] # => 'test_user'
 config.settings[:vendor_api][:password] # => 'test_password'
 config.settings[:enable_graphql] # => false
+
+# get option value via index (with indifferent access)
+config.settings['project_id'] # => nil
+config.settings['vendor_api']['host'] # => 'app.service.com'
+config.settings['vendor_api']['port'] # => 12345
+config.settings['vendor_api']['user'] # => 'test_user'
+config.settings['vendor_api']['password'] # => 'test_password'
+config.settings['enable_graphql'] # => false
+
+# get option value directly via index (with indifferent access)
+config['project_id'] # => nil
+config['enable_graphql'] # => false
+config[:project_id] # => nil
+config[:enable_graphql] # => false
 ```
 
 ---
@@ -210,12 +226,12 @@ end
 Config.new.to_h
 
 {
-  serializers: {
-    json: { engine: :ok },
-    hash: { engine: :native },
+  "serializers": {
+    "json" => { "engine" => :ok },
+    "hash" => { "engine" => :native },
   },
-  adapter: { default: :memory_sync },
-  logger: #<Logger:0x4b0d79fc>
+  "adapter" => { "default" => :memory_sync },
+  "logger" => #<Logger:0x4b0d79fc>
 }
 ```
 
@@ -260,9 +276,9 @@ config.reload! do |conf|
   conf.enable_api = true # changed instantly
 end
 
-conf.settings.db.adapter # => 'mongoid'
-conf.settings.logger = # => #<Logger:0x00007ff9>
-config.enable_api # => true # value from instant change
+config.settings.db.adapter # => 'mongoid'
+config.settings.logger = # => #<Logger:0x00007ff9>
+config.settings.enable_api # => true # value from instant change
 ```
 
 ---
@@ -290,7 +306,7 @@ config.reload! # => Qonfig::FrozenSettingsError
 
 ---
 
-### Load from YAML
+### Load from YAML file
 
 ```yaml
 <!-- travis.yml -->
