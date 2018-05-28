@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
   instructions written in the file where the config class is defined;
 - `#reload!` - an ability to reload config isntance after any config class changes and updates;
 - Support for ERB instructions in YAML;
+- Thread-safe implementation;
 
 ### Changed
 - Superclass of `Qonfig::FrozenSettingsError` (it was `Qonfig::Error` before):

@@ -14,7 +14,7 @@ module Qonfig
       # @param caller_location [String]
       #
       # @api private
-      # @sicne 0.2.0
+      # @since 0.2.0
       def initialize(caller_location)
         @caller_location = caller_location
       end

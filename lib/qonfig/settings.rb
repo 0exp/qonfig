@@ -14,6 +14,7 @@ module Qonfig
     # @since 0.1.0
     def initialize
       @__options__ = {}
+      @__lock__ = Lock.new
     end
 
     # @param key [Symbol, String]
@@ -24,22 +25,24 @@ module Qonfig
     # @api private
     # @since 0.1.0
     def __define_setting__(key, value)
-      # :nocov:
-      unless key.is_a?(Symbol) || key.is_a?(String)
-        raise Qonfig::ArgumentError, 'Setting key should be a symbol or a string'
-      end
-      # :nocov:
+      __lock__.thread_safe_definition do
+        # :nocov:
+        unless key.is_a?(Symbol) || key.is_a?(String)
+          raise Qonfig::ArgumentError, 'Setting key should be a symbol or a string'
+        end
+        # :nocov:
 
-      case
-      when !__options__.key?(key)
-        __options__[key] = value
-      when __options__[key].is_a?(Qonfig::Settings) && value.is_a?(Qonfig::Settings)
-        __options__[key].__append_settings__(value)
-      else
-        __options__[key] = value
-      end
+        case
+        when !__options__.key?(key)
+          __options__[key] = value
+        when __options__[key].is_a?(Qonfig::Settings) && value.is_a?(Qonfig::Settings)
+          __options__[key].__append_settings__(value)
+        else
+          __options__[key] = value
+        end
 
-      __define_accessor__(key)
+        __define_accessor__(key)
+      end
     end
 
     # @param settings [Qonfig::Settings]
@@ -48,8 +51,10 @@ module Qonfig
     # @api private
     # @since 0.1.0
     def __append_settings__(settings)
-      settings.__options__.each_pair do |key, value|
-        __define_setting__(key, value)
+      __lock__.thread_safe_merge do
+        settings.__options__.each_pair do |key, value|
+          __define_setting__(key, value)
+        end
       end
     end
 
@@ -60,11 +65,13 @@ module Qonfig
     # @api public
     # @since 0.1.0
     def [](key)
-      unless __options__.key?(key)
-        raise Qonfig::UnknownSettingError, "Setting with <#{key}> key does not exist!"
-      end
+      __lock__.thread_safe_access do
+        unless __options__.key?(key)
+          raise Qonfig::UnknownSettingError, "Setting with <#{key}> key does not exist!"
+        end
 
-      __options__[key]
+        __options__[key]
+      end
     end
 
     # @param key [String, Symbol]
@@ -76,15 +83,17 @@ module Qonfig
     # @api public
     # @since 0.1.0
     def []=(key, value)
-      unless __options__.key?(key)
-        raise Qonfig::UnknownSettingError, "Setting with <#{key}> key does not exist!"
-      end
+      __lock__.thread_safe_access do
+        unless __options__.key?(key)
+          raise Qonfig::UnknownSettingError, "Setting with <#{key}> key does not exist!"
+        end
 
-      if __options__.frozen?
-        raise Qonfig::FrozenSettingsError, 'Can not modify frozen settings'
-      end
+        if __options__.frozen?
+          raise Qonfig::FrozenSettingsError, 'Can not modify frozen settings'
+        end
 
-      __options__[key] = value
+        __options__[key] = value
+      end
     end
 
     # @return [Hash]
@@ -92,7 +101,7 @@ module Qonfig
     # @api public
     # @since 0.1.0
     def __to_hash__
-      __build_hash_representation__
+      __lock__.thread_safe_access { __build_hash_representation__ }
     end
 
     # @param method_name [String, Symbol]
@@ -124,10 +133,12 @@ module Qonfig
     # @api private
     # @since 0.1.0
     def __freeze__
-      __options__.freeze
+      __lock__.thread_safe_access do
+        __options__.freeze
 
-      __options__.each_value do |value|
-        value.__freeze__ if value.is_a?(Qonfig::Settings)
+        __options__.each_value do |value|
+          value.__freeze__ if value.is_a?(Qonfig::Settings)
+        end
       end
     end
 
@@ -136,10 +147,16 @@ module Qonfig
     # @api private
     # @since 0.2.0
     def __is_frozen__
-      __options__.frozen?
+      __lock__.thread_safe_access { __options__.frozen? }
     end
 
     private
+
+    # @return [Qonfig::Settings::Lock]
+    #
+    # @api private
+    # @since 0.2.0
+    attr_reader :__lock__
 
     # @param options_part [Hash]
     # @return [Hash]

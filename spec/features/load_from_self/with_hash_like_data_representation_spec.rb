@@ -16,9 +16,9 @@ describe 'Load from self (hash-like __END__ data representation)' do
       expect(conf.api_host).to eq('super.puper-google.com')
       expect(conf.connection_timeout.seconds).to eq(10)
       expect(conf.connection_timeout.enabled).to eq(false)
-      expect(conf.defaults.port).to eq(12345)
+      expect(conf.defaults.port).to eq(12_345)
       expect(conf.defaults.host).to eq('localhost')
-      expect(conf.staging.port).to eq(12345)
+      expect(conf.staging.port).to eq(12_345)
       expect(conf.staging.host).to eq('google.kek')
 
       # access via index
@@ -26,9 +26,9 @@ describe 'Load from self (hash-like __END__ data representation)' do
       expect(conf['api_host']).to eq('super.puper-google.com')
       expect(conf[:connection_timeout]['seconds']).to eq(10)
       expect(conf[:connection_timeout]['enabled']).to eq(false)
-      expect(conf['defaults']['port']).to eq(12345)
+      expect(conf['defaults']['port']).to eq(12_345)
       expect(conf['defaults']['host']).to eq('localhost')
-      expect(conf['staging']['port']).to eq(12345)
+      expect(conf['staging']['port']).to eq(12_345)
       expect(conf['staging']['host']).to eq('google.kek')
 
       expect(conf.with_nesting.secret_key).to eq('top-mega-secret')

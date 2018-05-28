@@ -18,7 +18,10 @@ module Qonfig
     # @api public
     # @since 0.1.0
     def initialize(&configurations)
-      load!(&configurations)
+      @__access_lock__ = Mutex.new
+      @__definition_lock__ = Mutex.new
+
+      thread_safe_definition { load!(&configurations) }
     end
 
     # @return [void]
@@ -26,7 +29,7 @@ module Qonfig
     # @api public
     # @since 0.1.0
     def freeze!
-      settings.__freeze__
+      thread_safe_access { settings.__freeze__ }
     end
 
     # @return [void]
@@ -34,7 +37,7 @@ module Qonfig
     # @api public
     # @since 0.2.0
     def frozen?
-      settings.__is_frozen__
+      thread_safe_access { settings.__is_frozen__ }
     end
 
     # @param configurations [Proc]
@@ -43,8 +46,10 @@ module Qonfig
     # @api public
     # @since 0.2.0
     def reload!(&configurations)
-      raise Qonfig::FrozenSettingsError, 'Frozen config can not be reloaded' if frozen?
-      load!(&configurations)
+      thread_safe_definition do
+        raise Qonfig::FrozenSettingsError, 'Frozen config can not be reloaded' if frozen?
+        load!(&configurations)
+      end
     end
 
     # @return [void]
@@ -52,7 +57,7 @@ module Qonfig
     # @api public
     # @since 0.1.0
     def configure
-      yield(settings) if block_given?
+      thread_safe_access { yield(settings) if block_given? }
     end
 
     # @return [Hash]
@@ -60,7 +65,7 @@ module Qonfig
     # @api public
     # @since 0.1.0
     def to_h
-      settings.__to_hash__
+      thread_safe_access { settings.__to_hash__ }
     end
     alias_method :to_hash, :to_h
 
@@ -71,7 +76,7 @@ module Qonfig
     # @api private
     # @since 0.2.0
     def build_settings
-      Qonfig::SettingsBuilder.build(self.class.commands)
+      Qonfig::SettingsBuilder.build(self.class.commands.dup)
     end
 
     # @param configurations [Proc]
@@ -82,6 +87,24 @@ module Qonfig
     def load!(&configurations)
       @settings = build_settings
       configure(&configurations) if block_given?
+    end
+
+    # @param instructions [Proc]
+    # @return [Object]
+    #
+    # @api public
+    # @since 0.2.0
+    def thread_safe_access(&instructions)
+      @__access_lock__.synchronize(&instructions)
+    end
+
+    # @param instructions [Proc]
+    # @return [Object]
+    #
+    # @api public
+    # @since 0.2.0
+    def thread_safe_definition(&instructions)
+      @__definition_lock__.synchronize(&instructions)
     end
   end
 end

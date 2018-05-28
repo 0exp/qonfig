@@ -22,7 +22,7 @@ module Qonfig
   #
   # @api public
   # @since 0.1.0
-  FrozenSettingsError = begin
+  FrozenSettingsError = begin # rubocop:disable Naming/ConstantName
     # :nocov:
     if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.5.0')
       Class.new(::FrozenError)
