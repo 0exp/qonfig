@@ -10,7 +10,7 @@ All notable changes to this project will be documented in this file.
 - `#reload!` - an ability to reload config isntance after any config class changes and updates;
 - Support for ERB instructions in YAML;
 - Support for `HashWithIndifferentAccess`-like behaviour;
-- Refactoring: thread-safe implementation;
+- Full thread-safe implementation;
 
 ### Changed
 - Superclass of `Qonfig::FrozenSettingsError` (it was `Qonfig::Error` before):
@@ -19,6 +19,8 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Recoursive hash representation with deep nested `Qonfig::Settings` values (infinite loop);
+- Fixed re-assigning of options with nested options (losing the nested options
+  due to the instance configuration). Now it causes `Qonfig::AmbigousSettingValueError`.
 
 ## [0.1.0] - 2018-05-18
 - Release :)
