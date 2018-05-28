@@ -26,12 +26,6 @@ module Qonfig
     # @since 0.1.0
     def __define_setting__(key, value)
       __lock__.thread_safe_definition do
-        # :nocov:
-        unless key.is_a?(Symbol) || key.is_a?(String)
-          raise Qonfig::ArgumentError, 'Setting key should be a symbol or a string'
-        end
-        # :nocov:
-
         key = __indifferently_accessable_option_key__(key)
 
         case
@@ -211,6 +205,12 @@ module Qonfig
     # @api private
     # @since 0.2.0
     def __indifferently_accessable_option_key__(key)
+      # :nocov:
+      unless key.is_a?(Symbol) || key.is_a?(String)
+        raise Qonfig::ArgumentError, 'Setting key should be a symbol or a string'
+      end
+      # :nocov:
+
       key.to_s
     end
   end

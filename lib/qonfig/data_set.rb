@@ -79,6 +79,7 @@ module Qonfig
     end
 
     # @param setting_key [String, Symbol]
+    # @param setting_value [Object]
     # @return [Object]
     #
     # @api private
