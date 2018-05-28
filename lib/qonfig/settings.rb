@@ -92,6 +92,10 @@ module Qonfig
           raise Qonfig::FrozenSettingsError, 'Can not modify frozen settings'
         end
 
+        if __options__[key].is_a?(Qonfig::Settings)
+          raise Qonfig::AmbiguousSettingValueError, 'Can not redefine option with nested options'
+        end
+
         __options__[key] = value
       end
     end
@@ -183,20 +187,13 @@ module Qonfig
     # @api private
     # @since 0.1.0
     def __define_accessor__(key)
-      begin
-        singleton_class.send(:undef_method, key)
-      rescue NameError
+      define_singleton_method(key) do
+        self.[](key)
       end
 
-      begin
-        singleton_class.send(:undef_method, "#{key}=")
-      rescue NameError
-      end
-
-      define_singleton_method(key) { self.[](key) }
       define_singleton_method("#{key}=") do |value|
         self.[]=(key, value)
-      end unless __options__[key].is_a?(Qonfig::Settings)
+      end
     end
 
     # @param key [Symbol, String]

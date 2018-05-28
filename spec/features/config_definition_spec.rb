@@ -245,4 +245,30 @@ describe 'Config definition' do
     expect(config['database'][:hostname]).to eq('google.com')
     expect(config[:database]['hostname']).to eq('google.com')
   end
+
+  specify 'causes an error when assigning a setting value to an option with nested options' do
+    class WithNestedOptionsConfig < Qonfig::DataSet
+      setting :database do
+        setting :hostname, 'localhost'
+      end
+    end
+
+    config = WithNestedOptionsConfig.new
+
+    expect do
+      config.configure { |conf| conf.database = double }
+    end.to raise_error(Qonfig::AmbiguousSettingValueError)
+
+    expect do
+      config.configure { |conf| conf[:database] = double }
+    end.to raise_error(Qonfig::AmbiguousSettingValueError)
+
+    expect do
+      config.configure { |conf| conf[:database][:hostname] = double}
+    end.not_to raise_error
+
+    expect do
+      config.configure { |conf| conf.database.hostname = double }
+    end.not_to raise_error
+  end
 end
