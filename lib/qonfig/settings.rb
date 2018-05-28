@@ -32,6 +32,8 @@ module Qonfig
         end
         # :nocov:
 
+        key = __indifferently_accessable_option_key__(key)
+
         case
         when !__options__.key?(key)
           __options__[key] = value
@@ -66,6 +68,8 @@ module Qonfig
     # @since 0.1.0
     def [](key)
       __lock__.thread_safe_access do
+        key = __indifferently_accessable_option_key__(key)
+
         unless __options__.key?(key)
           raise Qonfig::UnknownSettingError, "Setting with <#{key}> key does not exist!"
         end
@@ -84,6 +88,8 @@ module Qonfig
     # @since 0.1.0
     def []=(key, value)
       __lock__.thread_safe_access do
+        key = __indifferently_accessable_option_key__(key)
+
         unless __options__.key?(key)
           raise Qonfig::UnknownSettingError, "Setting with <#{key}> key does not exist!"
         end
@@ -103,6 +109,7 @@ module Qonfig
     def __to_hash__
       __lock__.thread_safe_access { __build_hash_representation__ }
     end
+    alias_method :__to_h__, :__to_hash__
 
     # @param method_name [String, Symbol]
     # @param arguments [Array<Object>]
@@ -196,6 +203,15 @@ module Qonfig
       define_singleton_method("#{key}=") do |value|
         self.[]=(key, value)
       end unless __options__[key].is_a?(Qonfig::Settings)
+    end
+
+    # @param key [Symbol, String]
+    # @return [String]
+    #
+    # @api private
+    # @since 0.2.0
+    def __indifferently_accessable_option_key__(key)
+      key.to_s
     end
   end
 end

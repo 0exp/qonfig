@@ -74,19 +74,27 @@ describe 'Composition' do
 
     # hash representation
     expect(config.to_h).to match(
-      db: {
-        username: 'kek',
-        password: 'pek',
-        connection: { address: 'google.com', port: 12_345 }
+      'db' => {
+        'username' => 'kek',
+        'password' => 'pek',
+        'connection' => {
+          'address' => 'google.com',
+          'port' => 12_345
+        }
       },
-      port: 8080,
-      host: '0.0.0.0',
-      enable_middlewares: true,
-      limits: { withdraw: 1_000_000, deposit: 3_000_000 },
-      api: {
-        version: '0.1.0',
-        header: 'app.vendor',
-        strategy: { format: :json }
+      'port' => 8080,
+      'host' => '0.0.0.0',
+      'enable_middlewares' => true,
+      'limits' => {
+        'withdraw' => 1_000_000,
+        'deposit' => 3_000_000
+      },
+      'api' => {
+        'version' => '0.1.0',
+        'header' => 'app.vendor',
+        'strategy' => {
+          'format' => :json
+        }
       }
     )
 
@@ -135,19 +143,27 @@ describe 'Composition' do
     end
 
     expect(config.to_h).to match(
-      db: {
-        username: 'che',
-        password: 'burek',
-        connection: { address: 'db.google.com', port: 666 }
+      'db' => {
+        'username' => 'che',
+        'password' => 'burek',
+        'connection' => {
+          'address' => 'db.google.com',
+          'port' => 666
+        }
       },
-      port: 8081,
-      host: 'app.google.com',
-      enable_middlewares: false,
-      limits: { withdraw: 0, deposit: 1_000 },
-      api: {
-        version: '0.2.0',
-        header: 'app.super.vendor',
-        strategy: { format: :xml }
+      'port' => 8081,
+      'host' => 'app.google.com',
+      'enable_middlewares' => false,
+      'limits' => {
+        'withdraw' => 0,
+        'deposit' => 1_000
+      },
+      'api' => {
+        'version' => '0.2.0',
+        'header' => 'app.super.vendor',
+        'strategy' => {
+          'format' => :xml
+        }
       }
     )
   end

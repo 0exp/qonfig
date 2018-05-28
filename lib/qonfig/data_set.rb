@@ -69,6 +69,24 @@ module Qonfig
     end
     alias_method :to_hash, :to_h
 
+    # @param setting_key [String, Symbol]
+    # @return [Object]
+    #
+    # @api private
+    # @since 0.2.0
+    def [](setting_key)
+      thread_safe_access { settings[setting_key] }
+    end
+
+    # @param setting_key [String, Symbol]
+    # @return [Object]
+    #
+    # @api private
+    # @since 0.2.0
+    def []=(setting_key, setting_value)
+      thread_safe_access { settings[setting_key] = setting_value }
+    end
+
     private
 
     # @return [Qonfig::Settings]
