@@ -78,16 +78,6 @@ module Qonfig
       thread_safe_access { settings[setting_key] }
     end
 
-    # @param setting_key [String, Symbol]
-    # @param setting_value [Object]
-    # @return [Object]
-    #
-    # @api private
-    # @since 0.2.0
-    def []=(setting_key, setting_value)
-      thread_safe_access { settings[setting_key] = setting_value }
-    end
-
     private
 
     # @return [Qonfig::Settings]
