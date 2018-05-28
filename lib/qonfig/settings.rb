@@ -14,10 +14,7 @@ module Qonfig
     # @since 0.1.0
     def initialize
       @__options__ = {}
-
-      @__definition_lock__ = Mutex.new
-      @__access_lock__ = Mutex.new
-      @__merge_lock__ = Mutex.new
+      @__lock__ = Lock.new
     end
 
     # @param key [Symbol, String]
@@ -28,7 +25,7 @@ module Qonfig
     # @api private
     # @since 0.1.0
     def __define_setting__(key, value)
-      __thread_safe_definition__ do
+      __lock__.thread_safe_definition do
         # :nocov:
         unless key.is_a?(Symbol) || key.is_a?(String)
           raise Qonfig::ArgumentError, 'Setting key should be a symbol or a string'
@@ -54,7 +51,7 @@ module Qonfig
     # @api private
     # @since 0.1.0
     def __append_settings__(settings)
-      __thread_safe_merge__ do
+      __lock__.thread_safe_merge do
         settings.__options__.each_pair do |key, value|
           __define_setting__(key, value)
         end
@@ -68,7 +65,7 @@ module Qonfig
     # @api public
     # @since 0.1.0
     def [](key)
-      __thread_safe_access__ do
+      __lock__.thread_safe_access do
         unless __options__.key?(key)
           raise Qonfig::UnknownSettingError, "Setting with <#{key}> key does not exist!"
         end
@@ -86,7 +83,7 @@ module Qonfig
     # @api public
     # @since 0.1.0
     def []=(key, value)
-      __thread_safe_access__ do
+      __lock__.thread_safe_access do
         unless __options__.key?(key)
           raise Qonfig::UnknownSettingError, "Setting with <#{key}> key does not exist!"
         end
@@ -104,7 +101,7 @@ module Qonfig
     # @api public
     # @since 0.1.0
     def __to_hash__
-      __thread_safe_access__ { __build_hash_representation__ }
+      __lock__.thread_safe_access { __build_hash_representation__ }
     end
 
     # @param method_name [String, Symbol]
@@ -136,7 +133,7 @@ module Qonfig
     # @api private
     # @since 0.1.0
     def __freeze__
-      __thread_safe_access__ do
+      __lock__.thread_safe_access do
         __options__.freeze
 
         __options__.each_value do |value|
@@ -150,10 +147,16 @@ module Qonfig
     # @api private
     # @since 0.2.0
     def __is_frozen__
-      __thread_safe_access__ { __options__.frozen? }
+      __lock__.thread_safe_access { __options__.frozen? }
     end
 
     private
+
+    # @return [Qonfig::Settings::Lock]
+    #
+    # @api private
+    # @since 0.2.0
+    attr_reader :__lock__
 
     # @param options_part [Hash]
     # @return [Hash]
@@ -193,33 +196,6 @@ module Qonfig
       define_singleton_method("#{key}=") do |value|
         self.[]=(key, value)
       end unless __options__[key].is_a?(Qonfig::Settings)
-    end
-
-    # @param __instructions__ [Proc]
-    # @return [Object]
-    #
-    # @api private
-    # @since 0.2.0
-    def __thread_safe_definition__(&__instructions__)
-      @__definition_lock__.synchronize(&__instructions__)
-    end
-
-    # @param __instructions__ [Proc]
-    # @return [Object]
-    #
-    # @api private
-    # @since 0.2.0
-    def __thread_safe_access__(&__instructions__)
-      @__access_lock__.synchronize(&__instructions__)
-    end
-
-    # @param __instructions__ [Proc]
-    # @return [Object]
-    #
-    # @api private
-    # @since 0.2.0
-    def __thread_safe_merge__(&__instructions__)
-      @__merge_lock__.synchronize(&__instructions__)
     end
   end
 end

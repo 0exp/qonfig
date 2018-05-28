@@ -71,4 +71,10 @@ RSpec/MultipleExpectations:
   Enabled: false
 
 Metrics/AbcSize:
-  Max: 17
+  Max: 19
+
+Lint/UnderscorePrefixedVariableName:
+  Enabled: false
+
+Security/YAMLLoad:
+  Enabled: false

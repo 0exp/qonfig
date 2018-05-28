@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.summary     = 'Config object'
   spec.description = 'Config. Defined as a class. Used as an instance. ' \
                      'Support for inheritance and composition. ' \
-                     'Command-style DSL. Lazy instantiation. Thread-safe.' \
+                     'Lazy instantiation. Thread-safe. Command-style DSL. ' \
                      'Extremely simple to define. Extremely simple to use. That\'s all.'
   spec.homepage    = 'https://github.com/0exp/qonfig'
   spec.license     = 'MIT'
