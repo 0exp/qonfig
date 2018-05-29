@@ -43,7 +43,6 @@ class Config < Qonfig::DataSet
   # nested setting
   setting :vendor_api do
     setting :host, 'app.service.com'
-    setting :port, 12345
   end
 
   setting :enable_graphql, false
@@ -51,7 +50,6 @@ class Config < Qonfig::DataSet
   # nested setting reopening
   setting :vendor_api do
     setting :user, 'test_user'
-    setting :password, 'test_password'
   end
 end
 
@@ -60,25 +58,19 @@ config = Config.new
 # get option value via method
 config.settings.project_id # => nil
 config.settings.vendor_api.host # => 'app.service.com'
-config.settings.vendor_api.port # => 12345
 config.settings.vendor_api.user # => 'test_user'
-config.settings.vendor_api.password # => 'test_password'
 config.settings.enable_graphql # => false
 
 # get option value via index (with indifferent access)
 config.settings[:project_id] # => nil
 config.settings[:vendor_api][:host] # => 'app.service.com'
-config.settings[:vendor_api][:port] # => 12345
 config.settings[:vendor_api][:user] # => 'test_user'
-config.settings[:vendor_api][:password] # => 'test_password'
 config.settings[:enable_graphql] # => false
 
 # get option value via index (with indifferent access)
 config.settings['project_id'] # => nil
 config.settings['vendor_api']['host'] # => 'app.service.com'
-config.settings['vendor_api']['port'] # => 12345
 config.settings['vendor_api']['user'] # => 'test_user'
-config.settings['vendor_api']['password'] # => 'test_password'
 config.settings['enable_graphql'] # => false
 
 # get option value directly via index (with indifferent access)
@@ -86,6 +78,10 @@ config['project_id'] # => nil
 config['enable_graphql'] # => false
 config[:project_id] # => nil
 config[:enable_graphql] # => false
+
+# get option value with Hash#dig manner (fails when the required key does not exist)
+config.dig(:vendor_api, :host) # => 'app.service.com' # (key exists)
+config.dig(:vendor_api, :port) # => Qonfig::UnknownSettingError # (key does not exist)
 ```
 
 ---

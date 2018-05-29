@@ -8,6 +8,8 @@ All notable changes to this project will be documented in this file.
 - `.load_from_self` command - an ability to load config definitions form the YAML
   instructions written in the file where the config class is defined (`__END__` section);
 - `#reload!` - an ability to reload config isntance after any config class changes and updates;
+- `#dig` - an ability to fetch setting values with `Hash#dig` manner
+  (fails with `Qonfig::UnknownSettingError`when the required key does not exist);
 - Support for ERB instructions in YAML;
 - Support for `HashWithIndifferentAccess`-like behaviour;
 - Full thread-safe implementation;
