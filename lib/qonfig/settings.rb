@@ -61,15 +61,7 @@ module Qonfig
     # @api public
     # @since 0.1.0
     def [](key)
-      __lock__.thread_safe_access do
-        key = __indifferently_accessable_option_key__(key)
-
-        unless __options__.key?(key)
-          raise Qonfig::UnknownSettingError, "Setting with <#{key}> key does not exist!"
-        end
-
-        __options__[key]
-      end
+      __lock__.thread_safe_access { __get_value__(key) }
     end
 
     # @param key [String, Symbol]
@@ -81,23 +73,16 @@ module Qonfig
     # @api public
     # @since 0.1.0
     def []=(key, value)
-      __lock__.thread_safe_access do
-        key = __indifferently_accessable_option_key__(key)
+      __lock__.thread_safe_access { __set_value__(key, value) }
+    end
 
-        unless __options__.key?(key)
-          raise Qonfig::UnknownSettingError, "Setting with <#{key}> key does not exist!"
-        end
-
-        if __options__.frozen?
-          raise Qonfig::FrozenSettingsError, 'Can not modify frozen settings'
-        end
-
-        if __options__[key].is_a?(Qonfig::Settings)
-          raise Qonfig::AmbiguousSettingValueError, 'Can not redefine option with nested options'
-        end
-
-        __options__[key] = value
-      end
+    # @param keys [Array<String, Symbol>]
+    # @return [Object]
+    #
+    # @api private
+    # @since 0.2.0
+    def __dig__(*keys)
+      __lock__.thread_safe_access { __deep_access__(*keys) }
     end
 
     # @return [Hash]
@@ -157,6 +142,67 @@ module Qonfig
 
     private
 
+    # @param key [String, Symbol]
+    # @return [Object]
+    #
+    # @api private
+    # @since 0.2.0
+    def __get_value__(key)
+      key = __indifferently_accessable_option_key__(key)
+
+      unless __options__.key?(key)
+        raise Qonfig::UnknownSettingError, "Setting with <#{key}> key does not exist!"
+      end
+
+      __options__[key]
+    end
+
+    # @param key [String, Symbol]
+    # @param value [Object]
+    # @return [void]
+    #
+    # @api private
+    # @since 0.2.0
+    def __set_value__(key, value)
+      key = __indifferently_accessable_option_key__(key)
+
+      unless __options__.key?(key)
+        raise Qonfig::UnknownSettingError, "Setting with <#{key}> key does not exist!"
+      end
+
+      if __options__.frozen?
+        raise Qonfig::FrozenSettingsError, 'Can not modify frozen settings'
+      end
+
+      if __options__[key].is_a?(Qonfig::Settings)
+        raise Qonfig::AmbiguousSettingValueError, 'Can not redefine option with nested options'
+      end
+
+      __options__[key] = value
+    end
+
+    # @param keys [Array<Symbol, String>]
+    # @param result [Object]
+    # @return [Object]
+    #
+    # @api private
+    # @since 0.2.0
+    def __deep_access__(*keys, result: nil)
+      raise Qonfig::ArgumentError, 'Key list can not be empty' if keys.empty?
+
+      result = __get_value__(keys.first)
+      rest_keys = Array(keys[1..-1])
+
+      case
+      when rest_keys.empty?
+        result
+      when !result.is_a?(Qonfig::Settings)
+        raise(Qonfig::UnknownSettingError, 'Setting with requred digging sequence does not exist!')
+      when result.is_a?(Qonfig::Settings)
+        result.__dig__(*rest_keys, result: result)
+      end
+    end
+
     # @return [Qonfig::Settings::Lock]
     #
     # @api private
@@ -207,6 +253,8 @@ module Qonfig
         raise Qonfig::ArgumentError, 'Setting key should be a symbol or a string'
       end
       # :nocov:
+
+      # TODO: defend from [] and []= key strings
 
       key.to_s
     end
