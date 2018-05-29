@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module Qonfig
+  # rubocop:disable Metrics/ClassLength
+
   # @api private
   # @since 0.1.0
   class Settings
@@ -187,7 +189,7 @@ module Qonfig
     #
     # @api private
     # @since 0.2.0
-    def __deep_access__(*keys, result: nil)
+    def __deep_access__(*keys)
       raise Qonfig::ArgumentError, 'Key list can not be empty' if keys.empty?
 
       result = __get_value__(keys.first)
@@ -199,7 +201,7 @@ module Qonfig
       when !result.is_a?(Qonfig::Settings)
         raise(Qonfig::UnknownSettingError, 'Setting with requred digging sequence does not exist!')
       when result.is_a?(Qonfig::Settings)
-        result.__dig__(*rest_keys, result: result)
+        result.__dig__(*rest_keys)
       end
     end
 
@@ -257,4 +259,6 @@ module Qonfig
       key.to_s
     end
   end
+
+  # rubocop:enable Metrics/ClassLength
 end

@@ -265,7 +265,7 @@ describe 'Config definition' do
     end.to raise_error(Qonfig::AmbiguousSettingValueError)
 
     expect do
-      config.configure { |conf| conf[:database][:hostname] = double}
+      config.configure { |conf| conf[:database][:hostname] = double }
     end.not_to raise_error
 
     expect do
@@ -279,7 +279,7 @@ describe 'Config definition' do
         setting :creds do
           setting :user, 'D@iVeR'
           setting :password, 'test123'
-          setting :data, { test: false }
+          setting :data, test: false
         end
       end
     end
@@ -298,9 +298,11 @@ describe 'Config definition' do
     # try to dig into the hash value (setting with a hash value)
     expect { config.dig(:db, :creds, :user, :test) }.to raise_error(Qonfig::UnknownSettingError)
 
+    # rubocop:disable Lint/UnneededSplatExpansion
     # dig with empty key lists
     expect { config.dig(*[]) }.to raise_error(Qonfig::ArgumentError)
     expect { config.dig }.to raise_error(Qonfig::ArgumentError)
+    # rubocop:enable Lint/UnneededSplatExpansion
 
     # dig into unexistent option
     expect do
