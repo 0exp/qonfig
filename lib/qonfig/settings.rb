@@ -234,7 +234,22 @@ module Qonfig
     #
     # @api private
     # @since 0.1.0
-    def __define_accessor__(key)
+    def __define_accessor__(key) # rubocop:disable Metrics/MethodLength
+      begin
+        singleton_class.send(:undef_method, key)
+      rescue NameError
+      end
+
+      begin
+        singleton_class.send(:undef_method, "#{key}=")
+      rescue NameError
+      end
+
+      begin
+        singleton_class.send(:undef_method, "#{key}?")
+      rescue NameError
+      end
+
       define_singleton_method(key) do
         self.[](key)
       end
@@ -242,6 +257,10 @@ module Qonfig
       define_singleton_method("#{key}=") do |value|
         self.[]=(key, value)
       end
+
+      define_singleton_method("#{key}?") do
+        !!self.[](key)
+      end unless __get_value__(key).is_a?(Qonfig::Settings)
     end
 
     # @param key [Symbol, String]

@@ -61,6 +61,9 @@ Lint/HandleExceptions:
 Metrics/MethodLength:
   Max: 20
 
+Style/DoubleNegation:
+  Enabled: false
+
 Style/EmptyCaseCondition:
   Enabled: false
 

@@ -23,6 +23,7 @@ require 'qonfig'
 
 - [Definition and Access](#definition-and-access)
 - [Configuration](#configuration)
+- [Settings as Predicates](#settings-as-predicates)
 - [Inheritance](#inheritance)
 - [Composition](#composition)
 - [Hash representation](#hash-representation)
@@ -127,6 +128,49 @@ config = Config.new do |conf|
   conf.geo_api.provider = :amazon_maps
   conf.testing.engine = :crypto_test
 end
+```
+
+---
+
+### Settings as Predicates
+
+- `nil` and `false` option values indicates `false`;
+- other option values indicates `true`;
+- parent options does not have the predicate form;
+
+```ruby
+class Config < Qonfig::DataSet
+  setting :database do
+    setting :user
+    setting :host, 'google.com'
+
+    setting :engine do
+      setting :driver, 'postgres'
+    end
+  end
+end
+
+config = Config.new
+
+# predicates
+config.settings.database.user? # => false (nil => false)
+config.settings.database.host? # => true ('google.com' => true)
+config.settings.database.engine.driver? # => true ('postgres' => true)
+
+# parent options does not have a predicate form
+config.settings.database? # => Qonfig::UnknownSettingError
+config.settings.database.engine? # => Qonfing::UnknownSettingError
+
+config.configure do |conf|
+  conf.database.user = '0exp'
+  conf.database.host = false
+  conf.database.engine.driver = true
+end
+
+# predicates
+config.settings.database.user? # => true ('0exp' => true)
+config.settings.database.host? # => false (false => false)
+config.settings.database.engine.driver # => true (true => true)
 ```
 
 ---
