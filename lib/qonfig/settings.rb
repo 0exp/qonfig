@@ -182,7 +182,7 @@ module Qonfig
     end
 
     # @param keys [Array<Symbol, String>]
-    # @param result [Object]
+    # @option result [Object]
     # @return [Object]
     #
     # @api private
@@ -253,8 +253,6 @@ module Qonfig
         raise Qonfig::ArgumentError, 'Setting key should be a symbol or a string'
       end
       # :nocov:
-
-      # TODO: defend from [] and []= key strings
 
       key.to_s
     end

@@ -8,8 +8,8 @@ All notable changes to this project will be documented in this file.
 - `.load_from_self` command - an ability to load config definitions form the YAML
   instructions written in the file where the config class is defined (`__END__` section);
 - `#reload!` - an ability to reload config isntance after any config class changes and updates;
-- `#dig` - an ability to fetch setting values with `Hash#dig` manner
-  (fails with `Qonfig::UnknownSettingError`when the required key does not exist);
+- `#dig` - an ability to fetch setting values in `Hash#dig` manner
+  (fails with `Qonfig::UnknownSettingError` when the required key does not exist);
 - Support for ERB instructions in YAML;
 - Support for `HashWithIndifferentAccess`-like behaviour;
 - Full thread-safe implementation;
@@ -21,7 +21,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Recoursive hash representation with deep nested `Qonfig::Settings` values (infinite loop);
-- Fixed re-assigning of options with nested options (losing the nested options
+- Fixed re-assignment of the options with nested options (losing the nested options
   due to the instance configuration). Now it causes `Qonfig::AmbigousSettingValueError`.
 
 ## [0.1.0] - 2018-05-18

@@ -246,7 +246,8 @@ describe 'Config definition' do
     expect(config[:database]['hostname']).to eq('google.com')
   end
 
-  specify 'causes an error when assigning a setting value to an option with nested options' do
+  specify 'causes an error when tries to assign a setting value to an option ' \
+          'which already have another nested options' do
     class WithNestedOptionsConfig < Qonfig::DataSet
       setting :database do
         setting :hostname, 'localhost'

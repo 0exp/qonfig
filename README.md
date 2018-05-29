@@ -29,7 +29,7 @@ require 'qonfig'
 - [State freeze](#state-freeze)
 - [Reload](#reload)
 - [Load from YAML file](#load-from-yaml-file)
-- [Load from self](#load-from-self)
+- [Load from self](#load-from-self) (aka load from \_\_END\_\_)
 
 ---
 
@@ -61,13 +61,13 @@ config.settings.vendor_api.host # => 'app.service.com'
 config.settings.vendor_api.user # => 'test_user'
 config.settings.enable_graphql # => false
 
-# get option value via index (with indifferent access)
+# get option value via index (with indifferent (string / symbol / mixed) access)
 config.settings[:project_id] # => nil
 config.settings[:vendor_api][:host] # => 'app.service.com'
 config.settings[:vendor_api][:user] # => 'test_user'
 config.settings[:enable_graphql] # => false
 
-# get option value via index (with indifferent access)
+# get option value via index (with indifferent (string / symbol / mixed) access)
 config.settings['project_id'] # => nil
 config.settings['vendor_api']['host'] # => 'app.service.com'
 config.settings['vendor_api']['user'] # => 'test_user'
@@ -79,7 +79,7 @@ config['enable_graphql'] # => false
 config[:project_id] # => nil
 config[:enable_graphql] # => false
 
-# get option value with Hash#dig manner (fails when the required key does not exist)
+# get option value in Hash#dig manner (and fail when the required key does not exist)
 config.dig(:vendor_api, :host) # => 'app.service.com' # (key exists)
 config.dig(:vendor_api, :port) # => Qonfig::UnknownSettingError # (key does not exist)
 ```
