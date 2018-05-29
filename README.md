@@ -134,9 +134,10 @@ end
 
 ### Settings as Predicates
 
-- `nil` and `false` option values indicates `false`;
-- other option values indicates `true`;
-- parent options does not have the predicate form;
+- predicate form: `?` at the end of setting name;
+- `nil` and `false` setting values indicates `false`;
+- other setting values indicates `true`;
+- setting roots does not have the predicate form;
 
 ```ruby
 class Config < Qonfig::DataSet
@@ -157,7 +158,7 @@ config.settings.database.user? # => false (nil => false)
 config.settings.database.host? # => true ('google.com' => true)
 config.settings.database.engine.driver? # => true ('postgres' => true)
 
-# parent options does not have a predicate form
+# setting roots does not have the predicate form
 config.settings.database? # => Qonfig::UnknownSettingError
 config.settings.database.engine? # => Qonfing::UnknownSettingError
 
@@ -170,7 +171,7 @@ end
 # predicates
 config.settings.database.user? # => true ('0exp' => true)
 config.settings.database.host? # => false (false => false)
-config.settings.database.engine.driver # => true (true => true)
+config.settings.database.engine.driver? # => true (true => true)
 ```
 
 ---

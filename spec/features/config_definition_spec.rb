@@ -331,7 +331,7 @@ describe 'Config definition' do
     expect(config.settings.database.user?).to eq(false)
     expect(config.settings.database.host?).to eq(true)
     expect(config.settings.enable_mocks?).to eq(true)
-    # parent options does not have the predicate form
+    # setting roots does not have the predicate form
     expect { config.settings.database? }.to raise_error(Qonfig::UnknownSettingError)
 
     # reconfigure and check again
@@ -345,7 +345,7 @@ describe 'Config definition' do
     expect(config.settings.database.user?).to eq(true)
     expect(config.settings.database.host?).to eq(false)
     expect(config.settings.enable_mocks?).to eq(false)
-    # parent options does not have the predicate form
+    # setting roots does not have the predicate form
     expect { config.settings.database? }.to raise_error(Qonfig::UnknownSettingError)
   end
 end
