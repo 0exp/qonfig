@@ -60,14 +60,14 @@ describe 'Inheritance' do
 
     # hash representation
     expect(client_config.to_h).to match(
-      google_api: {
-        client_token: 'client-test-google-api',
-        token: 'test-google-api'
+      'google_api' => {
+        'client_token' => 'client-test-google-api',
+        'token' => 'test-google-api'
       },
-      defaults: nil,
-      admin_access_required: false,
-      version: '0.1.0',
-      unkown_data: true
+      'defaults' => nil,
+      'admin_access_required' => false,
+      'version' => '0.1.0',
+      'unkown_data' => true
     )
 
     # reconfigure
@@ -97,14 +97,14 @@ describe 'Inheritance' do
     end
 
     expect(client_config.to_h).to match(
-      google_api: {
-        client_token: 'none',
-        token: 'anti-hype'
+      'google_api' => {
+        'client_token' => 'none',
+        'token' => 'anti-hype'
       },
-      defaults: { a: 1 },
-      admin_access_required: true,
-      version: '0.2.0',
-      unkown_data: nil
+      'defaults' => { a: 1 },
+      'admin_access_required' => true,
+      'version' => '0.2.0',
+      'unkown_data' => nil
     )
   end
 end

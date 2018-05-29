@@ -58,9 +58,11 @@ describe 'State freeze' do
     end
 
     expect(frozen_config.to_h).to match(
-      api_mode_enabled: true,
-      api: { format: :json },
-      additionals: false
+      'api_mode_enabled' => true,
+      'api' => {
+        'format' => :json
+      },
+      'additionals' => false
     )
   end
 end

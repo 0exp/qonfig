@@ -69,6 +69,24 @@ module Qonfig
     end
     alias_method :to_hash, :to_h
 
+    # @param setting_key [String, Symbol]
+    # @return [Object]
+    #
+    # @api public
+    # @since 0.2.0
+    def [](setting_key)
+      thread_safe_access { settings[setting_key] }
+    end
+
+    # @param keys [Array<String, Symbol>]
+    # @return [Object]
+    #
+    # @api public
+    # @since 0.2.0
+    def dig(*keys)
+      thread_safe_access { settings.__dig__(*keys) }
+    end
+
     private
 
     # @return [Qonfig::Settings]
@@ -82,7 +100,7 @@ module Qonfig
     # @param configurations [Proc]
     # @return [void]
     #
-    # @api public
+    # @api private
     # @since 0.2.0
     def load!(&configurations)
       @settings = build_settings
@@ -92,7 +110,7 @@ module Qonfig
     # @param instructions [Proc]
     # @return [Object]
     #
-    # @api public
+    # @api private
     # @since 0.2.0
     def thread_safe_access(&instructions)
       @__access_lock__.synchronize(&instructions)
@@ -101,7 +119,7 @@ module Qonfig
     # @param instructions [Proc]
     # @return [Object]
     #
-    # @api public
+    # @api private
     # @since 0.2.0
     def thread_safe_definition(&instructions)
       @__definition_lock__.synchronize(&instructions)

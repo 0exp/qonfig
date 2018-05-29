@@ -28,8 +28,8 @@ require 'qonfig'
 - [Hash representation](#hash-representation)
 - [State freeze](#state-freeze)
 - [Reload](#reload)
-- [Load from YAML](#load-from-yaml)
-- [Load from self](#load-from-self)
+- [Load from YAML file](#load-from-yaml-file)
+- [Load from self](#load-from-self) (aka load from \_\_END\_\_)
 
 ---
 
@@ -43,7 +43,6 @@ class Config < Qonfig::DataSet
   # nested setting
   setting :vendor_api do
     setting :host, 'app.service.com'
-    setting :port, 12345
   end
 
   setting :enable_graphql, false
@@ -51,25 +50,38 @@ class Config < Qonfig::DataSet
   # nested setting reopening
   setting :vendor_api do
     setting :user, 'test_user'
-    setting :password, 'test_password'
   end
 end
 
 config = Config.new
 
+# get option value via method
 config.settings.project_id # => nil
 config.settings.vendor_api.host # => 'app.service.com'
-config.settings.vendor_api.port # => 12345
 config.settings.vendor_api.user # => 'test_user'
-config.settings.vendor_api.password # => 'test_password'
 config.settings.enable_graphql # => false
 
+# get option value via index (with indifferent (string / symbol / mixed) access)
 config.settings[:project_id] # => nil
 config.settings[:vendor_api][:host] # => 'app.service.com'
-config.settings[:vendor_api][:port] # => 12345
 config.settings[:vendor_api][:user] # => 'test_user'
-config.settings[:vendor_api][:password] # => 'test_password'
 config.settings[:enable_graphql] # => false
+
+# get option value via index (with indifferent (string / symbol / mixed) access)
+config.settings['project_id'] # => nil
+config.settings['vendor_api']['host'] # => 'app.service.com'
+config.settings['vendor_api']['user'] # => 'test_user'
+config.settings['enable_graphql'] # => false
+
+# get option value directly via index (with indifferent access)
+config['project_id'] # => nil
+config['enable_graphql'] # => false
+config[:project_id] # => nil
+config[:enable_graphql] # => false
+
+# get option value in Hash#dig manner (and fail when the required key does not exist)
+config.dig(:vendor_api, :host) # => 'app.service.com' # (key exists)
+config.dig(:vendor_api, :port) # => Qonfig::UnknownSettingError # (key does not exist)
 ```
 
 ---
@@ -210,12 +222,12 @@ end
 Config.new.to_h
 
 {
-  serializers: {
-    json: { engine: :ok },
-    hash: { engine: :native },
+  "serializers": {
+    "json" => { "engine" => :ok },
+    "hash" => { "engine" => :native },
   },
-  adapter: { default: :memory_sync },
-  logger: #<Logger:0x4b0d79fc>
+  "adapter" => { "default" => :memory_sync },
+  "logger" => #<Logger:0x4b0d79fc>
 }
 ```
 
@@ -260,9 +272,9 @@ config.reload! do |conf|
   conf.enable_api = true # changed instantly
 end
 
-conf.settings.db.adapter # => 'mongoid'
-conf.settings.logger = # => #<Logger:0x00007ff9>
-config.enable_api # => true # value from instant change
+config.settings.db.adapter # => 'mongoid'
+config.settings.logger = # => #<Logger:0x00007ff9>
+config.settings.enable_api # => true # value from instant change
 ```
 
 ---
@@ -290,7 +302,7 @@ config.reload! # => Qonfig::FrozenSettingsError
 
 ---
 
-### Load from YAML
+### Load from YAML file
 
 ```yaml
 <!-- travis.yml -->
