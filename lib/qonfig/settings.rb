@@ -199,7 +199,7 @@ module Qonfig
       when rest_keys.empty?
         result
       when !result.is_a?(Qonfig::Settings)
-        raise(Qonfig::UnknownSettingError, 'Setting with requred digging sequence does not exist!')
+        raise(Qonfig::UnknownSettingError, 'Setting with required digging sequence does not exist!')
       when result.is_a?(Qonfig::Settings)
         result.__dig__(*rest_keys)
       end
@@ -235,21 +235,6 @@ module Qonfig
     # @api private
     # @since 0.1.0
     def __define_accessor__(key) # rubocop:disable Metrics/MethodLength
-      begin
-        singleton_class.send(:undef_method, key)
-      rescue NameError
-      end
-
-      begin
-        singleton_class.send(:undef_method, "#{key}=")
-      rescue NameError
-      end
-
-      begin
-        singleton_class.send(:undef_method, "#{key}?")
-      rescue NameError
-      end
-
       define_singleton_method(key) do
         self.[](key)
       end
@@ -260,7 +245,7 @@ module Qonfig
 
       define_singleton_method("#{key}?") do
         !!self.[](key)
-      end unless __get_value__(key).is_a?(Qonfig::Settings)
+      end
     end
 
     # @param key [Symbol, String]

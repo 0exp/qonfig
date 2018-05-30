@@ -14,7 +14,7 @@ All notable changes to this project will be documented in this file.
   the question mark symbol (`?`) at the end of setting name:
   - `nil` and `false` setting values indicates `false`;
   - other setting values indicates `true`;
-  - setting roots does not have the predicate form;
+  - setting roots always returns `true`;
   - examples:
     - `config.settings.database.user # => nil`;
     - `config.settings.database.user? # => false`;
