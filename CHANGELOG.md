@@ -20,7 +20,7 @@ All notable changes to this project will be documented in this file.
     - `config.settings.database.user? # => false`;
     - `config.settings.database.host # => 'google.com'`;
     - `config.settings.database.host? # => true`;
-    - `config.settings.database? # => Qonfig::UnknownSettingError`
+    - `config.settings.database? # => true (setting with nested option (setting root))`
 - Support for ERB instructions in YAML;
 - Support for `HashWithIndifferentAccess`-like behaviour;
 - Full thread-safe implementation;

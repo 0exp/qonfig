@@ -234,7 +234,7 @@ module Qonfig
     #
     # @api private
     # @since 0.1.0
-    def __define_accessor__(key) # rubocop:disable Metrics/MethodLength
+    def __define_accessor__(key)
       define_singleton_method(key) do
         self.[](key)
       end
