@@ -12,6 +12,7 @@ module Qonfig
   require_relative 'qonfig/commands/compose'
   require_relative 'qonfig/commands/load_from_yaml'
   require_relative 'qonfig/commands/load_from_self'
+  require_relative 'qonfig/commands/load_from_env'
   require_relative 'qonfig/command_set'
   require_relative 'qonfig/settings'
   require_relative 'qonfig/settings/lock'

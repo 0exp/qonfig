@@ -84,5 +84,15 @@ module Qonfig
       caller_location = caller(1, 1).first
       commands << Qonfig::Commands::LoadFromSelf.new(caller_location)
     end
+
+    # @return [void]
+    #
+    # @see Qonfig::Commands::LoadFromENV
+    #
+    # @api public
+    # @since 0.2.0
+    def load_from_env
+      commands << Qonfig::Commands::LoadFromENV.new
+    end
   end
 end
