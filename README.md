@@ -28,6 +28,7 @@ require 'qonfig'
 - [Hash representation](#hash-representation)
 - [State freeze](#state-freeze)
 - [Reload](#reload)
+- [Settings as Predicates](#settings-as-predicates)
 - [Load from YAML file](#load-from-yaml-file)
 - [Load from self](#load-from-self) (aka load from \_\_END\_\_)
 
@@ -298,6 +299,50 @@ config.settings.worker = :que # => Qonfig::FrozenSettingsError
 config.settings.db.adapter = 'mongoid' # => Qonfig::FrozenSettingsError
 
 config.reload! # => Qonfig::FrozenSettingsError
+```
+
+---
+
+### Settings as Predicates
+
+- predicate form: `?` at the end of setting name;
+- `nil` and `false` setting values indicates `false`;
+- other setting values indicates `true`;
+- setting roots always returns `true`;
+
+```ruby
+class Config < Qonfig::DataSet
+  setting :database do
+    setting :user
+    setting :host, 'google.com'
+
+    setting :engine do
+      setting :driver, 'postgres'
+    end
+  end
+end
+
+config = Config.new
+
+# predicates
+config.settings.database.user? # => false (nil => false)
+config.settings.database.host? # => true ('google.com' => true)
+config.settings.database.engine.driver? # => true ('postgres' => true)
+
+# setting roots always returns true
+config.settings.database? # => true
+config.settings.database.engine? # => ture
+
+config.configure do |conf|
+  conf.database.user = '0exp'
+  conf.database.host = false
+  conf.database.engine.driver = true
+end
+
+# predicates
+config.settings.database.user? # => true ('0exp' => true)
+config.settings.database.host? # => false (false => false)
+config.settings.database.engine.driver? # => true (true => true)
 ```
 
 ---

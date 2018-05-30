@@ -10,6 +10,17 @@ All notable changes to this project will be documented in this file.
 - `#reload!` - an ability to reload config isntance after any config class changes and updates;
 - `#dig` - an ability to fetch setting values in `Hash#dig` manner
   (fails with `Qonfig::UnknownSettingError` when the required key does not exist);
+- Settings as Predicates - an ability to check the boolean nature of the config setting by appending
+  the question mark symbol (`?`) at the end of setting name:
+  - `nil` and `false` setting values indicates `false`;
+  - other setting values indicates `true`;
+  - setting roots always returns `true`;
+  - examples:
+    - `config.settings.database.user # => nil`;
+    - `config.settings.database.user? # => false`;
+    - `config.settings.database.host # => 'google.com'`;
+    - `config.settings.database.host? # => true`;
+    - `config.settings.database? # => true (setting with nested option (setting root))`
 - Support for ERB instructions in YAML;
 - Support for `HashWithIndifferentAccess`-like behaviour;
 - Full thread-safe implementation;

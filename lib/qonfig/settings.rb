@@ -199,7 +199,7 @@ module Qonfig
       when rest_keys.empty?
         result
       when !result.is_a?(Qonfig::Settings)
-        raise(Qonfig::UnknownSettingError, 'Setting with requred digging sequence does not exist!')
+        raise(Qonfig::UnknownSettingError, 'Setting with required digging sequence does not exist!')
       when result.is_a?(Qonfig::Settings)
         result.__dig__(*rest_keys)
       end
@@ -241,6 +241,10 @@ module Qonfig
 
       define_singleton_method("#{key}=") do |value|
         self.[]=(key, value)
+      end
+
+      define_singleton_method("#{key}?") do
+        !!self.[](key)
       end
     end
 
