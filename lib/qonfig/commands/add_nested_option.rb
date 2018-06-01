@@ -23,6 +23,10 @@ module Qonfig
       # @api private
       # @since 0.1.0
       def initialize(key, nested_definitions)
+        unless key.is_a?(Symbol) || key.is_a?(String)
+          raise Qonfig::ArgumentError, 'Setting key should be a symbol or a string!'
+        end
+
         @key = key
         @nested_definitions = nested_definitions
       end
