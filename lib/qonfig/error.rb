@@ -27,6 +27,12 @@ module Qonfig
   # @see Qonfig::Settings
   #
   # @api public
+  # @since 0.2.0
+  CoreMethodIntersectionError = Class.new(Error)
+
+  # @see Qonfig::Settings
+  #
+  # @api public
   # @since 0.1.0
   FrozenSettingsError = begin # rubocop:disable Naming/ConstantName
     # :nocov:

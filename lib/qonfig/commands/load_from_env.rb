@@ -20,6 +20,8 @@ module Qonfig
       # @option convert_values [Boolean]
       # @opion prefix [NilClass, String, Regexp]
       #
+      # @raise [Qonfig::ArgumentError]
+      #
       # @api private
       # @since 0.2.0
       def initialize(convert_values: false, prefix: nil)

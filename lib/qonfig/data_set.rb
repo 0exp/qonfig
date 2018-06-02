@@ -43,6 +43,8 @@ module Qonfig
     # @param configurations [Proc]
     # @return [void]
     #
+    # @raise [Qonfig::FrozenSettingsError]
+    #
     # @api public
     # @since 0.2.0
     def reload!(&configurations)
@@ -102,7 +104,7 @@ module Qonfig
     # @api private
     # @since 0.2.0
     def build_settings
-      Qonfig::SettingsBuilder.build(self.class.commands.dup)
+      Qonfig::Settings::Builder.build(self.class.commands.dup)
     end
 
     # @param configurations [Proc]

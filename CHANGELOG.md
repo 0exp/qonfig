@@ -25,6 +25,8 @@ All notable changes to this project will be documented in this file.
     - `config.settings.database? # => true (setting with nested option (setting root))`
 - Support for ERB instructions in YAML;
 - Support for `HashWithIndifferentAccess`-like behaviour;
+- `Qonfig::Settings` instance method redefinition protection: the setting key can not
+  have a name that matches an any instance method name of `Qonfig::Settings`;
 - Full thread-safe implementation;
 
 ### Changed

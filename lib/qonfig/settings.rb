@@ -6,6 +6,17 @@ module Qonfig
   # @api private
   # @since 0.1.0
   class Settings
+    class << self
+      # @param setting_key [String, Symbol]
+      # @return [Boolean]
+      #
+      # @api private
+      # @since 0.2.0
+      def intersects_core_method?(setting_key)
+        CORE_METHODS.include?(setting_key.to_s)
+      end
+    end
+
     # @return [Hash]
     #
     # @api private
@@ -21,7 +32,6 @@ module Qonfig
 
     # @param key [Symbol, String]
     # @param value [Object]
-    # @raise [Qonfig::ArgumentError]
     # @return [void]
     #
     # @api private
@@ -29,6 +39,8 @@ module Qonfig
     def __define_setting__(key, value)
       __lock__.thread_safe_definition do
         key = __indifferently_accessable_option_key__(key)
+
+        __prevent_core_method_redefinition__(key)
 
         case
         when !__options__.key?(key)
@@ -57,7 +69,6 @@ module Qonfig
     end
 
     # @param key [Symbol, String]
-    # @raise [Qonfig::UnknownSettingError]
     # @return [Object]
     #
     # @api public
@@ -68,8 +79,6 @@ module Qonfig
 
     # @param key [String, Symbol]
     # @param value [Object]
-    # @raise [Qonfig::UnknownSettingError]
-    # @raise [Qonfig::FrozenSettingsError]
     # @return [void]
     #
     # @api public
@@ -107,8 +116,9 @@ module Qonfig
     # @param method_name [String, Symbol]
     # @param arguments [Array<Object>]
     # @param block [Proc]
-    # @raise [Qonfig::UnknownSettingError]
     # @return [void]
+    #
+    # @raise [Qonfig::UnknownSettingError]
     #
     # @api private
     # @since 0.1.0
@@ -169,6 +179,8 @@ module Qonfig
     # @param key [String, Symbol]
     # @return [Object]
     #
+    # @raise [Qonfig::UnknownSettingError]
+    #
     # @api private
     # @since 0.2.0
     def __get_value__(key)
@@ -184,6 +196,10 @@ module Qonfig
     # @param key [String, Symbol]
     # @param value [Object]
     # @return [void]
+    #
+    # @raise [Qonfig::UnknownSettingError]
+    # @raise [Qonfig::FrozenSettingsError]
+    # @raise [Qonfig::AmbiguousSettingValueError]
     #
     # @api private
     # @since 0.2.0
@@ -208,6 +224,9 @@ module Qonfig
     # @param keys [Array<Symbol, String>]
     # @option result [Object]
     # @return [Object]
+    #
+    # @raise [Qonfig::ArgumentError]
+    # @raise [Qonfig::UnknownSettingError]
     #
     # @api private
     # @since 0.2.0
@@ -273,6 +292,8 @@ module Qonfig
     # @param key [Symbol, String]
     # @return [String]
     #
+    # @raise [Qonfig::ArgumentError]
+    #
     # @api private
     # @since 0.2.0
     def __indifferently_accessable_option_key__(key)
@@ -284,6 +305,30 @@ module Qonfig
 
       key.to_s
     end
+
+    # @param setting_key [String]
+    # @return [void]
+    #
+    # @raise [Qonfig::CoreMethodIntersectionError]
+    #
+    # @api private
+    # @since 0.2.0
+    def __prevent_core_method_redefinition__(setting_key)
+      # :nocov:
+      raise(
+        Qonfig::CoreMethodIntersectionError,
+        "<#{setting_key}> key can not be used since this is a private core method"
+      ) if self.class.intersects_core_method?(setting_key)
+      # :nocov:
+    end
+
+    # @return [Array<String>]
+    #
+    # @api private
+    # @since 0.2.0
+    CORE_METHODS = Array(
+      instance_methods(false) | private_instance_methods(false)
+    ).map(&:to_s).freeze
   end
 
   # rubocop:enable Metrics/ClassLength
