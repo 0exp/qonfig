@@ -41,10 +41,6 @@ module Qonfig
     # @api public
     # @since 0.1.0
     def setting(key, initial_value = nil, &nested_settings)
-      unless key.is_a?(Symbol) || key.is_a?(String)
-        raise Qonfig::ArgumentError, 'Setting key should be a symbol or a string!'
-      end
-
       if block_given?
         commands << Qonfig::Commands::AddNestedOption.new(key, nested_settings)
       else
@@ -83,6 +79,21 @@ module Qonfig
     def load_from_self
       caller_location = caller(1, 1).first
       commands << Qonfig::Commands::LoadFromSelf.new(caller_location)
+    end
+
+    # @option convert_values [Boolean]
+    # @option prefix [NilClass, String, Regexp]
+    # @return [void]
+    #
+    # @see Qonfig::Commands::LoadFromENV
+    #
+    # @api public
+    # @since 0.2.0
+    def load_from_env(convert_values: false, prefix: nil)
+      commands << Qonfig::Commands::LoadFromENV.new(
+        convert_values: convert_values,
+        prefix: prefix
+      )
     end
   end
 end

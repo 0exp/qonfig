@@ -273,6 +273,45 @@ describe 'Config definition' do
     end.not_to raise_error
   end
 
+  specify 'fails when tries to use a non-string/non-symbol value as a setting key' do
+    incorrect_key_values = [123, Object.new, 15.1, (proc {}), Class.new, true, false]
+    correct_key_values   = ['test', :test]
+
+    incorrect_key_values.each do |incorrect_key|
+      # check root
+      expect do
+        Class.new(Qonfig::DataSet) { setting incorrect_key }
+      end.to raise_error(Qonfig::ArgumentError)
+
+      # check nested
+      expect do
+        Class.new(Qonfig::DataSet) do
+          setting incorrect_key do
+            setting :any
+          end
+        end
+      end.to raise_error(Qonfig::ArgumentError)
+    end
+
+    correct_key_values.each do |correct_key|
+      # check root
+      expect do
+        Class.new(Qonfig::DataSet) do
+          setting correct_key
+        end
+      end.not_to raise_error
+
+      # check nested
+      expect do
+        Class.new(Qonfig::DataSet) do
+          setting correct_key do
+            setting :any
+          end
+        end
+      end.not_to raise_error
+    end
+  end
+
   specify '#dig functionality' do
     class DiggingConfig < Qonfig::DataSet
       setting :db do
