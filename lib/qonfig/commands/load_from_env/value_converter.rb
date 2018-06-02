@@ -4,9 +4,28 @@ module Qonfig
   # @api private
   # @since 0.2.0
   module Commands::LoadFromENV::ValueConverter
+    # @return [Regexp]
+    #
+    # @api private
+    # @since 0.2.0
     INTEGER_PATTERN = /\A\d+\z/
+
+    # @return [Regexp]
+    #
+    # @api private
+    # @since 0.2.0
     FLOAT_PATTERN   = /\A\d+\.\d+\z/
+
+    # @return [Regexp]
+    #
+    # @api private
+    # @since 0.2.0
     TRUE_PATTERN    = /\A(t|true)\z/i
+
+    # @return [Regexp]
+    #
+    # @api private
+    # @since 0.2.0
     FALSE_PATTERN   = /\A(f|false)\z/i
 
     class << self

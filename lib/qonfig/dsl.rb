@@ -81,6 +81,8 @@ module Qonfig
       commands << Qonfig::Commands::LoadFromSelf.new(caller_location)
     end
 
+    # @option convert_values [Boolean]
+    # @option prefix [NilClass, String, Regexp]
     # @return [void]
     #
     # @see Qonfig::Commands::LoadFromENV

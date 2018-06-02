@@ -18,6 +18,7 @@ module Qonfig
       attr_reader :prefix_pattern
 
       # @option convert_values [Boolean]
+      # @opion prefix [NilClass, String, Regexp]
       #
       # @api private
       # @since 0.2.0
@@ -31,7 +32,7 @@ module Qonfig
         end
 
         @convert_values = convert_values
-        @prefix_pattern = prefix.is_a?(Regexp) ? prefix : /\A#{Regexp.escape(prefix.to_s)}.*/m
+        @prefix_pattern = prefix.is_a?(Regexp) ? prefix : /\A#{Regexp.escape(prefix.to_s)}.*\z/m
       end
 
       # @param settings [Qonfig::Settings]
