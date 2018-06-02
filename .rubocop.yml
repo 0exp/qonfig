@@ -73,8 +73,17 @@ RSpec/ExampleLength:
 RSpec/MultipleExpectations:
   Enabled: false
 
+Style/MultilineBlockChain:
+  Enabled: false
+
 Metrics/AbcSize:
   Max: 19
+
+Metrics/CyclomaticComplexity:
+  Max: 7
+
+Style/ClassAndModuleChildren:
+  Enabled: false
 
 Lint/UnderscorePrefixedVariableName:
   Enabled: false

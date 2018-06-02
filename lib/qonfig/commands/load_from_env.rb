@@ -53,35 +53,11 @@ module Qonfig
       #
       # @api private
       # @since 0.2.0
-      def extract_env_data(&block)
+      def extract_env_data
         ENV.each_with_object({}) do |(key, value), env_data|
           env_data[key] = value if key.match(prefix_pattern)
         end.tap do |env_data|
-          convert_env_values!(env_data) if convert_values
-        end
-      end
-
-      # @param env_data [Hash]
-      # @return [Hash]
-      #
-      # @api private
-      # @since 0.2.0
-      def convert_env_values!(env_data)
-        env_data.each_pair do |key, value|
-          if value.is_a?(String)
-            value = begin
-              case value
-              when /\A\d+\z/              then Integer(value)
-              when /\A\d+\.\d+\z/         then Float(value)
-              when /\A(t|true|TRUE)\z/i   then true
-              when /\A(f|false|FALSE)\z/i then false
-              else
-                value
-              end
-            end
-          end
-
-          env_data[key] = value
+          ValueConverter.convert_values!(env_data) if convert_values
         end
       end
 
