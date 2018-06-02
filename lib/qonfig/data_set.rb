@@ -87,6 +87,8 @@ module Qonfig
       thread_safe_access { settings.__dig__(*keys) }
     end
 
+    # @return [void]
+    #
     # @api public
     # @since 0.2.0
     def clear!

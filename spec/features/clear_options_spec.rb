@@ -59,28 +59,28 @@ describe 'Clear options' do
     expect(config[:composed][:a][:b][:c]).to eq(nil)
 
     expect(config.to_h).to match(
-      "database" => { "user" => nil, "password" => nil },
-      "travis" => {
-        "sudo" => nil,
-        "language" => nil,
-        "rvm" => nil
+      'database' => { 'user' => nil, 'password' => nil },
+      'travis' => {
+        'sudo' => nil,
+        'language' => nil,
+        'rvm' => nil
       },
-      "self_data" => {
-        "secret_key" => nil,
-        "api_host" => nil,
-        "connection_timeout" => {
-          "seconds" => nil,
-          "enabled" => nil
+      'self_data' => {
+        'secret_key' => nil,
+        'api_host' => nil,
+        'connection_timeout' => {
+          'seconds' => nil,
+          'enabled' => nil
         }
       },
-      "env_data" => {
-        "QONFIG_CLEAR_GENERIC_OPTION" => nil,
-        "QONFIG_CLEAR_MEGA_SECRET_VALUE" => nil
+      'env_data' => {
+        'QONFIG_CLEAR_GENERIC_OPTION' => nil,
+        'QONFIG_CLEAR_MEGA_SECRET_VALUE' => nil
       },
-      "composed" => {
-        "a" => { "b" => { "c" => nil } },
-        "QONFIG_CLEAR_GENERIC_OPTION" => nil,
-        "QONFIG_CLEAR_MEGA_SECRET_VALUE" => nil
+      'composed' => {
+        'a' => { 'b' => { 'c' => nil } },
+        'QONFIG_CLEAR_GENERIC_OPTION' => nil,
+        'QONFIG_CLEAR_MEGA_SECRET_VALUE' => nil
       }
     )
   end

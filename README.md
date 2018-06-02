@@ -268,7 +268,7 @@ config.reload!
 
 config.settings.db.adapter # => 'mongoid'
 config.settings.logger # => #<Logger:0x00007ff9> (reloaded from defaults)
-config.enable_api # => false (new setting)
+config.settings.enable_api # => false (new setting)
 
 # reload with instant configuration
 config.reload! do |conf|
@@ -305,14 +305,14 @@ end
 
 config.settings.database.user # => '0exp'
 config.settings.database.password # => 'test123'
-config.web_api.endpoint # => '/api'
+config.settings.web_api.endpoint # => '/api'
 
 # clear all options
 config.clear!
 
 config.settings.database.user # => nil
 config.settings.database.password # => nil
-config.web_api.endpoint # => nil
+config.settings.web_api.endpoint # => nil
 ```
 
 ---
