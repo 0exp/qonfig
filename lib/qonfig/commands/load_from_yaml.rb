@@ -20,8 +20,9 @@ module Qonfig
       end
 
       # @param settings [Qonfig::Settings]
-      # @raise [Qonfig::IncompatibleYAMLError]
       # @return [void]
+      #
+      # @raise [Qonfig::IncompatibleYAMLError]
       #
       # @api private
       # @since 0.2.0

@@ -13,8 +13,8 @@ describe 'Config reloading' do
     config = ReloadableConfig.new
 
     expect(config.to_h).to match(
-      db: { adapter: 'postgresql' },
-      logging: false
+      'db' => { 'adapter' => 'postgresql' },
+      'logging' => false
     )
 
     config.configure { |conf| conf.logging = true } # change internal state
@@ -29,17 +29,17 @@ describe 'Config reloading' do
     end
 
     expect(config.to_h).to match(
-      db: { adapter: 'postgresql' },
-      logging: false # internal state has initial value (not a changed previously)
+      'db' => { 'adapter' => 'postgresql' },
+      'logging' => true # internal state has initial value (not a changed previously)
     )
 
     # reload config settings
     config.reload!
 
     expect(config.to_h).to match(
-      db: { adapter: 'mongoid' },
-      logging: false,
-      enable_api: false
+      'db' => { 'adapter' => 'mongoid' },
+      'logging' => false,
+      'enable_api' => false
     )
 
     # reload with instant configuration
@@ -48,9 +48,9 @@ describe 'Config reloading' do
     end
 
     expect(config.to_h).to match(
-      db: { adapter: 'mongoid' },
-      logging: false,
-      enable_api: true # value from isntant change
+      'db' => { 'adapter' => 'mongoid' },
+      'logging' => false,
+      'enable_api' => true # value from isntant change
     )
   end
 end
