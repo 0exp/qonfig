@@ -27,7 +27,8 @@ require 'qonfig'
 - [Composition](#composition)
 - [Hash representation](#hash-representation)
 - [State freeze](#state-freeze)
-- [Reload](#reload)
+- [Config reloading](#reload-config)
+- [Clear options](#clear-options)
 - [Settings as Predicates](#settings-as-predicates)
 - [Load from YAML file](#load-from-yaml-file)
 - [Load from self](#load-from-self) (aka load from \_\_END\_\_)
@@ -235,7 +236,7 @@ Config.new.to_h
 
 ---
 
-### Reload
+### Config reloading
 
 ```ruby
 class Config < Qonfig::DataSet
@@ -277,6 +278,41 @@ end
 config.settings.db.adapter # => 'mongoid'
 config.settings.logger = # => #<Logger:0x00007ff9>
 config.settings.enable_api # => true # value from instant change
+```
+
+---
+
+### Clear options
+
+```ruby
+class Config
+  setting :database do
+    setting :user
+    setting :password
+  end
+
+  setting :web_api do
+    setting :endpoint
+  end
+end
+
+config = Config.new do |conf|
+  conf.database.user = '0exp'
+  conf.database.password = 'test123'
+
+  conf.web_api.endpoint = '/api/'
+end
+
+config.settings.database.user # => '0exp'
+config.settings.database.password # => 'test123'
+config.web_api.endpoint # => '/api'
+
+# clear all options
+config.clear!
+
+config.settings.database.user # => nil
+config.settings.database.password # => nil
+config.web_api.endpoint # => nil
 ```
 
 ---
