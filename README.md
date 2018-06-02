@@ -31,6 +31,7 @@ require 'qonfig'
 - [Settings as Predicates](#settings-as-predicates)
 - [Load from YAML file](#load-from-yaml-file)
 - [Load from self](#load-from-self) (aka load from \_\_END\_\_)
+- [Load from ENV](#load-from-env)
 
 ---
 
@@ -432,6 +433,52 @@ api_host: super.puper-google.com
 connection_timeout:
    seconds: 10
    enabled: false
+```
+
+---
+
+### Load from ENV
+
+- `:convert_values` (`false` by default):
+  - `'t'`, `'T'`, `'true'`, `'TRUE'` - covnerts to `true`;
+  - `'f'`, `'F'`, `'false'`, `'FALSE'` - covnerts to `false`;
+  - `1`, `23` and etc - to `Integer`;
+  - `1.25`, `0.26` and etc - to `Float`;
+- `:prefix` - load ENV variables which names starts with a prefix:
+  - `nil` (by default) - empty prefix;
+  - `Regexp` - names that match the regexp pattern;
+  - `String` - names which starts with a passed string;
+
+```ruby
+# some env variables
+ENV['QONFIG_SETTINGS'] = 'true'
+ENV['QONFIG_TIMEOUT'] = '0'
+ENV['QONFIG_SPECS'] = 'none'
+ENV['RUN_CI'] = '1'
+
+class Config < Qonfig::DataSet
+  # nested (and customized)
+  setting :qonfig do
+    load_from_env convert_values: true, prefix: 'QONFIG' # or /\Aqonfig.*\z/i
+  end
+
+  # on the root (with defaults)
+  load_from_env
+end
+
+config = Config.new
+
+# customized
+config['qonfig']['QONFIG_SETTINGS'] # => true ('true' => true)
+config['qonfig']['QONFIG_TIMEOUT'] # => 0 ('0' => 0)
+config['qonfig']['QONFIG_SPECS'] # => 'none'
+config['qonfig']['RUN_CI'] # => Qonfig::UnknownSettingError
+
+# default
+config['QONFIG_SETTINGS'] # => 'true'
+config['QONFIG_TIMEOUT'] # => '0'
+conifg['QONFIG_SPECS'] # => 'none'
+config['RUN_CI'] # => '1'
 ```
 
 ---

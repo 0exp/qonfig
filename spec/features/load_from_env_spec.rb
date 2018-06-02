@@ -34,7 +34,7 @@ describe 'Load from ENV' do
       end
 
       setting :prefix_regexp do
-        load_from_env prefix: /\Aqonfig.*?\z/i
+        load_from_env prefix: /\Aqonfig.*\z/i
       end
 
       setting :all_in do
