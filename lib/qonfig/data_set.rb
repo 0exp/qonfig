@@ -87,6 +87,12 @@ module Qonfig
       thread_safe_access { settings.__dig__(*keys) }
     end
 
+    # @api public
+    # @since 0.2.0
+    def clear!
+      thread_safe_access { settings.__clear__ }
+    end
+
     private
 
     # @return [Qonfig::Settings]

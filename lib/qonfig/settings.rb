@@ -89,12 +89,20 @@ module Qonfig
 
     # @return [Hash]
     #
-    # @api public
+    # @api private
     # @since 0.1.0
     def __to_hash__
       __lock__.thread_safe_access { __build_hash_representation__ }
     end
     alias_method :__to_h__, :__to_hash__
+
+    # @return [void]
+    #
+    # @api private
+    # @since 0.2.0
+    def __clear__
+      __lock__.thread_safe_access { __clear_option_values__ }
+    end
 
     # @param method_name [String, Symbol]
     # @param arguments [Array<Object>]
@@ -102,7 +110,7 @@ module Qonfig
     # @raise [Qonfig::UnknownSettingError]
     # @return [void]
     #
-    # @api public
+    # @api private
     # @since 0.1.0
     def method_missing(method_name, *arguments, &block)
       super
@@ -112,7 +120,7 @@ module Qonfig
 
     # @return [Boolean]
     #
-    # @api public
+    # @api private
     # @since 0.1.0
     def respond_to_missing?(method_name, include_private = false)
       # :nocov:
@@ -143,6 +151,20 @@ module Qonfig
     end
 
     private
+
+    # @return [void]
+    #
+    # @api private
+    # @since 0.2.0
+    def __clear_option_values__
+      __options__.each_pair do |key, value|
+        if value.is_a?(Qonfig::Settings)
+          value.__clear__
+        else
+          __options__[key] = nil
+        end
+      end
+    end
 
     # @param key [String, Symbol]
     # @return [Object]
