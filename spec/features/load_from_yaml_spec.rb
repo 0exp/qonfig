@@ -8,21 +8,21 @@ describe 'Load from YAML' do
         Pathname.new(__FILE__).realpath
       )
 
-      setting 'travis' do
+      setting :travis do
         load_from_yaml File.expand_path(
           File.join('..', '..', 'fixtures', 'travis_settings.yml'),
           Pathname.new(__FILE__).realpath
         )
       end
 
-      setting 'rubocop' do
+      setting :rubocop do
         load_from_yaml File.expand_path(
           File.join('..', '..', 'fixtures', 'rubocop_settings.yml'),
           Pathname.new(__FILE__).realpath
         )
       end
 
-      setting 'with_erb' do
+      setting :with_erb do
         load_from_yaml File.expand_path(
           File.join('..', '..', 'fixtures', 'with_erb_instructions.yml'),
           Pathname.new(__FILE__).realpath

@@ -30,7 +30,7 @@ describe 'Load from ENV' do
       end
 
       setting :prefixed do
-        load_from_env prefix: 'QONFIG_'
+        load_from_env prefix: 'QONFIG_SPEC'
       end
 
       setting :prefix_regexp do
@@ -38,7 +38,7 @@ describe 'Load from ENV' do
       end
 
       setting :all_in do
-        load_from_env convert_values: true, prefix: 'QONFIG'
+        load_from_env convert_values: true, prefix: 'QONFIG_SPEC'
       end
     end
 
