@@ -21,4 +21,5 @@ module Qonfig
   require_relative 'qonfig/dsl'
   require_relative 'qonfig/data_set'
   require_relative 'qonfig/data_set/class_builder'
+  require_relative 'qonfig/configurable'
 end
