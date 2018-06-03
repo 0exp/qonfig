@@ -88,7 +88,7 @@ module Qonfig
       # @api public
       # @since 0.2.0
       def config
-        self.class.instance_variable_get(:@__qonfig_access_lock__).synchronize do
+        self.class.instance_variable_get(:@__qonfig_definition_lock__).synchronize do
           @__qonfig_config__ ||= self.class.instance_variable_get(:@__qonfig_config_klass__).new
         end
       end
@@ -100,7 +100,7 @@ module Qonfig
       # @since 0.2.0
       def configure(&block)
         self.class.instance_variable_get(:@__qonfig_access_lock__).synchronize do
-          @__qonfig_config__.configure(&block) if block_given?
+          config.configure(&block) if block_given?
         end
       end
     end
