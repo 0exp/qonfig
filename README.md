@@ -33,6 +33,7 @@ require 'qonfig'
 - [Load from YAML file](#load-from-yaml-file)
 - [Load from self](#load-from-self) (aka load from \_\_END\_\_)
 - [Load from ENV](#load-from-env)
+- [Smart Mixin](#smart-mixin) (`Qonfig::Configurable`)
 
 ---
 
@@ -515,6 +516,106 @@ config.settings['QONFIG_SETTINGS'] # => 'true'
 config.settings['QONFIG_TIMEOUT'] # => '0'
 config.settings['QONFIG_SPECS'] # => 'none'
 config.settings['RUN_CI'] # => '1'
+```
+
+---
+
+### Smart Mixin
+
+- class-level:
+  - `.configuration` - settings definitions;
+  - `.configure` - configuration;
+  - `.config` - config object;
+- instance-level:
+  - `#configure` - configuration;
+  - `#config` - config object;
+
+```ruby
+# --- usage ---
+
+class Application
+  # make configurable
+  include Qonfig::Configurable
+
+  configuration do
+    setting :user
+    setting :password
+  end
+end
+
+app = Application.new
+
+# class-level config
+Application.config.settings.user # => nil
+Application.config.settings.password # => nil
+
+# instance-level config
+app.config.settings.user # => nil
+app.config.settings.password # => nil
+
+# class-level configuration
+Application.configure do |conf|
+  conf.user = '0exp'
+  conf.password = 'test123'
+end
+
+# instance-level configuration
+app.configure do |conf|
+  conf.user = 'admin'
+  conf.password = '123test'
+end
+
+# class has own config object
+Application.config.settings.user # => '0exp'
+Application.config.settings.password # => 'test123'
+
+# instance has own config object
+app.config.settings.user # => 'admin'
+app.config.settings.password # => '123test'
+
+# and etc... (all Qonfig-related features)
+```
+
+```ruby
+# --- inheritance ---
+
+class BasicApplication
+  # make configurable
+  include Qonfig::Configurable
+
+  configuration do
+    setting :user
+    setting :pswd
+  end
+
+  configure do |conf|
+    conf.user = 'admin'
+    conf.pswd = 'admin'
+  end
+end
+
+class GeneralApplication < BasicApplication
+  # extend inherited definitions
+  configuration do
+    setting :db do
+      setting :adapter
+    end
+  end
+
+  configure do |conf|
+    conf.user = '0exp' # .user inherited from BasicApplication
+    conf.pswd = '123test' # .pswd inherited from BasicApplication
+    conf.db.adapter = 'pg'
+  end
+end
+
+BasicApplication.config.to_h
+{ 'user' => 'admin', 'pswd' => 'admin' }
+
+GeneralApplication.config.to_h
+{ 'user' => '0exp', 'pswd' => '123test', 'db' => { 'adapter' => 'pg' } }
+
+# and etc... (all Qonfig-related features)
 ```
 
 ---

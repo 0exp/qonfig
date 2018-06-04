@@ -27,6 +27,11 @@ All notable changes to this project will be documented in this file.
 - Support for `HashWithIndifferentAccess`-like behaviour;
 - `Qonfig::Settings` instance method redefinition protection: the setting key can not
   have a name that matches an any instance method name of `Qonfig::Settings`;
+- Added `Qonfig::Configurable` mixin - configuration behaviour for any classes and modules
+  and their instances:
+  - all `Qonfig`-related features;
+  - different class-level and instance-level config objects;
+  - working class-level inheritance :);
 - Full thread-safe implementation;
 
 ### Changed
