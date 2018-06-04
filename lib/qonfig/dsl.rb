@@ -13,12 +13,13 @@ module Qonfig
       def extended(child_klass)
         child_klass.instance_variable_set(:@commands, Qonfig::CommandSet.new)
 
-        class << child_klass
+        child_klass.singleton_class.prepend(Module.new do
           def inherited(child_klass)
             child_klass.instance_variable_set(:@commands, Qonfig::CommandSet.new)
             child_klass.commands.concat(commands)
+            super
           end
-        end
+        end)
       end
     end
 
