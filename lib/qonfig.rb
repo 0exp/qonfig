@@ -18,6 +18,7 @@ module Qonfig
   require_relative 'qonfig/settings'
   require_relative 'qonfig/settings/lock'
   require_relative 'qonfig/settings/builder'
+  require_relative 'qonfig/settings/key_guard'
   require_relative 'qonfig/dsl'
   require_relative 'qonfig/data_set'
   require_relative 'qonfig/data_set/class_builder'
