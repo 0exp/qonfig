@@ -26,17 +26,9 @@ module Qonfig
       # @api private
       # @since 0.1.0
       def initialize(key, value)
-        raise(
-          Qonfig::ArgumentError,
-          'Setting key should be a symbol or a string!'
-        ) unless key.is_a?(Symbol) || key.is_a?(String)
+        Qonfig::Settings::KeyGuard.prevent_incomparabilities!(key)
 
-        raise(
-          Qonfig::CoreMethodIntersectionError,
-          "<#{key}> key can not be used since this is a private core method"
-        ) if Qonfig::Settings.intersects_core_method?(key)
-
-        @key   = key
+        @key = key
         @value = value
       end
 

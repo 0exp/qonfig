@@ -14,7 +14,7 @@ describe 'Core methods redefinition' do
         end
       end.to raise_error(Qonfig::CoreMethodIntersectionError)
 
-     expect do
+      expect do
         Class.new(Qonfig::DataSet) do
           setting :any_key do
             setting core_method

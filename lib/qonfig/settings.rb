@@ -6,17 +6,6 @@ module Qonfig
   # @api private
   # @since 0.1.0
   class Settings
-    class << self
-      # @param setting_key [String, Symbol]
-      # @return [Boolean]
-      #
-      # @api private
-      # @since 0.2.0
-      def intersects_core_method?(setting_key)
-        CORE_METHODS.include?(setting_key.to_s)
-      end
-    end
-
     # @return [Hash]
     #
     # @api private
@@ -40,7 +29,7 @@ module Qonfig
       __lock__.thread_safe_definition do
         key = __indifferently_accessable_option_key__(key)
 
-        __prevent_core_method_redefinition__(key)
+        __prevent_core_method_intersection__(key)
 
         case
         when !__options__.key?(key)
@@ -293,33 +282,25 @@ module Qonfig
     # @return [String]
     #
     # @raise [Qonfig::ArgumentError]
+    # @see Qonfig::Settings::KeyGuard
     #
     # @api private
     # @since 0.2.0
     def __indifferently_accessable_option_key__(key)
-      # :nocov:
-      unless key.is_a?(Symbol) || key.is_a?(String)
-        raise Qonfig::ArgumentError, 'Setting key should be a symbol or a string'
-      end
-      # :nocov:
-
+      KeyGuard.new(key).prevent_incompatible_key_type!
       key.to_s
     end
 
-    # @param setting_key [String]
+    # @param key [Symbol, String]
     # @return [void]
     #
     # @raise [Qonfig::CoreMethodIntersectionError]
+    # @see Qonfig::Settings::KeyGuard
     #
     # @api private
     # @since 0.2.0
-    def __prevent_core_method_redefinition__(setting_key)
-      # :nocov:
-      raise(
-        Qonfig::CoreMethodIntersectionError,
-        "<#{setting_key}> key can not be used since this is a private core method"
-      ) if self.class.intersects_core_method?(setting_key)
-      # :nocov:
+    def __prevent_core_method_intersection__(key)
+      KeyGuard.new(key).prevent_core_method_intersection!
     end
 
     # @return [Array<String>]
