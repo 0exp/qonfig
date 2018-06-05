@@ -7,6 +7,8 @@ describe 'Core methods redefinition' do
       Qonfig::Settings.private_instance_methods(false)
     )
 
+    expect(core_methods).not_to include(:super_test_key)
+
     core_methods.each do |core_method|
       expect do
         Class.new(Qonfig::DataSet) do
@@ -16,7 +18,7 @@ describe 'Core methods redefinition' do
 
       expect do
         Class.new(Qonfig::DataSet) do
-          setting :any_key do
+          setting :super_test_key do
             setting core_method
           end
         end
