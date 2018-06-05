@@ -38,6 +38,10 @@ module Qonfig
 
         @key = key
         @nested_definitions = nested_definitions
+
+        @nested_data_set_klass = Class.new(Qonfig::DataSet).tap do |data_set|
+          data_set.instance_eval(&nested_definitions)
+        end
       end
 
       # @param settings [Qonfig::Settings]
