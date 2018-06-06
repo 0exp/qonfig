@@ -526,7 +526,7 @@ config.settings['RUN_CI'] # => '1'
   - `.configuration` - settings definitions;
   - `.configure` - configuration;
   - `.config` - config object;
-  - settings definitions can be inherited;
+  - settings definitions are inheritable;
 - instance-level:
   - `#configure` - configuration;
   - `#config` - config object;

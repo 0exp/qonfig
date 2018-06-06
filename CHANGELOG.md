@@ -38,6 +38,9 @@ All notable changes to this project will be documented in this file.
 - Superclass of `Qonfig::FrozenSettingsError` (it was `Qonfig::Error` before):
   - `ruby >= 2.5` - inherited from `::FrozenError`;
   - `ruby < 2.5` - inherited from `::RuntimeError`;
+- `.setting` will raise exceptions immediately:
+  - `.setting(key, ...) { ... }` - if setting key has incompatible type;
+  - `.compose(config_class)`- if composed config class is not a subtype of `Qonfig::DataSet`;
 
 ### Fixed
 - Recoursive hash representation with deep nested `Qonfig::Settings` values (infinite loop);
