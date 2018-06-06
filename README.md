@@ -31,8 +31,8 @@ require 'qonfig'
 - [Clear options](#clear-options) (set to nil)
 - [Settings as Predicates](#settings-as-predicates)
 - [Load from YAML file](#load-from-yaml-file)
-- [Load from self](#load-from-self) (aka load from \_\_END\_\_)
 - [Load from ENV](#load-from-env)
+- [Load from \_\_END\_\_](#load-from-end) (aka `load_from_self`)
 - [Smart Mixin](#smart-mixin) (`Qonfig::Configurable`)
 
 ---
@@ -435,7 +435,64 @@ config.settings.ruby.platform # => 'x86_64-darwin17'
 
 ---
 
-### Load from self
+### Load from ENV
+
+- `:convert_values` (`false` by default):
+  - `'t'`, `'T'`, `'true'`, `'TRUE'` - covnerts to `true`;
+  - `'f'`, `'F'`, `'false'`, `'FALSE'` - covnerts to `false`;
+  - `1`, `23` and etc - converts to `Integer`;
+  - `1.25`, `0.26` and etc - converts to `Float`;
+  - `1, 2, test`, `FALSE,Qonfig` (strings without quotes that contains at least one comma) -
+    converts to `Array` with recursively converted values;
+  - `'"please, test"'`, `"'test, please'"` (quoted strings) - converts to `String` without quotes;
+- `:prefix` - load ENV variables which names starts with a prefix:
+  - `nil` (by default) - empty prefix;
+  - `Regexp` - names that match the regexp pattern;
+  - `String` - names which starts with a passed string;
+
+```ruby
+# some env variables
+ENV['QONFIG_BOOLEAN'] = 'true'
+ENV['QONFIG_INTEGER'] = '0'
+ENV['QONFIG_STRING'] = 'none'
+ENV['QONFIG_ARRAY'] = '1, 2.5, t, f, TEST'
+ENV['QONFIG_MESSAGE'] = '"Hello, Qonfig!"'
+ENV['RUN_CI'] = '1'
+
+class Config < Qonfig::DataSet
+  # nested
+  setting :qonfig do
+    load_from_env convert_values: true, prefix: 'QONFIG' # or /\Aqonfig.*\z/i
+  end
+
+  # on the root
+  load_from_env
+end
+
+config = Config.new
+
+# customized
+config.settings['qonfig']['QONFIG_BOOLEAN'] # => true ('true' => true)
+config.settings['qonfig']['QONFIG_INTEGER'] # => 0 ('0' => 0)
+config.settings['qonfig']['QONFIG_STRING'] # => 'none'
+config.settings['qonfig']['QONFIG_ARRAY'] # => [1, 2.5, true, false, 'TEST']
+config.settings['qonfig']['QONFIG_MESSAGE'] # => 'Hello, Qonfig!'
+config.settings['qonfig']['RUN_CI'] # => Qonfig::UnknownSettingError
+
+# default
+config.settings['QONFIG_BOOLEAN'] # => 'true'
+config.settings['QONFIG_INTEGER'] # => '0'
+config.settings['QONFIG_STRING'] # => 'none'
+config.settings['QONFIG_ARRAY'] # => '1, 2.5, t, f, TEST'
+config.settings['QONFIG_MESSAGE'] # => '"Hello, Qonfig!"'
+config.settings['RUN_CI'] # => '1'
+```
+
+---
+
+### Load from \_\_END\_\_
+
+- aka `load_from_self`
 
 ```ruby
 class Config < Qonfig::DataSet
@@ -468,54 +525,8 @@ ruby_version: <%= RUBY_VERSION %>
 secret_key: top-mega-secret
 api_host: super.puper-google.com
 connection_timeout:
-   seconds: 10
-   enabled: false
-```
-
----
-
-### Load from ENV
-
-- `:convert_values` (`false` by default):
-  - `'t'`, `'T'`, `'true'`, `'TRUE'` - covnerts to `true`;
-  - `'f'`, `'F'`, `'false'`, `'FALSE'` - covnerts to `false`;
-  - `1`, `23` and etc - converts to `Integer`;
-  - `1.25`, `0.26` and etc - converts to `Float`;
-- `:prefix` - load ENV variables which names starts with a prefix:
-  - `nil` (by default) - empty prefix;
-  - `Regexp` - names that match the regexp pattern;
-  - `String` - names which starts with a passed string;
-
-```ruby
-# some env variables
-ENV['QONFIG_SETTINGS'] = 'true'
-ENV['QONFIG_TIMEOUT'] = '0'
-ENV['QONFIG_SPECS'] = 'none'
-ENV['RUN_CI'] = '1'
-
-class Config < Qonfig::DataSet
-  # nested
-  setting :qonfig do
-    load_from_env convert_values: true, prefix: 'QONFIG' # or /\Aqonfig.*\z/i
-  end
-
-  # on the root
-  load_from_env
-end
-
-config = Config.new
-
-# customized
-config.settings['qonfig']['QONFIG_SETTINGS'] # => true ('true' => true)
-config.settings['qonfig']['QONFIG_TIMEOUT'] # => 0 ('0' => 0)
-config.settings['qonfig']['QONFIG_SPECS'] # => 'none'
-config.settings['qonfig']['RUN_CI'] # => Qonfig::UnknownSettingError
-
-# default
-config.settings['QONFIG_SETTINGS'] # => 'true'
-config.settings['QONFIG_TIMEOUT'] # => '0'
-config.settings['QONFIG_SPECS'] # => 'none'
-config.settings['RUN_CI'] # => '1'
+  seconds: 10
+  enabled: false
 ```
 
 ---

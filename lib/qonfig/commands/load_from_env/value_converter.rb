@@ -28,6 +28,18 @@ module Qonfig
     # @since 0.2.0
     FALSE_PATTERN = /\A(f|false)\z/i
 
+    # @return [Regexp]
+    #
+    # @api private
+    # @since 0.2.0
+    ARRAY_PATTERN = /\A[^'"].*\s*,\s*.*[^'"]\z/
+
+    # @return [Regexp]
+    #
+    # @api private
+    # @since 0.2.0
+    QUOTED_STRING_PATTERN = /\A['"].*['"]\z/
+
     class << self
       # @param env_data [Hash]
       # @return [void]
@@ -51,10 +63,18 @@ module Qonfig
         return value unless value.is_a?(String)
 
         case value
-        when INTEGER_PATTERN then Integer(value)
-        when FLOAT_PATTERN   then Float(value)
-        when TRUE_PATTERN    then true
-        when FALSE_PATTERN   then false
+        when INTEGER_PATTERN
+          Integer(value)
+        when FLOAT_PATTERN
+          Float(value)
+        when TRUE_PATTERN
+          true
+        when FALSE_PATTERN
+          false
+        when ARRAY_PATTERN
+          value.split(/\s*,\s*/).map(&method(:convert_value))
+        when QUOTED_STRING_PATTERN
+          value.gsub(/(\A['"]|['"]\z)/, '')
         else
           value
         end
