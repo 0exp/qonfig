@@ -13,6 +13,8 @@ module Qonfig
 
       # @param data_set_klass [Qonfig::DataSet]
       #
+      # @raise [Qonfig::ArgumentError]
+      #
       # @api private
       # @since 0.1.0
       def initialize(data_set_klass)

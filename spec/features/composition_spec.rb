@@ -173,21 +173,21 @@ describe 'Composition' do
     AppropriateConfig = Class.new(Qonfig::DataSet)
 
     expect do
-      # (incorrect) on the root
+      # (with incompatible config class) on the root
       Class.new(Qonfig::DataSet) do
         compose InappropriateConfig
       end
     end.to raise_error(Qonfig::ArgumentError)
 
     expect do
-      # (correct) on the root
+      # (with compatible config class) on the root
       Class.new(Qonfig::DataSet) do
         compose AppropriateConfig
       end
     end.not_to raise_error
 
     expect do
-      # (incorrect) nested
+      # (with incompatible config class) nested
       Class.new(Qonfig::DataSet) do
         setting :nested do
           compose InappropriateConfig
@@ -196,7 +196,7 @@ describe 'Composition' do
     end.to raise_error(Qonfig::ArgumentError)
 
     expect do
-      # (correct) nested
+      # (with compatible config class) nested
       Class.new(Qonfig::DataSet) do
         setting :nested do
           compose AppropriateConfig
