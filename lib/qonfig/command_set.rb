@@ -33,7 +33,7 @@ module Qonfig
     # @api private
     # @since 0.1.0
     def each(&block)
-      block_given? ? commands.each(&block) : commands.each
+      thread_safe { block_given? ? commands.each(&block) : commands.each }
     end
 
     # @param command_set [Qonfig::CommandSet]
