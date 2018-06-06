@@ -16,6 +16,13 @@ module Qonfig
       # @api private
       # @since 0.1.0
       def initialize(data_set_klass)
+        unless data_set_klass.is_a?(Class) && data_set_klass < Qonfig::DataSet
+          raise(
+            Qonfig::ArgumentError,
+            'Composed config class should be a subtype of Qonfig::DataSet'
+          )
+        end
+
         @data_set_klass = data_set_klass
       end
 

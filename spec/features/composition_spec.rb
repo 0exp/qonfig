@@ -167,4 +167,41 @@ describe 'Composition' do
       }
     )
   end
+
+  specify 'composed config class should be a subtype of Qonfig::DataSet' do
+    InappropriateConfig = Class.new
+    AppropriateConfig = Class.new(Qonfig::DataSet)
+
+    expect do
+      # (incorrect) on the root
+      Class.new(Qonfig::DataSet) do
+        compose InappropriateConfig
+      end
+    end.to raise_error(Qonfig::ArgumentError)
+
+    expect do
+      # (correct) on the root
+      Class.new(Qonfig::DataSet) do
+        compose AppropriateConfig
+      end
+    end.not_to raise_error
+
+    expect do
+      # (incorrect) nested
+      Class.new(Qonfig::DataSet) do
+        setting :nested do
+          compose InappropriateConfig
+        end
+      end
+    end.to raise_error(Qonfig::ArgumentError)
+
+    expect do
+      # (correct) nested
+      Class.new(Qonfig::DataSet) do
+        setting :nested do
+          compose AppropriateConfig
+        end
+      end
+    end.not_to raise_error
+  end
 end
