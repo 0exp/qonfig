@@ -387,6 +387,10 @@ config.settings.database.engine.driver? # => true (true => true)
 
 ### Load from YAML file
 
+- `:strict` mode (fail behaviour when the required yaml file doesnt exist):
+  - `true` (by default) - causes `Qonfig::FileNotFoundError`;
+  - `false` - do nothing, ignore current command;
+
 ```yaml
 <!-- travis.yml -->
 sudo: false
@@ -431,6 +435,30 @@ config.settings.enable_api # => false
 config.settings['Sidekiq/Scheduler']['enable'] #=> true
 config.settings.ruby.version # => '2.5.1'
 config.settings.ruby.platform # => 'x86_64-darwin17'
+```
+
+```ruby
+# --- strict mode ---
+class Config < Qonfig::DataSet
+  setting :unexistend_yaml do
+    load_from_yaml 'unexistent_file.yml', strict: true # true by default
+  end
+
+  setting :another_key
+end
+
+Config.new # => Qonfig::FileNotFoundError
+
+# --- non-strict mode ---
+class Config < Qonfig::DataSet
+  settings :unexistend_yaml do
+    load_from_yaml 'unexistent_file.yml', strict: false
+  end
+
+  setting :another_key
+end
+
+Config.new.to_h # => { "unexistend_yaml" => {}, "another_key" => nil }
 ```
 
 ---
