@@ -5,9 +5,6 @@ module Qonfig
   # @since 0.1.0
   Error = Class.new(StandardError)
 
-  # @see Qonfig::Settings
-  # @see Qonfig::DSL
-  #
   # @api public
   # @since 0.1.0
   ArgumentError = Class.new(Error)
@@ -25,12 +22,16 @@ module Qonfig
   AmbiguousSettingValueError = Class.new(Error)
 
   # @see Qonfig::Settings
+  # @see Qonfig::Settings::KeyGuard
+  # @see Qonfig::Commands::AddOption
+  # @see Qonfig::Commands::AddNestedOption
   #
   # @api public
   # @since 0.2.0
   CoreMethodIntersectionError = Class.new(Error)
 
   # @see Qonfig::Settings
+  # @see Qonfig::DataSet
   #
   # @api public
   # @since 0.1.0
