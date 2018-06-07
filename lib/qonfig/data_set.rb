@@ -71,13 +71,13 @@ module Qonfig
     end
     alias_method :to_hash, :to_h
 
-    # @param setting_key [String, Symbol]
+    # @param key [String, Symbol]
     # @return [Object]
     #
     # @api public
     # @since 0.2.0
-    def [](setting_key)
-      thread_safe_access { settings[setting_key] }
+    def [](key)
+      thread_safe_access { settings[key] }
     end
 
     # @param keys [Array<String, Symbol>]
