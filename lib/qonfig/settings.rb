@@ -308,7 +308,9 @@ module Qonfig
     # @api private
     # @since 0.2.0
     CORE_METHODS = Array(
-      instance_methods(false) | private_instance_methods(false)
+      instance_methods(false) |
+      private_instance_methods(false) |
+      %i[super raise define_singleton_method]
     ).map(&:to_s).freeze
   end
 

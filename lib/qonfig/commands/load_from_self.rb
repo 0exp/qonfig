@@ -37,21 +37,17 @@ module Qonfig
       # @return [Hash]
       #
       # @raise [Qonfig::SelfDataNotFound]
-      # @raise [Qonfig::IncompatibleYamlError]
+      # @raise [Qonfig::IncompatibleYAMLStructureError]
       #
       # @api private
       # @since 0.2.0
       def load_self_placed_yaml_data
         caller_file = caller_location.split(':').first
 
-        # :nocov:
-        unless File.exist?(caller_file)
-          raise(
-            Qonfig::SelfDataNotFoundError,
-            "Caller file does not exist! (location: #{caller_location})"
-          )
-        end
-        # :nocov:
+        raise(
+          Qonfig::SelfDataNotFoundError,
+          "Caller file does not exist! (location: #{caller_location})"
+        ) unless File.exist?(caller_file)
 
         data_match = IO.read(caller_file).match(/\n__END__\n(?<end_data>.*)/m)
         raise Qonfig::SelfDataNotFoundError, '__END__ data not found!' unless data_match
@@ -60,9 +56,10 @@ module Qonfig
         raise Qonfig::SelfDataNotFoundError, '__END__ data not found!' unless end_data
 
         yaml_data = Qonfig::Loaders::YAML.load(end_data)
-        unless yaml_data.is_a?(Hash)
-          raise Qonfig::IncompatibleYAMLError, 'YAML data should have a hash-like structure'
-        end
+        raise(
+          Qonfig::IncompatibleYAMLStructureError,
+          'YAML content should have a hash-like structure'
+        ) unless yaml_data.is_a?(Hash)
 
         yaml_data
       end

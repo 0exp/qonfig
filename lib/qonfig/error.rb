@@ -49,7 +49,13 @@ module Qonfig
   #
   # @api public
   # @since 0.2.0
-  IncompatibleYAMLError = Class.new(Error)
+  IncompatibleYAMLStructureError = Class.new(Error)
+
+  # @see Qonfig::Loaders::YAML
+  #
+  # @api public
+  # @since 0.2.0
+  FileNotFoundError = Class.new(Errno::ENOENT)
 
   # @see Qonfig::Commands::LoadFromSelf
   #
