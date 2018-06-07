@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.2.0] - 2018-06-17
+## [0.2.0] - 2018-06-07
 ### Added
 - Instant configuration via block `config = Config.new { |conf| <<your configuration code>> }`;
 - `.load_from_env` command - an ability to define config settings by loading them from ENV variable;
