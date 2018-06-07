@@ -80,7 +80,10 @@ Metrics/AbcSize:
   Max: 19
 
 Metrics/CyclomaticComplexity:
-  Max: 8
+  Max: 10
+
+Metrics/PerceivedComplexity:
+  Max: 10
 
 Style/ClassAndModuleChildren:
   Enabled: false
