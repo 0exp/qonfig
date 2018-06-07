@@ -14,7 +14,7 @@ module Qonfig
     # @since 0.1.0
     def initialize
       @commands = []
-      @__access_lock__ = Mutex.new
+      @access_lock = Mutex.new
     end
 
     # @param command [Qonfig::Commands::Base]
@@ -63,7 +63,7 @@ module Qonfig
     # @api private
     # @since 0.2.0
     def thread_safe(&block)
-      @__access_lock__.synchronize(&block)
+      @access_lock.synchronize(&block)
     end
   end
 end

@@ -4,7 +4,8 @@ describe 'Core methods redefinition' do
   specify 'fails when setting key intersects with any internal Qonfig::Settings core method' do
     core_methods = (
       Qonfig::Settings.instance_methods(false) |
-      Qonfig::Settings.private_instance_methods(false)
+      Qonfig::Settings.private_instance_methods(false) |
+      %i[define_singleton_method super raise]
     )
 
     expect(core_methods).not_to include(:super_test_key)

@@ -6,7 +6,7 @@ describe 'Load from self (non-hash-like __END__ data representation)' do
       load_from_self
     end
 
-    expect { IncompatibleSelfDataConfig.new }.to raise_error(Qonfig::IncompatibleYAMLError)
+    expect { IncompatibleSelfDataConfig.new }.to raise_error(Qonfig::IncompatibleYAMLStructureError)
   end
 end
 

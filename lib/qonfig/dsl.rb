@@ -61,14 +61,15 @@ module Qonfig
     end
 
     # @param file_path [String]
+    # @option strict [Boolean]
     # @return [void]
     #
     # @see Qonfig::Commands::LoadFromYAML
     #
     # @api public
     # @since 0.2.0
-    def load_from_yaml(file_path)
-      commands << Qonfig::Commands::LoadFromYAML.new(file_path)
+    def load_from_yaml(file_path, strict: true)
+      commands << Qonfig::Commands::LoadFromYAML.new(file_path, strict: strict)
     end
 
     # @return [void]
@@ -90,10 +91,11 @@ module Qonfig
     #
     # @api public
     # @since 0.2.0
-    def load_from_env(convert_values: false, prefix: nil)
+    def load_from_env(convert_values: false, prefix: nil, trim_prefix: false)
       commands << Qonfig::Commands::LoadFromENV.new(
         convert_values: convert_values,
-        prefix: prefix
+        prefix: prefix,
+        trim_prefix: trim_prefix
       )
     end
   end

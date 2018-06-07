@@ -32,7 +32,7 @@ require 'qonfig'
 - [Settings as Predicates](#settings-as-predicates)
 - [Load from YAML file](#load-from-yaml-file)
 - [Load from ENV](#load-from-env)
-- [Load from \_\_END\_\_](#load-from-end) (aka `load_from_self`)
+- [Load from \_\_END\_\_](#load-from-__end__) (aka `load_from_self`)
 - [Smart Mixin](#smart-mixin) (`Qonfig::Configurable`)
 
 ---
@@ -387,6 +387,10 @@ config.settings.database.engine.driver? # => true (true => true)
 
 ### Load from YAML file
 
+- `:strict` mode (fail behaviour when the required yaml file doesnt exist):
+  - `true` (by default) - causes `Qonfig::FileNotFoundError`;
+  - `false` - do nothing, ignore current command;
+
 ```yaml
 <!-- travis.yml -->
 sudo: false
@@ -433,6 +437,30 @@ config.settings.ruby.version # => '2.5.1'
 config.settings.ruby.platform # => 'x86_64-darwin17'
 ```
 
+```ruby
+# --- strict mode ---
+class Config < Qonfig::DataSet
+  setting :nonexistent_yaml do
+    load_from_yaml 'unexistent_file.yml', strict: true # true by default
+  end
+
+  setting :another_key
+end
+
+Config.new # => Qonfig::FileNotFoundError
+
+# --- non-strict mode ---
+class Config < Qonfig::DataSet
+  settings :nonexistent_yaml do
+    load_from_yaml 'unexistent_file.yml', strict: false
+  end
+
+  setting :another_key
+end
+
+Config.new.to_h # => { "nonexistent_yaml" => {}, "another_key" => nil }
+```
+
 ---
 
 ### Load from ENV
@@ -449,6 +477,7 @@ config.settings.ruby.platform # => 'x86_64-darwin17'
   - `nil` (by default) - empty prefix;
   - `Regexp` - names that match the regexp pattern;
   - `String` - names which starts with a passed string;
+- `:trim_prefix` (`false` by default);
 
 ```ruby
 # some env variables
@@ -465,6 +494,10 @@ class Config < Qonfig::DataSet
     load_from_env convert_values: true, prefix: 'QONFIG' # or /\Aqonfig.*\z/i
   end
 
+  setting :trimmed do
+    load_from_env convert_values: true, prefix: 'QONFIG_', trim_prefix: true # trim prefix
+  end
+
   # on the root
   load_from_env
 end
@@ -478,6 +511,14 @@ config.settings['qonfig']['QONFIG_STRING'] # => 'none'
 config.settings['qonfig']['QONFIG_ARRAY'] # => [1, 2.5, true, false, 'TEST']
 config.settings['qonfig']['QONFIG_MESSAGE'] # => 'Hello, Qonfig!'
 config.settings['qonfig']['RUN_CI'] # => Qonfig::UnknownSettingError
+
+# trimmed (and customized)
+config.settings['trimmed']['BOOLEAN'] # => true ('true' => true)
+config.settings['trimmed']['INTEGER'] # => 0 ('0' => 0)
+config.settings['trimmed']['STRING'] # => 'none'
+config.settings['trimmed']['ARRAY'] # => [1, 2.5, true, false, 'TEST']
+config.settings['trimmed']['MESSAGE'] # => 'Hello, Qonfig!'
+config.settings['trimmed']['RUN_CI'] # => Qonfig::UnknownSettingError
 
 # default
 config.settings['QONFIG_BOOLEAN'] # => 'true'
