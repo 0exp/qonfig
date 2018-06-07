@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module Qonfig
+  # rubocop:disable Metrics/ClassLength
+
   # @api private
   # @since 0.1.0
   class Settings
@@ -14,31 +16,32 @@ module Qonfig
     # @since 0.1.0
     def initialize
       @__options__ = {}
+      @__lock__ = Lock.new
     end
 
-    # @param key [Symbol,String]
+    # @param key [Symbol, String]
     # @param value [Object]
     # @return [void]
     #
     # @api private
     # @since 0.1.0
     def __define_setting__(key, value)
-      # :nocov:
-      unless key.is_a?(Symbol) || key.is_a?(String)
-        raise Qonfig::ArgumentError, 'Setting key should be a symbol or a string'
-      end
-      # :nocov:
+      __lock__.thread_safe_definition do
+        key = __indifferently_accessable_option_key__(key)
 
-      case
-      when !__options__.key?(key)
-        __options__[key] = value
-      when __options__[key].is_a?(Qonfig::Settings) && value.is_a?(Qonfig::Settings)
-        __options__[key].__append_settings__(value)
-      else
-        __options__[key] = value
-      end
+        __prevent_core_method_intersection__(key)
 
-      __define_accessor__(key)
+        case
+        when !__options__.key?(key)
+          __options__[key] = value
+        when __options__[key].is_a?(Qonfig::Settings) && value.is_a?(Qonfig::Settings)
+          __options__[key].__append_settings__(value)
+        else
+          __options__[key] = value
+        end
+
+        __define_accessor__(key)
+      end
     end
 
     # @param settings [Qonfig::Settings]
@@ -47,22 +50,20 @@ module Qonfig
     # @api private
     # @since 0.1.0
     def __append_settings__(settings)
-      settings.__options__.each_pair do |key, value|
-        __define_setting__(key, value)
+      __lock__.thread_safe_merge do
+        settings.__options__.each_pair do |key, value|
+          __define_setting__(key, value)
+        end
       end
     end
 
-    # @param key [Symbol,String]
+    # @param key [Symbol, String]
     # @return [Object]
     #
     # @api public
     # @since 0.1.0
     def [](key)
-      unless __options__.key?(key)
-        raise Qonfig::UnknownSettingError, "Setting with <#{key}> key does not exist!"
-      end
-
-      __options__[key]
+      __lock__.thread_safe_access { __get_value__(key) }
     end
 
     # @param key [String, Symbol]
@@ -72,27 +73,33 @@ module Qonfig
     # @api public
     # @since 0.1.0
     def []=(key, value)
-      unless __options__.key?(key)
-        raise Qonfig::UnknownSettingError, "Setting with <#{key}> key does not exist!"
-      end
+      __lock__.thread_safe_access { __set_value__(key, value) }
+    end
 
-      if __options__.frozen?
-        raise Qonfig::FrozenSettingsError, 'Can not modify frozen Settings'
-      end
-
-      __options__[key] = value
+    # @param keys [Array<String, Symbol>]
+    # @return [Object]
+    #
+    # @api private
+    # @since 0.2.0
+    def __dig__(*keys)
+      __lock__.thread_safe_access { __deep_access__(*keys) }
     end
 
     # @return [Hash]
     #
-    # @api public
+    # @api private
     # @since 0.1.0
     def __to_hash__
-      __options__.dup.tap do |hash|
-        __options__.each_pair do |key, value|
-          hash[key] = value.is_a?(Qonfig::Settings) ? value.__to_hash__ : value
-        end
-      end
+      __lock__.thread_safe_access { __build_hash_representation__ }
+    end
+    alias_method :__to_h__, :__to_hash__
+
+    # @return [void]
+    #
+    # @api private
+    # @since 0.2.0
+    def __clear__
+      __lock__.thread_safe_access { __clear_option_values__ }
     end
 
     # @param method_name [String, Symbol]
@@ -100,7 +107,9 @@ module Qonfig
     # @param block [Proc]
     # @return [void]
     #
-    # @api public
+    # @raise [Qonfig::UnknownSettingError]
+    #
+    # @api private
     # @since 0.1.0
     def method_missing(method_name, *arguments, &block)
       super
@@ -110,7 +119,7 @@ module Qonfig
 
     # @return [Boolean]
     #
-    # @api public
+    # @api private
     # @since 0.1.0
     def respond_to_missing?(method_name, include_private = false)
       # :nocov:
@@ -123,35 +132,187 @@ module Qonfig
     # @api private
     # @since 0.1.0
     def __freeze__
-      __options__.freeze
+      __lock__.thread_safe_access do
+        __options__.freeze
 
-      __options__.each_value do |value|
-        value.__freeze__ if value.is_a?(Qonfig::Settings)
+        __options__.each_value do |value|
+          value.__freeze__ if value.is_a?(Qonfig::Settings)
+        end
       end
+    end
+
+    # @return [Boolean]
+    #
+    # @api private
+    # @since 0.2.0
+    def __is_frozen__
+      __lock__.thread_safe_access { __options__.frozen? }
     end
 
     private
 
-    # @param key [Symbol,String]
+    # @return [void]
+    #
+    # @api private
+    # @since 0.2.0
+    def __clear_option_values__
+      __options__.each_pair do |key, value|
+        if value.is_a?(Qonfig::Settings)
+          value.__clear__
+        else
+          __options__[key] = nil
+        end
+      end
+    end
+
+    # @param key [String, Symbol]
     # @return [Object]
+    #
+    # @raise [Qonfig::UnknownSettingError]
+    #
+    # @api private
+    # @since 0.2.0
+    def __get_value__(key)
+      key = __indifferently_accessable_option_key__(key)
+
+      unless __options__.key?(key)
+        raise Qonfig::UnknownSettingError, "Setting with <#{key}> key does not exist!"
+      end
+
+      __options__[key]
+    end
+
+    # @param key [String, Symbol]
+    # @param value [Object]
+    # @return [void]
+    #
+    # @raise [Qonfig::UnknownSettingError]
+    # @raise [Qonfig::FrozenSettingsError]
+    # @raise [Qonfig::AmbiguousSettingValueError]
+    #
+    # @api private
+    # @since 0.2.0
+    def __set_value__(key, value)
+      key = __indifferently_accessable_option_key__(key)
+
+      unless __options__.key?(key)
+        raise Qonfig::UnknownSettingError, "Setting with <#{key}> key does not exist!"
+      end
+
+      if __options__.frozen?
+        raise Qonfig::FrozenSettingsError, 'Can not modify frozen settings'
+      end
+
+      if __options__[key].is_a?(Qonfig::Settings)
+        raise Qonfig::AmbiguousSettingValueError, 'Can not redefine option with nested options'
+      end
+
+      __options__[key] = value
+    end
+
+    # @param keys [Array<Symbol, String>]
+    # @option result [Object]
+    # @return [Object]
+    #
+    # @raise [Qonfig::ArgumentError]
+    # @raise [Qonfig::UnknownSettingError]
+    #
+    # @api private
+    # @since 0.2.0
+    def __deep_access__(*keys)
+      raise Qonfig::ArgumentError, 'Key list can not be empty' if keys.empty?
+
+      result = __get_value__(keys.first)
+      rest_keys = Array(keys[1..-1])
+
+      case
+      when rest_keys.empty?
+        result
+      when !result.is_a?(Qonfig::Settings)
+        raise(Qonfig::UnknownSettingError, 'Setting with required digging sequence does not exist!')
+      when result.is_a?(Qonfig::Settings)
+        result.__dig__(*rest_keys)
+      end
+    end
+
+    # @return [Qonfig::Settings::Lock]
+    #
+    # @api private
+    # @since 0.2.0
+    attr_reader :__lock__
+
+    # @param options_part [Hash]
+    # @return [Hash]
+    #
+    # @api private
+    # @since 0.2.0
+    def __build_hash_representation__(options_part = __options__)
+      options_part.each_with_object({}) do |(key, value), hash|
+        case
+        when value.is_a?(Hash)
+          hash[key] = __build_hash_representation__(value)
+        when value.is_a?(Qonfig::Settings)
+          hash[key] = value.__to_hash__
+        else
+          hash[key] = value
+        end
+      end
+    end
+
+    # @param key [Symbol, String]
+    # @return [void]
     #
     # @api private
     # @since 0.1.0
     def __define_accessor__(key)
-      begin
-        singleton_class.send(:undef_method, key)
-      rescue NameError
+      define_singleton_method(key) do
+        self.[](key)
       end
 
-      begin
-        singleton_class.send(:undef_method, "#{key}=")
-      rescue NameError
-      end
-
-      define_singleton_method(key) { self.[](key) }
       define_singleton_method("#{key}=") do |value|
         self.[]=(key, value)
-      end unless __options__[key].is_a?(Qonfig::Settings)
+      end
+
+      define_singleton_method("#{key}?") do
+        !!self.[](key)
+      end
     end
+
+    # @param key [Symbol, String]
+    # @return [String]
+    #
+    # @raise [Qonfig::ArgumentError]
+    # @see Qonfig::Settings::KeyGuard
+    #
+    # @api private
+    # @since 0.2.0
+    def __indifferently_accessable_option_key__(key)
+      KeyGuard.new(key).prevent_incompatible_key_type!
+      key.to_s
+    end
+
+    # @param key [Symbol, String]
+    # @return [void]
+    #
+    # @raise [Qonfig::CoreMethodIntersectionError]
+    # @see Qonfig::Settings::KeyGuard
+    #
+    # @api private
+    # @since 0.2.0
+    def __prevent_core_method_intersection__(key)
+      KeyGuard.new(key).prevent_core_method_intersection!
+    end
+
+    # @return [Array<String>]
+    #
+    # @api private
+    # @since 0.2.0
+    CORE_METHODS = Array(
+      instance_methods(false) |
+      private_instance_methods(false) |
+      %i[super raise define_singleton_method]
+    ).map(&:to_s).freeze
   end
+
+  # rubocop:enable Metrics/ClassLength
 end

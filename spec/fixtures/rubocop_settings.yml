@@ -1,0 +1,12 @@
+require: rubocop-rspec
+
+AllCops:
+  Include:
+    - lib/**/*
+    - spec/**/*
+  Exclude:
+    - bin/**/*
+    - Gemfile
+
+Metrics/LineLength:
+  Max: 100

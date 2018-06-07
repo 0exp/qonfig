@@ -1,0 +1,10 @@
+enable_api: false
+run_sidekiq: true
+
+default: &default
+  test: true
+  engine: rspec
+
+staging:
+  <<: *default
+  engine: minitest

@@ -59,11 +59,20 @@ describe 'Config definition' do
 
     # hash representation
     expect(config.to_h).to match(
-      serializers: { json: :native, xml: :native },
-      defaults: nil,
-      shared: { convert: false },
-      mutations: { action: { query: nil } },
-      steps: 22
+      'serializers' => {
+        'json' => :native,
+        'xml' => :native
+      },
+      'defaults' => nil,
+      'shared' => {
+        'convert' => false
+      },
+      'mutations' => {
+        'action' => {
+          'query' => nil
+        }
+      },
+      'steps' => 22
     )
 
     # configuration via block (classic style)
@@ -122,6 +131,26 @@ describe 'Config definition' do
     expect(config.settings[:mutations][:action][:query]).to eq(:upsert)
     expect(config.settings[:steps]).to eq(1234)
 
+    # instant configuration via proc
+    config = SimpleConfig.new do |conf|
+      conf.serializers.json = :native
+      conf.serializers.xml = :native
+      conf.mutations.action.query = 'delete'
+      conf.steps = 0
+    end
+
+    # access via method named as a setting key
+    expect(config.settings.serializers.json).to eq(:native)
+    expect(config.settings.serializers.xml).to eq(:native)
+    expect(config.settings.mutations.action.query).to eq('delete')
+    expect(config.settings.steps).to eq(0)
+
+    # access via option index named as a setting key
+    expect(config.settings[:serializers][:json]).to eq(:native)
+    expect(config.settings[:serializers][:xml]).to eq(:native)
+    expect(config.settings[:mutations][:action][:query]).to eq('delete')
+    expect(config.settings[:steps]).to eq(0)
+
     # attempt to get an access to the unexistent setting
     expect { config.settings.deserialization }.to raise_error(Qonfig::UnknownSettingError)
     expect { config.settings.mutations.global }.to raise_error(Qonfig::UnknownSettingError)
@@ -131,11 +160,20 @@ describe 'Config definition' do
 
     # hash representation
     expect(config.to_h).to match(
-      serializers: { json: 'pararam', xml: 'tratata' },
-      defaults: nil,
-      shared: { convert: false },
-      mutations: { action: { query: :upsert } },
-      steps: 1234
+      'serializers' => {
+        'json' => :native,
+        'xml' => :native
+      },
+      'defaults' => nil,
+      'shared' => {
+        'convert' => false
+      },
+      'mutations' => {
+        'action' => {
+          'query' => 'delete'
+        }
+      },
+      'steps' => 0
     )
   end
 
@@ -154,27 +192,87 @@ describe 'Config definition' do
     end.not_to raise_error
   end
 
-  specify 'freezing' do
-    class FrozenableConfig < Qonfig::DataSet
-      setting :api_mode_enabled, true
-
-      setting :api do
-        setting :format, :json
+  specify 'causes an error when tries to assign a setting value to an option ' \
+          'which already have another nested options' do
+    class WithNestedOptionsConfig < Qonfig::DataSet
+      setting :database do
+        setting :hostname, 'localhost'
       end
     end
 
-    frozen_config = FrozenableConfig.new
+    config = WithNestedOptionsConfig.new
 
-    frozen_config.configure do |conf|
-      expect { conf.api_mode_enabled = nil }.not_to raise_error
-      expect { conf.api.format = :plain_text }.not_to raise_error
+    expect do
+      config.configure { |conf| conf.database = double }
+    end.to raise_error(Qonfig::AmbiguousSettingValueError)
+
+    expect do
+      config.configure { |conf| conf[:database] = double }
+    end.to raise_error(Qonfig::AmbiguousSettingValueError)
+
+    expect do
+      config.configure { |conf| conf[:database][:hostname] = double }
+    end.not_to raise_error
+
+    expect do
+      config.configure { |conf| conf.database.hostname = double }
+    end.not_to raise_error
+  end
+
+  specify 'fails when tries to use a non-string/non-symbol value as a setting key' do
+    incorrect_key_values = [123, Object.new, 15.1, (proc {}), Class.new, true, false]
+    correct_key_values   = ['test', :test]
+
+    incorrect_key_values.each do |incorrect_key|
+      # check root
+      expect do
+        Class.new(Qonfig::DataSet) { setting incorrect_key }
+      end.to raise_error(Qonfig::ArgumentError)
+
+      # check nested
+      expect do
+        Class.new(Qonfig::DataSet) do
+          setting incorrect_key do
+            setting :any
+          end
+        end
+      end.to raise_error(Qonfig::ArgumentError)
+
+      # check nested
+      expect do
+        Class.new(Qonfig::DataSet) do
+          setting :any do
+            setting incorrect_key
+          end
+        end
+      end.to raise_error(Qonfig::ArgumentError)
     end
 
-    frozen_config.freeze!
+    correct_key_values.each do |correct_key|
+      # check root
+      expect do
+        Class.new(Qonfig::DataSet) do
+          setting correct_key
+        end
+      end.not_to raise_error
 
-    frozen_config.configure do |conf|
-      expect { conf.api_mode_enabled = false }.to raise_error(Qonfig::FrozenSettingsError)
-      expect { conf.api.format = :xml }.to raise_error(Qonfig::FrozenSettingsError)
+      # check nested
+      expect do
+        Class.new(Qonfig::DataSet) do
+          setting correct_key do
+            setting :any
+          end
+        end
+      end.not_to raise_error
+
+      # check nested do
+      expect do
+        Class.new(Qonfig::DataSet) do
+          setting :any do
+            setting correct_key
+          end
+        end
+      end.not_to raise_error
     end
   end
 end

@@ -5,26 +5,33 @@ module Qonfig
     # @api private
     # @since 0.1.0
     class AddNestedOption < Base
-      # @return [String,Symbol]
+      # @return [Symbol, String]
       #
       # @api private
       # @since 0.1.0
       attr_reader :key
 
-      # @return [Proc]
+      # @return [Class<Qonfig::DataSet>]
       #
       # @api private
-      # @since 0.1.0
-      attr_reader :nested_definitions
+      # @since 0.2.0
+      attr_reader :nested_data_set_klass
 
-      # @param key [String,Symbol]
+      # @param key [Symbol, String]
       # @param nested_definitions [Proc]
+      #
+      # @raise [Qonfig::ArgumentError]
+      # @raise [Qonfig::CoreMethodIntersectionError]
       #
       # @api private
       # @since 0.1.0
       def initialize(key, nested_definitions)
+        Qonfig::Settings::KeyGuard.prevent_incomparabilities!(key)
+
         @key = key
-        @nested_definitions = nested_definitions
+        @nested_data_set_klass = Class.new(Qonfig::DataSet).tap do |data_set|
+          data_set.instance_eval(&nested_definitions)
+        end
       end
 
       # @param settings [Qonfig::Settings]
@@ -33,11 +40,7 @@ module Qonfig
       # @api private
       # @since 0.1.0
       def call(settings)
-        nested_data_set = Class.new(Qonfig::DataSet).tap do |data_set|
-          data_set.instance_eval(&nested_definitions)
-        end
-
-        nested_settings = nested_data_set.new.settings
+        nested_settings = nested_data_set_klass.new.settings
 
         settings.__define_setting__(key, nested_settings)
       end

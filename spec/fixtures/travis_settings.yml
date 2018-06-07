@@ -1,0 +1,6 @@
+sudo: false
+language: ruby
+rvm:
+  - 2.5.1
+  - ruby-head
+  - jruby-head

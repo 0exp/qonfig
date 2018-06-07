@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.summary     = 'Config object'
   spec.description = 'Config. Defined as a class. Used as an instance. ' \
                      'Support for inheritance and composition. ' \
-                     'Command-style DSL. Lazy instantiation.' \
+                     'Lazy instantiation. Thread-safe. Command-style DSL. ' \
                      'Extremely simple to define. Extremely simple to use. That\'s all.'
   spec.homepage    = 'https://github.com/0exp/qonfig'
   spec.license     = 'MIT'
@@ -30,9 +30,9 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'coveralls',      '~> 0.8'
   spec.add_development_dependency 'simplecov',      '~> 0.14'
   spec.add_development_dependency 'simplecov-json', '~> 0.2'
-  spec.add_development_dependency 'rubocop',        '~> 0.55'
+  spec.add_development_dependency 'rubocop',        '~> 0.57'
   spec.add_development_dependency 'rspec',          '~> 3.7'
-  spec.add_development_dependency 'rubocop-rspec',  '~> 1.25'
+  spec.add_development_dependency 'rubocop-rspec',  '~> 1.26'
 
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'rake'
