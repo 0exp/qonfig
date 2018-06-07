@@ -32,7 +32,7 @@ require 'qonfig'
 - [Settings as Predicates](#settings-as-predicates)
 - [Load from YAML file](#load-from-yaml-file)
 - [Load from ENV](#load-from-env)
-- [Load from \_\_END\_\_](#load-from-end) (aka `load_from_self`)
+- [Load from \_\_END\_\_](#load-from-__end__) (aka `load_from_self`)
 - [Smart Mixin](#smart-mixin) (`Qonfig::Configurable`)
 
 ---
