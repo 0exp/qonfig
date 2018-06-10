@@ -58,12 +58,13 @@ module Qonfig
         end
       end
 
+      # @param options_map [Hash]
       # @param block [Proc]
       # @return [void]
       #
       # @api public
       # @since 0.2.0
-      def configure(&block)
+      def configure(options_map = {}, &block) # settings hash as an attribute
         @__qonfig_access_lock__.synchronize do
           config.configure(&block) if block_given?
         end
@@ -93,12 +94,13 @@ module Qonfig
         end
       end
 
+      # @param options_map [Hash]
       # @param block [Proc]
       # @return [void]
       #
       # @api public
       # @since 0.2.0
-      def configure(&block)
+      def configure(options_map = {}, &block) # settings hash as an attribute
         self.class.instance_variable_get(:@__qonfig_access_lock__).synchronize do
           config.configure(&block) if block_given?
         end

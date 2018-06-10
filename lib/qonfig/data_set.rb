@@ -13,15 +13,16 @@ module Qonfig
     # @since 0.1.0
     attr_reader :settings
 
+    # @param options_map [Hash]
     # @param configurations [Proc]
     #
     # @api public
     # @since 0.1.0
-    def initialize(&configurations)
+    def initialize(options_map = {}, &configurations)
       @__access_lock__ = Mutex.new
       @__definition_lock__ = Mutex.new
 
-      thread_safe_definition { load!(&configurations) }
+      thread_safe_definition { load!(options_map, &configurations) }
     end
 
     # @return [void]
@@ -40,6 +41,7 @@ module Qonfig
       thread_safe_access { settings.__is_frozen__ }
     end
 
+    # @param options_map [Hash]
     # @param configurations [Proc]
     # @return [void]
     #
@@ -47,18 +49,19 @@ module Qonfig
     #
     # @api public
     # @since 0.2.0
-    def reload!(&configurations)
+    def reload!(options_map = {}, &configurations) # settings hash as an attribute
       thread_safe_definition do
         raise Qonfig::FrozenSettingsError, 'Frozen config can not be reloaded' if frozen?
-        load!(&configurations)
+        load!(options_map, &configurations)
       end
     end
 
+    # @param options_map [Hash]
     # @return [void]
     #
     # @api public
     # @since 0.1.0
-    def configure
+    def configure(options_map = {})
       thread_safe_access { yield(settings) if block_given? }
     end
 
@@ -107,14 +110,15 @@ module Qonfig
       Qonfig::Settings::Builder.build(self.class.commands.dup)
     end
 
+    # @param options_map [Hash]
     # @param configurations [Proc]
     # @return [void]
     #
     # @api private
     # @since 0.2.0
-    def load!(&configurations)
+    def load!(options_map = {}, &configurations) # settings hash as an attribute
       @settings = build_settings
-      configure(&configurations) if block_given?
+      configure(options_map, &configurations) if block_given?
     end
 
     # @param instructions [Proc]
