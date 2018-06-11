@@ -5,7 +5,7 @@ describe 'Core methods redefinition' do
     core_methods = (
       Qonfig::Settings.instance_methods(false) |
       Qonfig::Settings.private_instance_methods(false) |
-      %i[define_singleton_method super raise]
+      %i[define_singleton_method super self]
     )
 
     expect(core_methods).not_to include(:super_test_key)
