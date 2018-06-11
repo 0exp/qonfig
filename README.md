@@ -539,7 +539,7 @@ config.settings['RUN_CI'] # => '1'
 class Config < Qonfig::DataSet
   load_from_self # on the root
 
-  setting :clowd do
+  setting :nested do
     load_from_self # nested
   end
 end
