@@ -199,6 +199,8 @@ module Qonfig
 
     # @return [void]
     #
+    # @raise [Qonfig::FrozenSettingsError]
+    #
     # @api private
     # @since 0.2.0
     def __clear_option_values__
