@@ -169,6 +169,9 @@ module Qonfig
     # @param options_map [Hash]
     # @return [void]
     #
+    # @raise [Qonfig::ArgumentError]
+    # @raise [Qonfig::AmbiguousSettingValueError]
+    #
     # @api private
     # @since 0.3.0
     def __set_values_from_map__(options_map)
