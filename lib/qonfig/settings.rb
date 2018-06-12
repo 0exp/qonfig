@@ -151,6 +151,12 @@ module Qonfig
 
     private
 
+    # @return [Qonfig::Settings::Lock]
+    #
+    # @api private
+    # @since 0.2.0
+    attr_reader :__lock__
+
     # @return [void]
     #
     # @api private
@@ -240,12 +246,6 @@ module Qonfig
         result.__dig__(*rest_keys)
       end
     end
-
-    # @return [Qonfig::Settings::Lock]
-    #
-    # @api private
-    # @since 0.2.0
-    attr_reader :__lock__
 
     # @param options_part [Hash]
     # @return [Hash]
