@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.3.0] - 2018-06-13
 ### Added
 - Improved configuration process: `#configure` can take a hash as a configuration `[option key => option]`
   map of values;
