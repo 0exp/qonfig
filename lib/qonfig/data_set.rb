@@ -102,6 +102,13 @@ module Qonfig
 
     private
 
+    # @return [void]
+    #
+    # @api private
+    # @since 0.3.0
+    def apply_hash_settings
+    end
+
     # @return [Qonfig::Settings]
     #
     # @api private
