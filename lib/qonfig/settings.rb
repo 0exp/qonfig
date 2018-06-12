@@ -179,11 +179,13 @@ module Qonfig
       options_map.each_pair do |key, value|
         current_value = __get_value__(key)
 
-        if !current_value.is_a?(Qonfig::Settings)
+        # NOTE: some duplications here was made only for the better code readability
+        case
+        when !current_value.is_a?(Qonfig::Settings)
           __set_value__(key, value)
-        elsif value.is_a?(Hash)
+        when current_value.is_a?(Qonfig::Settings) && value.is_a?(Hash)
           current_value.__apply_values__(value)
-        else
+        when current_value.is_a?(Qonfig::Settings) && !value.is_a?(Hash)
           ::Kernel.raise(
             Qonfig::AmbiguousSettingValueError,
             "Can not redefine option <#{key}> that contains nested options"
