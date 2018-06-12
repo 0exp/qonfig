@@ -354,6 +354,7 @@ config.settings.worker = :que # => Qonfig::FrozenSettingsError
 config.settings.db.adapter = 'mongoid' # => Qonfig::FrozenSettingsError
 
 config.reload! # => Qonfig::FrozenSettingsError
+config.clear! # => Qonfig::FrozenSettingsError
 ```
 
 ---

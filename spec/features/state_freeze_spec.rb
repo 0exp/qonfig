@@ -23,6 +23,7 @@ describe 'State freeze' do
       setting :additionals, false
     end
 
+    expect { frozen_config.clear! }.not_to raise_error
     expect { frozen_config.reload! }.not_to raise_error
 
     frozen_config.freeze!
@@ -50,11 +51,14 @@ describe 'State freeze' do
     end
 
     expect { frozen_config.reload! }.to raise_error(Qonfig::FrozenSettingsError)
+    expect { frozen_config.clear! }.to raise_error(Qonfig::FrozenSettingsError)
 
     if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.5.0')
       expect { frozen_config.reload! }.to raise_error(::FrozenError)
+      expect { frozen_config.clear! }.to raise_error(::FrozenError)
     else
       expect { frozen_config.reload! }.to raise_error(::RuntimeError)
+      expect { frozen_config.clear! }.to raise_error(::RuntimeError)
     end
 
     expect(frozen_config.to_h).to match(

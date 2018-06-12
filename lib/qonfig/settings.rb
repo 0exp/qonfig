@@ -202,6 +202,10 @@ module Qonfig
     # @api private
     # @since 0.2.0
     def __clear_option_values__
+      ::Kernel.raise(
+        Qonfig::FrozenSettingsError, 'Can not modify frozen settings'
+      ) if __options__.frozen?
+
       __options__.each_pair do |key, value|
         if value.is_a?(Qonfig::Settings)
           value.__clear__
