@@ -3,7 +3,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
-- Improved configuration process: `#configure` can take a hash as a configuration `[option key => option]` value map;
+- Improved configuration process: `#configure` can take a hash as a configuration `[option key => option]`
+  map of values;
 
 ## [0.2.0] - 2018-06-07
 ### Added
