@@ -177,6 +177,140 @@ describe 'Config definition' do
     )
   end
 
+  specify 'configuration via hash / hash + proc (instant and not)' do
+    class HashConfigurableConfig < Qonfig::DataSet
+      setting :a do
+        setting :b
+        setting :c
+      end
+
+      setting :d
+      setting :e
+    end
+
+    # configure by hash (via .new)
+    config = HashConfigurableConfig.new(
+      a: {
+        b: { g: 33 },
+        c: 2
+      },
+      d: 33,
+      e: { f: 49 }
+    )
+    expect(config.to_h).to match(
+      'a' => {
+        'b' => { g: 33 },
+        'c' => 2
+      },
+      'd' => 33,
+      'e' => { f: 49 }
+    )
+
+    # configure by hash (via #configure)
+    config = HashConfigurableConfig.new
+    config.configure(
+      a: {
+        b: 'test',
+        c: 'no_test'
+      },
+      d: 100_500,
+      e: false
+    )
+    expect(config.to_h).to match(
+      'a' => {
+        'b' => 'test',
+        'c' => 'no_test'
+      },
+      'd' => 100_500,
+      'e' => false
+    )
+
+    # mixed: configure by hash + proc (via .new)
+    config = HashConfigurableConfig.new(d: false, e: true) do |conf|
+      conf.a.b = 123
+      conf.a.c = 456
+    end
+    expect(config.to_h).to match(
+      'a' => {
+        'b' => 123,
+        'c' => 456
+      },
+      'd' => false,
+      'e' => true
+    )
+
+    # mixed: configure by hash + proc (via #configure)
+    config = HashConfigurableConfig.new
+    config.configure(a: { b: { c: 49 }, c: 55 }) do |conf|
+      conf.d = 0.55
+      conf.e = false
+    end
+    expect(config.to_h).to match(
+      'a' => {
+        'b' => { c: 49 },
+        'c' => 55
+      },
+      'd' => 0.55,
+      'e' => false
+    )
+
+    # proc has higher priority
+    config = HashConfigurableConfig.new(a: { b: 1, c: 2 }, d: 3, e: 4) do |conf|
+      conf.a.b = 5
+      conf.a.c = 6
+      conf.d = 7
+      conf.e = 8
+    end
+    expect(config.to_h).to match(
+      'a' => {
+        'b' => 5,
+        'c' => 6
+      },
+      'd' => 7,
+      'e' => 8
+    )
+
+    expect do
+      # nonexistent nested key
+      HashConfigurableConfig.new(a: { e: 55 })
+    end.to raise_error(Qonfig::UnknownSettingError)
+    expect do
+      # nonexistend nested key + proc
+      HashConfigurableConfig.new(a: { e: 55 }) { |conf| conf.d = 'test' }
+    end.to raise_error(Qonfig::UnknownSettingError)
+
+    expect do
+      # nonexistent root key
+      HashConfigurableConfig.new(g: 'test')
+    end.to raise_error(Qonfig::UnknownSettingError)
+    expect do
+      # nonexistent root key + proc
+      HashConfigurableConfig.new(g: 'test') { |conf| conf.e = false }
+    end.to raise_error(Qonfig::UnknownSettingError)
+
+    expect do
+      # attempt to override nested settings
+      HashConfigurableConfig.new(a: 100)
+    end.to raise_error(Qonfig::AmbiguousSettingValueError)
+    expect do
+      # attempt to override nested settings (+ proc)
+      HashConfigurableConfig.new(a: 100) { |conf| conf.a.b = :none }
+    end.to raise_error(Qonfig::AmbiguousSettingValueError)
+
+    # attempt to use non-hash object
+    [1, 1.0, Object.new, true, false, Class.new, Module.new, (proc {}), (-> {})].each do |non_hash|
+      expect do
+        # without proc
+        HashConfigurableConfig.new(non_hash)
+      end.to raise_error(Qonfig::ArgumentError)
+
+      expect do
+        # with valid proc
+        HashConfigurableConfig.new(non_hash) { |conf| conf.d = 55 }
+      end.to raise_error(Qonfig::ArgumentError)
+    end
+  end
+
   specify 'only string and symbol keys are supported' do
     [1, 1.0, Object.new, true, false, Class.new, Module.new, (proc {}), (-> {})].each do |key|
       expect do

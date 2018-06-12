@@ -76,6 +76,15 @@ module Qonfig
       __lock__.thread_safe_access { __set_value__(key, value) }
     end
 
+    # @param options_map [Hash]
+    # @return [void]
+    #
+    # @api private
+    # @since 0.3.0
+    def __apply_values__(options_map)
+      __lock__.thread_safe_access { __set_values_from_map__(options_map) }
+    end
+
     # @param keys [Array<String, Symbol>]
     # @return [Object]
     #
@@ -114,7 +123,7 @@ module Qonfig
     def method_missing(method_name, *arguments, &block)
       super
     rescue NoMethodError
-      raise Qonfig::UnknownSettingError, "Setting with <#{method_name}> key doesnt exist!"
+      ::Kernel.raise(Qonfig::UnknownSettingError, "Setting with <#{method_name}> key doesnt exist!")
     end
 
     # @return [Boolean]
@@ -151,6 +160,43 @@ module Qonfig
 
     private
 
+    # @return [Qonfig::Settings::Lock]
+    #
+    # @api private
+    # @since 0.2.0
+    attr_reader :__lock__
+
+    # @param options_map [Hash]
+    # @return [void]
+    #
+    # @raise [Qonfig::ArgumentError]
+    # @raise [Qonfig::AmbiguousSettingValueError]
+    #
+    # @api private
+    # @since 0.3.0
+    def __set_values_from_map__(options_map)
+      ::Kernel.raise(
+        Qonfig::ArgumentError, 'Options map should be represented as a hash'
+      ) unless options_map.is_a?(Hash)
+
+      options_map.each_pair do |key, value|
+        current_value = __get_value__(key)
+
+        # NOTE: some duplications here was made only for the better code readability
+        case
+        when !current_value.is_a?(Qonfig::Settings)
+          __set_value__(key, value)
+        when current_value.is_a?(Qonfig::Settings) && value.is_a?(Hash)
+          current_value.__apply_values__(value)
+        when current_value.is_a?(Qonfig::Settings) && !value.is_a?(Hash)
+          ::Kernel.raise(
+            Qonfig::AmbiguousSettingValueError,
+            "Can not redefine option <#{key}> that contains nested options"
+          )
+        end
+      end
+    end
+
     # @return [void]
     #
     # @api private
@@ -176,7 +222,7 @@ module Qonfig
       key = __indifferently_accessable_option_key__(key)
 
       unless __options__.key?(key)
-        raise Qonfig::UnknownSettingError, "Setting with <#{key}> key does not exist!"
+        ::Kernel.raise(Qonfig::UnknownSettingError, "Setting with <#{key}> key does not exist!")
       end
 
       __options__[key]
@@ -196,15 +242,18 @@ module Qonfig
       key = __indifferently_accessable_option_key__(key)
 
       unless __options__.key?(key)
-        raise Qonfig::UnknownSettingError, "Setting with <#{key}> key does not exist!"
+        ::Kernel.raise(Qonfig::UnknownSettingError, "Setting with <#{key}> key does not exist!")
       end
 
       if __options__.frozen?
-        raise Qonfig::FrozenSettingsError, 'Can not modify frozen settings'
+        ::Kernel.raise(Qonfig::FrozenSettingsError, 'Can not modify frozen settings')
       end
 
       if __options__[key].is_a?(Qonfig::Settings)
-        raise Qonfig::AmbiguousSettingValueError, 'Can not redefine option with nested options'
+        ::Kernel.raise(
+          Qonfig::AmbiguousSettingValueError,
+          "Can not redefine option <#{key}> that contains nested options"
+        )
       end
 
       __options__[key] = value
@@ -220,7 +269,7 @@ module Qonfig
     # @api private
     # @since 0.2.0
     def __deep_access__(*keys)
-      raise Qonfig::ArgumentError, 'Key list can not be empty' if keys.empty?
+      ::Kernel.raise(Qonfig::ArgumentError, 'Key list can not be empty') if keys.empty?
 
       result = __get_value__(keys.first)
       rest_keys = Array(keys[1..-1])
@@ -229,17 +278,14 @@ module Qonfig
       when rest_keys.empty?
         result
       when !result.is_a?(Qonfig::Settings)
-        raise(Qonfig::UnknownSettingError, 'Setting with required digging sequence does not exist!')
+        ::Kernel.raise(
+          Qonfig::UnknownSettingError,
+          'Setting with required digging sequence does not exist!'
+        )
       when result.is_a?(Qonfig::Settings)
         result.__dig__(*rest_keys)
       end
     end
-
-    # @return [Qonfig::Settings::Lock]
-    #
-    # @api private
-    # @since 0.2.0
-    attr_reader :__lock__
 
     # @param options_part [Hash]
     # @return [Hash]
@@ -310,7 +356,7 @@ module Qonfig
     CORE_METHODS = Array(
       instance_methods(false) |
       private_instance_methods(false) |
-      %i[super raise define_singleton_method]
+      %i[super define_singleton_method self]
     ).map(&:to_s).freeze
   end
 

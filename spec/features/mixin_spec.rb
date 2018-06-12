@@ -8,7 +8,7 @@ describe 'Mixin (Qonfig::Configurable)' do
 
     configuration do
       setting :env do
-        load_from_env convert_values: true, prefix: /\Aqonfig_mixin.*\z/i
+        load_from_env convert_values: true, prefix: 'QONFIG_MIXIN_', trim_prefix: true
       end
 
       setting :data do
@@ -29,12 +29,12 @@ describe 'Mixin (Qonfig::Configurable)' do
     any_app = AnyApplication.new
 
     # class has it's own config object
-    expect(AnyApplication.config[:env][:QONFIG_MIXIN_GENERIC_VARIABLE]).to eq(true)
+    expect(AnyApplication.config[:env][:GENERIC_VARIABLE]).to eq(true)
     expect(AnyApplication.config[:data][:version]).to eq(RUBY_VERSION)
     expect(AnyApplication.config[:data][:language]).to eq('ruby')
 
     # instance has it's own config object
-    expect(any_app.config[:env][:QONFIG_MIXIN_GENERIC_VARIABLE]).to eq(true)
+    expect(any_app.config[:env][:GENERIC_VARIABLE]).to eq(true)
     expect(any_app.config[:data][:version]).to eq(RUBY_VERSION)
     expect(any_app.config[:data][:language]).to eq('ruby')
 
@@ -42,16 +42,16 @@ describe 'Mixin (Qonfig::Configurable)' do
     AnyApplication.configure do |conf|
       conf.data.version  = '9.2.0.0'
       conf.data.language = 'jruby'
-      conf[:env][:QONFIG_MIXIN_GENERIC_VARIABLE] = false
+      conf[:env][:GENERIC_VARIABLE] = false
     end
 
     # class config - affected
-    expect(AnyApplication.config[:env][:QONFIG_MIXIN_GENERIC_VARIABLE]).to eq(false)
+    expect(AnyApplication.config[:env][:GENERIC_VARIABLE]).to eq(false)
     expect(AnyApplication.config[:data][:version]).to eq('9.2.0.0')
     expect(AnyApplication.config[:data][:language]).to eq('jruby')
 
     # instance config - not affected
-    expect(any_app.config[:env][:QONFIG_MIXIN_GENERIC_VARIABLE]).to eq(true)
+    expect(any_app.config[:env][:GENERIC_VARIABLE]).to eq(true)
     expect(any_app.config[:data][:version]).to eq(RUBY_VERSION)
     expect(any_app.config[:data][:language]).to eq('ruby')
 
@@ -59,16 +59,16 @@ describe 'Mixin (Qonfig::Configurable)' do
     any_app.configure do |conf|
       conf.data.version = '2.4.1'
       conf.data.language = 'mruby'
-      conf[:env][:QONFIG_MIXIN_GENERIC_VARIABLE] = nil
+      conf[:env][:GENERIC_VARIABLE] = nil
     end
 
     # class config - not affected
-    expect(AnyApplication.config[:env][:QONFIG_MIXIN_GENERIC_VARIABLE]).to eq(false)
+    expect(AnyApplication.config[:env][:GENERIC_VARIABLE]).to eq(false)
     expect(AnyApplication.config[:data][:version]).to eq('9.2.0.0')
     expect(AnyApplication.config[:data][:language]).to eq('jruby')
 
     # instance config - affected
-    expect(any_app.config[:env][:QONFIG_MIXIN_GENERIC_VARIABLE]).to eq(nil)
+    expect(any_app.config[:env][:GENERIC_VARIABLE]).to eq(nil)
     expect(any_app.config[:data][:version]).to eq('2.4.1')
     expect(any_app.config[:data][:language]).to eq('mruby')
 
@@ -78,81 +78,112 @@ describe 'Mixin (Qonfig::Configurable)' do
     inh_app = InheritedApplication.new
 
     # class has it's own config object
-    expect(InheritedApplication.config[:env][:QONFIG_MIXIN_GENERIC_VARIABLE]).to eq(true)
+    expect(InheritedApplication.config[:env][:GENERIC_VARIABLE]).to eq(true)
     expect(InheritedApplication.config[:data][:version]).to eq(RUBY_VERSION)
     expect(InheritedApplication.config[:data][:language]).to eq('ruby')
     expect(InheritedApplication.config[:database][:adapter]).to eq('postgresql')
 
     # instance has it's own config object
-    expect(inh_app.config[:env][:QONFIG_MIXIN_GENERIC_VARIABLE]).to eq(true)
+    expect(inh_app.config[:env][:GENERIC_VARIABLE]).to eq(true)
     expect(inh_app.config[:data][:version]).to eq(RUBY_VERSION)
     expect(inh_app.config[:data][:language]).to eq('ruby')
     expect(inh_app.config[:database][:adapter]).to eq('postgresql')
 
     # configure class-level config object
     InheritedApplication.configure do |conf|
-      conf[:env][:QONFIG_MIXIN_GENERIC_VARIABLE] = '123'
+      conf[:env][:GENERIC_VARIABLE] = '123'
       conf[:data][:version] = '2.2.10'
       conf[:data][:language] = 'super_ruby'
       conf[:database][:adapter] = 'oracle'
     end
 
     # class config - affected
-    expect(InheritedApplication.config[:env][:QONFIG_MIXIN_GENERIC_VARIABLE]).to eq('123')
+    expect(InheritedApplication.config[:env][:GENERIC_VARIABLE]).to eq('123')
     expect(InheritedApplication.config[:data][:version]).to eq('2.2.10')
     expect(InheritedApplication.config[:data][:language]).to eq('super_ruby')
     expect(InheritedApplication.config[:database][:adapter]).to eq('oracle')
 
     # instance config - not affected
-    expect(inh_app.config[:env][:QONFIG_MIXIN_GENERIC_VARIABLE]).to eq(true)
+    expect(inh_app.config[:env][:GENERIC_VARIABLE]).to eq(true)
     expect(inh_app.config[:data][:version]).to eq(RUBY_VERSION)
     expect(inh_app.config[:data][:language]).to eq('ruby')
     expect(inh_app.config[:database][:adapter]).to eq('postgresql')
 
     # configure instance-level config object
     inh_app.configure do |conf|
-      conf[:env][:QONFIG_MIXIN_GENERIC_VARIABLE] = 'mega-blast'
+      conf[:env][:GENERIC_VARIABLE] = 'mega-blast'
       conf[:data][:version] = '3x3'
       conf[:data][:language] = 'ultimate_ruby'
       conf[:database][:adapter] = 'mongodb'
     end
 
     # class config - not affected
-    expect(InheritedApplication.config[:env][:QONFIG_MIXIN_GENERIC_VARIABLE]).to eq('123')
+    expect(InheritedApplication.config[:env][:GENERIC_VARIABLE]).to eq('123')
     expect(InheritedApplication.config[:data][:version]).to eq('2.2.10')
     expect(InheritedApplication.config[:data][:language]).to eq('super_ruby')
     expect(InheritedApplication.config[:database][:adapter]).to eq('oracle')
 
     # instance config - affected
-    expect(inh_app.config[:env][:QONFIG_MIXIN_GENERIC_VARIABLE]).to eq('mega-blast')
+    expect(inh_app.config[:env][:GENERIC_VARIABLE]).to eq('mega-blast')
     expect(inh_app.config[:data][:version]).to eq('3x3')
     expect(inh_app.config[:data][:language]).to eq('ultimate_ruby')
     expect(inh_app.config[:database][:adapter]).to eq('mongodb')
 
     # -- there are no intersections between original and inherited entities --
     expect(any_app.config.to_h).to match(
-      'env' => { 'QONFIG_MIXIN_GENERIC_VARIABLE' => nil },
+      'env' => { 'GENERIC_VARIABLE' => nil },
       'data' => { 'version' => '2.4.1', 'language' => 'mruby' }
     )
 
     expect(AnyApplication.config.to_h).to match(
-      'env' => { 'QONFIG_MIXIN_GENERIC_VARIABLE' => false },
+      'env' => { 'GENERIC_VARIABLE' => false },
       'data' => { 'version' => '9.2.0.0', 'language' => 'jruby' }
     )
 
     expect(inh_app.config.to_h).to match(
-      'env' => { 'QONFIG_MIXIN_GENERIC_VARIABLE' => 'mega-blast' },
+      'env' => { 'GENERIC_VARIABLE' => 'mega-blast' },
       'data' => { 'version' => '3x3', 'language' => 'ultimate_ruby' },
       'database' => { 'adapter' => 'mongodb' }
     )
 
     expect(InheritedApplication.config.to_h).to match(
-      'env' => { 'QONFIG_MIXIN_GENERIC_VARIABLE' => '123' },
+      'env' => { 'GENERIC_VARIABLE' => '123' },
       'data' => { 'version' => '2.2.10', 'language' => 'super_ruby' },
       'database' => { 'adapter' => 'oracle' }
     )
 
-    # --- config definitions extends correctly ---
+    # --- configuration with hash / hash + proc
+    AnyApplication.configure(env: { GENERIC_VARIABLE: false }) do |conf|
+      conf.data.version = '2.2.11'
+      conf.data.language = 'mega_ruby'
+    end
+    expect(AnyApplication.config.to_h).to match(
+      'env' => { 'GENERIC_VARIABLE' => false },
+      'data' => { 'version' => '2.2.11', 'language' => 'mega_ruby' }
+    )
+
+    any_app.configure(data: { version: '3x3' }) do |conf|
+      conf.data.language = 'ultra_ruby'
+      conf.env[:GENERIC_VARIABLE] = nil
+    end
+    expect(any_app.config.to_h).to match(
+      'env' => { 'GENERIC_VARIABLE' => nil },
+      'data' => { 'version' => '3x3', 'language' => 'ultra_ruby' }
+    )
+
+    [AnyApplication, any_app].each do |configurable|
+      expect do
+        configurable.configure(env: { nonexistent_key: 100 })
+      end.to raise_error(Qonfig::UnknownSettingError)
+      expect do
+        configurable.configure(nonexistent_key: false)
+      end.to raise_error(Qonfig::UnknownSettingError)
+      expect do
+        configurable.configure(env: nil)
+      end.to raise_error(Qonfig::AmbiguousSettingValueError)
+    end
+
+    # --- config definitions extend working correctly ---
     AnyApplication.configuration do
       setting :any_additional, 'any'
     end
@@ -168,26 +199,26 @@ describe 'Mixin (Qonfig::Configurable)' do
     inh_app.config.reload!
 
     expect(any_app.config.to_h).to match(
-      'env' => { 'QONFIG_MIXIN_GENERIC_VARIABLE' => true },
+      'env' => { 'GENERIC_VARIABLE' => true },
       'data' => { 'version' => RUBY_VERSION, 'language' => 'ruby' },
       'any_additional' => 'any'
     )
 
     expect(AnyApplication.config.to_h).to match(
-      'env' => { 'QONFIG_MIXIN_GENERIC_VARIABLE' => true },
+      'env' => { 'GENERIC_VARIABLE' => true },
       'data' => { 'version' => RUBY_VERSION, 'language' => 'ruby' },
       'any_additional' => 'any'
     )
 
     expect(inh_app.config.to_h).to match(
-      'env' => { 'QONFIG_MIXIN_GENERIC_VARIABLE' => true },
+      'env' => { 'GENERIC_VARIABLE' => true },
       'data' => { 'version' => RUBY_VERSION, 'language' => 'ruby' },
       'database' => { 'adapter' => 'postgresql' },
       'inh_additional' => 'inh'
     )
 
     expect(InheritedApplication.config.to_h).to match(
-      'env' => { 'QONFIG_MIXIN_GENERIC_VARIABLE' => true },
+      'env' => { 'GENERIC_VARIABLE' => true },
       'data' => { 'version' => RUBY_VERSION, 'language' => 'ruby' },
       'database' => { 'adapter' => 'postgresql' },
       'inh_additional' => 'inh'
@@ -201,26 +232,26 @@ describe 'Mixin (Qonfig::Configurable)' do
     inh_app.config.clear!
 
     expect(any_app.config.to_h).to match(
-      'env' => { 'QONFIG_MIXIN_GENERIC_VARIABLE' => nil },
+      'env' => { 'GENERIC_VARIABLE' => nil },
       'data' => { 'version' => nil, 'language' => nil },
       'any_additional' => nil
     )
 
     expect(AnyApplication.config.to_h).to match(
-      'env' => { 'QONFIG_MIXIN_GENERIC_VARIABLE' => nil },
+      'env' => { 'GENERIC_VARIABLE' => nil },
       'data' => { 'version' => nil, 'language' => nil },
       'any_additional' => nil
     )
 
     expect(inh_app.config.to_h).to match(
-      'env' => { 'QONFIG_MIXIN_GENERIC_VARIABLE' => nil },
+      'env' => { 'GENERIC_VARIABLE' => nil },
       'data' => { 'version' => nil, 'language' => nil },
       'database' => { 'adapter' => nil },
       'inh_additional' => nil
     )
 
     expect(InheritedApplication.config.to_h).to match(
-      'env' => { 'QONFIG_MIXIN_GENERIC_VARIABLE' => nil },
+      'env' => { 'GENERIC_VARIABLE' => nil },
       'data' => { 'version' => nil, 'language' => nil },
       'database' => { 'adapter' => nil },
       'inh_additional' => nil
