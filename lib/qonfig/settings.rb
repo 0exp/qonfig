@@ -76,6 +76,15 @@ module Qonfig
       __lock__.thread_safe_access { __set_value__(key, value) }
     end
 
+    # @param options_map [Hash]
+    # @return [void]
+    #
+    # @api private
+    # @since 0.3.0
+    def __apply_values__(options_map)
+      __lock__.thread_safe_access { __set_values_from_map__(options_map) }
+    end
+
     # @param keys [Array<String, Symbol>]
     # @return [Object]
     #
@@ -157,6 +166,32 @@ module Qonfig
     # @since 0.2.0
     attr_reader :__lock__
 
+    # @param options_map [Hash]
+    # @return [void]
+    #
+    # @api private
+    # @since 0.3.0
+    def __set_values_from_map__(options_map)
+      raise(
+        Qonfig::ArgumentError, 'Options map should be represented as a hash'
+      ) unless options_map.is_a?(Hash)
+
+      options_map.each_pair do |key, value|
+        current_value = __get_value__(key)
+
+        if !current_value.is_a?(Qonfig::Settings)
+          __set_value__(key, value)
+        elsif value.is_a?(Hash)
+          current_value.__apply_values__(value)
+        else
+          ::Kernel.raise(
+            Qonfig::AmbiguousSettingValueError,
+            "Can not redefine option <#{key}> that contains nested options"
+          )
+        end
+      end
+    end
+
     # @return [void]
     #
     # @api private
@@ -212,7 +247,7 @@ module Qonfig
       if __options__[key].is_a?(Qonfig::Settings)
         ::Kernel.raise(
           Qonfig::AmbiguousSettingValueError,
-          'Can not redefine option with nested options'
+          "Can not redefine option <#{key}> that contains nested options"
         )
       end
 

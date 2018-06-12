@@ -64,9 +64,9 @@ module Qonfig
       #
       # @api public
       # @since 0.2.0
-      def configure(options_map = {}, &block) # settings hash as an attribute
+      def configure(options_map = {}, &block)
         @__qonfig_access_lock__.synchronize do
-          config.configure(&block) if block_given?
+          config.configure(options_map, &block)
         end
       end
 
@@ -100,9 +100,9 @@ module Qonfig
       #
       # @api public
       # @since 0.2.0
-      def configure(options_map = {}, &block) # settings hash as an attribute
+      def configure(options_map = {}, &block)
         self.class.instance_variable_get(:@__qonfig_access_lock__).synchronize do
-          config.configure(&block) if block_given?
+          config.configure(options_map, &block)
         end
       end
     end

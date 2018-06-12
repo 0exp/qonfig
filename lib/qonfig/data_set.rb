@@ -49,7 +49,7 @@ module Qonfig
     #
     # @api public
     # @since 0.2.0
-    def reload!(options_map = {}, &configurations) # settings hash as an attribute
+    def reload!(options_map = {}, &configurations)
       thread_safe_definition do
         raise Qonfig::FrozenSettingsError, 'Frozen config can not be reloaded' if frozen?
         load!(options_map, &configurations)
@@ -62,7 +62,10 @@ module Qonfig
     # @api public
     # @since 0.1.0
     def configure(options_map = {})
-      thread_safe_access { yield(settings) if block_given? }
+      thread_safe_access do
+        settings.__apply_values__(options_map)
+        yield(settings) if block_given?
+      end
     end
 
     # @return [Hash]
@@ -102,13 +105,6 @@ module Qonfig
 
     private
 
-    # @return [void]
-    #
-    # @api private
-    # @since 0.3.0
-    def apply_hash_settings
-    end
-
     # @return [Qonfig::Settings]
     #
     # @api private
@@ -123,9 +119,9 @@ module Qonfig
     #
     # @api private
     # @since 0.2.0
-    def load!(options_map = {}, &configurations) # settings hash as an attribute
+    def load!(options_map = {}, &configurations)
       @settings = build_settings
-      configure(options_map, &configurations) if block_given?
+      configure(options_map, &configurations)
     end
 
     # @param instructions [Proc]
