@@ -289,11 +289,11 @@ config.settings.logger # => #<Logger:0x00007ff9> (reloaded from defaults)
 config.settings.enable_api # => false (new setting)
 
 # reload with instant configuration
-config.reload! do |conf|
+config.reload!(db: { adapter: 'oracle' }) do |conf|
   conf.enable_api = true # changed instantly
 end
 
-config.settings.db.adapter # => 'mongoid'
+config.settings.db.adapter # => 'oracle'
 config.settings.logger = # => #<Logger:0x00007ff9>
 config.settings.enable_api # => true # value from instant change
 ```
