@@ -52,5 +52,16 @@ describe 'Config reloading' do
       'logging' => false,
       'enable_api' => true # value from isntant change
     )
+
+    # reload with hash && proc configuration
+    config.reload!(db: { adapter: 'oracloid' }) do |conf|
+      conf.enable_api = true
+    end
+
+    expect(config.to_h).to match(
+      'db' => { 'adapter' => 'oracloid' },
+      'logging' => false,
+      'enable_api' => true
+    )
   end
 end

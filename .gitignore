@@ -10,3 +10,4 @@
 Gemfile.lock
 /.idea
 .ruby-version
+/.vscode/

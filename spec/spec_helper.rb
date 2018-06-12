@@ -18,5 +18,6 @@ require 'pry'
 
 RSpec.configure do |config|
   config.order = :random
+  Kernel.srand config.seed
   config.expect_with(:rspec) { |c| c.syntax = :expect }
 end
