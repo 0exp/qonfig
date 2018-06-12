@@ -26,9 +26,9 @@ require 'qonfig'
 - [Inheritance](#inheritance)
 - [Composition](#composition)
 - [Hash representation](#hash-representation)
-- [State freeze](#state-freeze)
 - [Config reloading](#config-reloading) (reload config definitions and option values)
 - [Clear options](#clear-options) (set to nil)
+- [State freeze](#state-freeze)
 - [Settings as Predicates](#settings-as-predicates)
 - [Load from YAML file](#load-from-yaml-file)
 - [Load from ENV](#load-from-env)
@@ -289,11 +289,11 @@ config.settings.logger # => #<Logger:0x00007ff9> (reloaded from defaults)
 config.settings.enable_api # => false (new setting)
 
 # reload with instant configuration
-config.reload! do |conf|
+config.reload!(db: { adapter: 'oracle' }) do |conf|
   conf.enable_api = true # changed instantly
 end
 
-config.settings.db.adapter # => 'mongoid'
+config.settings.db.adapter # => 'oracle'
 config.settings.logger = # => #<Logger:0x00007ff9>
 config.settings.enable_api # => true # value from instant change
 ```
@@ -354,6 +354,7 @@ config.settings.worker = :que # => Qonfig::FrozenSettingsError
 config.settings.db.adapter = 'mongoid' # => Qonfig::FrozenSettingsError
 
 config.reload! # => Qonfig::FrozenSettingsError
+config.clear! # => Qonfig::FrozenSettingsError
 ```
 
 ---
@@ -458,7 +459,7 @@ config.settings.ruby.platform # => 'x86_64-darwin17'
 # --- strict mode ---
 class Config < Qonfig::DataSet
   setting :nonexistent_yaml do
-    load_from_yaml 'unexistent_file.yml', strict: true # true by default
+    load_from_yaml 'nonexistent_yaml.yml', strict: true # true by default
   end
 
   setting :another_key
@@ -469,7 +470,7 @@ Config.new # => Qonfig::FileNotFoundError
 # --- non-strict mode ---
 class Config < Qonfig::DataSet
   settings :nonexistent_yaml do
-    load_from_yaml 'unexistent_file.yml', strict: false
+    load_from_yaml 'nonexistent_yaml.yml', strict: false
   end
 
   setting :another_key
