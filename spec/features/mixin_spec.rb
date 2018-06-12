@@ -174,7 +174,6 @@ describe 'Mixin (Qonfig::Configurable)' do
     [AnyApplication, any_app].each do |configurable|
       expect do
         configurable.configure(env: { nonexistent_key: 100 })
-        binding.pry
       end.to raise_error(Qonfig::UnknownSettingError)
       expect do
         configurable.configure(nonexistent_key: false)

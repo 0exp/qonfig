@@ -296,6 +296,19 @@ describe 'Config definition' do
       # attempt to override nested settings (+ proc)
       HashConfigurableConfig.new(a: 100) { |conf| conf.a.b = :none }
     end.to raise_error(Qonfig::AmbiguousSettingValueError)
+
+    # attempt to use non-hash object
+    [1, 1.0, Object.new, true, false, Class.new, Module.new, (proc {}), (-> {})].each do |non_hash|
+      expect do
+        # without proc
+        HashConfigurableConfig.new(non_hash)
+      end.to raise_error(Qonfig::ArgumentError)
+
+      expect do
+        # with valid proc
+        HashConfigurableConfig.new(non_hash) { |conf| conf.d = 55 }
+      end.to raise_error(Qonfig::ArgumentError)
+    end
   end
 
   specify 'only string and symbol keys are supported' do
