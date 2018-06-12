@@ -172,7 +172,7 @@ module Qonfig
     # @api private
     # @since 0.3.0
     def __set_values_from_map__(options_map)
-      raise(
+      ::Kernel.raise(
         Qonfig::ArgumentError, 'Options map should be represented as a hash'
       ) unless options_map.is_a?(Hash)
 

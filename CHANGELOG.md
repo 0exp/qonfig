@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+### Added
+- Improved configuration process: `#configure` can take a hash as a configuration `[option key => option]` value map;
+
 ## [0.2.0] - 2018-06-07
 ### Added
 - Instant configuration via block `config = Config.new { |conf| <<your configuration code>> }`;

@@ -131,6 +131,23 @@ config = Config.new do |conf|
   conf.geo_api.provider = :amazon_maps
   conf.testing.engine = :crypto_test
 end
+
+# using a hash
+config = Config.new(
+  testing: { engine: :mini_test, parallel: false },
+  geo_api: { provider: :rambler_maps },
+  enable_middlewares: true
+)
+config.configure(enable_middlewares: false)
+
+# using both hash and proc (proc has higher priority)
+config = Config.new(enable_middlewares: true) do |conf|
+  conf.testing.parallel = true
+end
+
+config.configure(geo_api: { provider: nil }) do |conf|
+  conf.testing.engine = :rspec
+end
 ```
 
 ---

@@ -200,7 +200,7 @@ describe 'Config definition' do
     expect(config.to_h).to match(
       'a' => {
         'b' => { g: 33 },
-        'c' => 2,
+        'c' => 2
       },
       'd' => 33,
       'e' => { f: 49 }
@@ -219,7 +219,7 @@ describe 'Config definition' do
     expect(config.to_h).to match(
       'a' => {
         'b' => 'test',
-        'c' => "no_test",
+        'c' => 'no_test'
       },
       'd' => 100_500,
       'e' => false
@@ -233,7 +233,7 @@ describe 'Config definition' do
     expect(config.to_h).to match(
       'a' => {
         'b' => 123,
-        'c' => 456,
+        'c' => 456
       },
       'd' => false,
       'e' => true
@@ -248,7 +248,7 @@ describe 'Config definition' do
     expect(config.to_h).to match(
       'a' => {
         'b' => { c: 49 },
-        'c' => 55,
+        'c' => 55
       },
       'd' => 0.55,
       'e' => false
@@ -264,7 +264,7 @@ describe 'Config definition' do
     expect(config.to_h).to match(
       'a' => {
         'b' => 5,
-        'c' => 6,
+        'c' => 6
       },
       'd' => 7,
       'e' => 8
@@ -286,7 +286,7 @@ describe 'Config definition' do
     expect do
       # nonexistent root key + proc
       HashConfigurableConfig.new(g: 'test') { |conf| conf.e = false }
-    end
+    end.to raise_error(Qonfig::UnknownSettingError)
 
     expect do
       # attempt to override nested settings

@@ -159,7 +159,7 @@ describe 'Mixin (Qonfig::Configurable)' do
     end
     expect(AnyApplication.config.to_h).to match(
       'env' => { 'GENERIC_VARIABLE' => false },
-      'data' => { 'version' => '2.2.11', 'language' => 'mega_ruby' },
+      'data' => { 'version' => '2.2.11', 'language' => 'mega_ruby' }
     )
 
     any_app.configure(data: { version: '3x3' }) do |conf|
@@ -168,7 +168,7 @@ describe 'Mixin (Qonfig::Configurable)' do
     end
     expect(any_app.config.to_h).to match(
       'env' => { 'GENERIC_VARIABLE' => nil },
-      'data' => { 'version' => '3x3', 'language' => 'ultra_ruby' },
+      'data' => { 'version' => '3x3', 'language' => 'ultra_ruby' }
     )
 
     [AnyApplication, any_app].each do |configurable|
