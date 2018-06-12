@@ -458,7 +458,7 @@ config.settings.ruby.platform # => 'x86_64-darwin17'
 # --- strict mode ---
 class Config < Qonfig::DataSet
   setting :nonexistent_yaml do
-    load_from_yaml 'unexistent_file.yml', strict: true # true by default
+    load_from_yaml 'nonexistent_yaml.yml', strict: true # true by default
   end
 
   setting :another_key
@@ -469,7 +469,7 @@ Config.new # => Qonfig::FileNotFoundError
 # --- non-strict mode ---
 class Config < Qonfig::DataSet
   settings :nonexistent_yaml do
-    load_from_yaml 'unexistent_file.yml', strict: false
+    load_from_yaml 'nonexistent_yaml.yml', strict: false
   end
 
   setting :another_key
