@@ -25,6 +25,11 @@ module Qonfig
   require_relative 'qonfig/configurable'
   require_relative 'qonfig/plugins/registry'
   require_relative 'qonfig/plugins'
+  require_relative 'qonfig/plugins/access_mixin'
   require_relative 'qonfig/plugins/abstract'
   require_relative 'qonfig/plugins/rails'
+
+  # @api public
+  # @since 0.4.0
+  extend Plugins::AccessMixin
 end

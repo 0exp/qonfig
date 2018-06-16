@@ -82,6 +82,8 @@ module Qonfig
       # @param plugin_modle [Class, Module, Object]
       # @return [void]
       #
+      # @raise [Qonfig::AlreadyRegisteredPluginError]
+      #
       # @api private
       # @since 0.4.0
       def apply(plugin_name, plugin_module)

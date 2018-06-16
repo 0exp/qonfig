@@ -20,7 +20,7 @@ module Qonfig
       #
       # @api public
       # @since 0.4.0
-      def plugins
+      def names
         thread_safe { plugin_registry.names }
       end
 
