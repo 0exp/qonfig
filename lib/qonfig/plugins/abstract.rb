@@ -4,14 +4,13 @@ module Qonfig
   module Plugins
     # @api private
     # @since 0.4.0
-    class Base
+    class Abstract
       class << self
         # @return [void]
         #
         # @api private
         # @since 0.4.0
-        def load!
-        end
+        def load!; end
       end
     end
   end

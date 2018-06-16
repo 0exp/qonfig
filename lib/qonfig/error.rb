@@ -62,4 +62,16 @@ module Qonfig
   # @api public
   # @since 0.2.0
   SelfDataNotFoundError = Class.new(Error)
+
+  # @see Qonfig::Plugins::Regsitry
+  #
+  # @api private
+  # @since 0.4.0
+  AlreadyRegisteredPluginError = Class.new(Error)
+
+  # @see Qonfig::Plugins::Registry
+  #
+  # @api public
+  # @since 0.4.0
+  UnregisteredPluginError = Class.new(Error)
 end

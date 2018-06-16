@@ -24,6 +24,7 @@ module Qonfig
   require_relative 'qonfig/data_set/class_builder'
   require_relative 'qonfig/configurable'
   require_relative 'qonfig/plugins/registry'
-  require_relative 'qonfig/plugins/abstract'
   require_relative 'qonfig/plugins'
+  require_relative 'qonfig/plugins/abstract'
+  require_relative 'qonfig/plugins/rails'
 end

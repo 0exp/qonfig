@@ -16,6 +16,22 @@ module Qonfig
         thread_safe { plugin_registry[plugin_name].load! }
       end
 
+      # @return [Array<String>]
+      #
+      # @api public
+      # @since 0.4.0
+      def plugins
+        thread_safe { plugin_registry.names }
+      end
+
+      # @param plugin_name [Symbol, String]
+      #
+      # @api private
+      # @since 0.4.0
+      def register_plugin(plugin_name, plugin_module)
+        thread_safe { plugin_registry[plugin_name] = plugin_module }
+      end
+
       private
 
       # @return [Qonfig::Plugins::Registry]
@@ -34,14 +50,6 @@ module Qonfig
       # @since 0.4.0
       def thread_safe
         access_lock.synchronize { yield if block_given? }
-      end
-
-      # @param plugin_name [Symbol, String]
-      #
-      # @api private
-      # @since 0.4.0
-      def register_plugin(plugin_name, plugin_module)
-        thread_safe { plugin_registry[plugin_name] = plugin_module }
       end
     end
   end
