@@ -34,7 +34,6 @@ require 'qonfig'
 - [Load from ENV](#load-from-env)
 - [Load from \_\_END\_\_](#load-from-__end__) (aka `load_from_self`)
 - [Smart Mixin](#smart-mixin) (`Qonfig::Configurable`)
-- [Plugins](#plugins)
 
 ---
 
@@ -688,22 +687,6 @@ GeneralApplication.config.to_h
 { 'user' => '0exp', 'pswd' => '123test', 'db' => { 'adapter' => 'pg' } }
 
 # and etc... (all Qonfig-related features)
-```
-
----
-
-### Plugins
-
-```ruby
-# --- load plugin ---
-Qonfig.plugin(:rails) # OR Qonfig.plugin('rails')
-# or
-Qonfig::Plugins.load(:rails) # OR Qonfig::Plugins.load('rails')
-
-# --- registered plugins
-Qonfig.plugins # => ['rails', ...] (array of strings)
-# or
-Qonfig::Plugins.names # => ['rails', ... ] (array of strings)
 ```
 
 ---

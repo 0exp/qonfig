@@ -15,7 +15,7 @@ module Qonfig
       end
 
       # @param plugin_name [Symbol, String]
-      # @return [Class, Module, Object]
+      # @return [Qonfig::Plugins::Abstract]
       #
       # @api private
       # @since 0.4.0
@@ -24,7 +24,7 @@ module Qonfig
       end
 
       # @param plugin_name [Symbol, String]
-      # @param plugin_modle [Class, Module, Object]
+      # @param plugin_module [Qonfig::Plugins::Abstract]
       # @return [void]
       #
       # @api private
@@ -34,6 +34,8 @@ module Qonfig
       end
       alias_method :[]=, :register
 
+      # @return [Array<String>]
+      #
       # @api private
       # @since 0.4.0
       def names
@@ -79,7 +81,7 @@ module Qonfig
       end
 
       # @param plugin_name [Symbol, String]
-      # @param plugin_modle [Class, Module, Object]
+      # @param plugin_module [Qonfig::Plugins::Abstract]
       # @return [void]
       #
       # @raise [Qonfig::AlreadyRegisteredPluginError]
@@ -97,7 +99,7 @@ module Qonfig
       end
 
       # @param plugin_name [Symbol, String]
-      # @return [Class, Module, Object]
+      # @return [Qonfig::Plugins::Abstract]
       #
       # @raise [Qonfig::UnregisteredPluginError]
       #

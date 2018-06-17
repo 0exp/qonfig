@@ -4,11 +4,14 @@ module Qonfig
   # @api public
   # @since 0.4.0
   module Plugins
+    # @since 0.4.0
     @plugin_registry = Registry.new
+    # @since 0.4.0
     @access_lock = Mutex.new
 
     class << self
       # @param plugin_name [Symbol, String]
+      # @return [void]
       #
       # @api public
       # @since 0.4.0
@@ -25,6 +28,7 @@ module Qonfig
       end
 
       # @param plugin_name [Symbol, String]
+      # @return [void]
       #
       # @api private
       # @since 0.4.0
@@ -46,6 +50,8 @@ module Qonfig
       # @since 0.4.0
       attr_reader :access_lock
 
+      # @return [void]
+      #
       # @api private
       # @since 0.4.0
       def thread_safe

@@ -3,8 +3,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 - Introduce Plugin Ecosystem (`Qonfig::Plugins`):
-  - load plugin: `Qonfig.plugin('plugin_name')` or `Qonfig.plugin(:plugin_name)` or `Qonfig::Plugins.load(...same...)`
-  - registered plugins: `Qonfig.plugins #=> array of strings` or `Qonfug::Plugin.names => array of strings`
+  - load plugin: `Qonfig.plugin('plugin_name')` or `Qonfig.plugin(:plugin_name)`;
+  - get registered plugins: `Qonfig.plugins #=> array of strings`
 
 ## [0.3.0] - 2018-06-13
 ### Added
