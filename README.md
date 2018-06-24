@@ -698,7 +698,7 @@ GeneralApplication.config.to_h
 # --- show names of registered plugins ---
 Qonfig.plugins # => array of strings
 
-# --- load concrete plugin ---
+# --- load specific plugin ---
 Qonfig.plugin(:plugin_name) # or Qonfig.plugin('plugin_name')
 ```
 
