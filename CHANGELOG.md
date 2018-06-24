@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.4.0] - 2018-06-24
 - Introduce Plugin Ecosystem (`Qonfig::Plugins`):
   - load plugin: `Qonfig.plugin('plugin_name')` or `Qonfig.plugin(:plugin_name)`;
   - get registered plugins: `Qonfig.plugins #=> array of strings`
