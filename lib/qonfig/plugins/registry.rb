@@ -72,6 +72,7 @@ module Qonfig
         plugin_set.keys
       end
 
+      # @param plugin_name [String]
       # @return [Boolean]
       #
       # @api private

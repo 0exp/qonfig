@@ -34,6 +34,7 @@ require 'qonfig'
 - [Load from ENV](#load-from-env)
 - [Load from \_\_END\_\_](#load-from-__end__) (aka `load_from_self`)
 - [Smart Mixin](#smart-mixin) (`Qonfig::Configurable`)
+- [Plugins](#plugins)
 
 ---
 
@@ -687,6 +688,18 @@ GeneralApplication.config.to_h
 { 'user' => '0exp', 'pswd' => '123test', 'db' => { 'adapter' => 'pg' } }
 
 # and etc... (all Qonfig-related features)
+```
+
+---
+
+### Plugins
+
+```ruby
+# --- show names of registered plugins ---
+Qonfig.plugins # => array of strings
+
+# --- load specific plugin ---
+Qonfig.plugin(:plugin_name) # or Qonfig.plugin('plugin_name')
 ```
 
 ---
