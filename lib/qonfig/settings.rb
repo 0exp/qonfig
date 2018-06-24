@@ -355,6 +355,7 @@ module Qonfig
       KeyGuard.new(key).prevent_core_method_intersection!
     end
 
+    # rubocop:disable Layout/ClassStructure
     # @return [Array<String>]
     #
     # @api private
@@ -364,6 +365,7 @@ module Qonfig
       private_instance_methods(false) |
       %i[super define_singleton_method self]
     ).map(&:to_s).freeze
+    # rubocop:enable Layout/ClassStructure
   end
 
   # rubocop:enable Metrics/ClassLength
