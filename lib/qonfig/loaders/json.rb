@@ -3,8 +3,8 @@
 module Qonfig
   module Loaders
     # @api private
-    # @since 0.2.0
-    module YAML
+    # @since 0.5.0
+    module JSON
       # @since 0.5.0
       extend Qonfig::Loaders::Basic
 
@@ -13,9 +13,9 @@ module Qonfig
         # @return [Object]
         #
         # @api private
-        # @since 0.2.0
+        # @since 0.5.0
         def load(data)
-          ::YAML.load(ERB.new(data).result)
+          ::JSON.parse(data, max_nesting: false, allow_nan: true)
         end
 
         # @return [Object]

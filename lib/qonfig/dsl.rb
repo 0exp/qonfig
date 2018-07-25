@@ -98,5 +98,15 @@ module Qonfig
         trim_prefix: trim_prefix
       )
     end
+
+    # @param file_path [String]
+    # @option strict [Boolean]
+    # @return [void]
+    #
+    # @api private
+    # @since 0.5.0
+    def load_from_json(file_path, strict: true)
+      commands << Qonfig::Commands::LoadFromJSON.new(file_path, strict: strict)
+    end
   end
 end
