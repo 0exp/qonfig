@@ -1,0 +1,14 @@
+[
+  {
+    "user": "D@iveR",
+    "maxAuthCount": 55,
+    "rubySettings": {
+      "allowedVersions": ["2.3", "2.4.2", "1.9.8"],
+      "gitLink": null,
+      "withAdditionals": false
+    }
+  },
+  {
+    "name": "none"
+  }
+]
