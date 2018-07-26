@@ -31,6 +31,7 @@ require 'qonfig'
 - [State freeze](#state-freeze)
 - [Settings as Predicates](#settings-as-predicates)
 - [Load from YAML file](#load-from-yaml-file)
+- [Load from JSON file](#load-from-json-file)
 - [Load from ENV](#load-from-env)
 - [Load from \_\_END\_\_](#load-from-__end__) (aka `load_from_self`)
 - [Smart Mixin](#smart-mixin) (`Qonfig::Configurable`)
@@ -478,6 +479,65 @@ class Config < Qonfig::DataSet
 end
 
 Config.new.to_h # => { "nonexistent_yaml" => {}, "another_key" => nil }
+```
+
+---
+
+### Load from JSON file
+
+- `:strict` mode (fail behaviour when the required yaml file doesnt exist):
+  - `true` (by default) - causes `Qonfig::FileNotFoundError`;
+  - `false` - do nothing, ignore current command;
+
+```json
+<!-- options.json -->
+{
+  "user": "0exp",
+  "password": 12345,
+  "rubySettings": {
+    "allowedVersions": ["2.3", "2.4.2", "1.9.8"],
+    "gitLink": null,
+    "withAdditionals": false
+  }
+}
+```
+
+```ruby
+class Config < Qonfig::DataSet
+  load_from_json 'options.json'
+end
+
+config = Config.new
+
+config.settings.user # => '0exp'
+config.settings.password # => 12345
+config.settings.rubySettings.allowedVersions # => ['2.3', '2.4.2', '1.9.8']
+config.settings.rubySettings.gitLink # => nil
+config.settings.rubySettings.withAdditionals # => false
+```
+
+```ruby
+# --- strict mode ---
+class Config < Qonfig::DataSet
+  setting :nonexistent_json do
+    load_from_yaml 'nonexistent_json.json', strict: true # true by default
+  end
+
+  setting :another_key
+end
+
+Config.new # => Qonfig::FileNotFoundError
+
+# --- non-strict mode ---
+class Config < Qonfig::DataSet
+  settings :nonexistent_json do
+    load_from_yaml 'nonexistent_json.json', strict: false
+  end
+
+  setting :another_key
+end
+
+Config.new.to_h # => { "nonexistent_json" => {}, "another_key" => nil }
 ```
 
 ---

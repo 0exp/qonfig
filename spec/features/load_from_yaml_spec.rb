@@ -97,7 +97,7 @@ describe 'Load from YAML' do
         end
 
         expect { NonFailingYAMLConfig.new }.not_to raise_error
-        expect(NonFailingYAMLConfig.new.to_h).to eq({ 'nested' => {} })
+        expect(NonFailingYAMLConfig.new.to_h).to eq('nested' => {})
       end
     end
   end

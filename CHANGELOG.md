@@ -2,7 +2,11 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
-## Changed
+### Added
+- `load_from_json`- a command that provides an ability to define config settings
+  by loading them from a json file (in `load_from_yaml` manner);
+
+### Changed
 - Support for Ruby 2.2 has ended;
 
 ## [0.4.0] - 2018-06-24

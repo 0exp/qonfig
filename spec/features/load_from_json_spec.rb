@@ -71,7 +71,7 @@ describe 'Load from JSON' do
         end
 
         expect { NonFailingJSONConfig.new }.not_to raise_error
-        expect(NonFailingJSONConfig.new.to_h).to eq({ 'nested' => {} })
+        expect(NonFailingJSONConfig.new.to_h).to eq('nested' => {})
       end
     end
   end
