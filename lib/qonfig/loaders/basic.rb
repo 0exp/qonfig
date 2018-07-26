@@ -29,7 +29,7 @@ module Qonfig
       # @raise [Qonfig::FileNotFoundError]
       #
       # @api private
-      # @since 0.2.0
+      # @since 0.5.0
       def load_file(file_path, fail_on_unexist: true)
         load(::File.read(file_path))
       rescue Errno::ENOENT => error

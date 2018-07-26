@@ -52,8 +52,8 @@ module Qonfig
       #
       # @api private
       # @since 0.5.0
-      def build_data_set_class(yaml_data)
-        Qonfig::DataSet::ClassBuilder.build_from_hash(yaml_data)
+      def build_data_set_class(json_data)
+        Qonfig::DataSet::ClassBuilder.build_from_hash(json_data)
       end
     end
   end
