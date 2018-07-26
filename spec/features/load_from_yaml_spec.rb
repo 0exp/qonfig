@@ -71,17 +71,18 @@ describe 'Load from YAML' do
   describe ':strict mode option (when file does not exist)' do
     context 'when :strict => true (by default)' do
       specify 'fails with corresponding error' do
+        # check default behaviour (strict: true)
         class FailingYAMLConfig < Qonfig::DataSet
           load_from_yaml 'no_file.yml'
         end
 
         expect { FailingYAMLConfig.new }.to raise_error(Qonfig::FileNotFoundError)
 
-        class ExplicitlyStrictedConfig < Qonfig::DataSet
+        class ExplicitlyStrictedYAMLConfig < Qonfig::DataSet
           load_from_yaml 'no_file.yml', strict: true
         end
 
-        expect { ExplicitlyStrictedConfig.new }.to raise_error(Qonfig::FileNotFoundError)
+        expect { ExplicitlyStrictedYAMLConfig.new }.to raise_error(Qonfig::FileNotFoundError)
       end
     end
 
@@ -89,9 +90,14 @@ describe 'Load from YAML' do
       specify 'does not fail - empty config' do
         class NonFailingYAMLConfig < Qonfig::DataSet
           load_from_yaml 'no_file.yml', strict: false
+
+          setting :nested do
+            load_from_yaml 'no_file.yml', strict: false
+          end
         end
 
         expect { NonFailingYAMLConfig.new }.not_to raise_error
+        expect(NonFailingYAMLConfig.new.to_h).to eq('nested' => {})
       end
     end
   end
