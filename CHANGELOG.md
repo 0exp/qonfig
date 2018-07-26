@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.5.0] - 2018-07-26
 ### Added
 - `load_from_json`- a command that provides an ability to define config settings
   by loading them from a json file (in `load_from_yaml` manner);
