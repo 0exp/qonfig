@@ -520,7 +520,7 @@ config.settings.rubySettings.withAdditionals # => false
 # --- strict mode ---
 class Config < Qonfig::DataSet
   setting :nonexistent_json do
-    load_from_yaml 'nonexistent_json.json', strict: true # true by default
+    load_from_json 'nonexistent_json.json', strict: true # true by default
   end
 
   setting :another_key
@@ -531,7 +531,7 @@ Config.new # => Qonfig::FileNotFoundError
 # --- non-strict mode ---
 class Config < Qonfig::DataSet
   settings :nonexistent_json do
-    load_from_yaml 'nonexistent_json.json', strict: false
+    load_from_json 'nonexistent_json.json', strict: false
   end
 
   setting :another_key
