@@ -31,8 +31,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'coveralls',        '~> 0.8'
   spec.add_development_dependency 'simplecov',        '~> 0.14'
   spec.add_development_dependency 'simplecov-json',   '~> 0.2'
-  spec.add_development_dependency 'rspec',            '~> 3.7'
-  spec.add_development_dependency 'armitage-rubocop', '~> 0.4'
+  spec.add_development_dependency 'rspec',            '~> 3.8'
+  spec.add_development_dependency 'armitage-rubocop', '~> 0.5'
 
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'rake'

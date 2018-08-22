@@ -661,6 +661,7 @@ connection_timeout:
 - instance-level:
   - `#configure` - configuration;
   - `#config` - config object;
+  - `#shared_config` - class-level config object;
 
 ```ruby
 # --- usage ---
@@ -685,6 +686,10 @@ Application.config.settings.password # => nil
 app.config.settings.user # => nil
 app.config.settings.password # => nil
 
+# access to the class level config from an instance
+app.shared_config.settings.user # => nil
+app.shared_config.settings.password # => nil
+
 # class-level configuration
 Application.configure do |conf|
   conf.user = '0exp'
@@ -704,6 +709,10 @@ Application.config.settings.password # => 'test123'
 # instance has own config object
 app.config.settings.user # => 'admin'
 app.config.settings.password # => '123test'
+
+# access to the class level config from an instance
+app.shared_config.settings.user # => '0exp'
+app.shared_config.settings.password # => 'test123'
 
 # and etc... (all Qonfig-related features)
 ```
