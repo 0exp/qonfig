@@ -94,6 +94,14 @@ module Qonfig
         end
       end
 
+      # @return [Qonfig::DataSet]
+      #
+      # @api public
+      # @since 0.6.0
+      def shared_config
+        self.class.config
+      end
+
       # @param options_map [Hash]
       # @param block [Proc]
       # @return [void]
