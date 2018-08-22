@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.6.0] - 2018-08-XX
+## [0.6.0] - 2018-08-22
 ### Added
 - `#shared_config` - instance method that provides an access to the class level config
   object from `Qonfig::Configurable` instances;
