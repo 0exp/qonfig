@@ -38,6 +38,12 @@ describe 'Mixin (Qonfig::Configurable)' do
     expect(any_app.config[:data][:version]).to eq(RUBY_VERSION)
     expect(any_app.config[:data][:language]).to eq('ruby')
 
+    # instance has an access to the class-level config
+    expect(any_app.shared_config).to eq(AnyApplication.config)
+    expect(any_app.shared_config[:env][:GENERIC_VARIABLE]).to eq(true)
+    expect(any_app.shared_config[:data][:version]).to eq(RUBY_VERSION)
+    expect(any_app.shared_config[:data][:language]).to eq('ruby')
+
     # configure class-level config object
     AnyApplication.configure do |conf|
       conf.data.version  = '9.2.0.0'
@@ -54,6 +60,12 @@ describe 'Mixin (Qonfig::Configurable)' do
     expect(any_app.config[:env][:GENERIC_VARIABLE]).to eq(true)
     expect(any_app.config[:data][:version]).to eq(RUBY_VERSION)
     expect(any_app.config[:data][:language]).to eq('ruby')
+
+    # instance has an access to the class-level config
+    expect(any_app.shared_config).to eq(AnyApplication.config)
+    expect(any_app.shared_config[:env][:GENERIC_VARIABLE]).to eq(false)
+    expect(any_app.shared_config[:data][:version]).to eq('9.2.0.0')
+    expect(any_app.shared_config[:data][:language]).to eq('jruby')
 
     # configure instance-level config object
     any_app.configure do |conf|
@@ -72,6 +84,12 @@ describe 'Mixin (Qonfig::Configurable)' do
     expect(any_app.config[:data][:version]).to eq('2.4.1')
     expect(any_app.config[:data][:language]).to eq('mruby')
 
+    # instance has an access to the class-level config
+    expect(any_app.shared_config).to eq(AnyApplication.config)
+    expect(any_app.shared_config[:env][:GENERIC_VARIABLE]).to eq(false)
+    expect(any_app.shared_config[:data][:version]).to eq('9.2.0.0')
+    expect(any_app.shared_config[:data][:language]).to eq('jruby')
+
     # --- same with inhertiance ---
 
     # inherited instance
@@ -88,6 +106,13 @@ describe 'Mixin (Qonfig::Configurable)' do
     expect(inh_app.config[:data][:version]).to eq(RUBY_VERSION)
     expect(inh_app.config[:data][:language]).to eq('ruby')
     expect(inh_app.config[:database][:adapter]).to eq('postgresql')
+
+    # instance has an access to the class-level config
+    expect(inh_app.shared_config).to eq(InheritedApplication.config)
+    expect(inh_app.shared_config[:env][:GENERIC_VARIABLE]).to eq(true)
+    expect(inh_app.shared_config[:data][:version]).to eq(RUBY_VERSION)
+    expect(inh_app.shared_config[:data][:language]).to eq('ruby')
+    expect(inh_app.shared_config[:database][:adapter]).to eq('postgresql')
 
     # configure class-level config object
     InheritedApplication.configure do |conf|
@@ -109,6 +134,13 @@ describe 'Mixin (Qonfig::Configurable)' do
     expect(inh_app.config[:data][:language]).to eq('ruby')
     expect(inh_app.config[:database][:adapter]).to eq('postgresql')
 
+    # instance has an access to the class-level config
+    expect(inh_app.shared_config).to eq(InheritedApplication.config)
+    expect(inh_app.shared_config[:env][:GENERIC_VARIABLE]).to eq('123')
+    expect(inh_app.shared_config[:data][:version]).to eq('2.2.10')
+    expect(inh_app.shared_config[:data][:language]).to eq('super_ruby')
+    expect(inh_app.shared_config[:database][:adapter]).to eq('oracle')
+
     # configure instance-level config object
     inh_app.configure do |conf|
       conf[:env][:GENERIC_VARIABLE] = 'mega-blast'
@@ -128,6 +160,13 @@ describe 'Mixin (Qonfig::Configurable)' do
     expect(inh_app.config[:data][:version]).to eq('3x3')
     expect(inh_app.config[:data][:language]).to eq('ultimate_ruby')
     expect(inh_app.config[:database][:adapter]).to eq('mongodb')
+
+    # instance has an access to the class-level config
+    expect(inh_app.shared_config).to eq(InheritedApplication.config)
+    expect(inh_app.shared_config[:env][:GENERIC_VARIABLE]).to eq('123')
+    expect(inh_app.shared_config[:data][:version]).to eq('2.2.10')
+    expect(inh_app.shared_config[:data][:language]).to eq('super_ruby')
+    expect(inh_app.shared_config[:database][:adapter]).to eq('oracle')
 
     # -- there are no intersections between original and inherited entities --
     expect(any_app.config.to_h).to match(
@@ -198,6 +237,10 @@ describe 'Mixin (Qonfig::Configurable)' do
     InheritedApplication.config.reload!
     inh_app.config.reload!
 
+    # instance has an access to the class-level config
+    expect(any_app.shared_config).to eq(AnyApplication.config)
+    expect(inh_app.shared_config).to eq(InheritedApplication.config)
+
     expect(any_app.config.to_h).to match(
       'env' => { 'GENERIC_VARIABLE' => true },
       'data' => { 'version' => RUBY_VERSION, 'language' => 'ruby' },
@@ -205,6 +248,12 @@ describe 'Mixin (Qonfig::Configurable)' do
     )
 
     expect(AnyApplication.config.to_h).to match(
+      'env' => { 'GENERIC_VARIABLE' => true },
+      'data' => { 'version' => RUBY_VERSION, 'language' => 'ruby' },
+      'any_additional' => 'any'
+    )
+
+    expect(any_app.shared_config.to_h).to match(
       'env' => { 'GENERIC_VARIABLE' => true },
       'data' => { 'version' => RUBY_VERSION, 'language' => 'ruby' },
       'any_additional' => 'any'
@@ -218,6 +267,13 @@ describe 'Mixin (Qonfig::Configurable)' do
     )
 
     expect(InheritedApplication.config.to_h).to match(
+      'env' => { 'GENERIC_VARIABLE' => true },
+      'data' => { 'version' => RUBY_VERSION, 'language' => 'ruby' },
+      'database' => { 'adapter' => 'postgresql' },
+      'inh_additional' => 'inh'
+    )
+
+    expect(inh_app.shared_config.to_h).to match(
       'env' => { 'GENERIC_VARIABLE' => true },
       'data' => { 'version' => RUBY_VERSION, 'language' => 'ruby' },
       'database' => { 'adapter' => 'postgresql' },
@@ -243,6 +299,12 @@ describe 'Mixin (Qonfig::Configurable)' do
       'any_additional' => nil
     )
 
+    expect(any_app.shared_config.to_h).to match(
+      'env' => { 'GENERIC_VARIABLE' => nil },
+      'data' => { 'version' => nil, 'language' => nil },
+      'any_additional' => nil
+    )
+
     expect(inh_app.config.to_h).to match(
       'env' => { 'GENERIC_VARIABLE' => nil },
       'data' => { 'version' => nil, 'language' => nil },
@@ -257,14 +319,18 @@ describe 'Mixin (Qonfig::Configurable)' do
       'inh_additional' => nil
     )
 
+    expect(inh_app.shared_config.to_h).to match(
+      'env' => { 'GENERIC_VARIABLE' => nil },
+      'data' => { 'version' => nil, 'language' => nil },
+      'database' => { 'adapter' => nil },
+      'inh_additional' => nil
+    )
+
     # --- #freeze! does not intersects between class-level and instance-level configs ---
     # --- #freeze! does not intersects between original and inherited entities ---
 
     AnyApplication.config.freeze!
-
-    expect do
-      AnyApplication.configure { |conf| conf.any_additional = true }
-    end.to raise_error(Qonfig::FrozenSettingsError)
+    expect(any_app.shared_config).to eq(AnyApplication.config)
 
     expect do
       AnyApplication.configure { |conf| conf.any_additional = true }
@@ -297,6 +363,7 @@ describe 'Mixin (Qonfig::Configurable)' do
     end.not_to raise_error
 
     InheritedApplication.config.freeze!
+    expect(inh_app.shared_config).to eq(InheritedApplication.config)
 
     expect do
       InheritedApplication.configure { |conf| conf.inh_additional = true }
