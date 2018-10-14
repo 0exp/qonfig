@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.7.0] = 2018-10-15
+### Added
+- `expose_yaml` - ???;
+
 ## [0.6.0] - 2018-08-22
 ### Added
 - `#shared_config` - instance method that provides an access to the class level config

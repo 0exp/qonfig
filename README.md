@@ -34,6 +34,7 @@ require 'qonfig'
 - [Load from JSON file](#load-from-json-file)
 - [Load from ENV](#load-from-env)
 - [Load from \_\_END\_\_](#load-from-__end__) (aka `load_from_self`)
+- [Expose YAML](#expose-yaml) (Rails-like environment-based `*.yml` configs)
 - [Smart Mixin](#smart-mixin) (`Qonfig::Configurable`)
 - [Plugins](#plugins)
 
@@ -647,6 +648,20 @@ api_host: super.puper-google.com
 connection_timeout:
   seconds: 10
   enabled: false
+```
+
+---
+
+### Expose YAML
+
+```ruby
+class Config < Qonfig::DataSet
+  expose_yaml 'config/sidekiq.yml', via: :env_key, env: :development
+end
+
+class Config < Qonfig::DataSet
+  expose_yaml 'config/project.yml', via: :file_name, env: :staging
+end
 ```
 
 ---
