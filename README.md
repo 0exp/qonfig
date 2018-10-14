@@ -34,7 +34,7 @@ require 'qonfig'
 - [Load from JSON file](#load-from-json-file)
 - [Load from ENV](#load-from-env)
 - [Load from \_\_END\_\_](#load-from-__end__) (aka `load_from_self`)
-- [Expose YAML](#expose-yaml) (Rails-like environment-based `*.yml` configs)
+- [Expose YAML](#expose-yaml) (`Rails`-like environment-based YAML configs)
 - [Smart Mixin](#smart-mixin) (`Qonfig::Configurable`)
 - [Plugins](#plugins)
 

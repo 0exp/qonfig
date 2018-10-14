@@ -5,7 +5,7 @@ module Qonfig
     # @api private
     # @since 0.7.0
     class ExposeYAML < Base
-      # @return [Array<Symbol>]
+      # @return [Hash]
       #
       # @api private
       # @since 0.7.0
@@ -78,14 +78,16 @@ module Qonfig
 
       private
 
+      # @param settings [Qonfig::Settings]
       # @return [void]
       #
       # @api private
       # @since 0.7.0
       def expose_file_name!(settings)
-        # NOTE: transform file name (insert environment name to the file name)
+        # NOTE: transform file name (insert environment name into the file name)
         #   from: path/to/file/file_name.file_extension
         #   to:   path/to/file/file_name.env_name.file_extension
+
         pathname = Pathname.new(file_path)
         dirname  = pathname.dirname
         extname  = pathname.extname.to_s
@@ -100,7 +102,11 @@ module Qonfig
         settings.__append_settings__(yaml_based_settings)
       end
 
+      # @param settings [Qonfig::Settings]
       # @return [void]
+      #
+      # @raise [Qonfig::ExposeError]
+      # @raise [Qonfig::IncompatibleYAMLStructureError]
       #
       # @api private
       # @since 0.7.0

@@ -111,7 +111,7 @@ module Qonfig
 
     # @param file_path [String]
     # @option strict [Boolean]
-    # @option expose [Symbol]
+    # @option via [Symbol]
     # @option env [Symbol, String]
     # @return [void]
     #
