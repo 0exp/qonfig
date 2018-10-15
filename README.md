@@ -654,23 +654,8 @@ connection_timeout:
 
 ### Expose YAML
 
-- `via:` - how an environment will be determined:
-    - `:file_name`
-        - load configuration from YAML file that have an `:env` part in it's name;
-    - `:env_key`
-        - load configuration from YAML file;
-        - concrete configuration should be defined in the root key with `:env` name;
-- `env:` - your environment name (must be a type of `String`, `Symbol` or `Numeric`);
-- `strict:` - requires the existence of the file and/or key with the name of the used environment:
-    - `true`:
-        - file should exist;
-        - root key with `:env` name should exist (if `via: :env_key` is used);
-    - `false`:
-        - file is not required;
-        - root key with `:env` name is not required (if `via: :env_key` is used);
-
 ```ruby
-# examples coming soon...
+# documentation coming soon...
 
 class Config < Qonfig::DataSet
   expose_yaml 'config/project.yml', via: :env_key, env: :production
