@@ -1,0 +1,24 @@
+default: &default
+  api_mode_enabled: true
+  logging: true
+  db_driver: in_memory
+  throttle_requests: false
+
+development:
+  <<: *default
+  db_driver: sequel
+  logging: false
+
+test:
+  <<: *default
+  logging: false
+
+staging:
+  <<: *default
+  db_driver: active_record
+  throttle_requests: true
+
+production:
+  <<: *default
+  db_driver: rom
+  throttle_requests: true

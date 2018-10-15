@@ -80,4 +80,10 @@ module Qonfig
   # @api public
   # @since 0.4.0
   UnregisteredPluginError = Class.new(Error)
+
+  # @see Qonfig::Commands::ExposeYAML
+  #
+  # @api public
+  # @since 0.7.0
+  ExposeError = Class.new(Error)
 end
