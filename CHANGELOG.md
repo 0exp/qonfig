@@ -3,9 +3,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
-- `expose_yaml`
-    - a command that provides an ability to define config settings in `Rails`-like
-      environment-based YAML configs and works in `load_from_yaml` manner;
+- `expose_yaml` - a command that provides an ability to define config settings
+  by loading them from a yaml file where the concrete settings depends on the chosen environment;
 
 ## [0.6.0] - 2018-08-22
 ### Added
