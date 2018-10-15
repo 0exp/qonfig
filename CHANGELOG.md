@@ -1,9 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.7.0] = 2018-10-15
+## [Unreleased]
 ### Added
-- `expose_yaml` - ???;
+- `expose_yaml`
+    - a command that provides an ability to define config settings in `Rails`-like
+      environment-based YAML configs and works in `load_from_yaml` manner;
 
 ## [0.6.0] - 2018-08-22
 ### Added

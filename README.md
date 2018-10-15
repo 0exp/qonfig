@@ -654,6 +654,8 @@ connection_timeout:
 
 ### Expose YAML
 
+- ???
+
 ```ruby
 class Config < Qonfig::DataSet
   expose_yaml 'config/sidekiq.yml', via: :env_key, env: :development
