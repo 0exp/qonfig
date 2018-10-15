@@ -108,5 +108,17 @@ module Qonfig
     def load_from_json(file_path, strict: true)
       commands << Qonfig::Commands::LoadFromJSON.new(file_path, strict: strict)
     end
+
+    # @param file_path [String]
+    # @option strict [Boolean]
+    # @option via [Symbol]
+    # @option env [Symbol, String]
+    # @return [void]
+    #
+    # @api public
+    # @since 0.7.0
+    def expose_yaml(file_path, strict: true, via:, env:)
+      commands << Qonfig::Commands::ExposeYAML.new(file_path, strict: strict, via: via, env: env)
+    end
   end
 end

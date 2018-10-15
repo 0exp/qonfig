@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+### Added
+- `expose_yaml` - a command that provides an ability to define config settings
+  by loading them from a yaml file where the concrete settings depends on the chosen environment;
+
 ## [0.6.0] - 2018-08-22
 ### Added
 - `#shared_config` - instance method that provides an access to the class level config

@@ -1,0 +1,3 @@
+api_mode_enabled: true
+db_driver: active_record
+logging: true
