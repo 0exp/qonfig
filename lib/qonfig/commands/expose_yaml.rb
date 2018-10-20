@@ -83,6 +83,7 @@ module Qonfig
       #
       # @api private
       # @since 0.7.0
+      # rubocop:disable Metrics/AbcSize
       def expose_file_name!(settings)
         # NOTE: transform file name (insert environment name into the file name)
         #   from: path/to/file/file_name.file_extension
@@ -101,6 +102,7 @@ module Qonfig
 
         settings.__append_settings__(yaml_based_settings)
       end
+      # rubocop:enable Metrics/AbcSize
 
       # @param settings [Qonfig::Settings]
       # @return [void]
@@ -110,6 +112,7 @@ module Qonfig
       #
       # @api private
       # @since 0.7.0
+      # rubocop:disable Metrics/AbcSize
       def expose_env_key!(settings)
         yaml_data       = load_yaml_data(file_path)
         yaml_data_slice = yaml_data[env] || yaml_data[env.to_s] || yaml_data[env.to_sym]
@@ -129,6 +132,7 @@ module Qonfig
 
         settings.__append_settings__(yaml_based_settings)
       end
+      # rubocop:enable Metrics/AbcSize
 
       # @param file_path [String]
       # @return [Hash]
