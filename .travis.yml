@@ -2,9 +2,9 @@ language: ruby
 matrix:
   fast_finish: true
   include:
-  - rvm: 2.3.7
-  - rvm: 2.4.4
-  - rvm: 2.5.1
+  - rvm: 2.3.8
+  - rvm: 2.4.5
+  - rvm: 2.5.3
   - rvm: ruby-head
   - rvm: jruby-head
   allow_failures:
