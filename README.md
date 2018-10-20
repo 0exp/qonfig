@@ -31,10 +31,10 @@ require 'qonfig'
 - [State freeze](#state-freeze)
 - [Settings as Predicates](#settings-as-predicates)
 - [Load from YAML file](#load-from-yaml-file)
+- [Expose YAML](#expose-yaml) (`Rails`-like environment-based YAML configs)
 - [Load from JSON file](#load-from-json-file)
 - [Load from ENV](#load-from-env)
 - [Load from \_\_END\_\_](#load-from-__end__) (aka `load_from_self`)
-- [Expose YAML](#expose-yaml) (`Rails`-like environment-based YAML configs)
 - [Smart Mixin](#smart-mixin) (`Qonfig::Configurable`)
 - [Plugins](#plugins)
 
@@ -408,12 +408,14 @@ config.settings.database.engine.driver? # => true (true => true)
 
 ### Load from YAML file
 
+- supports `ERB`;
 - `:strict` mode (fail behaviour when the required yaml file doesnt exist):
   - `true` (by default) - causes `Qonfig::FileNotFoundError`;
   - `false` - do nothing, ignore current command;
 
 ```yaml
-<!-- travis.yml -->
+# travis.yml
+
 sudo: false
 language: ruby
 rvm:
@@ -422,14 +424,16 @@ rvm:
 ```
 
 ```yaml
-<!-- project.yml -->
+# project.yml
+
 enable_api: false
 Sidekiq/Scheduler:
   enable: true
 ```
 
 ```yaml
-<!-- ruby_data.yml -->
+# ruby_data.yml
+
 version: <%= RUBY_VERSION %>
 platform: <%= RUBY_PLATFORM %>
 ```
@@ -484,6 +488,110 @@ Config.new.to_h # => { "nonexistent_yaml" => {}, "another_key" => nil }
 
 ---
 
+### Expose YAML
+
+- load configurations from YAML file in Rails-like manner (with environments);
+- works in `load_from_yaml` manner;
+- `via:` - how an environment will be determined:
+    - `:file_name`
+        - load configuration from YAML file that have an `:env` part in it's name;
+    - `:env_key`
+        - load configuration from YAML file;
+        - concrete configuration should be defined in the root key with `:env` name;
+- `env:` - your environment name (must be a type of `String`, `Symbol` or `Numeric`);
+- `strict:` - requires the existence of the file and/or key with the name of the used environment:
+    - `true`:
+        - file should exist;
+        - root key with `:env` name should exist (if `via: :env_key` is used);
+        - raises `Qonfig::ExposeError` if file does not contain the required env key (if `via: :env` key is used);
+        - raises `Qonfig::FileNotFoundError` if the required file does not exist;
+    - `false`:
+        - file is not required;
+        - root key with `:env` name is not required (if `via: :env_key` is used);
+
+#### Environment is defined as a root key of YAML file
+
+```yaml
+# config/project.yml
+
+default: &default
+  enable_api_mode: true
+  google_key: 12345
+  window:
+    width: 100
+    height: 100
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+  sidekiq_instrumentation: false
+
+staging:
+  <<: *default
+  google_key: 777
+  enable_api_mode: false
+
+production:
+  google_key: asd1-39sd-55aI-O92x
+  enable_api_mode: true
+  window:
+    width: 50
+    height: 150
+```
+
+```ruby
+class Config < Qonfig::DataSet
+  expose_yaml 'config/project.yml', via: :env_key, env: :production # load from production env
+
+  # NOTE: in rails-like application you can use this:
+  expose_yaml 'config/project.yml', via: :env_key, env: Rails.env
+end
+
+config = Config.new
+
+config.settings.enable_api_mode # => true (from :production subset of keys)
+config.settings.google_key # => asd1-39sd-55aI-O92x (from :production subset of keys)
+config.settings.window.width # => 50 (from :production subset of keys)
+config.settings.window.height # => 150 (from :production subset of keys)
+```
+
+#### Environment is defined as a part of YAML file name
+
+```yaml
+# config/sidekiq.staging.yml
+
+web:
+  username: staging_admin
+  password: staging_password
+```
+
+```yaml
+# config/sidekiq.production.yml
+
+web:
+  username: urj1o2
+  password: u192jd0ixz0
+```
+
+```ruby
+class SidekiqConfig < Qonfig::DataSet
+  # NOTE: file name should be described WITHOUT environment part (in file name attribute)
+  expose_yaml 'config/sidekiq.yml', via: :file_name, env: :staging # load from staging env
+
+  # NOTE: in rails-like application you can use this:
+  expose_yaml 'config/sidekiq.yml', via: :file_name, env: Rails.env
+end
+
+config = SidekiqConfig.new
+
+config.settings.web.username # => staging_admin (from sidekiq.staging.yml)
+config.settings.web.password # => staging_password (from sidekiq.staging.yml)
+```
+
+---
+
 ### Load from JSON file
 
 - `:strict` mode (fail behaviour when the required yaml file doesnt exist):
@@ -491,7 +599,8 @@ Config.new.to_h # => { "nonexistent_yaml" => {}, "another_key" => nil }
   - `false` - do nothing, ignore current command;
 
 ```json
-<!-- options.json -->
+// options.json
+
 {
   "user": "0exp",
   "password": 12345,
@@ -648,22 +757,6 @@ api_host: super.puper-google.com
 connection_timeout:
   seconds: 10
   enabled: false
-```
-
----
-
-### Expose YAML
-
-```ruby
-# documentation coming soon...
-
-class Config < Qonfig::DataSet
-  expose_yaml 'config/project.yml', via: :env_key, env: :production
-end
-
-class SidekiqConfig < Qonfig::DataSet
-  expose_yaml 'config/sidekiq.yml', via: :file_name, env: :staging
-end
 ```
 
 ---
