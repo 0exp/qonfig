@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.7.0] - 2018-10-20
 ### Added
 - `expose_yaml` - a command that provides an ability to define config settings
   by loading them from a yaml file where the concrete settings depends on the chosen environment;
