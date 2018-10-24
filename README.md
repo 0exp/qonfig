@@ -886,7 +886,7 @@ Qonfig.plugin(:plugin_name) # or Qonfig.plugin('plugin_name')
 ## Contributing
 
 - Fork it ( https://github.com/0exp/qonfig/fork )
-- Create your feature branch (`git checkout -b feature/my-new-feature development`)
+- Create your feature branch (`git checkout -b feature/my-new-feature`)
 - Commit your changes (`git commit -am 'Add some feature'`)
 - Push to the branch (`git push origin feature/my-new-feature`)
 - Create new Pull Request
