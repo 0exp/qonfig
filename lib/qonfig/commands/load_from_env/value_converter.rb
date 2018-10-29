@@ -8,37 +8,37 @@ module Qonfig
     #
     # @api private
     # @since 0.2.0
-    INTEGER_PATTERN = /\A\d+\z/
+    INTEGER_PATTERN = /\A\d+\z/.freeze
 
     # @return [Regexp]
     #
     # @api private
     # @since 0.2.0
-    FLOAT_PATTERN = /\A\d+\.\d+\z/
+    FLOAT_PATTERN = /\A\d+\.\d+\z/.freeze
 
     # @return [Regexp]
     #
     # @api private
     # @since 0.2.0
-    TRUE_PATTERN = /\A(t|true)\z/i
+    TRUE_PATTERN = /\A(t|true)\z/i.freeze
 
     # @return [Regexp]
     #
     # @api private
     # @since 0.2.0
-    FALSE_PATTERN = /\A(f|false)\z/i
+    FALSE_PATTERN = /\A(f|false)\z/i.freeze
 
     # @return [Regexp]
     #
     # @api private
     # @since 0.2.0
-    ARRAY_PATTERN = /\A[^'"].*\s*,\s*.*[^'"]\z/
+    ARRAY_PATTERN = /\A[^'"].*\s*,\s*.*[^'"]\z/.freeze
 
     # @return [Regexp]
     #
     # @api private
     # @since 0.2.0
-    QUOTED_STRING_PATTERN = /\A['"].*['"]\z/
+    QUOTED_STRING_PATTERN = /\A['"].*['"]\z/.freeze
 
     class << self
       # @param env_data [Hash]
