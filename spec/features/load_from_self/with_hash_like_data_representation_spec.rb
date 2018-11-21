@@ -33,7 +33,6 @@ describe 'Load from self (hash-like __END__ data representation)' do
       expect(conf['staging']['port']).to eq(12_345)
       expect(conf['staging']['host']).to eq('google.kek')
 
-
       expect(conf.with_nesting.secret_key).to eq('top-mega-secret')
       expect(conf.with_nesting.api_host).to eq('super.puper-google.com')
       expect(conf.with_nesting.connection_timeout.seconds).to eq(10)
