@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+### Changed
+- `expose_yaml`, `load_from_yaml`, `load_from_json` and `load_from_self` treats empty hash (`{}`)
+  as an option with empty hash value (previously treated as a nested setting);
+
 ## [0.7.0] - 2018-10-20
 ### Added
 - `expose_yaml` - a command that provides an ability to define config settings

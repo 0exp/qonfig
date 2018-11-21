@@ -10,10 +10,12 @@ describe 'Load from self (hash-like __END__ data representation with ERB inserts
       expect(conf.defaults.host).to eq('localhost')
       expect(conf.defaults.user).to eq('0exp')
       expect(conf.defaults.password).to eq('password4')
+      expect(conf.defaults.credentials).to eq({})
 
       expect(conf.staging.host).to eq('yandex.ru')
       expect(conf.staging.user).to eq('0exp')
       expect(conf.staging.password).to eq('password4')
+      expect(conf.staging.credentials).to eq({})
     end
   end
 end
@@ -24,6 +26,7 @@ defaults: &defaults
   host: localhost
   user: <%= '0exp' %>
   password: <%= "password#{(2 * 2)}" %>
+  credentials: <%= {} %>
 
 staging:
   <<: *defaults

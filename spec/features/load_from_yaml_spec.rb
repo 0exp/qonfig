@@ -4,28 +4,30 @@ describe 'Load from YAML' do
   specify 'defines config object by yaml instructions' do
     class CISettings < Qonfig::DataSet
       load_from_yaml File.expand_path(
-        File.join('..', '..', 'fixtures', 'shared_settings_with_aliases.yml'),
-        Pathname.new(__FILE__).realpath
+        File.join('..', 'fixtures', 'shared_settings_with_aliases.yml'), __dir__
       )
 
       setting :travis do
         load_from_yaml File.expand_path(
-          File.join('..', '..', 'fixtures', 'travis_settings.yml'),
-          Pathname.new(__FILE__).realpath
+          File.join('..', 'fixtures', 'travis_settings.yml'), __dir__
         )
       end
 
       setting :rubocop do
         load_from_yaml File.expand_path(
-          File.join('..', '..', 'fixtures', 'rubocop_settings.yml'),
-          Pathname.new(__FILE__).realpath
+          File.join('..', 'fixtures', 'rubocop_settings.yml'), __dir__
         )
       end
 
       setting :with_erb do
         load_from_yaml File.expand_path(
-          File.join('..', '..', 'fixtures', 'with_erb_instructions.yml'),
-          Pathname.new(__FILE__).realpath
+          File.join('..', 'fixtures', 'with_erb_instructions.yml'), __dir__
+        )
+      end
+
+      setting :with_empty_hash do
+        load_from_yaml File.expand_path(
+          File.join('..', 'fixtures', 'with_empty_hash.yml'), __dir__
         )
       end
     end
@@ -54,14 +56,18 @@ describe 'Load from YAML' do
       expect(conf['with_erb']['user']).to eq('D@iVeR')
       expect(conf['with_erb']['max_auth_count']).to eq(2)
       expect(conf['with_erb']['ruby_version']).to eq(RUBY_VERSION)
+
+      # with_empty_hash.yml
+      expect(conf['with_empty_hash']['settings']).to eq({})
+      expect(conf['with_empty_hash']['another_settings']['option_a']).to eq({})
+      expect(conf['with_empty_hash']['another_settings']['option_b']).to eq(1)
     end
   end
 
   specify 'fails when yaml settings is not represented as a hash' do
     class IncompatibleYAMLConfig < Qonfig::DataSet
       load_from_yaml File.expand_path(
-        File.join('..', '..', 'fixtures', 'array_settings.yml'),
-        Pathname.new(__FILE__).realpath
+        File.join('..', 'fixtures', 'array_settings.yml'), __dir__
       )
     end
 

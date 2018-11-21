@@ -4,14 +4,18 @@ describe 'Load from JSON' do
   specify 'defines config object by json instructions' do
     class JSONBasedConfig < Qonfig::DataSet
       load_from_json File.expand_path(
-        File.join('..', '..', 'fixtures', 'json_object_sample.json'),
-        Pathname.new(__FILE__).realpath
+        File.join('..', 'fixtures', 'json_object_sample.json'), __dir__
       )
 
       setting :nested do
         load_from_json File.expand_path(
-          File.join('..', '..', 'fixtures', 'json_object_sample.json'),
-          Pathname.new(__FILE__).realpath
+          File.join('..', 'fixtures', 'json_object_sample.json'), __dir__
+        )
+      end
+
+      setting :with_empty_objects do
+        load_from_json File.expand_path(
+          File.join('..', 'fixtures', 'json_with_empty_object.json'), __dir__
         )
       end
     end
@@ -28,14 +32,16 @@ describe 'Load from JSON' do
       expect(conf.nested.rubySettings.allowedVersions).to eq(['2.3', '2.4.2', '1.9.8'])
       expect(conf.nested.rubySettings.gitLink).to eq(nil)
       expect(conf.nested.rubySettings.withAdditionals).to eq(false)
+
+      expect(conf.with_empty_objects.requirements).to eq({})
+      expect(conf.with_empty_objects.credentials.excluded).to eq({})
     end
   end
 
   specify 'fails when json object has non-hash-like structure' do
     class IncompatibleJSONConfig < Qonfig::DataSet
       load_from_json File.expand_path(
-        File.join('..', '..', 'fixtures', 'json_array_sample.json'),
-        Pathname.new(__FILE__).realpath
+        File.join('..', 'fixtures', 'json_array_sample.json'), __dir__
       )
     end
 
