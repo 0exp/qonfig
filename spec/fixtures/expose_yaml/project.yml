@@ -3,6 +3,7 @@ default: &default
   logging: true
   db_driver: in_memory
   throttle_requests: false
+  credentials: {}
 
 development:
   <<: *default

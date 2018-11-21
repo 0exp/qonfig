@@ -16,9 +16,8 @@ module Qonfig
         def build_from_hash(hash)
           Class.new(Qonfig::DataSet).tap do |data_set_klass|
             hash.each_pair do |key, value|
-              if value.is_a?(Hash)
+              if value.is_a?(Hash) && value.any?
                 sub_data_set_klass = build_from_hash(value)
-
                 data_set_klass.setting(key) { compose sub_data_set_klass }
               else
                 data_set_klass.setting key, value

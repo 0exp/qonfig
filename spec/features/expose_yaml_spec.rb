@@ -4,8 +4,7 @@ describe 'Expose YAML file' do
   specify 'defines config object by yaml instructions and specific environment settings' do
     class ExposeYAMLConfig < Qonfig::DataSet
       yaml_file_path = File.expand_path(
-        File.join('..', '..', 'fixtures', 'expose_yaml', 'project.yml'),
-        Pathname.new(__FILE__).realpath
+        File.join('..', 'fixtures', 'expose_yaml', 'project.yml'), __dir__
       )
 
       setting :file_name_based do
@@ -60,18 +59,22 @@ describe 'Expose YAML file' do
     expect(settings.file_name_based.test_env.api_mode_enabled).to eq(false)
     expect(settings.file_name_based.test_env.db_driver).to eq('in_memory')
     expect(settings.file_name_based.test_env.logging).to eq(false)
+    expect(settings.file_name_based.test_env.credentials).to eq({})
     # spec/fixtures/expose_yaml/project.production.yaml
     expect(settings.file_name_based.prod_env.api_mode_enabled).to eq(true)
     expect(settings.file_name_based.prod_env.db_driver).to eq('rom')
     expect(settings.file_name_based.prod_env.logging).to eq(true)
+    expect(settings.file_name_based.prod_env.credentials).to eq({})
     # spec/fixtures/expose_yaml/project.development.yml
     expect(settings.file_name_based.dev_env.api_mode_enabled).to eq(true)
     expect(settings.file_name_based.dev_env.db_driver).to eq('sequel')
     expect(settings.file_name_based.dev_env.logging).to eq(false)
+    expect(settings.file_name_based.dev_env.credentials).to eq({})
     # spec/fixtures/expose_yaml/project.staging.yml
     expect(settings.file_name_based.stage_env.api_mode_enabled).to eq(true)
     expect(settings.file_name_based.stage_env.db_driver).to eq('active_record')
     expect(settings.file_name_based.stage_env.logging).to eq(true)
+    expect(settings.file_name_based.stage_env.credentials).to eq({})
 
     # NOTE: environment based expose
     # spec/fixtures/expose_yaml/project.yml (key: 'test')
@@ -79,21 +82,25 @@ describe 'Expose YAML file' do
     expect(settings.env_based.test_env.db_driver).to eq('in_memory')
     expect(settings.env_based.test_env.logging).to eq(false)
     expect(settings.env_based.test_env.throttle_requests).to eq(false)
+    expect(settings.env_based.test_env.credentials).to eq({})
     # spec/fixtures/expose_yaml/project.yaml (key: 'production')
     expect(settings.env_based.prod_env.api_mode_enabled).to eq(true)
     expect(settings.env_based.prod_env.db_driver).to eq('rom')
     expect(settings.env_based.prod_env.logging).to eq(true)
     expect(settings.env_based.prod_env.throttle_requests).to eq(true)
+    expect(settings.env_based.prod_env.credentials).to eq({})
     # spec/fixtures/expose_yaml/project.yml (key: 'development')
     expect(settings.env_based.dev_env.api_mode_enabled).to eq(true)
     expect(settings.env_based.dev_env.db_driver).to eq('sequel')
     expect(settings.env_based.dev_env.logging).to eq(false)
     expect(settings.env_based.dev_env.throttle_requests).to eq(false)
+    expect(settings.env_based.dev_env.credentials).to eq({})
     # spec/fixtures/expose_yaml/project.yml (key: 'staging')
     expect(settings.env_based.stage_env.api_mode_enabled).to eq(true)
     expect(settings.env_based.stage_env.db_driver).to eq('active_record')
     expect(settings.env_based.stage_env.logging).to eq(true)
     expect(settings.env_based.stage_env.throttle_requests).to eq(true)
+    expect(settings.env_based.stage_env.credentials).to eq({})
   end
 
   describe 'failures and inconsistent situations' do
@@ -102,8 +109,7 @@ describe 'Expose YAML file' do
         expect do
           Class.new(Qonfig::DataSet) do
             expose_yaml File.expand_path(
-              File.join('..', '..', 'fixtures', 'expose_yaml', 'project.yml'),
-              Pathname.new(__FILE__).realpath
+              File.join('..', 'fixtures', 'expose_yaml', 'project.yml'), __dir__
             ), via: :env_key, env: Object.new
           end
         end.to raise_error(Qonfig::ArgumentError)
@@ -113,8 +119,7 @@ describe 'Expose YAML file' do
         expect do
           Class.new(Qonfig::DataSet) do
             expose_yaml File.expand_path(
-              File.join('..', '..', 'fixtures', 'expose_yaml', 'project.yml'),
-              Pathname.new(__FILE__).realpath
+              File.join('..', 'fixtures', 'expose_yaml', 'project.yml'), __dir__
             ), via: :env_key, env: ''
           end
         end.to raise_error(Qonfig::ArgumentError)
@@ -124,8 +129,7 @@ describe 'Expose YAML file' do
         expect do
           Class.new(Qonfig::DataSet) do
             expose_yaml File.expand_path(
-              File.join('..', '..', 'fixtures', 'expose_yaml', 'project.yml'),
-              Pathname.new(__FILE__).realpath
+              File.join('..', 'fixtures', 'expose_yaml', 'project.yml'), __dir__
             ), via: :auto, env: :production
           end
         end.to raise_error(Qonfig::ArgumentError)
@@ -141,8 +145,7 @@ describe 'Expose YAML file' do
 
         class IncompatibleEnvBasedYAMLConfig < Qonfig::DataSet
           expose_yaml File.expand_path(
-            File.join('..', '..', 'fixtures', 'expose_yaml', 'incompatible_structure.yml'),
-            Pathname.new(__FILE__).realpath
+            File.join('..', 'fixtures', 'expose_yaml', 'incompatible_structure.yml'), __dir__
           ), via: :env_key, env: :staging
         end
 
@@ -152,8 +155,7 @@ describe 'Expose YAML file' do
 
         class CompatibleEnvBasedYAMLConfig < Qonfig::DataSet
           expose_yaml File.expand_path(
-            File.join('..', '..', 'fixtures', 'expose_yaml', 'incompatible_structure.yml'),
-            Pathname.new(__FILE__).realpath
+            File.join('..', 'fixtures', 'expose_yaml', 'incompatible_structure.yml'), __dir__
           ), via: :env_key, env: :test
         end
 
@@ -169,15 +171,13 @@ describe 'Expose YAML file' do
           class NoFileNonStrictExposeYAMLConfig < Qonfig::DataSet
             setting :non_strict_by_file do
               expose_yaml File.expand_path(
-                File.join('..', '..', 'fixtures', 'expose_yaml', 'nonexistent.yml'),
-                Pathname.new(__FILE__).realpath
+                File.join('..', 'fixtures', 'expose_yaml', 'nonexistent.yml'), __dir__
               ), strict: false, via: :file_name, env: :development
             end
 
             setting :non_strict_by_env do
               expose_yaml File.expand_path(
-                File.join('..', '..', 'fixtures', 'expose_yaml', 'nonexistent.yml'),
-                Pathname.new(__FILE__).realpath
+                File.join('..', 'fixtures', 'expose_yaml', 'nonexistent.yml'), __dir__
               ), strict: false, via: :env_key, env: :development
             end
           end
@@ -191,15 +191,13 @@ describe 'Expose YAML file' do
           class NoEnvKeyNonStrictExposeYAMLConfig < Qonfig::DataSet
             setting :non_strict_by_file do
               expose_yaml File.expand_path(
-                File.join('..', '..', 'fixtures', 'expose_yaml', 'project.yml'),
-                Pathname.new(__FILE__).realpath
+                File.join('..', 'fixtures', 'expose_yaml', 'project.yml'), __dir__
               ), strict: false, via: :file_name, env: :nonexistent
             end
 
             setting :non_strict_by_env do
               expose_yaml File.expand_path(
-                File.join('..', '..', 'fixtures', 'expose_yaml', 'project.yml'),
-                Pathname.new(__FILE__).realpath
+                File.join('..', 'fixtures', 'expose_yaml', 'project.yml'), __dir__
               ), strict: false, via: :env_key, env: :nonexistent
             end
           end
@@ -217,15 +215,13 @@ describe 'Expose YAML file' do
           # NOTE: file does not exist
           class StrictFileViaFileNameConfig < Qonfig::DataSet
             expose_yaml File.expand_path(
-              File.join('..', '..', 'fixtures', 'expose_yaml', 'nonexistent.yml'),
-              Pathname.new(__FILE__).realpath
+              File.join('..', 'fixtures', 'expose_yaml', 'nonexistent.yml'), __dir__
             ), via: :file_name, env: :production
           end
           # NOTE: file does not exist
           class StrictFileViaEnvKeyConfig < Qonfig::DataSet
             expose_yaml File.expand_path(
-              File.join('..', '..', 'fixtures', 'expose_yaml', 'nonexistent.yml'),
-              Pathname.new(__FILE__).realpath
+              File.join('..', 'fixtures', 'expose_yaml', 'nonexistent.yml'), __dir__
             ), via: :env_key, env: :production
           end
 
@@ -238,8 +234,7 @@ describe 'Expose YAML file' do
           #   - file: spec/fixtures/expose_yaml/project.yml
           class NonExistentEnvKeyConfig < Qonfig::DataSet
             expose_yaml File.expand_path(
-              File.join('..', '..', 'fixtures', 'expose_yaml', 'project.yml'),
-              Pathname.new(__FILE__).realpath
+              File.join('..', 'fixtures', 'expose_yaml', 'project.yml'), __dir__
             ), via: :env_key, env: :nonexistent
           end
 

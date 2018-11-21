@@ -1,3 +1,4 @@
 api_mode_enabled: false
 db_driver: in_memory
 logging: false
+credentials: {}
