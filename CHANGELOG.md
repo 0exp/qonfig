@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [0.8.0] - 2018-11-21
 ### Changed
 - `expose_yaml`, `load_from_yaml`, `load_from_json` and `load_from_self` treats empty hash (`{}`)
-  as an option with empty hash value (previously treated as a nested setting);
+  as an option with empty hash value (previously treated as a nested setting without options);
 
 ## [0.7.0] - 2018-10-20
 ### Added
