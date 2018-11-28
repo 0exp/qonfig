@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
-- `#slice` - get a slice of config options as a hash collection (works in a `#dig` manner);
+- `#slice` - get a slice of config options as a hash set (works in a `#dig` manner);
 
 ## [0.8.0] - 2018-11-21
 ### Changed
