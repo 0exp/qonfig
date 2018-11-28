@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.9.0] - 2018-11-28
 ### Added
 - `#slice` - get a slice of config options as a hash set (works in a `#dig` manner);
 
