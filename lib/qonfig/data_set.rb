@@ -95,6 +95,15 @@ module Qonfig
       thread_safe_access { settings.__dig__(*keys) }
     end
 
+    # @param keys [Array<String, Symbol>]
+    # @return [Hash]
+    #
+    # @api public
+    # @since 0.9.0
+    def slice(*keys)
+      thread_safe_access { settings.__slice__(*keys) }
+    end
+
     # @return [void]
     #
     # @api public

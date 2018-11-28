@@ -21,7 +21,7 @@ require 'qonfig'
 
 ## Usage
 
-- [Definition and Access](#definition-and-access)
+- [Definition and Settings Access](#definition-and-access)
 - [Configuration](#configuration)
 - [Inheritance](#inheritance)
 - [Composition](#composition)
@@ -43,6 +43,7 @@ require 'qonfig'
 ### Definition and Access
 
 ```ruby
+# --- definition ---
 class Config < Qonfig::DataSet
   # nil by default
   setting :project_id
@@ -60,7 +61,9 @@ class Config < Qonfig::DataSet
   end
 end
 
-config = Config.new
+config = Config.new # your configuration object instance
+
+# --- setting access ---
 
 # get option value via method
 config.settings.project_id # => nil
@@ -89,6 +92,12 @@ config[:enable_graphql] # => false
 # get option value in Hash#dig manner (and fail when the required key does not exist)
 config.dig(:vendor_api, :host) # => 'app.service.com' # (key exists)
 config.dig(:vendor_api, :port) # => Qonfig::UnknownSettingError # (key does not exist)
+
+# get a hash slice of setting options (and fail when the required key does not exist)
+config.slice(:vendor_api) # => { 'vendor_api' => { 'host' => 'app_service', 'user' => 'test_user' } }
+config.slice(:vendor_api, :user) # => { 'user' => 'test_user' }
+config.slice(:project_api) # => Qonfig::UnknownSettingError # (key does not exist)
+config.slice(:vendor_api, :port) # => Qonfig::UnknownSettingError # (key does not exist)
 ```
 
 ---
