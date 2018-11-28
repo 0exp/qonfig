@@ -1,0 +1,44 @@
+# frozen_string_literal: true
+
+describe '#slice-functionality' do
+  specify '#slice functionality works as expected :)' do
+    class SlicingConfig < Qonfig::DataSet
+      setting :db do
+        setting :creds do
+          setting :user, 'D@iVeR'
+          setting :data, test: false
+        end
+      end
+    end
+
+    config = SlicingConfig.new
+
+    db_slice    = { 'db' => { 'creds' => { 'user' => 'D@iVeR', 'data' => { test: false } } } }
+    creds_slice = { 'creds' => { 'user' => 'D@iVeR', 'data' => { test: false } } }
+    user_slice  = { 'user' => 'D@iVeR' }
+    data_slice  = { 'data' => { test: false } }
+
+    # access to the slice (with indifferent keys type)
+    expect(config.slice(:db)).to match(db_slice)
+    expect(config.slice('db', :creds)).to match(creds_slice)
+    expect(config.slice(:db, 'creds', :user)).to match(user_slice)
+    expect(config.slice(:db, :creds, 'data')).to match(data_slice)
+
+    # try to slice over the nonexistent keys
+    expect { config.slice(:db, :creds, :megazavr) }.to raise_error(Qonfig::UnknownSettingError)
+    expect { config.slice(:db, :test) }.to raise_error(Qonfig::UnknownSettingError)
+
+    # you cant slice over setting values - you can do it only over the setting keys!
+    expect { config.slice(:db, :creds, :data, :test) }.to raise_error(Qonfig::UnknownSettingError)
+
+    # slice with empty key list
+    # rubocop:disable Lint/UnneededSplatExpansion
+    expect { config.slice(*[]) }.to raise_error(Qonfig::ArgumentError)
+    expect { config.slice }.to raise_error(Qonfig::ArgumentError)
+    # rubocop:enable Lint/UnneededSplatExpansion
+
+    # slice over unexistent option
+    expect { config.slice(:db, :creds, :session) }.to raise_error(Qonfig::UnknownSettingError)
+    expect { config.slice(:a, :b, :c, :d) }.to raise_error(Qonfig::UnknownSettingError)
+  end
+end
