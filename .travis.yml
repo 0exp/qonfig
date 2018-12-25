@@ -5,6 +5,7 @@ matrix:
   - rvm: 2.3.8
   - rvm: 2.4.5
   - rvm: 2.5.3
+  - rvm: 2.6.0
   - rvm: ruby-head
   - rvm: jruby-head
   allow_failures:
