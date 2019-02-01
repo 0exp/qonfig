@@ -22,6 +22,7 @@ require 'qonfig'
 ## Usage
 
 - [Definition and Settings Access](#definition-and-access)
+- [Dynamic value calculation](???)
 - [Configuration](#configuration)
 - [Inheritance](#inheritance)
 - [Composition](#composition)
