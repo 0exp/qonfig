@@ -99,6 +99,12 @@ config.slice(:vendor_api) # => { 'vendor_api' => { 'host' => 'app_service', 'use
 config.slice(:vendor_api, :user) # => { 'user' => 'test_user' }
 config.slice(:project_api) # => Qonfig::UnknownSettingError # (key does not exist)
 config.slice(:vendor_api, :port) # => Qonfig::UnknownSettingError # (key does not exist)
+
+# get value from the slice of setting options using the given key set (and fail when the required key does not exist) (works in slice manner)
+config.slice_value(:vendor_api) # => { 'host' => 'app_service', 'user' => 'test_user' }
+config.slice_value(:vendor_api, :user) # => 'test_user'
+config.slice_value(:project_api) # => Qonfig::UnknownSettingError # (key does not exist)
+config.slice_value(:vendor_api, :port) # => Qonfig::UnknownSettingError # (key does not exist)
 ```
 
 ---
