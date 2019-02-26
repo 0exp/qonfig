@@ -103,6 +103,15 @@ module Qonfig
       __lock__.thread_safe_access { __deep_slice__(*keys) }
     end
 
+    # @param keys [Array<String, Symbol>]
+    # @return [Hash, Any]
+    #
+    # @api private
+    # @since 0.10.0
+    def __slice_value__(*keys)
+      __lock__.thread_safe_access { __deep_slice_value__(*keys) }
+    end
+
     # @return [Hash]
     #
     # @api private
@@ -316,6 +325,19 @@ module Qonfig
           result[required_key] = setting.is_a?(Qonfig::Settings) ? setting.__to_h__ : setting
         end
       end
+    end
+
+    # @param keys [Array<Symbol, String>]
+    # @return [Hash]
+    #
+    # @raise [Qonfig::ArgumentError]
+    # @raise [Qonfig::UnknownSettingError]
+    #
+    # @api private
+    # @since 0.1.0
+    def __deep_slice_value__(*keys)
+      required_key = __indifferently_accessable_option_key__(keys.last)
+      __deep_slice__(*keys)[required_key]
     end
 
     # @param options_part [Hash]

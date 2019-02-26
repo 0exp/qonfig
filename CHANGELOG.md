@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.10.0] - 2019-02-26
+### Added
+- `#slice_value` - get a slice of config options as a hash set and fetch the required value using the given key set;
+
 ## [0.9.0] - 2018-11-28
 ### Added
 - `#slice` - get a slice of config options as a hash set (works in a `#dig` manner);

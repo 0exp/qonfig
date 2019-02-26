@@ -104,6 +104,15 @@ module Qonfig
       thread_safe_access { settings.__slice__(*keys) }
     end
 
+    # @param keys [Array<String, Symbol>]
+    # @return [Hash,Any]
+    #
+    # @api public
+    # @since 0.10.0
+    def slice_value(*keys)
+      thread_safe_access { settings.__slice_value__(*keys) }
+    end
+
     # @return [void]
     #
     # @api public
