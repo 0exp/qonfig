@@ -6,7 +6,7 @@ module Qonfig
     # @since 0.2.0
     module Builder
       class << self
-        # @param [Qonfig::CommandSet]
+        # @param commands [Qonfig::CommandSet]
         # @return [Qonfig::Settings]
         #
         # @api private
