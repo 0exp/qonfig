@@ -23,7 +23,7 @@ class Qonfig::Uploaders::File < Qonfig::Uploaders::Base
     # @api private
     # @since 0.11.0
     def upload(data_set, path:)
-      File.open(path, FILE_OPENING_MODE) do |file_descriptor|
+      ::File.open(path, FILE_OPENING_MODE) do |file_descriptor|
         settings_representation = represent_settings(data_set)
         file_descriptor.write(settings_representation)
       end
