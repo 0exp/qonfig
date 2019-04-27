@@ -80,22 +80,28 @@ class Qonfig::DataSet
   end
   alias_method :to_hash, :to_h
 
+  # @param options [Hash<Symbol,Any>]
   # @option path [String]
   # @return [void]
   #
   # @api private
   # @since 0.11.0
-  def save_to_json(path:)
-    thread_safe_access { Qonfig::Uploaders::JSON.upload(settings, path: path) }
+  def save_to_json(path:, **options)
+    thread_safe_access do
+      Qonfig::Uploaders::JSON.upload(settings, path: path, **options)
+    end
   end
 
+  # @param options [Hash<Symbol,Any>]
   # @option path [String]
   # @return [void]
   #
   # @api private
   # @since 0.11.0
-  def seve_to_yaml(path:)
-    thread_safe_access { Qonfig::Uploaders::YAML.upload(settings, path: path) }
+  def seve_to_yaml(path:, **options)
+    thread_safe_access do
+      Qonfig::Uploaders::YAML.upload(settings, path: path, **options)
+    end
   end
 
   # @param key [String, Symbol]
