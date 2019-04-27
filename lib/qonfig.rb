@@ -7,6 +7,7 @@ require 'erb'
 module Qonfig
   require_relative 'qonfig/error'
   require_relative 'qonfig/loaders'
+  require_relative 'qonfig/uploaders'
   require_relative 'qonfig/commands'
   require_relative 'qonfig/command_set'
   require_relative 'qonfig/settings'

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# @api private
 # @since 0.2.0
 module Qonfig::Loaders
   require_relative 'loaders/basic'
