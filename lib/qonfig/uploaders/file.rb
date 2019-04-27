@@ -13,31 +13,31 @@ class Qonfig::Uploaders::File < Qonfig::Uploaders::Base
   #
   # @api private
   # @since 0.11.0
-  EMPTY_DATA_SET_REPRESENTATION = ''
+  EMPTY_SETTINGS_REPRESENTATION = ''
 
   class << self
-    # @param data_set [Qonfig::DataSet]
+    # @param settings [Qonfig::Settings]
     # @option path [String]
     # @return [void]
     #
     # @api private
     # @since 0.11.0
-    def upload(data_set, path:)
+    def upload(settings, path:)
       ::File.open(path, FILE_OPENING_MODE) do |file_descriptor|
-        settings_representation = represent_settings(data_set)
+        settings_representation = represent_settings(settings)
         file_descriptor.write(settings_representation)
       end
     end
 
     private
 
-    # @param data_set [Qonfig::DataSet]
+    # @param settings [Qonfig::Settings]
     # @return [String]
     #
     # @api private
     # @since 0.11.0
-    def represent_settings(data_set)
-      EMPTY_DATA_SET_REPRESENTATION
+    def represent_settings(settings)
+      EMPTY_SETTINGS_REPRESENTATION
     end
   end
 end

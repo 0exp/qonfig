@@ -80,6 +80,24 @@ class Qonfig::DataSet
   end
   alias_method :to_hash, :to_h
 
+  # @option path [String]
+  # @return [void]
+  #
+  # @api private
+  # @since 0.11.0
+  def save_to_json(path:)
+    thread_safe_access { Qonfig::Uploaders::JSON.upload(settings, path: path) }
+  end
+
+  # @option path [String]
+  # @return [void]
+  #
+  # @api private
+  # @since 0.11.0
+  def seve_to_yaml(path:)
+    thread_safe_access { Qonfig::Uploaders::YAML.upload(settings, path: path) }
+  end
+
   # @param key [String, Symbol]
   # @return [Object]
   #
