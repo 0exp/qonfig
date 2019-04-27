@@ -114,11 +114,12 @@ class Qonfig::Settings
     __lock__.thread_safe_access { __deep_slice_value__(*keys) }
   end
 
+  # @option process_procs [Boolean]
   # @return [Hash]
   #
   # @api private
   # @since 0.1.0
-  def __to_hash__
+  def __to_hash__(process_procs: false)
     __lock__.thread_safe_access { __build_hash_representation__ }
   end
   alias_method :__to_h__, :__to_hash__
@@ -343,17 +344,20 @@ class Qonfig::Settings
   end
 
   # @param options_part [Hash]
+  # @option process_procs [Boolean]
   # @return [Hash]
   #
   # @api private
   # @since 0.2.0
-  def __build_hash_representation__(options_part = __options__)
+  def __build_hash_representation__(options_part = __options__, process_procs: false)
     options_part.each_with_object({}) do |(key, value), hash|
       case
       when value.is_a?(Hash)
-        hash[key] = __build_hash_representation__(value)
+        hash[key] = __build_hash_representation__(value, process_procs: process_procs)
       when value.is_a?(Qonfig::Settings)
-        hash[key] = value.__to_hash__
+        hash[key] = value.__to_hash__(process_procs: process_procs)
+      when value.is_a?(Proc) && process_procs
+        hash[key] = value.call # TODO: .call(self) (why not now: deadlocks)
       else
         hash[key] = value
       end

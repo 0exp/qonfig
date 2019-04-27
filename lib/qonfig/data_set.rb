@@ -70,12 +70,13 @@ class Qonfig::DataSet
     end
   end
 
+  # @option process_procs [Boolean]
   # @return [Hash]
   #
   # @api public
   # @since 0.1.0
-  def to_h
-    thread_safe_access { settings.__to_hash__ }
+  def to_h(process_procs: false)
+    thread_safe_access { settings.__to_hash__(process_procs: process_procs) }
   end
   alias_method :to_hash, :to_h
 
