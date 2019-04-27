@@ -1,62 +1,64 @@
 # frozen_string_literal: true
 
-module Qonfig
-  # @api public
+# @api public
+# @since 0.4.0
+module Qonfig::Plugins
+  require_relative 'plugins/registry'
+  require_relative 'plugins/access_mixin'
+  require_relative 'plugins/abstract'
+
   # @since 0.4.0
-  module Plugins
+  @plugin_registry = Registry.new
+  # @since 0.4.0
+  @access_lock = Mutex.new
+
+  class << self
+    # @param plugin_name [Symbol, String]
+    # @return [void]
+    #
+    # @api public
     # @since 0.4.0
-    @plugin_registry = Registry.new
+    def load(plugin_name)
+      thread_safe { plugin_registry[plugin_name].load! }
+    end
+
+    # @return [Array<String>]
+    #
+    # @api public
     # @since 0.4.0
-    @access_lock = Mutex.new
+    def names
+      thread_safe { plugin_registry.names }
+    end
 
-    class << self
-      # @param plugin_name [Symbol, String]
-      # @return [void]
-      #
-      # @api public
-      # @since 0.4.0
-      def load(plugin_name)
-        thread_safe { plugin_registry[plugin_name].load! }
-      end
+    # @param plugin_name [Symbol, String]
+    # @return [void]
+    #
+    # @api private
+    # @since 0.4.0
+    def register_plugin(plugin_name, plugin_module)
+      thread_safe { plugin_registry[plugin_name] = plugin_module }
+    end
 
-      # @return [Array<String>]
-      #
-      # @api public
-      # @since 0.4.0
-      def names
-        thread_safe { plugin_registry.names }
-      end
+    private
 
-      # @param plugin_name [Symbol, String]
-      # @return [void]
-      #
-      # @api private
-      # @since 0.4.0
-      def register_plugin(plugin_name, plugin_module)
-        thread_safe { plugin_registry[plugin_name] = plugin_module }
-      end
+    # @return [Qonfig::Plugins::Registry]
+    #
+    # @api private
+    # @since 0.4.0
+    attr_reader :plugin_registry
 
-      private
+    # @return [Mutex]
+    #
+    # @api private
+    # @since 0.4.0
+    attr_reader :access_lock
 
-      # @return [Qonfig::Plugins::Registry]
-      #
-      # @api private
-      # @since 0.4.0
-      attr_reader :plugin_registry
-
-      # @return [Mutex]
-      #
-      # @api private
-      # @since 0.4.0
-      attr_reader :access_lock
-
-      # @return [void]
-      #
-      # @api private
-      # @since 0.4.0
-      def thread_safe
-        access_lock.synchronize { yield if block_given? }
-      end
+    # @return [void]
+    #
+    # @api private
+    # @since 0.4.0
+    def thread_safe
+      access_lock.synchronize { yield if block_given? }
     end
   end
 end
