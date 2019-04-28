@@ -23,9 +23,9 @@ class Qonfig::Uploaders::File < Qonfig::Uploaders::Base
     #
     # @api private
     # @since 0.11.0
-    def upload(settings, path:, **options)
+    def upload(settings, path:, call_procs:, **options)
       ::File.open(path, FILE_OPENING_MODE) do |file_descriptor|
-        settings_representation = represent_settings(settings)
+        settings_representation = represent_settings(settings, call_procs: call_procs, **options)
         file_descriptor.write(settings_representation)
       end
     end
@@ -38,7 +38,7 @@ class Qonfig::Uploaders::File < Qonfig::Uploaders::Base
     #
     # @api private
     # @since 0.11.0
-    def represent_settings(settings, **options)
+    def represent_settings(settings, call_procs: call_procs, **options)
       EMPTY_SETTINGS_REPRESENTATION
     end
   end

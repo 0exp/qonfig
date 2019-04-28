@@ -70,13 +70,13 @@ class Qonfig::DataSet
     end
   end
 
-  # @option process_procs [Boolean]
+  # @option call_procs [Boolean]
   # @return [Hash]
   #
   # @api public
   # @since 0.1.0
-  def to_h(process_procs: false)
-    thread_safe_access { settings.__to_hash__(process_procs: process_procs) }
+  def to_h(call_procs: false)
+    thread_safe_access { settings.__to_hash__(call_procs: call_procs) }
   end
   alias_method :to_hash, :to_h
 
@@ -86,9 +86,9 @@ class Qonfig::DataSet
   #
   # @api private
   # @since 0.11.0
-  def save_to_json(path:, **options)
+  def save_to_json(path:, call_procs: false, **options)
     thread_safe_access do
-      Qonfig::Uploaders::JSON.upload(settings, path: path, **options)
+      Qonfig::Uploaders::JSON.upload(settings, path: path, call_procs: call_procs, **options)
     end
   end
 
@@ -98,9 +98,9 @@ class Qonfig::DataSet
   #
   # @api private
   # @since 0.11.0
-  def seve_to_yaml(path:, **options)
+  def seve_to_yaml(path:, call_procs: false, **options)
     thread_safe_access do
-      Qonfig::Uploaders::YAML.upload(settings, path: path, **options)
+      Qonfig::Uploaders::YAML.upload(settings, path: path,call_procs: call_procs, **options)
     end
   end
 
