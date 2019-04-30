@@ -81,25 +81,29 @@ class Qonfig::DataSet
   alias_method :to_hash, :to_h
 
   # @param options [Hash<Symbol,Any>]
+  # @param post_process [Block]
   # @option path [String]
   # @return [void]
   #
   # @api private
   # @since 0.11.0
-  def save_to_json(path:, call_procs: false, **options)
+  def save_to_json(path:, call_procs: false, **options, &post_process)
     thread_safe_access do
+      # TODO: config values post processing via &post_process
       Qonfig::Uploaders::JSON.upload(settings, path: path, call_procs: call_procs, **options)
     end
   end
 
   # @param options [Hash<Symbol,Any>]
+  # @param post_process [Block]
   # @option path [String]
   # @return [void]
   #
   # @api private
   # @since 0.11.0
-  def seve_to_yaml(path:, call_procs: false, **options)
+  def seve_to_yaml(path:, call_procs: false, **options, &post_process)
     thread_safe_access do
+      # TODO: config values post processing via &post_process
       Qonfig::Uploaders::YAML.upload(settings, path: path, call_procs: call_procs, **options)
     end
   end
