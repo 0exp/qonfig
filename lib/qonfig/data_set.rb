@@ -71,11 +71,13 @@ class Qonfig::DataSet
   end
 
   # @option call_procs [Boolean]
+  # @param post_process [Block]
   # @return [Hash]
   #
   # @api public
   # @since 0.1.0
-  def to_h(call_procs: false)
+  def to_h(call_procs: false, &post_process)
+    # TODO: config values post processing via &post_proces
     thread_safe_access { settings.__to_hash__(call_procs: call_procs) }
   end
   alias_method :to_hash, :to_h
