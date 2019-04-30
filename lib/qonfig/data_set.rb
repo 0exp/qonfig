@@ -100,7 +100,7 @@ class Qonfig::DataSet
   # @since 0.11.0
   def seve_to_yaml(path:, call_procs: false, **options)
     thread_safe_access do
-      Qonfig::Uploaders::YAML.upload(settings, path: path,call_procs: call_procs, **options)
+      Qonfig::Uploaders::YAML.upload(settings, path: path, call_procs: call_procs, **options)
     end
   end
 

@@ -38,7 +38,7 @@ class Qonfig::Uploaders::File < Qonfig::Uploaders::Base
     #
     # @api private
     # @since 0.11.0
-    def represent_settings(settings, call_procs: call_procs, **options)
+    def represent_settings(settings, call_procs:, **options)
       EMPTY_SETTINGS_REPRESENTATION
     end
   end
