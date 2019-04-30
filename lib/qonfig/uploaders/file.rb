@@ -18,6 +18,7 @@ class Qonfig::Uploaders::File < Qonfig::Uploaders::Base
   class << self
     # @param settings [Qonfig::Settings]
     # @param options [Hash<Symbol,Any>]
+    # @option call_procs [Boolean]
     # @option path [String]
     # @return [void]
     #
@@ -34,6 +35,7 @@ class Qonfig::Uploaders::File < Qonfig::Uploaders::Base
 
     # @param settings [Qonfig::Settings]
     # @param options [Hash<Symbol,Any>]
+    # @option call_procs [Boolean]
     # @return [String]
     #
     # @api private

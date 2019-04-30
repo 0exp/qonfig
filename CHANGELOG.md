@@ -1,6 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+### Added
+- `#save_to_json`, `#save_to_yaml` - save configurations to a file (`JSON` and `YML` respectively);
+  - `:path` - file path;
+  - `:call_procs` (`true`/`false`) - call `Proc`-values of your config before saving;
+
+### Changed
+- new `#to_h` signature: `#to_h(call_procs:)` (`false` by default) - invoke (or not) configurations with `proc`-values due to `#to_h` transformation;
+
 ## [0.10.0] - 2019-02-26
 ### Added
 - `#slice_value` - get a slice of config options as a hash set and fetch the required value using the given key set;

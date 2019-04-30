@@ -120,7 +120,7 @@ class Qonfig::Settings
   # @api private
   # @since 0.1.0
   def __to_hash__(call_procs: false)
-    __lock__.thread_safe_access { __build_hash_representation__ }
+    __lock__.thread_safe_access { __build_hash_representation__(call_procs: call_procs) }
   end
   alias_method :__to_h__, :__to_hash__
 

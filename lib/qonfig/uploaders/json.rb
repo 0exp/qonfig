@@ -6,6 +6,7 @@ class Qonfig::Uploaders::JSON < Qonfig::Uploaders::File
   class << self
     # @param settings [Qonfig::Settings]
     # @param options [Hash<Symbol,Any>]
+    # @option call_procs [Boolean]
     # @return [String]
     #
     # @api private
