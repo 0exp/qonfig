@@ -5,10 +5,10 @@ All notable changes to this project will be documented in this file.
 ### Added
 - `#save_to_json`, `#save_to_yaml` - save configurations to a file (`JSON` and `YML` respectively);
   - `:path` - file path;
-  - `:call_procs` (`true`/`false`) - call `Proc`-values of your config before saving;
+  - `&value_processor` - preprocess each config value due to hash transformation;
 
 ### Changed
-- new `#to_h` signature: `#to_h(call_procs:)` (`false` by default) - invoke (or not) configurations with `proc`-values due to `#to_h` transformation;
+- new `#to_h` signature: `#to_h(&value_processor)` - preprocess each config value due to hash transformation;
 
 ## [0.10.0] - 2019-02-26
 ### Added

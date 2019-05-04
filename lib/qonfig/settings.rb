@@ -114,13 +114,13 @@ class Qonfig::Settings
     __lock__.thread_safe_access { __deep_slice_value__(*keys) }
   end
 
-  # @option call_procs [Boolean]
+  # @param value_processor [Block]
   # @return [Hash]
   #
   # @api private
   # @since 0.1.0
-  def __to_hash__(call_procs: false)
-    __lock__.thread_safe_access { __build_hash_representation__(call_procs: call_procs) }
+  def __to_hash__(&value_processor)
+    __lock__.thread_safe_access { __build_hash_representation__(&value_processor) }
   end
   alias_method :__to_h__, :__to_hash__
 
@@ -343,21 +343,19 @@ class Qonfig::Settings
     __deep_slice__(*keys)[required_key]
   end
 
+  # @param value_processor [Block]
   # @param options_part [Hash]
-  # @option call_procs [Boolean]
   # @return [Hash]
   #
   # @api private
   # @since 0.2.0
-  def __build_hash_representation__(options_part = __options__, call_procs: false)
+  def __build_hash_representation__(options_part = __options__, &value_processor)
     options_part.each_with_object({}) do |(key, value), hash|
       case
       when value.is_a?(Hash)
-        hash[key] = __build_hash_representation__(value, call_procs: call_procs)
+        hash[key] = __build_hash_representation__(value, &value_processor)
       when value.is_a?(Qonfig::Settings)
-        hash[key] = value.__to_hash__(call_procs: call_procs)
-      when value.is_a?(Proc) && call_procs
-        hash[key] = value.call # TODO: .call(self) (why not now: deadlocks)
+        hash[key] = value.__to_hash__(&value_processor)
       else
         hash[key] = value
       end

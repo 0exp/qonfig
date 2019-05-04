@@ -70,43 +70,39 @@ class Qonfig::DataSet
     end
   end
 
-  # @option call_procs [Boolean]
-  # @param post_process [Block]
+  # @param value_processor [Block]
   # @return [Hash]
   #
   # @api public
   # @since 0.1.0
-  def to_h(call_procs: false, &post_process)
-    # TODO: config values post processing via &post_proces
-    thread_safe_access { settings.__to_hash__(call_procs: call_procs) }
+  def to_h(&value_processor)
+    thread_safe_access { settings.__to_hash__(&value_processor) }
   end
   alias_method :to_hash, :to_h
 
-  # @param options [Hash<Symbol,Any>]
-  # @param post_process [Block]
+  # @param value_processor [Block]
   # @option path [String]
+  # @option options [Hash<Symbol|String,Any>] Native (ruby-stdlib) ::JSON#generate attributes
   # @return [void]
   #
   # @api private
   # @since 0.11.0
-  def save_to_json(path:, call_procs: false, **options, &post_process)
+  def save_to_json(path:, **options, &value_processor)
     thread_safe_access do
-      # TODO: config values post processing via &post_process
-      Qonfig::Uploaders::JSON.upload(settings, path: path, call_procs: call_procs, **options)
+      Qonfig::Uploaders::JSON.upload(settings, path: path, **options, &value_processor)
     end
   end
 
-  # @param options [Hash<Symbol,Any>]
-  # @param post_process [Block]
+  # @param value_processor [Block]
+  # @option options [Hash<Symbol|String,Any>] Native (ruby-stdlib) ::YAML#dump attributes
   # @option path [String]
   # @return [void]
   #
   # @api private
   # @since 0.11.0
-  def seve_to_yaml(path:, call_procs: false, **options, &post_process)
+  def seve_to_yaml(path:, **options, &value_processor)
     thread_safe_access do
-      # TODO: config values post processing via &post_process
-      Qonfig::Uploaders::YAML.upload(settings, path: path, call_procs: call_procs, **options)
+      Qonfig::Uploaders::YAML.upload(settings, path: path, **options, &value_processor)
     end
   end
 
