@@ -22,7 +22,13 @@ class Qonfig::Uploaders::JSON < Qonfig::Uploaders::File
     # @api private
     # @since 0.11.0
     def represent_settings(settings, options, &value_processor)
-      settings_hash = settings.__to_hash__(&value_processor)
+      settings_hash =
+        if block_given?
+          settings.__to_hash__(transform_value: value_processor)
+        else
+          settings.__to_hash__
+        end
+
       ::JSON.generate(settings_hash, options)
     end
   end

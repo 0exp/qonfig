@@ -70,13 +70,22 @@ class Qonfig::DataSet
     end
   end
 
-  # @param value_processor [Block]
+  # @option key_transformer [Proc]
+  # @option value_transformer [Proc]
   # @return [Hash]
   #
   # @api public
   # @since 0.1.0
-  def to_h(&value_processor)
-    thread_safe_access { settings.__to_hash__(&value_processor) }
+  def to_h(
+    key_transformer: Qonfig::Settings::BASIC_KEY_TRANSFORMER,
+    value_transformer: Qonfig::Settings::BASIC_VALUE_TRANSFORMER
+  )
+    thread_safe_access do
+      settings.__to_hash__(
+        transform_key: key_transformer,
+        transform_value: value_transformer
+      )
+    end
   end
   alias_method :to_hash, :to_h
 
@@ -96,13 +105,24 @@ class Qonfig::DataSet
   # @param value_processor [Block]
   # @param options [Hash<Symbol|String,Any>] Native (ruby-stdlib) ::YAML#dump attributes
   # @option path [String]
+  # @option symbolize_keys [Boolean]
   # @return [void]
   #
   # @api private
   # @since 0.11.0
-  def save_to_yaml(path:, options: Qonfig::Uploaders::YAML::DEFAULT_OPTIONS, &value_processor)
+  def save_to_yaml(
+    path:,
+    symbolize_keys: true,
+    options: Qonfig::Uploaders::YAML::DEFAULT_OPTIONS,
+    &value_processor
+  )
     thread_safe_access do
-      Qonfig::Uploaders::YAML.upload(settings, path: path, options: options, &value_processor)
+      Qonfig::Uploaders::YAML.upload(
+        settings,
+        path: path,
+        options: options.merge(symbolize_keys: symbolize_keys),
+        &value_processor
+      )
     end
   end
 

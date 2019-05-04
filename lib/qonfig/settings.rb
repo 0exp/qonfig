@@ -8,6 +8,18 @@ class Qonfig::Settings
   require_relative 'settings/builder'
   require_relative 'settings/key_guard'
 
+  # @return [Proc]
+  #
+  # @api private
+  # @since 0.11.0
+  BASIC_KEY_TRANSFORMER = proc { |value| value }
+
+  # @return [Proc]
+  #
+  # @api private
+  # @since 0.11.0
+  BASIC_VALUE_TRANSFORMER = proc { |value| value }
+
   # @return [Hash]
   #
   # @api private
@@ -114,13 +126,19 @@ class Qonfig::Settings
     __lock__.thread_safe_access { __deep_slice_value__(*keys) }
   end
 
-  # @param value_processor [Block]
+  # @option transform_key [Proc]
+  # @option transform_value [Proc]
   # @return [Hash]
   #
   # @api private
   # @since 0.1.0
-  def __to_hash__(&value_processor)
-    __lock__.thread_safe_access { __build_hash_representation__(&value_processor) }
+  def __to_hash__(transform_key: BASIC_KEY_TRANSFORMER, transform_value: BASIC_VALUE_TRANSFORMER)
+    ::Kernel.raise("Key transformer should be a proc") unless transform_key.is_a?(Proc)
+    ::Kernel.raise("Value transformer should be a proc") unless transform_value.is_a?(Proc)
+
+    __lock__.thread_safe_access do
+      __build_hash_representation__(transform_key: transform_key, transform_value: transform_value)
+    end
   end
   alias_method :__to_h__, :__to_hash__
 
@@ -349,15 +367,28 @@ class Qonfig::Settings
   #
   # @api private
   # @since 0.2.0
-  def __build_hash_representation__(options_part = __options__, &value_processor)
+  def __build_hash_representation__(options_part = __options__, transform_key:, transform_value:)
     options_part.each_with_object({}) do |(key, value), hash|
       case
       when value.is_a?(Hash)
-        hash[key] = __build_hash_representation__(value, &value_processor)
+        final_key = transform_key.call(key)
+
+        hash[final_key] = __build_hash_representation__(value,
+          transform_key: transform_key,
+          transform_value: transform_value
+        )
       when value.is_a?(Qonfig::Settings)
-        hash[key] = value.__to_hash__(&value_processor)
+        final_key = transform_key.call(key)
+
+        hash[final_key] = value.__to_hash__(
+          transform_key: transform_key,
+          transform_value: transform_value,
+        )
       else
-        hash[key] = block_given? ? yield(value) : value
+        final_key = transform_key.call(key)
+        final_value = transform_value.call(value)
+
+        hash[final_key] = final_value
       end
     end
   end
