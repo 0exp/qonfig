@@ -357,7 +357,7 @@ class Qonfig::Settings
       when value.is_a?(Qonfig::Settings)
         hash[key] = value.__to_hash__(&value_processor)
       else
-        hash[key] = value
+        hash[key] = block_given? ? yield(value) : value
       end
     end
   end

@@ -3,6 +3,12 @@
 # @api private
 # @since 0.11.0
 class Qonfig::Uploaders::YAML < Qonfig::Uploaders::File
+  # @return [Hash<Symbol,Any>]
+  #
+  # @api private
+  # @since 0.11.0
+  DEFAULT_OPTIONS = {}.freeze
+
   class << self
     # @param settings [Qonfig::Settings]
     # @param options [Hash<Symbol,Any>]

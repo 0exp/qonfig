@@ -87,9 +87,9 @@ class Qonfig::DataSet
   #
   # @api private
   # @since 0.11.0
-  def save_to_json(path:, options: {}, &value_processor)
+  def save_to_json(path:, options: Qonfig::Uploaders::JSON::DEFAULT_OPTIONS, &value_processor)
     thread_safe_access do
-      Qonfig::Uploaders::JSON.upload(settings, path: path, options: {}, &value_processor)
+      Qonfig::Uploaders::JSON.upload(settings, path: path, options: options, &value_processor)
     end
   end
 
@@ -100,9 +100,9 @@ class Qonfig::DataSet
   #
   # @api private
   # @since 0.11.0
-  def save_to_yaml(path:, options: {}, &value_processor)
+  def save_to_yaml(path:, options: Qonfig::Uploaders::YAML::DEFAULT_OPTIONS, &value_processor)
     thread_safe_access do
-      Qonfig::Uploaders::YAML.upload(settings, path: path, options: {}, &value_processor)
+      Qonfig::Uploaders::YAML.upload(settings, path: path, options: options, &value_processor)
     end
   end
 

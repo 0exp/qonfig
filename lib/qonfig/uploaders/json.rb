@@ -3,6 +3,16 @@
 # @api private
 # @since 0.11.0
 class Qonfig::Uploaders::JSON < Qonfig::Uploaders::File
+  # @return [Hash<Symbol,Any>]
+  #
+  # @api private
+  # @since 0.11.0
+  DEFAULT_OPTIONS = {
+    indent: ' ',
+    space: ' ',
+    object_nl: "\n",
+  }.freeze
+
   class << self
     # @param settings [Qonfig::Settings]
     # @param options [Hash<Symbol,Any>]
