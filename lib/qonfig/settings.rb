@@ -133,8 +133,13 @@ class Qonfig::Settings
   # @api private
   # @since 0.1.0
   def __to_hash__(transform_key: BASIC_KEY_TRANSFORMER, transform_value: BASIC_VALUE_TRANSFORMER)
-    ::Kernel.raise("Key transformer should be a proc") unless transform_key.is_a?(Proc)
-    ::Kernel.raise("Value transformer should be a proc") unless transform_value.is_a?(Proc)
+    unless transform_key.is_a?(Proc)
+      ::Kernel.raise(Qonfig::IncorrectKeyTransformerError, 'Key transformer should be a proc')
+    end
+
+    unless transform_value.is_a?(Proc)
+      ::Kernel.raise(Qonfig::IncorrectValueTransformerError, 'Value transformer should be a proc')
+    end
 
     __lock__.thread_safe_access do
       __build_hash_representation__(transform_key: transform_key, transform_value: transform_value)

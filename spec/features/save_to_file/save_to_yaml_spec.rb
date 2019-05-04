@@ -17,25 +17,51 @@ describe 'Save to .yml (YAML)' do
     end
     let(:config) { config_klass.new }
 
-    specify 'correctly represents config as YAML' do
-      # NOTE: step 1) save config (each config's value can be pre-processed via block)
-      config.save_to_yaml(path: config_file_path) do |value|
-        value.is_a?(Proc) ? value.call : value
+    context 'with key symbolization (by default)' do
+      before do
+        # NOTE: step 1) save config (each config's value can be pre-processed via block)
+        config.save_to_yaml(path: config_file_path) do |value|
+          value.is_a?(Proc) ? value.call : value
+        end
       end
 
-      # NOTE: step 2) read saved file
-      file_data = File.read(config_file_path)
+      specify 'correctly represents config as YAML' do
+        # NOTE: step 2) read saved file
+        file_data = File.read(config_file_path)
 
-      expect(file_data).to eq(<<~YAML.strip << "\n")
-        ---
-        :sentry:
-          :user: D@iVeR
-          :callback: loaded
-        :server_port: 123
-        :enabled: true
-      YAML
+        expect(file_data).to eq(<<~YAML.strip << "\n")
+          ---
+          :sentry:
+            :user: D@iVeR
+            :callback: loaded
+          :server_port: 123
+          :enabled: true
+        YAML
+      end
     end
 
+    context 'without key symbolization' do
+      before do
+        # NOTE: step 1) save config (each config's value can be pre-processed via block)
+        config.save_to_yaml(path: config_file_path, symbolize_keys: false) do |value|
+          value.is_a?(Proc) ? value.call : value
+        end
+      end
+
+      specify 'correctly represents config as YAML' do
+        # NOTE: step 2) read saved file
+        file_data = File.read(config_file_path)
+
+        expect(file_data).to eq(<<~YAML.strip << "\n")
+          ---
+          sentry:
+            user: D@iVeR
+            callback: loaded
+          server_port: 123
+          enabled: true
+        YAML
+      end
+    end
 
     specify 'rewrites existing file' do
       config_a = Class.new(Qonfig::DataSet) do
@@ -72,7 +98,7 @@ describe 'Save to .yml (YAML)' do
         setting :true_bollean, true
         setting :false_boolean, false
         setting :empty_object, {}
-        setting :filled_object, { a: 1, b: nil, 'c' => true, d: '1', d: false }
+        setting :filled_object, { a: 1, b: nil, 'c' => true, d: '1', e: false }
         setting :null_data, nil
         setting :collection, ['1', 2, true, false, nil, [], {}]
       end
@@ -95,7 +121,8 @@ describe 'Save to .yml (YAML)' do
           :a: 1
           :b: ~
           :c: true
-          :d: false
+          :d: '1'
+          :e: false
         :null_data: ~
         :collection:
         - '1'

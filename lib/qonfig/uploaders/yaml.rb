@@ -66,7 +66,9 @@ class Qonfig::Uploaders::YAML < Qonfig::Uploaders::File
           representation_opts[:transform_key] = KEY_SYMBOLIZER
         # NOTE: options does not have :symbolize_keys key
         when !options.key?(:symbolize_keys) && DEFAULT_OPTIONS[:symbolize_keys]
+          # :nocov:
           representation_opts[:transform_key] = KEY_SYMBOLIZER
+          # :nocov:
         end
 
         # NOTE: provide value transformer

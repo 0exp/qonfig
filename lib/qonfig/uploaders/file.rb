@@ -47,7 +47,9 @@ class Qonfig::Uploaders::File < Qonfig::Uploaders::Base
     # @api private
     # @since 0.11.0
     def represent_settings(settings, options, &value_processor)
+      # :nocov:
       EMPTY_SETTINGS_REPRESENTATION
+      # :nocov:
     end
   end
 end
