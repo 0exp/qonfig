@@ -78,8 +78,8 @@ class Qonfig::Uploaders::YAML < Qonfig::Uploaders::File
       end
     end
 
-    # @param settings_has [Hash<String|Symbol,Any>]
-    # @param yaml_options [Hash]
+    # @param settings_hash [Hash<String|Symbol,Any>]
+    # @param yaml_options [Hash<Symbol,Any>]
     # @return [String]
     #
     # @api private

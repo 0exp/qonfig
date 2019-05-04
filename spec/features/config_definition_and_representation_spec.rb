@@ -111,7 +111,7 @@ describe 'Config definition and representation' do
       'steps' => '22'
     )
 
-    # hash representation (with key and value transformers)
+    # hash representation (with key and value transformations)
     expect(
       config.to_h(
         key_transformer: proc { |value| value.to_sym },
