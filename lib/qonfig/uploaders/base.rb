@@ -11,7 +11,7 @@ class Qonfig::Uploaders::Base
     #
     # @api private
     # @since 0.11.0
-    def upload(settings, **options, &value_processor)
+    def upload(settings, options: {}, &value_processor)
       nil # NOTE: consciously return nil (for clarity)
     end
   end

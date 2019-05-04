@@ -17,16 +17,16 @@ class Qonfig::Uploaders::File < Qonfig::Uploaders::Base
 
   class << self
     # @param settings [Qonfig::Settings]
-    # @param options [Hash<Symbol,Any>]
+    # @param options [Hash<Symbol|String,Any>]
     # @param value_processor [Block]
     # @option path [String]
     # @return [void]
     #
     # @api private
     # @since 0.11.0
-    def upload(settings, path:, **options, &value_processor)
+    def upload(settings, path:, options: {}, &value_processor)
       ::File.open(path, FILE_OPENING_MODE) do |file_descriptor|
-        settings_representation = represent_settings(settings, **options, &value_processor)
+        settings_representation = represent_settings(settings, options, &value_processor)
         file_descriptor.write(settings_representation)
       end
     end
@@ -34,13 +34,13 @@ class Qonfig::Uploaders::File < Qonfig::Uploaders::Base
     private
 
     # @param settings [Qonfig::Settings]
-    # @param options [Hash<Symbol,Any>]
+    # @param options [Hash<Symbol|String,Any>]
     # @param value_processor [Block]
     # @return [String]
     #
     # @api private
     # @since 0.11.0
-    def represent_settings(settings, **options, &value_processor)
+    def represent_settings(settings, options, &value_processor)
       EMPTY_SETTINGS_REPRESENTATION
     end
   end

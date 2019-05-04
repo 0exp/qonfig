@@ -81,28 +81,28 @@ class Qonfig::DataSet
   alias_method :to_hash, :to_h
 
   # @param value_processor [Block]
+  # @param options [Hash<Symbol|String,Any>] Native (ruby-stdlib) ::JSON#generate attributes
   # @option path [String]
-  # @option options [Hash<Symbol|String,Any>] Native (ruby-stdlib) ::JSON#generate attributes
   # @return [void]
   #
   # @api private
   # @since 0.11.0
-  def save_to_json(path:, **options, &value_processor)
+  def save_to_json(path:, options: {}, &value_processor)
     thread_safe_access do
-      Qonfig::Uploaders::JSON.upload(settings, path: path, **options, &value_processor)
+      Qonfig::Uploaders::JSON.upload(settings, path: path, options: {}, &value_processor)
     end
   end
 
   # @param value_processor [Block]
-  # @option options [Hash<Symbol|String,Any>] Native (ruby-stdlib) ::YAML#dump attributes
+  # @param options [Hash<Symbol|String,Any>] Native (ruby-stdlib) ::YAML#dump attributes
   # @option path [String]
   # @return [void]
   #
   # @api private
   # @since 0.11.0
-  def seve_to_yaml(path:, **options, &value_processor)
+  def save_to_yaml(path:, options: {}, &value_processor)
     thread_safe_access do
-      Qonfig::Uploaders::YAML.upload(settings, path: path, **options, &value_processor)
+      Qonfig::Uploaders::YAML.upload(settings, path: path, options: {}, &value_processor)
     end
   end
 
