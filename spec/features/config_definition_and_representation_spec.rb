@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe 'Config definition' do
+describe 'Config definition and representation' do
   specify 'config object definition, instantiation, settings access and mutation' do
     class SimpleConfig < Qonfig::DataSet
       # setting with nested options

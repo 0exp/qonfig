@@ -14,6 +14,8 @@ require 'bundler/setup'
 require 'qonfig'
 require 'pry'
 
+require_relative 'support/spec_support'
+
 RSpec.configure do |config|
   config.order = :random
   Kernel.srand config.seed

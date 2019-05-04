@@ -3,20 +3,14 @@
 describe 'Load from JSON' do
   specify 'defines config object by json instructions' do
     class JSONBasedConfig < Qonfig::DataSet
-      load_from_json File.expand_path(
-        File.join('..', 'fixtures', 'json_object_sample.json'), __dir__
-      )
+      load_from_json SpecSupport.fixture_path('json_object_sample.json')
 
       setting :nested do
-        load_from_json File.expand_path(
-          File.join('..', 'fixtures', 'json_object_sample.json'), __dir__
-        )
+        load_from_json SpecSupport.fixture_path('json_object_sample.json')
       end
 
       setting :with_empty_objects do
-        load_from_json File.expand_path(
-          File.join('..', 'fixtures', 'json_with_empty_object.json'), __dir__
-        )
+        load_from_json SpecSupport.fixture_path('json_with_empty_object.json')
       end
     end
 
@@ -40,9 +34,7 @@ describe 'Load from JSON' do
 
   specify 'fails when json object has non-hash-like structure' do
     class IncompatibleJSONConfig < Qonfig::DataSet
-      load_from_json File.expand_path(
-        File.join('..', 'fixtures', 'json_array_sample.json'), __dir__
-      )
+      load_from_json SpecSupport.fixture_path('json_array_sample.json')
     end
 
     expect { IncompatibleJSONConfig.new }.to raise_error(Qonfig::IncompatibleJSONStructureError)

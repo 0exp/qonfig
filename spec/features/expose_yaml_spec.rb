@@ -3,9 +3,7 @@
 describe 'Expose YAML file' do
   specify 'defines config object by yaml instructions and specific environment settings' do
     class ExposeYAMLConfig < Qonfig::DataSet
-      yaml_file_path = File.expand_path(
-        File.join('..', 'fixtures', 'expose_yaml', 'project.yml'), __dir__
-      )
+      yaml_file_path = SpecSupport.fixture_path('expose_yaml', 'project.yml')
 
       setting :file_name_based do
         setting :test_env do
@@ -108,8 +106,8 @@ describe 'Expose YAML file' do
       specify 'fails when :env attribute has non-string / non-symbol / non-numeric value' do
         expect do
           Class.new(Qonfig::DataSet) do
-            expose_yaml File.expand_path(
-              File.join('..', 'fixtures', 'expose_yaml', 'project.yml'), __dir__
+            expose_yaml SpecSupport.fixture_path(
+              'expose_yaml', 'project.yml'
             ), via: :env_key, env: Object.new
           end
         end.to raise_error(Qonfig::ArgumentError)
@@ -118,8 +116,8 @@ describe 'Expose YAML file' do
       specify 'fails when :env is empty' do
         expect do
           Class.new(Qonfig::DataSet) do
-            expose_yaml File.expand_path(
-              File.join('..', 'fixtures', 'expose_yaml', 'project.yml'), __dir__
+            expose_yaml SpecSupport.fixture_path(
+              'expose_yaml', 'project.yml'
             ), via: :env_key, env: ''
           end
         end.to raise_error(Qonfig::ArgumentError)
@@ -128,8 +126,8 @@ describe 'Expose YAML file' do
       specify 'fails when provided :via is not supported' do
         expect do
           Class.new(Qonfig::DataSet) do
-            expose_yaml File.expand_path(
-              File.join('..', 'fixtures', 'expose_yaml', 'project.yml'), __dir__
+            expose_yaml SpecSupport.fixture_path(
+              'expose_yaml', 'project.yml'
             ), via: :auto, env: :production
           end
         end.to raise_error(Qonfig::ArgumentError)
@@ -144,8 +142,8 @@ describe 'Expose YAML file' do
         #   - :test environment key has correct value (hash)
 
         class IncompatibleEnvBasedYAMLConfig < Qonfig::DataSet
-          expose_yaml File.expand_path(
-            File.join('..', 'fixtures', 'expose_yaml', 'incompatible_structure.yml'), __dir__
+          expose_yaml SpecSupport.fixture_path(
+            'expose_yaml', 'incompatible_structure.yml'
           ), via: :env_key, env: :staging
         end
 
@@ -154,8 +152,8 @@ describe 'Expose YAML file' do
         end.to raise_error(Qonfig::IncompatibleYAMLStructureError)
 
         class CompatibleEnvBasedYAMLConfig < Qonfig::DataSet
-          expose_yaml File.expand_path(
-            File.join('..', 'fixtures', 'expose_yaml', 'incompatible_structure.yml'), __dir__
+          expose_yaml SpecSupport.fixture_path(
+            'expose_yaml', 'incompatible_structure.yml'
           ), via: :env_key, env: :test
         end
 
@@ -170,14 +168,14 @@ describe 'Expose YAML file' do
           # NOTE: file does not exist + env key does not exist in yml file
           class NoFileNonStrictExposeYAMLConfig < Qonfig::DataSet
             setting :non_strict_by_file do
-              expose_yaml File.expand_path(
-                File.join('..', 'fixtures', 'expose_yaml', 'nonexistent.yml'), __dir__
+              expose_yaml SpecSupport.fixture_path(
+                'expose_yaml', 'nonexistent.yml'
               ), strict: false, via: :file_name, env: :development
             end
 
             setting :non_strict_by_env do
-              expose_yaml File.expand_path(
-                File.join('..', 'fixtures', 'expose_yaml', 'nonexistent.yml'), __dir__
+              expose_yaml SpecSupport.fixture_path(
+                'expose_yaml', 'nonexistent.yml'
               ), strict: false, via: :env_key, env: :development
             end
           end
@@ -190,14 +188,14 @@ describe 'Expose YAML file' do
           # NOTE: file is exist + env key does not exist in yml file
           class NoEnvKeyNonStrictExposeYAMLConfig < Qonfig::DataSet
             setting :non_strict_by_file do
-              expose_yaml File.expand_path(
-                File.join('..', 'fixtures', 'expose_yaml', 'project.yml'), __dir__
+              expose_yaml SpecSupport.fixture_path(
+                'expose_yaml', 'project.yml'
               ), strict: false, via: :file_name, env: :nonexistent
             end
 
             setting :non_strict_by_env do
-              expose_yaml File.expand_path(
-                File.join('..', 'fixtures', 'expose_yaml', 'project.yml'), __dir__
+              expose_yaml SpecSupport.fixture_path(
+                'expose_yaml', 'project.yml'
               ), strict: false, via: :env_key, env: :nonexistent
             end
           end
@@ -214,14 +212,14 @@ describe 'Expose YAML file' do
         ) do
           # NOTE: file does not exist
           class StrictFileViaFileNameConfig < Qonfig::DataSet
-            expose_yaml File.expand_path(
-              File.join('..', 'fixtures', 'expose_yaml', 'nonexistent.yml'), __dir__
+            expose_yaml SpecSupport.fixture_path(
+              'expose_yaml', 'nonexistent.yml'
             ), via: :file_name, env: :production
           end
           # NOTE: file does not exist
           class StrictFileViaEnvKeyConfig < Qonfig::DataSet
-            expose_yaml File.expand_path(
-              File.join('..', 'fixtures', 'expose_yaml', 'nonexistent.yml'), __dir__
+            expose_yaml SpecSupport.fixture_path(
+              'expose_yaml', 'nonexistent.yml'
             ), via: :env_key, env: :production
           end
 
@@ -233,8 +231,8 @@ describe 'Expose YAML file' do
           #   - file exists but env key does not exist
           #   - file: spec/fixtures/expose_yaml/project.yml
           class NonExistentEnvKeyConfig < Qonfig::DataSet
-            expose_yaml File.expand_path(
-              File.join('..', 'fixtures', 'expose_yaml', 'project.yml'), __dir__
+            expose_yaml SpecSupport.fixture_path(
+              'expose_yaml', 'project.yml'
             ), via: :env_key, env: :nonexistent
           end
 
