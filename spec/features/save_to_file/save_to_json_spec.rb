@@ -76,7 +76,7 @@ describe 'Save to .json (JSON)' do
         setting :true_bollean, true
         setting :false_boolean, false
         setting :empty_object, {}
-        setting :filled_object, { a: 1, b: nil, 'c' => true, d: '1', d: false }
+        setting :filled_object, { a: 1, b: nil, 'c' => true, d: '1', e: false }
         setting :null_data, nil
         setting :collection, ['1', 2, true, false, nil, [], {}]
       end
@@ -100,7 +100,8 @@ describe 'Save to .json (JSON)' do
           "a": 1,
           "b": null,
           "c": true,
-          "d": false
+          "d": "1",
+          "e": false
          },
          "null_data": null,
          "collection": [  "1",  2,  true,  false,  null,  [],  {
