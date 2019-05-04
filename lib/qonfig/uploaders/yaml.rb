@@ -14,7 +14,7 @@ class Qonfig::Uploaders::YAML < Qonfig::Uploaders::File
     #
     # @api private
     # @since 0.11.0
-    def visit_NilClass(object)
+    def visit_NilClass(object) # rubocop:disable Naming/MethodName
       @emitter.scalar('~', nil, 'tag:yaml.org,2002:null', true, false, Psych::Nodes::Scalar::ANY)
     end
   end
@@ -28,7 +28,7 @@ class Qonfig::Uploaders::YAML < Qonfig::Uploaders::File
     line_width: -1,
     canonical: false,
     header: false,
-    symbolize_keys: true,
+    symbolize_keys: true
   }.freeze
 
   # @return [Proc]

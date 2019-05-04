@@ -12,13 +12,13 @@ class Qonfig::Settings
   #
   # @api private
   # @since 0.11.0
-  BASIC_KEY_TRANSFORMER = proc { |value| value }
+  BASIC_KEY_TRANSFORMER = (proc { |value| value }).freeze
 
   # @return [Proc]
   #
   # @api private
   # @since 0.11.0
-  BASIC_VALUE_TRANSFORMER = proc { |value| value }
+  BASIC_VALUE_TRANSFORMER = (proc { |value| value }).freeze
 
   # @return [Hash]
   #
@@ -374,25 +374,22 @@ class Qonfig::Settings
   # @since 0.2.0
   def __build_hash_representation__(options_part = __options__, transform_key:, transform_value:)
     options_part.each_with_object({}) do |(key, value), hash|
+      final_key = transform_key.call(key)
+
       case
       when value.is_a?(Hash)
-        final_key = transform_key.call(key)
-
-        hash[final_key] = __build_hash_representation__(value,
+        hash[final_key] = __build_hash_representation__(
+          value,
           transform_key: transform_key,
           transform_value: transform_value
         )
       when value.is_a?(Qonfig::Settings)
-        final_key = transform_key.call(key)
-
         hash[final_key] = value.__to_hash__(
           transform_key: transform_key,
-          transform_value: transform_value,
+          transform_value: transform_value
         )
       else
-        final_key = transform_key.call(key)
         final_value = transform_value.call(value)
-
         hash[final_key] = final_value
       end
     end

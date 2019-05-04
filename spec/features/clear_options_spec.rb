@@ -22,7 +22,7 @@ describe 'Clear options' do
       end
 
       setting :travis do
-        load_from_yaml SpecSupport.fixture_path( 'travis_settings.yml')
+        load_from_yaml SpecSupport.fixture_path('travis_settings.yml')
       end
 
       setting :self_data do

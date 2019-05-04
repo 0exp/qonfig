@@ -10,7 +10,7 @@ class Qonfig::Uploaders::JSON < Qonfig::Uploaders::File
   DEFAULT_OPTIONS = {
     indent: ' ',
     space: ' ',
-    object_nl: "\n",
+    object_nl: "\n"
   }.freeze
 
   class << self
