@@ -3,12 +3,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
-- `#save_to_json`, `#save_to_yaml` - save configurations to a file (`JSON` and `YML` respectively);
-  - `:path` - file path;
-  - `&value_processor` - preprocess each config value due to hash transformation;
+- `#save_to_json` - save configurations to a json file;
+- `#save_to_yaml` - save configurations to a yaml file;
 
 ### Changed
-- new `#to_h` signature: `#to_h(&value_processor)` - preprocess each config value due to hash transformation;
+- new `#to_h` signature: `#to_h(key_transformer:, value_transformer:)`
+  - `:key_transformer` - proc object used for key pre-processing (`-> (key) { key }` by default);
+  - `:value_transformer` - proc object used for value pre-processing (`-> (value) { value }` by default);
 
 ## [0.10.0] - 2019-02-26
 ### Added
