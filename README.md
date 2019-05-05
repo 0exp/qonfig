@@ -36,6 +36,8 @@ require 'qonfig'
 - [Load from JSON file](#load-from-json-file)
 - [Load from ENV](#load-from-env)
 - [Load from \_\_END\_\_](#load-from-__end__) (aka `load_from_self`)
+- [Save to JSON file](#save-to-json-file)
+- [Save to YAML file](#save-to-yaml-file)
 - [Smart Mixin](#smart-mixin) (`Qonfig::Configurable`)
 - [Plugins](#plugins)
 
@@ -774,6 +776,14 @@ connection_timeout:
   seconds: 10
   enabled: false
 ```
+
+---
+
+### Save to JSON file
+
+---
+
+### Save to YAML file
 
 ---
 
