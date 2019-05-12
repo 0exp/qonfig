@@ -105,7 +105,7 @@ class Qonfig::DataSet
   # @param value_processor [Block]
   # @option path [String]
   # @option symbolize_keys [Boolean]
-# @option options [Hash<Symbol|String,Any>] Native (ruby-stdlib) ::YAML#dump attributes
+  # @option options [Hash<Symbol|String,Any>] Native (ruby-stdlib) ::YAML#dump attributes
   # @return [void]
   #
   # @api private
