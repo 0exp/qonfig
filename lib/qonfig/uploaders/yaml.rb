@@ -28,7 +28,7 @@ class Qonfig::Uploaders::YAML < Qonfig::Uploaders::File
     line_width: -1,
     canonical: false,
     header: false,
-    symbolize_keys: true
+    symbolize_keys: false
   }.freeze
 
   # @return [Proc]

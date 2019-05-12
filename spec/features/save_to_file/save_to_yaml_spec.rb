@@ -17,10 +17,10 @@ describe 'Save to .yml (YAML)' do
     end
     let(:config) { config_klass.new }
 
-    context 'with key symbolization (by default)' do
+    context 'with key symbolization' do
       before do
         # NOTE: step 1) save config (each config's value can be pre-processed via block)
-        config.save_to_yaml(path: config_file_path) do |value|
+        config.save_to_yaml(path: config_file_path, symbolize_keys: true) do |value|
           value.is_a?(Proc) ? value.call : value
         end
       end
@@ -77,7 +77,7 @@ describe 'Save to .yml (YAML)' do
       file_data = File.read(config_file_path) # NOTE: initial path
       expect(file_data).to eq(<<~YAML.strip << "\n")
         ---
-        :kek: kek
+        kek: kek
       YAML
 
       # subsequent save (rewrite)
@@ -85,7 +85,7 @@ describe 'Save to .yml (YAML)' do
       file_data = File.read(config_file_path) # NOTE: same path
       expect(file_data).to eq(<<~YAML.strip << "\n")
         ---
-        :pek: pek
+        pek: pek
       YAML
     end
   end
@@ -116,17 +116,17 @@ describe 'Save to .yml (YAML)' do
 
       expect(file_data).to eq(<<~YAML.strip << "\n")
         ---
-        :true_bollean: true
-        :false_boolean: false
-        :empty_object: {}
-        :filled_object:
+        true_bollean: true
+        false_boolean: false
+        empty_object: {}
+        filled_object:
           :a: 1
           :b: ~
-          :c: true
+          c: true
           :d: '1'
           :e: false
-        :null_data: ~
-        :collection:
+        null_data: ~
+        collection:
         - '1'
         - 2
         - true
@@ -164,10 +164,10 @@ describe 'Save to .yml (YAML)' do
       expect(file_data).to eq(<<~YAML.strip << "\n")
         %YAML 1.1
         ---
-        :server:
-          :address: localhost
-          :port: 12345
-        :enabled: true
+        server:
+          address: localhost
+          port: 12345
+        enabled: true
       YAML
     end
   end
