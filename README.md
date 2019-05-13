@@ -781,13 +781,15 @@ connection_timeout:
 ### Save to JSON file
 
 - `#save_to_json` - represents config object as a json structure and saves it to a file:
+  - uses native `::JSON.generate` under the hood;
   - writes new file (or rewrites existing file);
-  - `:path` - (required) - file path;
-  - `:options` - (optional) - native `::JSON.generate` options (from stdlib):
-    - `:indent` - `" "` by default;
-    - `:space` - `" "` by default/
-    - `:object_nl` - `"\n"` by default;
-  - `&value_preprocessor` - (optional) - value pre-processor;
+  - attributes:
+    - `:path` - (required) - file path;
+    - `:options` - (optional) - native `::JSON.generate` options (from stdlib):
+      - `:indent` - `" "` by default;
+      - `:space` - `" "` by default/
+      - `:object_nl` - `"\n"` by default;
+    - `&value_preprocessor` - (optional) - value pre-processor;
 
 #### Without value preprocessing (standard usage)
 
@@ -847,15 +849,17 @@ end
 ### Save to YAML file
 
 - `#save_to_yaml` - represents config object as a yaml structure and saves it to a file:
+  - uses native `::Psych.dump` under the hood;
   - writes new file (or rewrites existing file);
-  - `:path` - (required) - file path;
-  - `:options` - (optional) - native `::Psych.dump` options (from stdlib):
-    - `:indentation` - `2` by default;
-    - `:line_width` - `-1` by default;
-    - `:canonical` - `false` by default;
-    - `:header` - `false` by default;
-    - `:symbolize_keys` - (non-native option) - `false` by default;
-  - `&value_preprocessor` - (optional) - value pre-processor;
+  - attributes:
+    - `:path` - (required) - file path;
+    - `:options` - (optional) - native `::Psych.dump` options (from stdlib):
+      - `:indentation` - `2` by default;
+      - `:line_width` - `-1` by default;
+      - `:canonical` - `false` by default;
+      - `:header` - `false` by default;
+      - `:symbolize_keys` - (non-native option) - `false` by default;
+    - `&value_preprocessor` - (optional) - value pre-processor;
 
 #### Without value preprocessing (standard usage)
 

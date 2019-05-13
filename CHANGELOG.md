@@ -3,8 +3,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
-- `#save_to_json` - save configurations to a json file;
-- `#save_to_yaml` - save configurations to a yaml file;
+- `#save_to_json` - save configurations to a json file (uses native `::JSON.generate` under the hood);
+- `#save_to_yaml` - save configurations to a yaml file (uses native `::Psych.dump` under the hood);
 
 ### Changed
 - new `#to_h` signature: `#to_h(key_transformer:, value_transformer:)`
