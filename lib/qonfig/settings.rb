@@ -12,13 +12,13 @@ class Qonfig::Settings
   #
   # @api private
   # @since 0.11.0
-  BASIC_KEY_TRANSFORMER = (proc { |value| value }).freeze
+  BASIC_SETTING_KEY_TRANSFORMER = (proc { |value| value }).freeze
 
   # @return [Proc]
   #
   # @api private
   # @since 0.11.0
-  BASIC_VALUE_TRANSFORMER = (proc { |value| value }).freeze
+  BASIC_SETTING_VALUE_TRANSFORMER = (proc { |value| value }).freeze
 
   # @return [Hash]
   #
@@ -132,7 +132,8 @@ class Qonfig::Settings
   #
   # @api private
   # @since 0.1.0
-  def __to_hash__(transform_key: BASIC_KEY_TRANSFORMER, transform_value: BASIC_VALUE_TRANSFORMER)
+  # rubocop:disable Metrics/LineLength
+  def __to_hash__(transform_key: BASIC_SETTING_KEY_TRANSFORMER, transform_value: BASIC_SETTING_VALUE_TRANSFORMER)
     unless transform_key.is_a?(Proc)
       ::Kernel.raise(Qonfig::IncorrectKeyTransformerError, 'Key transformer should be a proc')
     end
@@ -145,6 +146,7 @@ class Qonfig::Settings
       __build_hash_representation__(transform_key: transform_key, transform_value: transform_value)
     end
   end
+  # rubocop:enable Metrics/LineLength
   alias_method :__to_h__, :__to_hash__
 
   # @return [void]
@@ -366,8 +368,9 @@ class Qonfig::Settings
     __deep_slice__(*keys)[required_key]
   end
 
-  # @param value_processor [Block]
   # @param options_part [Hash]
+  # @option transform_key [Proc]
+  # @option transform_value [Proc]
   # @return [Hash]
   #
   # @api private

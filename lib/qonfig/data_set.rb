@@ -89,12 +89,12 @@ class Qonfig::DataSet
   end
   alias_method :to_hash, :to_h
 
-  # @param value_processor [Block]
   # @option path [String]
   # @option options [Hash<Symbol|String,Any>] Native (ruby-stdlib) ::JSON#generate attributes
+  # @param value_processor [Block]
   # @return [void]
   #
-  # @api private
+  # @api public
   # @since 0.11.0
   def save_to_json(path:, options: Qonfig::Uploaders::JSON::DEFAULT_OPTIONS, &value_processor)
     thread_safe_access do
@@ -102,13 +102,13 @@ class Qonfig::DataSet
     end
   end
 
-  # @param value_processor [Block]
   # @option path [String]
   # @option symbolize_keys [Boolean]
   # @option options [Hash<Symbol|String,Any>] Native (ruby-stdlib) ::YAML#dump attributes
+  # @param value_processor [Block]
   # @return [void]
   #
-  # @api private
+  # @api public
   # @since 0.11.0
   def save_to_yaml(
     path:,
