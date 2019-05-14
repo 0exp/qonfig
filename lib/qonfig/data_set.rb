@@ -77,8 +77,8 @@ class Qonfig::DataSet
   # @api public
   # @since 0.1.0
   def to_h(
-    key_transformer: Qonfig::Settings::BASIC_KEY_TRANSFORMER,
-    value_transformer: Qonfig::Settings::BASIC_VALUE_TRANSFORMER
+    key_transformer: Qonfig::Settings::BASIC_SETTING_KEY_TRANSFORMER,
+    value_transformer: Qonfig::Settings::BASIC_SETTING_VALUE_TRANSFORMER
   )
     thread_safe_access do
       settings.__to_hash__(
