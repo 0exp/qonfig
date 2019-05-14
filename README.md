@@ -35,8 +35,8 @@ require 'qonfig'
 - [Load from JSON file](#load-from-json-file)
 - [Load from ENV](#load-from-env)
 - [Load from \_\_END\_\_](#load-from-__end__) (aka `load_from_self`)
-- [Save to JSON file](#save-to-json-file)(`save_to_json`)
-- [Save to YAML file](#save-to-yaml-file)(`save_to_yaml`)
+- [Save to JSON file](#save-to-json-file) (`save_to_json`)
+- [Save to YAML file](#save-to-yaml-file) (`save_to_yaml`)
 - [Smart Mixin](#smart-mixin) (`Qonfig::Configurable`)
 - [Plugins](#plugins)
 
@@ -806,7 +806,7 @@ end
 config = AppConfig.new
 
 # NOTE: save to json file
-config.save_to_json(path: 'app_config.json')
+config.save_to_json(path: 'config.json')
 ```
 
 ```json
@@ -835,12 +835,13 @@ end
 config = AppConfig.new
 
 # NOTE: save to json file with custom options (no spaces / no new line / no indent; call procs)
-config.save_to_json(path: 'app_config.json', options: { indent: '', space: '', object_nl: '' }) do |value|
+config.save_to_json(path: 'config.json', options: { indent: '', space: '', object_nl: '' }) do |value|
   value.is_a?(Proc) ? value.call : value
 end
 ```
 
 ```json
+// no spaces / no new line / no indent / calculated "dynamic" setting key
 {"sentry":{"address":"localhost","port":12345},"enabled":true,"dynamic":3}
 ```
 
@@ -876,7 +877,7 @@ end
 config = AppConfig.new
 
 # NOTE: save to yaml file
-config.save_to_yaml(path: 'app_config.yml')
+config.save_to_yaml(path: 'config.yml')
 ```
 
 ```yaml
@@ -903,12 +904,13 @@ end
 config = AppConfig.new
 
 # NOTE: save to yaml file with custom options (add yaml version header; call procs)
-config.save_to_yaml(path: 'app_config.yml', options: { header: true }) do |value|
+config.save_to_yaml(path: 'config.yml', options: { header: true }) do |value|
   value.is_a?(Proc) ? value.call : value
 end
 ```
 
 ```yaml
+# yaml version header / calculated "dynamic" setting key
 %YAML 1.1
 ---
 server:
