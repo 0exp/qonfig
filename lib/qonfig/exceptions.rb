@@ -7,7 +7,19 @@ module Qonfig
 
   # @api public
   # @since 0.1.0
-  ArgumentError = Class.new(Error)
+  ArgumentError = Class.new(ArgumentError)
+
+  # @api public
+  # @since 0.11.0
+  IncorrectHashTransformationError = Class.new(ArgumentError)
+
+  # @api public
+  # @since 0.11.0
+  IncorrectKeyTransformerError = Class.new(IncorrectHashTransformationError)
+
+  # @api public
+  # @since 0.11.0
+  IncorrectValueTransformerError = Class.new(IncorrectHashTransformationError)
 
   # @see Qonfig::Settings
   #

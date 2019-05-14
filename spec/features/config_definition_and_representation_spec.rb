@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe 'Config definition' do
+describe 'Config definition and representation' do
   specify 'config object definition, instantiation, settings access and mutation' do
     class SimpleConfig < Qonfig::DataSet
       # setting with nested options
@@ -73,6 +73,65 @@ describe 'Config definition' do
         }
       },
       'steps' => 22
+    )
+
+    # hash representation (with key transformation)
+    expect(config.to_h(key_transformer: proc { |value| value.to_sym })).to match(
+      serializers: {
+        json: :native,
+        xml: :native
+      },
+      defaults: nil,
+      shared: {
+        convert: false
+      },
+      mutations: {
+        action: {
+          query: nil
+        }
+      },
+      steps: 22
+    )
+
+    # hash representation (with value transformation)
+    expect(config.to_h(value_transformer: proc { |value| value.to_s })).to match(
+      'serializers' => {
+        'json' => 'native',
+        'xml' => 'native'
+      },
+      'defaults' => '',
+      'shared' => {
+        'convert' => 'false'
+      },
+      'mutations' => {
+        'action' => {
+          'query' => ''
+        }
+      },
+      'steps' => '22'
+    )
+
+    # hash representation (with key and value transformations)
+    expect(
+      config.to_h(
+        key_transformer: proc { |value| value.to_sym },
+        value_transformer: proc { |value| value.to_s }
+      )
+    ).to match(
+      serializers: {
+        json: 'native',
+        xml: 'native'
+      },
+      defaults: '',
+      shared: {
+        convert: 'false'
+      },
+      mutations: {
+        action: {
+          query: ''
+        }
+      },
+      steps: '22'
     )
 
     # configuration via block (classic style)
@@ -309,6 +368,46 @@ describe 'Config definition' do
         HashConfigurableConfig.new(non_hash) { |conf| conf.d = 55 }
       end.to raise_error(Qonfig::ArgumentError)
     end
+  end
+
+  specify '(#to_h): key (and value) transformer should be a type of Proc' do
+    empty_config = Class.new(Qonfig::DataSet).new
+
+    expect do
+      empty_config.to_h(key_transformer: 123)
+    end.to raise_error(Qonfig::IncorrectKeyTransformerError)
+
+    expect do
+      empty_config.to_h(value_transformer: 123)
+    end.to raise_error(Qonfig::IncorrectValueTransformerError)
+
+    expect do
+      empty_config.to_h(key_transformer: proc {}, value_transformer: 123)
+    end.to raise_error(Qonfig::IncorrectValueTransformerError)
+
+    expect do
+      empty_config.to_h(key_transformer: 123, value_transformer: proc {})
+    end.to raise_error(Qonfig::IncorrectKeyTransformerError)
+
+    expect do
+      empty_config.to_h(key_transformer: 123, value_transformer: 123)
+    end.to raise_error(Qonfig::IncorrectHashTransformationError)
+
+    expect do
+      empty_config.to_h(key_transformer: proc {}, value_transformer: proc {})
+    end.not_to raise_error
+
+    expect do
+      empty_config.to_h(key_transformer: proc {})
+    end.not_to raise_error
+
+    expect do
+      empty_config.to_h(value_transformer: proc {})
+    end.not_to raise_error
+
+    expect do
+      empty_config.to_h
+    end.not_to raise_error
   end
 
   specify 'only string and symbol keys are supported' do

@@ -3,32 +3,22 @@
 describe 'Load from YAML' do
   specify 'defines config object by yaml instructions' do
     class CISettings < Qonfig::DataSet
-      load_from_yaml File.expand_path(
-        File.join('..', 'fixtures', 'shared_settings_with_aliases.yml'), __dir__
-      )
+      load_from_yaml SpecSupport.fixture_path('shared_settings_with_aliases.yml')
 
       setting :travis do
-        load_from_yaml File.expand_path(
-          File.join('..', 'fixtures', 'travis_settings.yml'), __dir__
-        )
+        load_from_yaml SpecSupport.fixture_path('travis_settings.yml')
       end
 
       setting :rubocop do
-        load_from_yaml File.expand_path(
-          File.join('..', 'fixtures', 'rubocop_settings.yml'), __dir__
-        )
+        load_from_yaml SpecSupport.fixture_path('rubocop_settings.yml')
       end
 
       setting :with_erb do
-        load_from_yaml File.expand_path(
-          File.join('..', 'fixtures', 'with_erb_instructions.yml'), __dir__
-        )
+        load_from_yaml SpecSupport.fixture_path('with_erb_instructions.yml')
       end
 
       setting :with_empty_hash do
-        load_from_yaml File.expand_path(
-          File.join('..', 'fixtures', 'with_empty_hash.yml'), __dir__
-        )
+        load_from_yaml SpecSupport.fixture_path('with_empty_hash.yml')
       end
     end
 
@@ -66,9 +56,7 @@ describe 'Load from YAML' do
 
   specify 'fails when yaml settings is not represented as a hash' do
     class IncompatibleYAMLConfig < Qonfig::DataSet
-      load_from_yaml File.expand_path(
-        File.join('..', 'fixtures', 'array_settings.yml'), __dir__
-      )
+      load_from_yaml SpecSupport.fixture_path('array_settings.yml')
     end
 
     expect { IncompatibleYAMLConfig.new }.to raise_error(Qonfig::IncompatibleYAMLStructureError)

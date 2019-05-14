@@ -22,7 +22,6 @@ require 'qonfig'
 ## Usage
 
 - [Definition and Settings Access](#definition-and-access)
-- [Dynamic value calculation](???)
 - [Configuration](#configuration)
 - [Inheritance](#inheritance)
 - [Composition](#composition)
@@ -36,6 +35,8 @@ require 'qonfig'
 - [Load from JSON file](#load-from-json-file)
 - [Load from ENV](#load-from-env)
 - [Load from \_\_END\_\_](#load-from-__end__) (aka `load_from_self`)
+- [Save to JSON file](#save-to-json-file) (`save_to_json`)
+- [Save to YAML file](#save-to-yaml-file) (`save_to_yaml`)
 - [Smart Mixin](#smart-mixin) (`Qonfig::Configurable`)
 - [Plugins](#plugins)
 
@@ -773,6 +774,150 @@ api_host: super.puper-google.com
 connection_timeout:
   seconds: 10
   enabled: false
+```
+
+---
+
+### Save to JSON file
+
+- `#save_to_json` - represents config object as a json structure and saves it to a file:
+  - uses native `::JSON.generate` under the hood;
+  - writes new file (or rewrites existing file);
+  - attributes:
+    - `:path` - (required) - file path;
+    - `:options` - (optional) - native `::JSON.generate` options (from stdlib):
+      - `:indent` - `" "` by default;
+      - `:space` - `" "` by default/
+      - `:object_nl` - `"\n"` by default;
+    - `&value_preprocessor` - (optional) - value pre-processor;
+
+#### Without value preprocessing (standard usage)
+
+```ruby
+class AppConfig < Qonfig::DataSet
+  setting :server do
+    setting :address, 'localhost'
+    setting :port, 12_345
+  end
+
+  setting :enabled, true
+end
+
+config = AppConfig.new
+
+# NOTE: save to json file
+config.save_to_json(path: 'config.json')
+```
+
+```json
+{
+ "sentry": {
+  "address": "localhost",
+  "port": 12345
+ },
+ "enabled": true
+}
+```
+
+#### With value preprocessing
+
+```ruby
+class AppConfig < Qonfig::DataSet
+  setting :server do
+    setting :address, 'localhost'
+    setting :port, 12_345
+  end
+
+  setting :enabled, true
+  setting :dynamic, -> { 1 + 2 }
+end
+
+config = AppConfig.new
+
+# NOTE: save to json file with custom options (no spaces / no new line / no indent; call procs)
+config.save_to_json(path: 'config.json', options: { indent: '', space: '', object_nl: '' }) do |value|
+  value.is_a?(Proc) ? value.call : value
+end
+```
+
+```json
+// no spaces / no new line / no indent / calculated "dynamic" setting key
+{"sentry":{"address":"localhost","port":12345},"enabled":true,"dynamic":3}
+```
+
+---
+
+### Save to YAML file
+
+- `#save_to_yaml` - represents config object as a yaml structure and saves it to a file:
+  - uses native `::Psych.dump` under the hood;
+  - writes new file (or rewrites existing file);
+  - attributes:
+    - `:path` - (required) - file path;
+    - `:options` - (optional) - native `::Psych.dump` options (from stdlib):
+      - `:indentation` - `2` by default;
+      - `:line_width` - `-1` by default;
+      - `:canonical` - `false` by default;
+      - `:header` - `false` by default;
+      - `:symbolize_keys` - (non-native option) - `false` by default;
+    - `&value_preprocessor` - (optional) - value pre-processor;
+
+#### Without value preprocessing (standard usage)
+
+```ruby
+class AppConfig < Qonfig::DataSet
+  setting :server do
+    setting :address, 'localhost'
+    setting :port, 12_345
+  end
+
+  setting :enabled, true
+end
+
+config = AppConfig.new
+
+# NOTE: save to yaml file
+config.save_to_yaml(path: 'config.yml')
+```
+
+```yaml
+---
+server:
+  address: localhost
+  port: 12345
+enabled: true
+```
+
+#### With value preprocessing and custom options
+
+```ruby
+class AppConfig < Qonfig::DataSet
+  setting :server do
+    setting :address, 'localhost'
+    setting :port, 12_345
+  end
+
+  setting :enabled, true
+  setting :dynamic, -> { 5 + 5 }
+end
+
+config = AppConfig.new
+
+# NOTE: save to yaml file with custom options (add yaml version header; call procs)
+config.save_to_yaml(path: 'config.yml', options: { header: true }) do |value|
+  value.is_a?(Proc) ? value.call : value
+end
+```
+
+```yaml
+# yaml version header / calculated "dynamic" setting key
+%YAML 1.1
+---
+server:
+  address: localhost
+  port: 12345
+enabled: true
+dynamic: 10
 ```
 
 ---

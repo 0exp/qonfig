@@ -10,7 +10,7 @@ class Qonfig::Loaders::Basic
     # @api private
     # @since 0.5.0
     def load(data)
-      nil
+      nil # NOTE: consciously return nil (for clarity)
     end
 
     # @return [void]
@@ -18,7 +18,7 @@ class Qonfig::Loaders::Basic
     # @api private
     # @since 0.5.0
     def load_empty_data
-      nil
+      nil # NOTE: consciously return nil (for clarity)
     end
 
     # @param file_path [String]

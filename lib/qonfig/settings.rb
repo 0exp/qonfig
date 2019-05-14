@@ -8,6 +8,18 @@ class Qonfig::Settings
   require_relative 'settings/builder'
   require_relative 'settings/key_guard'
 
+  # @return [Proc]
+  #
+  # @api private
+  # @since 0.11.0
+  BASIC_SETTING_KEY_TRANSFORMER = (proc { |value| value }).freeze
+
+  # @return [Proc]
+  #
+  # @api private
+  # @since 0.11.0
+  BASIC_SETTING_VALUE_TRANSFORMER = (proc { |value| value }).freeze
+
   # @return [Hash]
   #
   # @api private
@@ -114,13 +126,27 @@ class Qonfig::Settings
     __lock__.thread_safe_access { __deep_slice_value__(*keys) }
   end
 
+  # @option transform_key [Proc]
+  # @option transform_value [Proc]
   # @return [Hash]
   #
   # @api private
   # @since 0.1.0
-  def __to_hash__
-    __lock__.thread_safe_access { __build_hash_representation__ }
+  # rubocop:disable Metrics/LineLength
+  def __to_hash__(transform_key: BASIC_SETTING_KEY_TRANSFORMER, transform_value: BASIC_SETTING_VALUE_TRANSFORMER)
+    unless transform_key.is_a?(Proc)
+      ::Kernel.raise(Qonfig::IncorrectKeyTransformerError, 'Key transformer should be a proc')
+    end
+
+    unless transform_value.is_a?(Proc)
+      ::Kernel.raise(Qonfig::IncorrectValueTransformerError, 'Value transformer should be a proc')
+    end
+
+    __lock__.thread_safe_access do
+      __build_hash_representation__(transform_key: transform_key, transform_value: transform_value)
+    end
   end
+  # rubocop:enable Metrics/LineLength
   alias_method :__to_h__, :__to_hash__
 
   # @return [void]
@@ -343,19 +369,31 @@ class Qonfig::Settings
   end
 
   # @param options_part [Hash]
+  # @option transform_key [Proc]
+  # @option transform_value [Proc]
   # @return [Hash]
   #
   # @api private
   # @since 0.2.0
-  def __build_hash_representation__(options_part = __options__)
+  def __build_hash_representation__(options_part = __options__, transform_key:, transform_value:)
     options_part.each_with_object({}) do |(key, value), hash|
+      final_key = transform_key.call(key)
+
       case
       when value.is_a?(Hash)
-        hash[key] = __build_hash_representation__(value)
+        hash[final_key] = __build_hash_representation__(
+          value,
+          transform_key: transform_key,
+          transform_value: transform_value
+        )
       when value.is_a?(Qonfig::Settings)
-        hash[key] = value.__to_hash__
+        hash[final_key] = value.__to_hash__(
+          transform_key: transform_key,
+          transform_value: transform_value
+        )
       else
-        hash[key] = value
+        final_value = transform_value.call(value)
+        hash[final_key] = final_value
       end
     end
   end

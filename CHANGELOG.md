@@ -1,6 +1,16 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+### Added
+- `#save_to_json` - save configurations to a json file (uses native `::JSON.generate` under the hood);
+- `#save_to_yaml` - save configurations to a yaml file (uses native `::Psych.dump` under the hood);
+
+### Changed
+- new `#to_h` signature: `#to_h(key_transformer:, value_transformer:)`
+  - `:key_transformer` - proc object used for key pre-processing (`-> (key) { key }` by default);
+  - `:value_transformer` - proc object used for value pre-processing (`-> (value) { value }` by default);
+
 ## [0.10.0] - 2019-02-26
 ### Added
 - `#slice_value` - get a slice of config options as a hash set and fetch the required value using the given key set;
