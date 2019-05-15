@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.11.0] - 2019-05-15
 ### Added
 - `#save_to_json` - save configurations to a json file (uses native `::JSON.generate` under the hood);
 - `#save_to_yaml` - save configurations to a yaml file (uses native `::Psych.dump` under the hood);
