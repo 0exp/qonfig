@@ -819,7 +819,7 @@ config.save_to_json(path: 'config.json')
 }
 ```
 
-#### With value preprocessing
+#### With value preprocessing and custom options
 
 ```ruby
 class AppConfig < Qonfig::DataSet
