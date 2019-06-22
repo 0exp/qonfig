@@ -1044,6 +1044,12 @@ Qonfig.plugin(:plugin_name) # or Qonfig.plugin('plugin_name')
 
 ---
 
+## Roadmap
+
+- validation layer;
+- distributed configuration server;
+- support for Rails-like secrets;
+
 ## Contributing
 
 - Fork it ( https://github.com/0exp/qonfig/fork )
