@@ -1046,6 +1046,7 @@ Qonfig.plugin(:plugin_name) # or Qonfig.plugin('plugin_name')
 
 ## Roadmap
 
+- support for TOML format;
 - validation layer;
 - distributed configuration server;
 - support for Rails-like secrets;
