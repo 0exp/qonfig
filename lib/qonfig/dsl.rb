@@ -110,6 +110,16 @@ module Qonfig::DSL
 
   # @param file_path [String]
   # @option strict [Boolean]
+  # @return [void]
+  #
+  # @api public
+  # @since 0.12.0
+  def load_from_toml(file_path, strict: true)
+    commands << Qonfig::Commands::LoadFromTOML.new(file_path, strict: strcit)
+  end
+
+  # @param file_path [String]
+  # @option strict [Boolean]
   # @option via [Symbol]
   # @option env [Symbol, String]
   # @return [void]
