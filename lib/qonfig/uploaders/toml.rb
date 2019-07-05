@@ -19,7 +19,7 @@ class Qonfig::Uploaders::TOML < Qonfig::Uploaders::File
           settings.__to_hash__
         end
 
-      ::TOML.dump(settings_hash)
+      ::TomlRB.dump(settings_hash)
     end
   end
 end
