@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+- Support for **TOML** (`.toml`) format :
+  - `#save_to_toml` (in `#save_to_yaml`/`#save_to_json` manner);
+  - `#load_fro_toml` (in `#load_from_yaml`/`#load_from_json` manner);
+
 ## [0.11.0] - 2019-05-15
 ### Added
 - `#save_to_json` - save configurations to a json file (uses native `::JSON.generate` under the hood);
