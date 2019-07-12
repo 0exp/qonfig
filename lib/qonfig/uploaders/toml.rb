@@ -19,7 +19,11 @@ class Qonfig::Uploaders::TOML < Qonfig::Uploaders::File
           settings.__to_hash__
         end
 
-      ::TomlRB.dump(settings_hash)
+      begin
+        ::TomlRB.dump(settings_hash)
+      rescue => error
+        binding.pry
+      end
     end
   end
 end
