@@ -20,4 +20,7 @@ module Qonfig
   # @api public
   # @since 0.4.0
   extend Plugins::AccessMixin
+
+  # @since 0.12.0
+  register_plugin('toml_format', Qonfig::Plugins::TOMLFormat)
 end
