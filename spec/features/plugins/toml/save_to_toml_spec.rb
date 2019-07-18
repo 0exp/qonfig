@@ -93,6 +93,7 @@ describe 'Plugins(:toml): Save to .toml (TOML)', :plugin do
           setting :null_data, nil
           setting :float_value, 123.456
           setting :collection, [%w[1 2], [3, 4], [true, false], []]
+          setting :time, Time.utc(2031, 0o5, 27, 0o7, 32, 0)
         end.new
         # rubocop:enable Style/BracesAroundHashParameters
       end
@@ -108,6 +109,7 @@ describe 'Plugins(:toml): Save to .toml (TOML)', :plugin do
           collection = [["1", "2"], [3, 4], [true, false], []]
           false_boolean = false
           float_value = 123.456
+          time = 2031-05-27T07:32:00Z
           true_boolean = true
           [empty_object]
           [filled_object]
