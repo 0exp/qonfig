@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
-describe 'Save to .toml (Toml)' do
-  before { Qonfig.plugin(:toml) }
+describe 'Plugins(:toml): Save to .toml (TOML)', :plugin do
+  before do
+    require 'toml-rb'
+    Qonfig.plugin(:toml)
+  end
 
   describe 'saving' do
     let(:config_file_name) { "#{SecureRandom.uuid}.yml" }

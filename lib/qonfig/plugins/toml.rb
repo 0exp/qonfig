@@ -10,7 +10,7 @@ class Qonfig::Plugins::TOML < Qonfig::Plugins::Abstract
     # @since 0.12.0
     def load!
       raise(
-        Qonfig::UnresolvedPuginDependencyError,
+        Qonfig::UnresolvedPluginDependencyError,
         '::TomlRB does not exist or not loeaded (gem "toml-rb")'
       ) unless const_defined?('::TomlRB')
 

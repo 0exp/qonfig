@@ -3,3 +3,53 @@
 
 require 'pathname'
 require 'optparse'
+
+module QonfigSpecRunner
+  extend self
+
+  expand_gemfile_path = lambda do |gemfile_name|
+    File.expand_path(File.join('..', 'gemfiles', gemfile_name), __dir__)
+  end
+
+  GEMFILES = {
+    with_external_deps: expand_gemfile_path.call('with_external_deps.gemfile'),
+    without_external_deps: expand_gemfile_path.call('without_external_deps.gemfile')
+  }.freeze
+
+  def run!
+    OptionParser.new do |opts|
+      opts.banner = 'Usage: bin/rspec [options]'
+
+      opts.on(
+        '-w', '--with-plugins',
+        'Run tests with test for plugins'
+      ) { run_with_specs_for_plugins! }
+
+      opts.on(
+        '-n', '--without-plugins',
+        'Run tests without tests for plugins'
+      ) { run_without_specs_for_plugins! }
+    end.parse!
+  end
+
+  private
+
+  def run_with_specs_for_plugins!
+    ENV['TEST_PLUGINS'] = 'true'
+    ENV['BUNDLE_GEMFILE'] = GEMFILES[:with_external_deps]
+    run_tests!
+  end
+
+  def run_without_specs_for_plugins!
+    ENV['BUNDLE_GEMFILE'] = GEMFILES[:without_external_deps]
+    run_tests!
+  end
+
+  def run_tests!
+    require 'rubygems'
+    require 'bundler/setup'
+    load Gem.bin_path('rspec-core', 'rspec')
+  end
+end
+
+QonfigSpecRunner.run!

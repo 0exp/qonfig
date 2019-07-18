@@ -3,7 +3,6 @@
 require 'yaml'
 require 'json'
 require 'erb'
-require 'toml-rb'
 
 module Qonfig
   require_relative 'qonfig/errors'
