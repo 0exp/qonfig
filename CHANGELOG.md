@@ -3,8 +3,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 - Support for **TOML** (`.toml`) format :
-  - `#save_to_toml` (in `#save_to_yaml`/`#save_to_json` manner);
-  - `#load_fro_toml` (in `#load_from_yaml`/`#load_from_json` manner);
+  - realized as a plugin:
+    ```ruby
+      Qonfig.plugin(:toml_format)
+    ```
+  - depends on gem `toml-rb` (you should require `toml-rb` before using the plugin)
+  - provides:
+    - `#save_to_toml` (works in `#save_to_yaml`/`#save_to_json` manner);
+    - `#load_fro_toml` (in `#load_from_yaml`/`#load_from_json` manner);
+    - `#expose_toml` (works in `#expose_yaml` manner);
 
 ## [0.11.0] - 2019-05-15
 ### Added
