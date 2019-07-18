@@ -39,7 +39,7 @@ require 'qonfig'
 - [Save to YAML file](#save-to-yaml-file) (`save_to_yaml`)
 - [Smart Mixin](#smart-mixin) (`Qonfig::Configurable`)
 - [Plugins](#plugins)
-
+  - [toml_format](#plugin-toml-format) (`load_from_toml`, `save_to_toml`, `expose_toml`)
 ---
 
 ### Definition and Access
@@ -1042,6 +1042,18 @@ Qonfig.plugins # => array of strings
 Qonfig.plugin(:plugin_name) # or Qonfig.plugin('plugin_name')
 ```
 
+---
+
+### Plugin: toml_format
+
+- requires `toml-rb` gem;
+- provides `load_from_toml`, `save_to_toml`, `expose_toml`;
+
+```ruby
+require 'toml-rb'
+
+Qonfig.plugin(:toml_format)
+```
 ---
 
 ## Roadmap
