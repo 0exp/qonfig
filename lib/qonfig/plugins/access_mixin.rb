@@ -23,4 +23,16 @@ module Qonfig::Plugins::AccessMixin
   def plugins
     Qonfig::Plugins.names
   end
+
+  # @param plugin_name [String, Symbol]
+  # @param plugin_klass [Class<Qonfig::Plugins::Abstract>]
+  # @return [void]
+  #
+  # @see Qonfig::Plugins
+  #
+  # @api public
+  # @since 0.12.0
+  def register_plugin(plugin_name, plugin_klass)
+    Qonfig::Plugins.register_plugin(plugin_name, plugin_klass)
+  end
 end

@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 describe 'Load from TOML' do
+  before { Qonfig.plugin(:toml_format) }
+
   specify do
     class TomlConfig < Qonfig::DataSet
-      load_from_toml SpecSupport.fixture_path('toml_all_in_sample.toml')
+      load_from_toml SpecSupport.fixture_path('toml_sample_with_all_types.toml')
     end
 
     TomlConfig.new.settings.tap do |conf|

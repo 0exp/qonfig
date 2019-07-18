@@ -7,5 +7,4 @@ module Qonfig::Uploaders
   require_relative 'uploaders/file'
   require_relative 'uploaders/json'
   require_relative 'uploaders/yaml'
-  require_relative 'uploaders/toml'
 end

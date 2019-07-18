@@ -10,6 +10,10 @@ module Qonfig
   ArgumentError = Class.new(ArgumentError)
 
   # @api public
+  # @since 0.12.0
+  PluginError = Class.new(Error)
+
+  # @api public
   # @since 0.11.0
   IncorrectHashTransformationError = Class.new(ArgumentError)
 
@@ -104,4 +108,10 @@ module Qonfig
   # @api public
   # @since 0.7.0
   ExposeError = Class.new(Error)
+
+  # @see Qonfig::Plugin::TOMLFormat
+  #
+  # @api public
+  # @since 0.12.0
+  UnresolvedPluginDependencyError = Class.new(PluginError)
 end

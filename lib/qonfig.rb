@@ -6,7 +6,7 @@ require 'erb'
 require 'toml-rb'
 
 module Qonfig
-  require_relative 'qonfig/exceptions'
+  require_relative 'qonfig/errors'
   require_relative 'qonfig/loaders'
   require_relative 'qonfig/uploaders'
   require_relative 'qonfig/commands'

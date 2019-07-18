@@ -48,7 +48,7 @@ module Qonfig::DSL
     end
   end
 
-  # @param data_set_klass [Class{Qonfig::DataSet}]
+  # @param data_set_klass [Class<Qonfig::DataSet>]
   # @return [void]
   #
   # @see Qonfig::Comamnds::Compose
@@ -106,16 +106,6 @@ module Qonfig::DSL
   # @since 0.5.0
   def load_from_json(file_path, strict: true)
     commands << Qonfig::Commands::LoadFromJSON.new(file_path, strict: strict)
-  end
-
-  # @param file_path [String]
-  # @option strict [Boolean]
-  # @return [void]
-  #
-  # @api public
-  # @since 0.12.0
-  def load_from_toml(file_path, strict: true)
-    commands << Qonfig::Commands::LoadFromTOML.new(file_path, strict: strict)
   end
 
   # @param file_path [String]
