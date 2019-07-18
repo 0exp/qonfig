@@ -119,7 +119,7 @@ describe 'Save to .toml (Toml)' do
     context 'config with unsupported toml types' do
       let(:config) do
         Class.new(Qonfig::DataSet) do
-          setting :collection, [[3, 4], ['6', '4'], nil]
+          setting :collection, [[3, 4], %w[6 4], nil]
         end.new
       end
 
