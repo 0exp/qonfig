@@ -72,7 +72,7 @@ module TomlRB::Dumper::ObjectConverterFix
     #  end
 
     case object
-    when Time
+    when Time, DateTime, Date
       object.strftime('%Y-%m-%dT%H:%M:%SZ')
     else
       # NOTE: validate result value via value parsing before dump
@@ -81,5 +81,7 @@ module TomlRB::Dumper::ObjectConverterFix
   end
 end
 
+# @since 0.12.0
 TomlRB::Dumper.prepend(TomlRB::Dumper::SortFixPatch)
+# @since 0.12.0
 TomlRB::Dumper.prepend(TomlRB::Dumper::ObjectConverterFix)

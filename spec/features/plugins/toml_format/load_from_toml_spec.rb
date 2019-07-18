@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe 'Load from TOML' do
-  before { Qonfig.plugin(:toml_format) }
+  before { Qonfig.plugin(:toml) }
 
   specify do
     class TomlConfig < Qonfig::DataSet

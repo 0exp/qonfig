@@ -22,5 +22,5 @@ module Qonfig
   extend Plugins::AccessMixin
 
   # @since 0.12.0
-  register_plugin('toml_format', Qonfig::Plugins::TOMLFormat)
+  register_plugin('toml', Qonfig::Plugins::TOML)
 end

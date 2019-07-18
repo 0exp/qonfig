@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 - Support for **TOML** (`.toml`) format :
   - realized as a plugin:
     ```ruby
-    Qonfig.plugin(:toml_format)
+    Qonfig.plugin(:toml)
     ```
   - depends on gem `toml-rb` (you should require `toml-rb` before using the plugin)
   - provides:
