@@ -5,7 +5,14 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Support for **TOML** (`.toml`) format
   - realized as a plugin (`Qonfig.plugin(:toml)`);
-  - provides `#save_to_toml`, `#load_from_toml`, `#expose_toml` and works in `#*_yaml`-like manner);
+  - provides `#save_to_toml`, `#load_from_toml`, `#expose_toml` methods and works in `#*_yaml`-like manner);
+- Custom `bin/rspec` command:
+  - `bin/rspec -n` - run tests without plugin tests;
+  - `bin/rspec -w` - run all tests;
+- Added more convinient aliases for `Qonfig::DataSet` instances:
+  - `#save_to_yaml` => `#dump_to_yaml`;
+  - `#save_to_json` => `#dump_to_json`;
+  - `#save_to_toml` => `#dump_to_toml`;
 
 ## [0.11.0] - 2019-05-15
 ### Added
