@@ -1054,9 +1054,13 @@ Qonfig.plugin(:plugin_name) # or Qonfig.plugin('plugin_name')
 - provides `expose_toml` (works in `expose_yaml` manner ([doc](#expose-yaml)));
 
 ```ruby
+# 1) require external dependency
 require 'toml-rb'
+
+# 2) enable plugin
 Qonfig.plugin(:toml)
-# and use :)
+
+# 3) use :)
 ```
 ---
 
