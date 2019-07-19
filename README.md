@@ -39,7 +39,7 @@ require 'qonfig'
 - [Save to YAML file](#save-to-yaml-file) (`save_to_yaml`)
 - [Smart Mixin](#smart-mixin) (`Qonfig::Configurable`)
 - [Plugins](#plugins)
-  - [toml](#plugin-toml) (provides `load_from_toml`, `save_to_toml`, `expose_toml`)
+  - [toml](#plugins-toml) (provides `load_from_toml`, `save_to_toml`, `expose_toml`)
 ---
 
 ### Definition and Access
