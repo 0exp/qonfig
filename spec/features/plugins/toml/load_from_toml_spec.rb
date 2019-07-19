@@ -13,6 +13,13 @@ describe 'Plugins(toml): Load from .toml (TOML)', :plugin do
 
     TomlConfig.new.settings.tap do |conf|
       expect(conf.key_in_air).to eq('TOML Example')
+
+      expect(conf.inline_table_of_tables).to eq([
+        { 'x' => 1, 'y' => 2, 'z' => 3 },
+        { 'x' => 7, 'y' => 8, 'z' => 9 },
+        { 'x' => 2, 'y' => 4, 'z' => 8 }
+      ])
+
       expect(conf.strings.simple_string).to eq('Simple String')
       expect(conf.strings.first_multi_line_string).to eq("first multiline\nstring defined")
       expect(conf.strings.second_multiline_string).to eq("second multiline\nstring defined\n")
