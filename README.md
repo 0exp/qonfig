@@ -1048,13 +1048,14 @@ Qonfig.plugin(:plugin_name) # or Qonfig.plugin('plugin_name')
 
 - adds support for `toml` format ([specification](https://github.com/toml-lang/toml));
 - depends on `toml-rb` gem;
-- provides `load_from_toml`, `save_to_toml`, `expose_toml`;
-- works in `load_from_yaml` / `save_to_yaml` / `expose_yaml` manner;
+- provides `load_from_toml` (works in `load_from_yaml` manner);
+- provides `save_to_toml` (works in `save_to_yaml` manner (`toml-rb` has no native options));
+- provides `expose_toml` (works in `expose_yaml` manner);
 
 ```ruby
 require 'toml-rb'
-
 Qonfig.plugin(:toml)
+# and use :)
 ```
 ---
 
