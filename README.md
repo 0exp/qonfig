@@ -1044,7 +1044,7 @@ Qonfig.plugin(:plugin_name) # or Qonfig.plugin('plugin_name')
 
 ---
 
-### Plugin: toml
+### Plugins: toml
 
 - adds support for `toml` format ([specification](https://github.com/toml-lang/toml));
 - depends on `toml-rb` gem;
