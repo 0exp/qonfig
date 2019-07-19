@@ -67,12 +67,6 @@ module Qonfig
   # @since 0.2.0
   IncompatibleYAMLStructureError = Class.new(Error)
 
-  # @see Qonfig::Commands::LoadFromTOML
-  #
-  # @api public
-  # @since 0.12.0
-  IncompatibleTOMLStructureError = Class.new(Error)
-
   # @see Qonfig::Commands::LoadFromJSON
   #
   # @api public

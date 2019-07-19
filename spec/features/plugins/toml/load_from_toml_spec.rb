@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe 'Plugins(:toml): Load from .toml (TOML)', :plugin do
+describe 'Plugins(toml): Load from .toml (TOML)', :plugin do
   before do
     require 'toml-rb'
     Qonfig.plugin(:toml)
