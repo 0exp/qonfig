@@ -1062,6 +1062,7 @@ Qonfig.plugin(:toml)
 ## Roadmap
 
 - support for TOML format;
+- explicit "settings" object;
 - validation layer;
 - distributed configuration server;
 - support for Rails-like secrets;
