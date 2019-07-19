@@ -8,7 +8,7 @@ describe 'Plugins(toml): Load from .toml (TOML)', :plugin do
 
   specify 'defines config object by toml instructions' do
     class TomlConfig < Qonfig::DataSet
-      load_from_toml SpecSupport.fixture_path('toml_sample_with_all_types.toml')
+      load_from_toml SpecSupport.fixture_path('plugins', 'toml', 'toml_sample_with_all_types.toml')
     end
 
     TomlConfig.new.settings.tap do |conf|

@@ -15,6 +15,7 @@ require 'qonfig'
 require 'pry'
 
 require_relative 'support/spec_support'
+require_relative 'support/meta_scopes'
 
 RSpec.configure do |config|
   config.order = :random

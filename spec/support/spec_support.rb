@@ -3,8 +3,6 @@
 module SpecSupport
   extend self
 
-  require_relative 'meta_scopes'
-
   # @return [String]
   ARTIFACTS_PATH = File.expand_path(File.join('..', 'artifacts'), __dir__).freeze
   # @return [String]
