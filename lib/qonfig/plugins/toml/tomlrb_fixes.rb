@@ -6,12 +6,13 @@
 #   - problem is located in TomlRB::Dumper#sort_pairs(hash) method
 #   - problem code: `hash.keys.sort.map` (failed on `.sort` part)
 #   - we can patch this code by explicit `.map(&:to_s)` before `.sort`
-
+#
 # @api private
 # @since 0.12.0
 module TomlRB::Dumper::SortFixPatch
   private
 
+  # NOTE: target method for our fix
   def sort_pairs(hash)
     nested_pairs = []
     simple_pairs = []
@@ -46,9 +47,13 @@ end
 #     but should not represent them at all
 #   - dumper can not validate invalid structures
 #     (for example: [1, [2,3], nil] (invalid, cuz arrays should contain values of one type))
+#
+# @api private
+# @since 0.12.0
 module TomlRB::Dumper::ObjectConverterFix
   private
 
+  # NOTE: target method for our fix
   def dump_simple_pairs(simple_pairs)
     simple_pairs.each do |key, val|
       key = quote_key(key) unless bare_key? key
