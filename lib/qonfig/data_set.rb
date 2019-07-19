@@ -101,6 +101,7 @@ class Qonfig::DataSet
       Qonfig::Uploaders::JSON.upload(settings, path: path, options: options, &value_processor)
     end
   end
+  alias_method :dump_to_json, :save_to_json
 
   # @option path [String]
   # @option symbolize_keys [Boolean]
@@ -125,6 +126,7 @@ class Qonfig::DataSet
       )
     end
   end
+  alias_method :dump_to_yaml, :save_to_yaml
 
   # @param key [String, Symbol]
   # @return [Object]

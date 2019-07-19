@@ -48,7 +48,7 @@ module Qonfig::DSL
     end
   end
 
-  # @param data_set_klass [Class{Qonfig::DataSet}]
+  # @param data_set_klass [Class<Qonfig::DataSet>]
   # @return [void]
   #
   # @see Qonfig::Comamnds::Compose

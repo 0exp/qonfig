@@ -5,7 +5,7 @@ require 'json'
 require 'erb'
 
 module Qonfig
-  require_relative 'qonfig/exceptions'
+  require_relative 'qonfig/errors'
   require_relative 'qonfig/loaders'
   require_relative 'qonfig/uploaders'
   require_relative 'qonfig/commands'
@@ -19,4 +19,7 @@ module Qonfig
   # @api public
   # @since 0.4.0
   extend Plugins::AccessMixin
+
+  # @since 0.12.0
+  register_plugin('toml', Qonfig::Plugins::TOML)
 end

@@ -12,3 +12,4 @@ Gemfile.lock
 .ruby-version
 /.vscode/
 /spec/artifacts/
+/gemfiles/*.gemfile.lock

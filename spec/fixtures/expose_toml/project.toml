@@ -1,0 +1,27 @@
+[development]
+  api_mode_enabled = true
+  logging = false
+  db_driver = 'sequel'
+  throttle_requests = false
+  [development.credentials]
+
+[test]
+  api_mode_enabled = true
+  logging = false
+  db_driver = 'in_memory'
+  throttle_requests = false
+  [test.credentials]
+
+[staging]
+  api_mode_enabled = true
+  logging = true
+  db_driver = 'active_record'
+  throttle_requests = true
+  [staging.credentials]
+
+[production]
+  api_mode_enabled = true
+  logging = true
+  db_driver = 'rom'
+  throttle_requests = true
+  [production.credentials]

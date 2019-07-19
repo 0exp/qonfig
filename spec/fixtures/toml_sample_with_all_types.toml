@@ -1,0 +1,72 @@
+key_in_air = "TOML Example"
+
+inline_table_of_tables = [
+  { x = 1, y = 2, z = 3 },
+  { x = 7, y = 8, z = 9 },
+  { x = 2, y = 4, z = 8 }
+]
+
+[strings]
+simple_string = "Simple String"
+first_multi_line_string = """
+first multiline
+string defined"""
+second_multiline_string = '''
+second multiline
+string defined
+'''
+
+[times]
+first_format = 1979-05-27T07:32:00Z
+second_format = 1979-05-27T00:32:00-07:00
+third_format = 1979-05-27T00:32:00.999999-07:00
+
+[arrays]
+array_of_integers = [ 1, 2, 3 ]
+array_of_strings = [ "a", "b", "c" ]
+array_of_integer_arrays = [ [ 1, 2 ], [3, 4, 5] ]
+array_of_different_string_literals = [ "azaza", 'trazaza', """kek""", '''pek''']
+array_of_multityped_arrays = [ [ 1, 2 ], ["a", "b", "c"] ]
+multyline_array = [
+  "super",
+  "puper"
+]
+
+[number_definitions]
+number_with_parts = [ 8_001, 8_001, 8_002 ]
+number_with_idiot_parts = 5_0_0_0
+simple_float = 3.12138
+epic_float = 5e+22
+haha_float = 1e6
+wow_float = -2E-2
+
+[booleans]
+boolean_true = true
+boolean_false = false
+
+[nesteds]
+  [nesteds.first]
+  ip = "10.0.0.1"
+  host = "google.sru"
+  [nesteds.second]
+  ip = "10.0.0.2"
+  host = "poogle.fru"
+
+[[deep_nesteds]]
+  name = "apple"
+
+  [deep_nesteds.first]
+    model = "iphone xs"
+    color = "white"
+
+  [[deep_nesteds.second]]
+    model = "iphone x"
+
+  [[deep_nesteds.third]]
+    model = "iphone se"
+
+[[deep_nesteds]]
+  name = "xiaomi"
+
+  [[deep_nesteds.fourth]]
+    model = "mi8 explorer edition"

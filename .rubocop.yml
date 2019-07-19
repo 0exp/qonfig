@@ -12,3 +12,4 @@ AllCops:
     - Rakefile
     - qonfig.gemspec
     - bin/console
+    - bin/rspec

@@ -1,0 +1,4 @@
+api_mode_enabled = true
+db_driver = 'sequel'
+logging = false
+[credentials]
