@@ -1070,6 +1070,7 @@ Qonfig.plugin(:toml)
 - validation layer;
 - distributed configuration server;
 - support for Rails-like secrets;
+- "back-to-top" links;
 
 ## Contributing
 
