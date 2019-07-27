@@ -2,16 +2,9 @@
 
 # @api private
 # @since 0.13.0
-
 module Qonfig::Validation
-    # frozen_string_literal: true
-
-  # @api public
-  # @since 0.?.0
-  class Qonfig::DataSet::Validator
-    def initialize(data_set)
-    end
-  end
+  require_relative 'validation/setting_key_matcher'
+  require_relative 'validation/validator'
 
   class Qonfig::DataSet
     # DSL на датасете
