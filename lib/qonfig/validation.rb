@@ -5,6 +5,8 @@
 module Qonfig::Validation
   require_relative 'validation/setting_key_matcher'
   require_relative 'validation/validator'
+  require_relative 'validation/validator_set'
+  require_relative 'validation/dsl'
 
   class Qonfig::DataSet
     # DSL на датасете
