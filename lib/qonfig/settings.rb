@@ -7,6 +7,7 @@ class Qonfig::Settings
   require_relative 'settings/lock'
   require_relative 'settings/builder'
   require_relative 'settings/key_guard'
+  require_relative 'settings/key_matcher'
 
   # @return [Proc]
   #
