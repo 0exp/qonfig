@@ -3,7 +3,6 @@
 # @api private
 # @since 0.13.0
 module Qonfig::Validation
-  require_relative 'validation/setting_key_matcher'
   require_relative 'validation/validator'
   require_relative 'validation/validator_set'
   require_relative 'validation/dsl'
@@ -33,3 +32,5 @@ module Qonfig::Validation
   надо валидаторы гонять КАК после инстанцирования, так и после присавивания значения,
   и перед сохранением в файл конечно же
 end
+
+validate => создает validation-комманду, которая будет:
