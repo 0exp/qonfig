@@ -3,8 +3,10 @@
 # @api private
 # @since 0.13.0
 module Qonfig::Validation
-  require_relative 'validation/validator'
-  require_relative 'validation/validator_set'
+  require_relative 'validation/erro'
+  require_relative 'validation/method_based'
+  require_relative 'validation/proc_based'
+  require_relative 'validation/builder'
   require_relative 'validation/dsl'
 
   class Qonfig::DataSet

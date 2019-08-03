@@ -2,5 +2,5 @@
 
 # @api private
 # @since 0.13.0
-class Qonfig::Validation::ValidatorSet
+class Qonfig::Validation::Error
 end

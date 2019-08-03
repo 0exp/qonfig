@@ -9,6 +9,8 @@ class Qonfig::CommandSet
   # @since 0.1.0
   attr_reader :commands
 
+  # @return [void]
+  #
   # @api private
   # @since 0.1.0
   def initialize
