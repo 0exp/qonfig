@@ -34,6 +34,37 @@ class Qonfig::Settings
     @__lock__ = Lock.new
   end
 
+  # @param block [Proc]
+  # @return [Enumerable]
+  #
+  # @yield [key, value]
+  # @yieldparam key [String]
+  # @yieldparam value [Object]
+  #
+  # @api private
+  # @since 0.13.0
+  def __each_setting__(&block)
+    __lock__.thread_safe_access do
+      __each_key_value_pair__(&block)
+    end
+  end
+
+  # @param initial_setting_key [String, NilClass]
+  # @param block [Proc]
+  # @return [Enumerable]
+  #
+  # @yield [key, value]
+  # @yieldparam key [String]
+  # @yieldparam value [Object]
+  #
+  # @api private
+  # @since 0.13.0
+  def __deep_each_setting__(initial_setting_key = nil, &block)
+    __lock__.thread_safe_access do
+      __deep_each_key_value_pair__(initial_setting_key, &block)
+    end
+  end
+
   # @param key [Symbol, String]
   # @param value [Object]
   # @return [void]
@@ -212,6 +243,46 @@ class Qonfig::Settings
   # @api private
   # @since 0.2.0
   attr_reader :__lock__
+
+  # @param block [Proc]
+  # @return [Enumerable]
+  #
+  # @yield [setting_key, setting_value]
+  # @yieldparam key [String]
+  # @yieldparam value [Object]
+  #
+  # @api private
+  # @since 0.13.0
+  def __each_key_value_pair__(&block)
+    __options__.each_pair(&block)
+  end
+
+  # @param initial_setting_key [String, NilClass]
+  # @param block [Proc]
+  # @return [Enumerable]
+  #
+  # @yield [setting_key, setting_value]
+  # @yieldparam setting_key [String]
+  # @yieldparam setting_value [Object]
+  #
+  # @api private
+  # @since 0.13.0
+  def __deep_each_key_value_pair__(initial_setting_key = nil, &block)
+    enumerator = Enumerator.new do |yielder|
+      __each_key_value_pair__ do |setting_key, setting_value|
+        final_setting_key =
+          initial_setting_key ? "#{initial_setting_key}.#{setting_key}" : setting_key
+
+        if setting_value.is_a?(Qonfig::Settings)
+          setting_value.__deep_each_setting__(final_setting_key, &block)
+        else
+          yielder.yield(final_setting_key, setting_value)
+        end
+      end
+    end
+
+    block_given? ? enumerator.each(&block) : enumerator
+  end
 
   # @param options_map [Hash]
   # @return [void]

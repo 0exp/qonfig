@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+### Added
+- Iteration over setting keys (`#each_setting { |key, value| }`, `#deep_each_setting { |key, value| }`);
+
 ## [0.12.0] - 2019-07-19
 ### Added
 - Support for **TOML** (`.toml`) format

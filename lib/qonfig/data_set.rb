@@ -174,6 +174,32 @@ class Qonfig::DataSet
     thread_safe_access { settings.__clear__ }
   end
 
+  # @param block [Proc]
+  # @return [Enumerable]
+  #
+  # @yield [setting_key, setting_value]
+  # @yieldparam setting_key [String]
+  # @yieldparam setting_value [Object]
+  #
+  # @api public
+  # @since 0.13.0
+  def each_setting(&block)
+    thread_safe_access { settings.__each_setting__(&block) }
+  end
+
+  # @param block [Proc]
+  # @return [Enumerable]
+  #
+  # @yield [setting_key, setting_value]
+  # @yieldparam setting_key [String]
+  # @yieldparam setting_value [Object]
+  #
+  # @api public
+  # @since 0.13.0
+  def deep_each_setting(&block)
+    thread_safe_access { settings.__deep_each_setting__(&block) }
+  end
+
   private
 
   # @return [Qonfig::Settings]

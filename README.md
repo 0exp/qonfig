@@ -26,6 +26,7 @@ require 'qonfig'
 - [Inheritance](#inheritance)
 - [Composition](#composition)
 - [Hash representation](#hash-representation)
+- [Iteration over setting keys](#iteration-over-setting-keys) (`#each_setting`, `#deep_each_setting`)
 - [Config reloading](#config-reloading) (reload config definitions and option values)
 - [Clear options](#clear-options) (set to nil)
 - [State freeze](#state-freeze)
@@ -270,6 +271,49 @@ Config.new.to_h
   "adapter" => { "default" => :memory_sync },
   "logger" => #<Logger:0x4b0d79fc>
 }
+```
+
+---
+
+### Iteration over setting keys
+
+- `#each_setting { |key, value| }`
+  - iterates over the root setting keys;
+- `#deep_each_setting { |key, value| }`
+  - iterates over all setting keys (deep inside);
+  - key object is represented as a string of `.`-joined keys;
+
+```ruby
+class Config < Qonfig::DataSet
+  setting :db do
+    setting :creds do
+      setting :user, 'D@iVeR'
+      setting :password, 'test123',
+      setting :data, test: false
+    end
+  end
+
+  setting :telegraf_url, 'udp://localhost:8094'
+  setting :telegraf_prefix, 'test'
+end
+
+config = Config.new
+
+# 1. #each_setting
+config.each_setting { |key, value| { key => value } }
+# result of each step:
+{ 'db' => <Qonfig::Settings:0x00007ff8> }
+{ 'telegraf_url' => 'udp://localhost:8094' }
+{ 'telegraf_prefix' => 'test' }
+
+# 2. #deep_each_setting
+config.deep_each_setting { |key, value| { key => value } }
+# result of each step:
+{ 'db.creds.user' => 'D@iveR' }
+{ 'db.creds.password' => 'test123' }
+{ 'db.creds.data' => { test: false } }
+{ 'telegraf_url' => 'udp://localhost:8094' }
+{ 'telegraf_prefix' => 'test' }
 ```
 
 ---
