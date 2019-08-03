@@ -59,7 +59,7 @@ class Qonfig::CommandSet
   private
 
   # @param block [Proc]
-  # @return [Object]
+  # @return [Any]
   #
   # @api private
   # @since 0.2.0

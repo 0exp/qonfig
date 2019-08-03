@@ -2,5 +2,5 @@
 
 # @api private
 # @since 0.13.0
-module Qonfig::Validation::DSL
+class Qonfig::Validator::Error
 end

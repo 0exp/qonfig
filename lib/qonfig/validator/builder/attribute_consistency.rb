@@ -2,7 +2,7 @@
 
 # @api private
 # @since 0.13.0
-class Qonfig::Validation::Builder::AttributeConsistency
+class Qonfig::Validator::Builder::AttributeConsistency
   class << self
     # @param setting_key_pattern [String, Symbol, NilClass]
     # @param runtime_validation_method [String, Symbol, NilClass]
@@ -107,7 +107,7 @@ class Qonfig::Validation::Builder::AttributeConsistency
 
     raise(
       Qonfig::ArgumentError,
-      "INCOMPATIBLE VALIDATION BLOCK (should be a proc)"
+      "INCOMPATIBLE VALIDATION LOGIC TYPE (should be a proc)"
     )
   end
 

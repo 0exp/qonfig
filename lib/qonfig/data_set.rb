@@ -4,10 +4,12 @@
 # @since 0.1.0
 class Qonfig::DataSet
   require_relative 'data_set/class_builder'
-  require_relative 'data_set/validator'
 
   # @since 0.1.0
   extend Qonfig::DSL
+
+  # @since 0.13.0
+  extend Qonfig::Validator::DSL
 
   # @return [Qonfig::Settings]
   #

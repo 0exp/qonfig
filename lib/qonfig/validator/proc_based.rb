@@ -2,28 +2,28 @@
 
 # @api private
 # @since 0.13.0
-class Qonfig::Validation::MethodBased
+class Qonfig::Validator::ProcBased
   # @return [String, Symbol, NilClass]
   #
   # @api private
   # @since 0.13.0
   attr_reader :setting_key_pattern
 
-  # @return [Symbol, String]
+  # @return [Proc]
   #
   # @api private
   # @since 0.13.0
-  attr_reader :runtime_validation_method
+  attr_reader :valdiation
 
-  # @param setting_key_pattern [String, Symbol]
-  # @param runtime_validation_method [String, Symbol]
+  # @param setting_key_pattern [String, Symbol, NilClass]
+  # @param vaidation [Proc]
   # @return [void]
   #
   # @api private
   # @since 0.13.0
-  def initialize(setting_key_pattern, runtime_validation_method)
+  def initialize(setting_key_pattern, validation)
     @setting_key_pattern = setting_key_pattern
-    @runtime_validation_method = runtime_validation_method
+    @validation = validation
   end
 
   # @param data_set [Qonfig::DataSet]

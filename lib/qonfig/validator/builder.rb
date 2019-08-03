@@ -2,7 +2,7 @@
 
 # @api private
 # @since 0.13.0
-class Qonfig::Validation::Builder
+class Qonfig::Validator::Builder
   require_relative 'builder/attribute_consistency'
 
   # @return [NilClass]
@@ -27,7 +27,7 @@ class Qonfig::Validation::Builder
     # @option setting_key_pattern [String, Symbol, NilClass]
     # @option runtime_validation_method [String, Symbol, NilClass]
     # @option validation_logic [Proc, NilClass]
-    # @return [Qonfig::Validation::MethodBased, Qonfig::Validation::ProcBased]
+    # @return [Qonfig::Validator::MethodBased, Qonfig::Validator::ProcBased]
     #
     # @api private
     # @since 0.13.0
@@ -53,7 +53,7 @@ class Qonfig::Validation::Builder
     @validation_logic = validation_logic
   end
 
-  # @return [Qonfig::Validation::MethodBased, Qonfig::Validation::ProcBased]
+  # @return [Qonfig::Validator::MethodBased, Qonfig::Validator::ProcBased]
   #
   # @api private
   # @since 0.13.0
@@ -96,24 +96,32 @@ class Qonfig::Validation::Builder
     )
   end
 
-  # @return [Qonfig::Validation::MethodBased, Qonfig::Validation::PorcBased]
+  # @return [Qonfig::Validator::MethodBased, Qonfig::Validator::PorcBased]
   #
   # @api private
   # @since 0.13.0
   def build_validator
+    case
+    when runtime_validation_method
+      build_method_based
+    when validation_logic
+      build_proc_based
+    end
   end
 
-  # @return [Qonfig::Validation::MethodBased]
+  # @return [Qonfig::Validator::MethodBased]
   #
   # @api private
   # @since 0.13.0
   def build_method_based
+    Qonfig::Validator::MethodBased.new(setting_key_pattern, runtime_validation_method)
   end
 
-  # @return [Qonfig::Validation::ProcBased]
+  # @return [Qonfig::Validator::ProcBased]
   #
   # @api private
   # @since 0.13.0
   def build_proc_based
+    Qonfig::Validator::ProcBased.new(setting_key_pattern, validation_logic)
   end
 end
