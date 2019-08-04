@@ -17,16 +17,16 @@ class Qonfig::DataSet
   # @since 0.1.0
   attr_reader :settings
 
-  # @param options_map [Hash]
+  # @param settings_map [Hash]
   # @param configurations [Proc]
   #
   # @api public
   # @since 0.1.0
-  def initialize(options_map = {}, &configurations)
+  def initialize(settings_map = {}, &configurations)
     @__access_lock__ = Mutex.new
     @__definition_lock__ = Mutex.new
 
-    thread_safe_definition { load!(options_map, &configurations) }
+    thread_safe_definition { load!(settings_map, &configurations) }
   end
 
   # @return [void]
@@ -45,7 +45,7 @@ class Qonfig::DataSet
     thread_safe_access { settings.__is_frozen__ }
   end
 
-  # @param options_map [Hash]
+  # @param settings_map [Hash]
   # @param configurations [Proc]
   # @return [void]
   #
@@ -53,21 +53,21 @@ class Qonfig::DataSet
   #
   # @api public
   # @since 0.2.0
-  def reload!(options_map = {}, &configurations)
+  def reload!(settings_map = {}, &configurations)
     thread_safe_definition do
       raise Qonfig::FrozenSettingsError, 'Frozen config can not be reloaded' if frozen?
-      load!(options_map, &configurations)
+      load!(settings_map, &configurations)
     end
   end
 
-  # @param options_map [Hash]
+  # @param settings_map [Hash]
   # @return [void]
   #
   # @api public
   # @since 0.1.0
-  def configure(options_map = {})
+  def configure(settings_map = {})
     thread_safe_access do
-      settings.__apply_values__(options_map)
+      settings.__apply_values__(settings_map)
       yield(settings) if block_given?
     end
   end
@@ -207,18 +207,18 @@ class Qonfig::DataSet
   # @api private
   # @since 0.2.0
   def build_settings
-    Qonfig::Settings::Builder.build(self.class.commands.dup)
+    Qonfig::Settings::Builder.build(self.class.commands.dup, self)
   end
 
-  # @param options_map [Hash]
+  # @param settings_map [Hash]
   # @param configurations [Proc]
   # @return [void]
   #
   # @api private
   # @since 0.2.0
-  def load!(options_map = {}, &configurations)
+  def load!(settings_map = {}, &configurations)
     @settings = build_settings
-    configure(options_map, &configurations)
+    configure(settings_map, &configurations)
   end
 
   # @param instructions [Proc]

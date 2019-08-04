@@ -8,6 +8,8 @@ class Qonfig::Settings
   require_relative 'settings/builder'
   require_relative 'settings/key_guard'
   require_relative 'settings/key_matcher'
+  require_relative 'settings/proxy'
+  require_relative 'settings/proxy_as_basic_object'
 
   # @return [Proc]
   #
@@ -80,13 +82,15 @@ class Qonfig::Settings
       case
       when !__options__.key?(key)
         __options__[key] = value
-      when __options__[key].is_a?(Qonfig::Settings) && value.is_a?(Qonfig::Settings)
+      when __is_a_setting__(__options__[key]) && __is_a_setting__(value)
         __options__[key].__append_settings__(value)
       else
         __options__[key] = value
       end
 
-      __define_accessor__(key)
+      __define_option_reader__(key)
+      __define_option_writer__(key)
+      __define_option_predicate__(key)
     end
   end
 
@@ -122,13 +126,13 @@ class Qonfig::Settings
     __lock__.thread_safe_access { __set_value__(key, value) }
   end
 
-  # @param options_map [Hash]
+  # @param settings_map [Hash]
   # @return [void]
   #
   # @api private
   # @since 0.3.0
-  def __apply_values__(options_map)
-    __lock__.thread_safe_access { __set_values_from_map__(options_map) }
+  def __apply_values__(settings_map)
+    __lock__.thread_safe_access { __set_values_from_map__(settings_map) }
   end
 
   # @param keys [Array<String, Symbol>]
@@ -223,7 +227,7 @@ class Qonfig::Settings
       __options__.freeze
 
       __options__.each_value do |value|
-        value.__freeze__ if value.is_a?(Qonfig::Settings)
+        value.__freeze__ if __is_a_setting__(value)
       end
     end
   end
@@ -273,7 +277,7 @@ class Qonfig::Settings
         final_setting_key =
           initial_setting_key ? "#{initial_setting_key}.#{setting_key}" : setting_key
 
-        if setting_value.is_a?(Qonfig::Settings)
+        if __is_a_setting__(setting_value)
           setting_value.__deep_each_setting__(final_setting_key, &block)
         else
           yielder.yield(final_setting_key, setting_value)
@@ -284,7 +288,7 @@ class Qonfig::Settings
     block_given? ? enumerator.each(&block) : enumerator
   end
 
-  # @param options_map [Hash]
+  # @param settings_map [Hash]
   # @return [void]
   #
   # @raise [Qonfig::ArgumentError]
@@ -292,21 +296,21 @@ class Qonfig::Settings
   #
   # @api private
   # @since 0.3.0
-  def __set_values_from_map__(options_map)
+  def __set_values_from_map__(settings_map)
     ::Kernel.raise(
       Qonfig::ArgumentError, 'Options map should be represented as a hash'
-    ) unless options_map.is_a?(Hash)
+    ) unless settings_map.is_a?(Hash)
 
-    options_map.each_pair do |key, value|
+    settings_map.each_pair do |key, value|
       current_value = __get_value__(key)
 
       # NOTE: some duplications here was made only for the better code readability
       case
-      when !current_value.is_a?(Qonfig::Settings)
+      when !__is_a_setting__(current_value)
         __set_value__(key, value)
-      when current_value.is_a?(Qonfig::Settings) && value.is_a?(Hash)
+      when __is_a_setting__(current_value) && value.is_a?(Hash)
         current_value.__apply_values__(value)
-      when current_value.is_a?(Qonfig::Settings) && !value.is_a?(Hash)
+      when __is_a_setting__(current_value) && !value.is_a?(Hash)
         ::Kernel.raise(
           Qonfig::AmbiguousSettingValueError,
           "Can not redefine option <#{key}> that contains nested options"
@@ -327,11 +331,7 @@ class Qonfig::Settings
     ) if __options__.frozen?
 
     __options__.each_pair do |key, value|
-      if value.is_a?(Qonfig::Settings)
-        value.__clear__
-      else
-        __options__[key] = nil
-      end
+      __is_a_setting__(value) ? value.__clear__ : __options__[key] = nil
     end
   end
 
@@ -373,7 +373,7 @@ class Qonfig::Settings
       ::Kernel.raise(Qonfig::FrozenSettingsError, 'Can not modify frozen settings')
     end
 
-    if __options__[key].is_a?(Qonfig::Settings)
+    if __is_a_setting__(__options__[key])
       ::Kernel.raise(
         Qonfig::AmbiguousSettingValueError,
         "Can not redefine option <#{key}> that contains nested options"
@@ -400,12 +400,12 @@ class Qonfig::Settings
     case
     when rest_keys.empty?
       result
-    when !result.is_a?(Qonfig::Settings)
+    when !__is_a_setting__(result)
       ::Kernel.raise(
         Qonfig::UnknownSettingError,
         'Setting with required digging sequence does not exist!'
       )
-    when result.is_a?(Qonfig::Settings)
+    when __is_a_setting__(result)
       result.__dig__(*rest_keys)
     end
   end
@@ -422,7 +422,7 @@ class Qonfig::Settings
     {}.tap do |result|
       __deep_access__(*keys).tap do |setting|
         required_key = __indifferently_accessable_option_key__(keys.last)
-        result[required_key] = setting.is_a?(Qonfig::Settings) ? setting.__to_h__ : setting
+        result[required_key] = __is_a_setting__(setting) ? setting.__to_h__ : setting
       end
     end
   end
@@ -458,7 +458,7 @@ class Qonfig::Settings
           transform_key: transform_key,
           transform_value: transform_value
         )
-      when value.is_a?(Qonfig::Settings)
+      when __is_a_setting__(value)
         hash[final_key] = value.__to_hash__(
           transform_key: transform_key,
           transform_value: transform_value
@@ -474,16 +474,30 @@ class Qonfig::Settings
   # @return [void]
   #
   # @api private
-  # @since 0.1.0
-  def __define_accessor__(key)
+  # @since 0.13.0
+  def __define_option_reader__(key)
     define_singleton_method(key) do
       self.[](key)
     end
+  end
 
+  # @param key [Symbol, String]
+  # @return [void]
+  #
+  # @api private
+  # @since 0.13.0
+  def __define_option_writer__(key)
     define_singleton_method("#{key}=") do |value|
       self.[]=(key, value)
     end
+  end
 
+  # @param key [Symbol, String]
+  # @return [void]
+  #
+  # @api private
+  # @since 0.13.0
+  def __define_option_predicate__(key)
     define_singleton_method("#{key}?") do
       !!self.[](key)
     end
@@ -514,7 +528,16 @@ class Qonfig::Settings
     KeyGuard.new(key).prevent_core_method_intersection!
   end
 
-  # rubocop:disable Layout/ClassStructure
+  # @param value [Any]
+  # @return [Boolean]
+  #
+  # @api private
+  # @since 0.13.0
+  def __is_a_setting__(value)
+    value.is_a?(Qonfig::Settings) || value.is_a?(Qonfig::Settings::Proxy)
+  end
+
+  # rubocop:disable Layout/ClassS§tructure
   # @return [Array<String>]
   #
   # @api private

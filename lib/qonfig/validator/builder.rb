@@ -102,11 +102,17 @@ class Qonfig::Validator::Builder
   # @since 0.13.0
   def build_validator
     case
-    when runtime_validation_method
-      build_method_based
-    when validation_logic
-      build_proc_based
+    when runtime_validation_method then build_method_based
+    when validation_logic          then build_proc_based
     end
+  end
+
+  # @return [Qonfig::Settings::KeyMatcher, NilClass]
+  #
+  # @api private
+  # @since 0.13.0
+  def build_setting_key_matcher
+    Qonfig::Settings::KeyMatcher.new(setting_key_pattern.to_s) if setting_key_pattern
   end
 
   # @return [Qonfig::Validator::MethodBased]
@@ -114,7 +120,7 @@ class Qonfig::Validator::Builder
   # @api private
   # @since 0.13.0
   def build_method_based
-    Qonfig::Validator::MethodBased.new(setting_key_pattern, runtime_validation_method)
+    Qonfig::Validator::MethodBased.new(build_setting_key_matcher, runtime_validation_method)
   end
 
   # @return [Qonfig::Validator::ProcBased]
@@ -122,6 +128,6 @@ class Qonfig::Validator::Builder
   # @api private
   # @since 0.13.0
   def build_proc_based
-    Qonfig::Validator::ProcBased.new(setting_key_pattern, validation_logic)
+    Qonfig::Validator::ProcBased.new(build_setting_key_matcher, validation_logic)
   end
 end

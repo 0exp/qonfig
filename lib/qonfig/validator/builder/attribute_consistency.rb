@@ -31,7 +31,7 @@ class Qonfig::Validator::Builder::AttributeConsistency
 
   # @return [void]
   #
-  # @raise [Qonfig::ArgumentError]
+  # @raise [Qonfig::ValidatorArgumentError]
   #
   # @api private
   # @since 0.13.0
@@ -64,23 +64,29 @@ class Qonfig::Validator::Builder::AttributeConsistency
 
   # @return [void]
   #
-  # @raise [Qonfig::ArgumentError]
+  # @raise [Qonfig::ValidatorArgumentError]
   #
   # @api private
   # @since 0.13.0
   def consistent_method_choice!
     unless runtime_validation_method || validation_logic
-      raise(Qonfig::ArgumentError,"METHOD INST CHOSEN (you should provide method or proc")
+      raise(
+        Qonfig::ValidatorArgumentError,
+        'Empty validation (you should provide a method name or a proc)'
+      )
     end
 
     if runtime_validation_method && validation_logic
-      raise(Qonfig::ArgumetnError, "INCONSISTENT METHOD CHOICE (you should provde method or proc")
+      raise(
+        Qonfig::ValidatorArgument,
+        'Incosistent validation (you should provide either a method or a proc)'
+      )
     end
   end
 
   # @return [void]
   #
-  # @raise [Qonfig::ArgumentError]
+  # @raise [Qonfig::ValidatorArgumentError]
   #
   # @api private
   # @since 0.13.0
@@ -90,14 +96,14 @@ class Qonfig::Validator::Builder::AttributeConsistency
     return if runtime_validation_method.is_a?(String)
 
     raise(
-      Qonfig::ArgumentError,
-      "INCOMPATIBLE RUNTIME VALIDTION METHOD NAME (should be a string or a symbol)"
+      Qonfig::ValidatorArgumentError,
+      'Incompatible validation method name (should be a symbol or a string)'
     )
   end
 
   # @return [void]
   #
-  # @raise [Qonfig::ArgumentError]
+  # @raise [Qonfig::ValidatorArgumentError]
   #
   # @api private
   # @since 0.13.0
@@ -106,14 +112,14 @@ class Qonfig::Validator::Builder::AttributeConsistency
     return if validation_logic.is_a?(Proc)
 
     raise(
-      Qonfig::ArgumentError,
-      "INCOMPATIBLE VALIDATION LOGIC TYPE (should be a proc)"
+      Qonfig::ValidatorArgumentError,
+      'Incompatible validation object (should be a proc)'
     )
   end
 
   # @return [void]
   #
-  # @raise [Qonfig::ArgumentError]
+  # @raise [Qonfig::ValidatorArgumentError]
   #
   # @api private
   # @since 0.13.0
@@ -122,6 +128,9 @@ class Qonfig::Validator::Builder::AttributeConsistency
     return if setting_key_pattern.is_a?(Symbol)
     return if setting_key_pattern.is_a?(String)
 
-    raise(Qonfig::ArgumentError, "INCOMPATIBLE KEY PATTERN (should be a string or a symbol)")
+    raise(
+      Qonfig::ValidatorArgumentError,
+      'Incompatible setting key pattern (should be a string or a symbol)'
+    )
   end
 end

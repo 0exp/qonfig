@@ -10,6 +10,14 @@ module Qonfig
   ArgumentError = Class.new(ArgumentError)
 
   # @api public
+  # @since 0.13.0
+  ValidatorArgumentError = Class.new(ArgumentError)
+
+  # @api public
+  # @since 0.13.0
+  ValidationError = Class.new(Error)
+
+  # @api public
   # @since 0.12.0
   PluginError = Class.new(Error)
 

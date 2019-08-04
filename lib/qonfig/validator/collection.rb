@@ -26,6 +26,7 @@ class Qonfig::Validator::Collection
   def add_validator(validator)
     thread_safe { validators << validator }
   end
+  alias_method :<<, :add_validator
 
   # @param block [Proc]
   # @return [Enumerable]

@@ -41,7 +41,9 @@ module Qonfig::Validator::DSL
   # @since 0.13.0
   def validate(setting_key_pattern = nil, by: nil, &custom_validation)
     validators << Qonfig::Validator::Builder.build(
-      setting_key_pattern, by, custom_validation
+      setting_key_pattern: setting_key_pattern,
+      runtime_validation_method: by,
+      validation_logic: custom_validation
     )
   end
 end
