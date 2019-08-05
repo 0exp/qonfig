@@ -56,6 +56,22 @@ class Qonfig::CommandSet
     end
   end
 
+  # @return [Integer]
+  #
+  # @api private
+  # @since 0.13.0
+  def size
+    thread_safe { commands.size }
+  end
+
+  # @return [Integer]
+  #
+  # @api private
+  # @since 0.13.0
+  def count
+    thread_safe { commands.count }
+  end
+
   private
 
   # @param block [Proc]

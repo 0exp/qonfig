@@ -14,13 +14,14 @@ describe 'Iteration over setting keys (#each_setting / #deep_each_setting)' do
       setting :telegraf_url, 'udp://localhost:8094'
       setting :telegraf_prefix, 'test'
 
-      validate 'db.creds.user' do |value|
+      validate 'telegraf_prefix' do |value|
         value.is_a?(String)
       end
     end.new
   end
 
   specify do
-    config
+    binding.pry
+    config.settings.db.creds.user = :hui
   end
 end

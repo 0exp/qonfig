@@ -202,7 +202,7 @@ class Qonfig::DataSet
 
   private
 
-  # @return [Qonfig::Settings]
+  # @return [Qonfig::Settings::Proxy]
   #
   # @api private
   # @since 0.2.0

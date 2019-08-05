@@ -240,6 +240,15 @@ class Qonfig::Settings
     __lock__.thread_safe_access { __options__.frozen? }
   end
 
+  # @param value [Any]
+  # @return [Boolean]
+  #
+  # @api private
+  # @since 0.13.0
+  def __is_a_setting__(value)
+    value.is_a?(Qonfig::Settings) || value.is_a?(Qonfig::Settings::Proxy)
+  end
+
   private
 
   # @return [Qonfig::Settings::Lock]
@@ -526,15 +535,6 @@ class Qonfig::Settings
   # @since 0.2.0
   def __prevent_core_method_intersection__(key)
     KeyGuard.new(key).prevent_core_method_intersection!
-  end
-
-  # @param value [Any]
-  # @return [Boolean]
-  #
-  # @api private
-  # @since 0.13.0
-  def __is_a_setting__(value)
-    value.is_a?(Qonfig::Settings) || value.is_a?(Qonfig::Settings::Proxy)
   end
 
   # rubocop:disable Layout/ClassS§tructure

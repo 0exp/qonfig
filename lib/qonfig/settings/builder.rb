@@ -15,7 +15,7 @@ module Qonfig::Settings::Builder
         commands.each { |command| command.call(settings) }
       end
 
-      Qonfig::Settings::Proxy.new(settings, data_set)
+      Qonfig::Settings::ProxyAsBasicObject.new(settings, data_set)
     end
   end
 end

@@ -3,6 +3,9 @@
 # @api private
 # @since 0.13.0
 class Qonfig::Settings::Proxy < Delegator
+  ASSIGNING_METHOD_MARKER = '='
+  ASSIGNING_METHOD_MARKER_POSITION = -1
+
   # @param __delegetable_settings__ [Qonfig::Settings]
   # @param __data_set_reference__ [Qonfig::DataSet]
   # @return [void]
@@ -31,15 +34,21 @@ class Qonfig::Settings::Proxy < Delegator
   # @api private
   # @since 0.13.0
   def method_missing(__method_name__, *__arguments__, &__block__)
-    @__delegetable_settings__.public_send(__method_name__, *__arguments__, &__block__)
+    @__delegetable_settings__.public_send(__method_name__, *__arguments__, &__block__).tap do
+      # NOTE: {{ [-1] == '=' }} is fater than {{ .to_s.ends_with?('=') }}
+      # NOTE: if the last symbol of method name is a `=`
+      if __method_name__[ASSIGNING_METHOD_MARKER_POSITION] == ASSIGNING_METHOD_MARKER
+        @__data_set_validator__.validate!
+      end
+    end
   end
 
   # @see Qonfig::Settings#__define_setting__
   #
   # @api private
   # @since 0.13.0
-  def __define_setting__(key, value)
-    @__delegetable_settings__.__define_setting__(key, value).tap do
+  def __define_setting__(__key__, __value__)
+    @__delegetable_settings__.__define_setting__(__key__, __value__).tap do
       @__data_set_validator__.validate!
     end
   end
@@ -48,8 +57,8 @@ class Qonfig::Settings::Proxy < Delegator
   #
   # @api private
   # @since 0.13.0
-  def __append_settings__(settings)
-    @__delegetable_settings__.__append_settings__(settings).tap do
+  def __append_settings__(__settings__)
+    @__delegetable_settings__.__append_settings__(__settings__).tap do
       @__data_set_validator__.validate!
     end
   end
@@ -58,8 +67,8 @@ class Qonfig::Settings::Proxy < Delegator
   #
   # @api private
   # @since 0.13.0
-  def []=(key, value)
-    (@__delegetable_settings__[key] = value).tap do
+  def []=(__key__, __value__)
+    (@__delegetable_settings__[__key__] = __value__).tap do
       @__data_set_validator__.validate!
     end
   end
@@ -68,8 +77,8 @@ class Qonfig::Settings::Proxy < Delegator
   #
   # @api private
   # @since 0.13.0
-  def __apply_values__(settings_map)
-    @__delegetable_settings__.__apply_values__(settings_map).tap do
+  def __apply_values__(__settings_map__)
+    @__delegetable_settings__.__apply_values__(__settings_map__).tap do
       @__data_set_validator__.validate!
     end
   end

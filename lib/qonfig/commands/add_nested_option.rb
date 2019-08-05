@@ -32,7 +32,7 @@ class Qonfig::Commands::AddNestedOption < Qonfig::Commands::Base
     end
   end
 
-  # @param settings [Qonfig::Settings]
+  # @param settings [Qonfig::Settings::Proxy]
   # @return [void]
   #
   # @api private
