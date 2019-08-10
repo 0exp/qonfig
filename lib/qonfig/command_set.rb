@@ -3,6 +3,10 @@
 # @api private
 # @since 0.1.0
 class Qonfig::CommandSet
+  # @api private
+  # @since 0.13.0
+  include Enumerable
+
   # @return [Array<Qonfig::Commands::Base>]
   #
   # @api private

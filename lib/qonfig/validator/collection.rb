@@ -3,6 +3,10 @@
 # @api private
 # @since 0.13.0
 class Qonfig::Validator::Collection
+  # @api private
+  # @since 0.13.0
+  include Enumerable
+
   # @return [Array<Qonfig::Validator::MethodBased,Qonfig::Validator::ProcBased>]
   #
   # @api private

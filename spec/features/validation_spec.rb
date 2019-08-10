@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe 'Iteration over setting keys (#each_setting / #deep_each_setting)' do
-  let(:config) do
+  let(:config_klass) do
     Class.new(Qonfig::DataSet) do
       setting :db do
         setting :creds do
@@ -12,15 +12,14 @@ describe 'Iteration over setting keys (#each_setting / #deep_each_setting)' do
       end
 
       setting :telegraf_url, 'udp://localhost:8094'
-      setting :telegraf_prefix, 'test'
+      setting :telegraf_prefix, 1
 
       validate 'db.creds.user' do |value|
         value.is_a?(String)
       end
-    end.new
+    end
   end
 
   specify do
-    config
   end
 end

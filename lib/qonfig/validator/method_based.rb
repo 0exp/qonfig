@@ -31,7 +31,7 @@ class Qonfig::Validator::MethodBased < Qonfig::Validator::Basic
 
       raise(
         Qonfig::ValidationError,
-        "Invalid value of setting <#{setting_key}>: #{setting_value}"
+        "Invalid value of setting <#{setting_key}> (#{setting_value})"
       ) unless data_set.__send__(runtime_validation_method, setting_value)
     end
   end

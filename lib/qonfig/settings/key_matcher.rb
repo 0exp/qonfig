@@ -3,7 +3,6 @@
 # @api private
 # @since 0.13.0
 class Qonfig::Settings::KeyMatcher
-
   # @return [String]
   #
   # @api private
@@ -41,12 +40,14 @@ class Qonfig::Settings::KeyMatcher
   INFINITE_REGEXP_PATTERN = '\.*.*'
 
   # @param scope_pattern [String]
-  # @raise [RabbitMatcher::ArgimentError]
+  # @return [void]
+  #
+  # @raise [Qonfig::ArgumentError]
   #
   # @api private
   # @since 0.13.0
   def initialize(scope_pattern)
-    raise ArgumentError unless scope_pattern.is_a?(String)
+    raise Qonfig::ArgumentError unless scope_pattern.is_a?(String)
 
     @scope_pattern      = scope_pattern
     @scope_pattern_size = count_scope_pattern_size(scope_pattern)

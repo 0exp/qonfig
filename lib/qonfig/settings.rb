@@ -4,12 +4,11 @@
 # @since 0.1.0
 # rubocop:disable Metrics/ClassLength
 class Qonfig::Settings
+  require_relative 'settings/callbacks'
   require_relative 'settings/lock'
   require_relative 'settings/builder'
   require_relative 'settings/key_guard'
   require_relative 'settings/key_matcher'
-  require_relative 'settings/proxy'
-  require_relative 'settings/proxy_as_basic_object'
 
   # @return [Proc]
   #
@@ -29,11 +28,18 @@ class Qonfig::Settings
   # @since 0.1.0
   attr_reader :__options__
 
+  # @return [Qonfig::Settings::Callbacks]
+  #
+  # @api private
+  # @since 0.13.0
+  attr_reader :__callbacks__
+
   # @api private
   # @since 0.1.0
-  def initialize
+  def initialize(__callbacks__)
     @__options__ = {}
     @__lock__ = Lock.new
+    @__callbacks__ = __callbacks__
   end
 
   # @param block [Proc]
@@ -107,6 +113,14 @@ class Qonfig::Settings
     end
   end
 
+  # @return [void]
+  #
+  # @api private
+  # @since 0.13.0
+  def __invoke_callbacks__
+    __callbacks__.call
+  end
+
   # @param key [Symbol, String]
   # @return [Object]
   #
@@ -123,7 +137,7 @@ class Qonfig::Settings
   # @api public
   # @since 0.1.0
   def []=(key, value)
-    __lock__.thread_safe_access { __set_value__(key, value) }
+    __lock__.thread_safe_access { __set_value__(key, value) }.tap { __invoke_callbacks__ }
   end
 
   # @param settings_map [Hash]
@@ -238,6 +252,15 @@ class Qonfig::Settings
   # @since 0.2.0
   def __is_frozen__
     __lock__.thread_safe_access { __options__.frozen? }
+  end
+
+  # @param value [Any]
+  # @return [Boolean]
+  #
+  # @api private
+  # @since 0.13.0
+  def __is_a_setting__(value)
+    value.is_a?(Qonfig::Settings)
   end
 
   private
@@ -380,7 +403,7 @@ class Qonfig::Settings
       )
     end
 
-    __options__[key] = value
+    (__options__[key] = value)
   end
 
   # @param keys [Array<Symbol, String>]

@@ -29,6 +29,14 @@ class Qonfig::Validator
     end
   end
 
+  # @return [Boolean]
+  #
+  # @api private
+  # @since 0.13.0
+  def valid?
+    (validate! || true) rescue false
+  end
+
   private
 
   # @return [Qonfig::DataSet]

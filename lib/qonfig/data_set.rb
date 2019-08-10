@@ -4,6 +4,7 @@
 # @since 0.1.0
 class Qonfig::DataSet
   require_relative 'data_set/class_builder'
+  require_relative 'data_set/lock'
 
   # @since 0.1.0
   extend Qonfig::DSL
@@ -23,9 +24,8 @@ class Qonfig::DataSet
   # @api public
   # @since 0.1.0
   def initialize(settings_map = {}, &configurations)
-    @__access_lock__ = Mutex.new
-    @__definition_lock__ = Mutex.new
-
+    @__lock__ = Qonfig::DataSet::Lock.new
+    @validator = Qonfig::Validator.new(self)
     thread_safe_definition { load!(settings_map, &configurations) }
   end
 
@@ -65,10 +65,9 @@ class Qonfig::DataSet
   #
   # @api public
   # @since 0.1.0
-  def configure(settings_map = {})
+  def configure(settings_map = {}, &configurations)
     thread_safe_access do
-      settings.__apply_values__(settings_map)
-      yield(settings) if block_given?
+      apply_settings(settings_map, &configurations)
     end
   end
 
@@ -200,14 +199,40 @@ class Qonfig::DataSet
     thread_safe_access { settings.__deep_each_setting__(&block) }
   end
 
+  # @return [void]
+  #
+  # @api private
+  # @since 0.13.0
+  def validate!
+    thread_safe_access { validator.validate! }
+  end
+
   private
 
-  # @return [Qonfig::Settings]
+  # @return [Qonfig::Validator]
+  #
+  # @api private
+  # @since 0.13.0
+  attr_reader :validator
+
+  # @return [void]
   #
   # @api private
   # @since 0.2.0
   def build_settings
-    Qonfig::Settings::Builder.build(self.class.commands.dup, self)
+    @settings = Qonfig::Settings::Builder.build(self.class.commands.dup, self)
+    validator.validate!
+  end
+
+  # @param settings_map [Hash]
+  # @param configurations [Proc]
+  # @return [void]
+  #
+  # @api private
+  # @since 0.13.0
+  def apply_settings(settings_map = {}, &configurations)
+    settings.__apply_values__(settings_map)
+    yield(settings) if block_given?
   end
 
   # @param settings_map [Hash]
@@ -217,8 +242,8 @@ class Qonfig::DataSet
   # @api private
   # @since 0.2.0
   def load!(settings_map = {}, &configurations)
-    @settings = build_settings
-    configure(settings_map, &configurations)
+    build_settings
+    apply_settings(settings_map, &configurations)
   end
 
   # @param instructions [Proc]
@@ -227,7 +252,7 @@ class Qonfig::DataSet
   # @api private
   # @since 0.2.0
   def thread_safe_access(&instructions)
-    @__access_lock__.synchronize(&instructions)
+    @__lock__.thread_safe_access(&instructions)
   end
 
   # @param instructions [Proc]
@@ -236,6 +261,6 @@ class Qonfig::DataSet
   # @api private
   # @since 0.2.0
   def thread_safe_definition(&instructions)
-    @__definition_lock__.synchronize(&instructions)
+    @__lock__.thread_safe_definition(&instructions)
   end
 end

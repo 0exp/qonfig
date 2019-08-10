@@ -20,8 +20,8 @@ describe '#dig-functionality (Hash#dig-like behaviour)' do
     expect(config.dig('db', 'creds', 'data')).to match(test: false)
 
     # access to the settings
-    expect(config.dig(:db, :creds)).to be_a(Qonfig::Settings::Proxy)
-    expect(config.dig(:db)).to be_a(Qonfig::Settings::Proxy)
+    expect(config.dig(:db, :creds)).to be_a(Qonfig::Settings)
+    expect(config.dig(:db)).to be_a(Qonfig::Settings)
 
     # try to dig into the hash value (setting with a hash value)
     expect { config.dig(:db, :creds, :user, :test) }.to raise_error(Qonfig::UnknownSettingError)
