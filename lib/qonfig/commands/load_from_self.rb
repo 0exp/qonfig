@@ -17,12 +17,13 @@ class Qonfig::Commands::LoadFromSelf < Qonfig::Commands::Base
     @caller_location = caller_location
   end
 
+  # @param data_set [Qonfig::DataSet]
   # @param settings [Qonfig::Settings]
   # @return [void]
   #
   # @api private
   # @since 0.2.0
-  def call(settings)
+  def call(data_set, settings)
     yaml_data = load_self_placed_yaml_data
 
     yaml_based_settings = build_data_set_klass(yaml_data).new.settings

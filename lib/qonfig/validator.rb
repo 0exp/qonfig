@@ -34,7 +34,10 @@ class Qonfig::Validator
   # @api private
   # @since 0.13.0
   def valid?
-    (validate! || true) rescue false
+    validate!
+    true
+  rescue Qonfig::ValidationError
+    false
   end
 
   private

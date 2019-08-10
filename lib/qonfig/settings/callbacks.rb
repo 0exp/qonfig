@@ -23,12 +23,12 @@ class Qonfig::Settings::Callbacks
     callbacks.each(&:call)
   end
 
-  # @param callback [Proc]
+  # @param callback [Proc, Qonfig::Settings::Callbacks, #call]
   # @return [void]
   #
   # @api private
   # @since 0.13.0
-  def add(&callback)
+  def add(callback)
     callbacks << callback
   end
   attr_reader :callback

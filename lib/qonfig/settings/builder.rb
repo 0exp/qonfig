@@ -10,9 +10,11 @@ module Qonfig::Settings::Builder
     #
     # @api private
     # @since 0.2.0
-    def build(commands, data_set)
-      Qonfig::Settings.new(build_callbacks(data_set)).tap do |settings|
-        commands.each { |command| command.call(settings) }
+    def build(data_set)
+      Qonfig::Settings.new(build_mutation_callbacks(data_set)).tap do |settings|
+        data_set.class.commands.dup.each do |command|
+          command.call(data_set, settings)
+        end
       end
     end
 
@@ -23,10 +25,10 @@ module Qonfig::Settings::Builder
     #
     # @api private
     # @since 0.13.0
-    def build_callbacks(data_set)
+    def build_mutation_callbacks(data_set)
       Qonfig::Settings::Callbacks.new.tap do |callbacks|
         # NOTE: validation callbacks
-        callbacks.add { data_set.validate! }
+        callbacks.add(proc { data_set.validate! })
       end
     end
   end

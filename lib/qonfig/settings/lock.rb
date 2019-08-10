@@ -17,7 +17,7 @@ class Qonfig::Settings::Lock
   # @api private
   # @since 0.2.0
   def thread_safe_definition(&instructions)
-    definition_lock.synchronize(&instructions)
+    definition_lock.owned? ? yield : definition_lock.synchronize(&instructions)
   end
 
   # @param instructions [Proc]
@@ -26,7 +26,7 @@ class Qonfig::Settings::Lock
   # @api private
   # @since 0.2.0
   def thread_safe_access(&instructions)
-    access_lock.synchronize(&instructions)
+    access_lock.owned? ? yield : access_lock.synchronize(&instructions)
   end
 
   # @param instructions [Proc]
@@ -35,7 +35,7 @@ class Qonfig::Settings::Lock
   # @api private
   # @since 0.2.0
   def thread_safe_merge(&instructions)
-    merge_lock.synchronize(&instructions)
+    merge_lock.owned? ? yield : merge_lock.synchronize(&instructions)
   end
 
   private

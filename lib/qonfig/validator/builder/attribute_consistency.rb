@@ -78,7 +78,7 @@ class Qonfig::Validator::Builder::AttributeConsistency
 
     if runtime_validation_method && validation_logic
       raise(
-        Qonfig::ValidatorArgument,
+        Qonfig::ValidatorArgumentError,
         'Incosistent validation (you should provide either a method or a proc)'
       )
     end
@@ -111,10 +111,12 @@ class Qonfig::Validator::Builder::AttributeConsistency
     return if validation_logic.nil?
     return if validation_logic.is_a?(Proc)
 
+    # :nocov:
     raise(
       Qonfig::ValidatorArgumentError,
       'Incompatible validation object (should be a proc)'
     )
+    # :nocov:
   end
 
   # @return [void]

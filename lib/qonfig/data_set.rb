@@ -199,9 +199,17 @@ class Qonfig::DataSet
     thread_safe_access { settings.__deep_each_setting__(&block) }
   end
 
+  # @return [Boolean]
+  #
+  # @api public
+  # @since 0.13.0
+  def valid?
+    thread_safe_access { validator.valid? }
+  end
+
   # @return [void]
   #
-  # @api private
+  # @api public
   # @since 0.13.0
   def validate!
     thread_safe_access { validator.validate! }
@@ -220,7 +228,7 @@ class Qonfig::DataSet
   # @api private
   # @since 0.2.0
   def build_settings
-    @settings = Qonfig::Settings::Builder.build(self.class.commands.dup, self)
+    @settings = Qonfig::Settings::Builder.build(self)
     validator.validate!
   end
 

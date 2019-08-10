@@ -55,12 +55,13 @@ class Qonfig::Commands::LoadFromENV < Qonfig::Commands::Base
     @trim_pattern   = prefix.is_a?(Regexp) ? prefix : /\A(#{Regexp.escape(prefix.to_s)})/m
   end
 
+  # @param data_set [Qonfig::DataSet]
   # @param settings [Qonfig::Settings]
   # @return [void]
   #
   # @api private
   # @since 0.2.0
-  def call(settings)
+  def call(data_set, settings)
     env_data = extract_env_data
 
     env_based_settings = build_data_set_class(env_data).new.settings

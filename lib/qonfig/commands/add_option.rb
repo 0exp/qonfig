@@ -30,12 +30,13 @@ class Qonfig::Commands::AddOption < Qonfig::Commands::Base
     @value = value
   end
 
+  # @param data_set [Qonfig::DataSet]
   # @param settings [Qonfig::Settings]
   # @return [void]
   #
   # @api private
   # @since 0.1.0
-  def call(settings)
+  def call(data_set, settings)
     settings.__define_setting__(key, value)
   end
 end

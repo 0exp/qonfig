@@ -32,14 +32,14 @@ class Qonfig::Settings
   #
   # @api private
   # @since 0.13.0
-  attr_reader :__callbacks__
+  attr_reader :__mutation_callbacks__
 
   # @api private
   # @since 0.1.0
-  def initialize(__callbacks__)
+  def initialize(__mutation_callbacks__)
     @__options__ = {}
     @__lock__ = Lock.new
-    @__callbacks__ = __callbacks__
+    @__mutation_callbacks__ = __mutation_callbacks__
   end
 
   # @param block [Proc]
@@ -117,8 +117,8 @@ class Qonfig::Settings
   #
   # @api private
   # @since 0.13.0
-  def __invoke_callbacks__
-    __callbacks__.call
+  def __invoke_mutation_callbacks__
+    __mutation_callbacks__.call
   end
 
   # @param key [Symbol, String]
@@ -137,7 +137,7 @@ class Qonfig::Settings
   # @api public
   # @since 0.1.0
   def []=(key, value)
-    __lock__.thread_safe_access { __set_value__(key, value) }.tap { __invoke_callbacks__ }
+    __lock__.thread_safe_access { __set_value__(key, value) }
   end
 
   # @param settings_map [Hash]
@@ -260,7 +260,11 @@ class Qonfig::Settings
   # @api private
   # @since 0.13.0
   def __is_a_setting__(value)
+    # NOTE: simplecov cant cover this line BUT this line is invoked oftenly (wtf?!)
+
+    # :nocov:
     value.is_a?(Qonfig::Settings)
+    # :nocov:
   end
 
   private
@@ -356,6 +360,8 @@ class Qonfig::Settings
     __options__.each_pair do |key, value|
       __is_a_setting__(value) ? value.__clear__ : __options__[key] = nil
     end
+
+    __invoke_mutation_callbacks__
   end
 
   # @param key [String, Symbol]
@@ -404,6 +410,8 @@ class Qonfig::Settings
     end
 
     (__options__[key] = value)
+
+    __invoke_mutation_callbacks__
   end
 
   # @param keys [Array<Symbol, String>]
@@ -557,7 +565,7 @@ class Qonfig::Settings
   # @api private
   # @since 0.13.0
   def __is_a_setting__(value)
-    value.is_a?(Qonfig::Settings) || value.is_a?(Qonfig::Settings::Proxy)
+    value.is_a?(Qonfig::Settings)
   end
 
   # rubocop:disable Layout/ClassS§tructure

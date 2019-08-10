@@ -32,14 +32,16 @@ class Qonfig::Commands::AddNestedOption < Qonfig::Commands::Base
     end
   end
 
+  # @param data_set [Qonfig::DataSet]
   # @param settings [Qonfig::Settings]
   # @return [void]
   #
   # @api private
   # @since 0.1.0
-  def call(settings)
+  def call(data_set, settings)
     nested_settings = nested_data_set_klass.new.settings
 
+    nested_settings.__mutation_callbacks__.add(settings.__mutation_callbacks__)
     settings.__define_setting__(key, nested_settings)
   end
 end
