@@ -31,7 +31,7 @@ class Qonfig::Validator::ProcBased < Qonfig::Validator::Basic
 
       raise(
         Qonfig::ValidationError,
-        "Invalid value of setting <#{setting_key}>: (#{setting_value})"
+        "Invalid value of setting <#{setting_key}> (#{setting_value})"
       ) unless validation.call(setting_value)
     end
   end

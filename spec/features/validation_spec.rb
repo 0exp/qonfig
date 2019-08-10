@@ -299,5 +299,39 @@ describe 'Iteration over setting keys (#each_setting / #deep_each_setting)' do
         end
       end
     end.to raise_error(Qonfig::ValidatorArgumentError)
+
+    class OgoConfig < Qonfig::DataSet
+      setting :telegraf_url, 'a:b/c'
+
+      validate :telegraf_url do |value|
+        value.is_a?(String)
+      end
+    end
+
+    class AgaConfig < Qonfig::DataSet
+      setting :mega_setting, false
+
+      validate 'mega_setting' do |value|
+        value.is_a?(TrueClass) || value.is_a?(FalseClass)
+      end
+    end
+
+    class NuVseConfig < Qonfig::DataSet
+      setting :first_nesting do
+        compose(OgoConfig)
+      end
+
+      setting :second_nesting do
+        compose(AgaConfig)
+      end
+
+      setting :mega_setting, 123
+      setting :telegraf_url, 555
+    end
+
+    # NuVseConfig.new.settings.first_nesting.telegraf_url = 123 срайзит эксепшн,
+    # но в сообщении напишет только telegraf_url-часть ключа, а надо фулл (first_nesting.telegraf_url)
+    # это можн переиграть, если генерировать эксепшны не сразу, а накапливать ошибки, а потом пробеатся
+    # внутрь по ошибкам - собирать ключи-формировывать ключи - и генерить жирный эксепшн :thinking:
   end
 end
