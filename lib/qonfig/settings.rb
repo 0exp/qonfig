@@ -260,8 +260,6 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   # @api private
   # @since 0.13.0
   def __is_a_setting__(value)
-    # NOTE: simplecov cant cover this line BUT this line is invoked oftenly (wtf?!)
-
     value.is_a?(Qonfig::Settings)
   end
 
