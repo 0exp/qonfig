@@ -36,7 +36,7 @@ class Qonfig::Commands::Compose < Qonfig::Commands::Base
     # NOTE: append new validators
     data_set.class.validators.concat(composable_data_set_klass.validators.dup)
 
-    # NOTE: append enw settings
+    # NOTE: append new settings
     composite_settings = composable_data_set_klass.new.settings
     settings.__append_settings__(composite_settings)
   end

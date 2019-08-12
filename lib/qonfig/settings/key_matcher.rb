@@ -54,14 +54,14 @@ class Qonfig::Settings::KeyMatcher
     @pattern_matcher    = build_pattern_matcher(scope_pattern)
   end
 
-  # @param stting_key_pattern [String]
+  # @param setting_key_pattern [String]
   # @return [Boolean]
   #
   # @api private
   # @since 0.13.0
-  def match?(stting_key_pattern)
-    return false unless comparable_event_scopes?(stting_key_pattern)
-    !!pattern_matcher.match(stting_key_pattern)
+  def match?(setting_key_pattern)
+    return false unless comparable_event_scopes?(setting_key_pattern)
+    !!pattern_matcher.match(setting_key_pattern)
   end
 
   private
@@ -98,25 +98,25 @@ class Qonfig::Settings::KeyMatcher
     scope_pattern.split(SCOPE_SPLITTER).size
   end
 
-  # @param stting_key_pattern [String]
+  # @param setting_key_pattern [String]
   # @return [Integer]
   #
   # @api private
   # @since 0.13.0
-  def count_stting_key_pattern_size(stting_key_pattern)
-    stting_key_pattern.split(SCOPE_SPLITTER).size
+  def count_setting_key_pattern_size(setting_key_pattern)
+    setting_key_pattern.split(SCOPE_SPLITTER).size
   end
 
-  # @param stting_key_pattern [String]
+  # @param setting_key_pattern [String]
   # @return [Boolean]
   #
   # @api private
   # @since 0.13.0
-  def comparable_event_scopes?(stting_key_pattern)
+  def comparable_event_scopes?(setting_key_pattern)
     # NOTE: Integer#finite?, Integer#infinite?, Float#finite?, Float#nfinite?
     #   Cant be used (backward compatability with old ruby versions)
     return true if scope_pattern_size == Float::INFINITY
-    scope_pattern_size == count_stting_key_pattern_size(stting_key_pattern)
+    scope_pattern_size == count_setting_key_pattern_size(setting_key_pattern)
   end
 
   # @param pattern [String, NilClass]
