@@ -43,7 +43,7 @@ class Qonfig::Validator::ProcBased < Qonfig::Validator::Basic
   # @since 0.13.0
   def validate_full(data_set)
     unless data_set.instance_eval(&validation)
-      raise(Qonfig::ValidationError, "Invalid config object")
+      raise(Qonfig::ValidationError, 'Invalid config object')
     end
   end
 end

@@ -42,14 +42,12 @@ class Qonfig::Validator::Basic
   #
   # @api private
   # @since 0.13.0
-  def validate_full(data_set)
-  end
+  def validate_full(data_set); end
 
   # @param data_set [Qonfig::DataSet]
   # @return [Any]
   #
   # @api private
   # @since 0.13.0
-  def validate_concrete(data_set)
-  end
+  def validate_concrete(data_set); end
 end

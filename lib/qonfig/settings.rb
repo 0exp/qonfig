@@ -2,8 +2,8 @@
 
 # @api private
 # @since 0.1.0
-# rubocop:disable Metrics/ClassLength
-class Qonfig::Settings
+# rubocop:disable Metrics/ClassLength, Layout/ClassStructure
+class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_METHODS constant
   require_relative 'settings/callbacks'
   require_relative 'settings/lock'
   require_relative 'settings/builder'
@@ -79,7 +79,7 @@ class Qonfig::Settings
   #
   # @api private
   # @since 0.1.0
-  def __define_setting__(key, value)
+  def __define_setting__(key, value) # rubocop:disable Metrics/AbcSize
     __lock__.thread_safe_definition do
       key = __indifferently_accessable_option_key__(key)
 
@@ -262,9 +262,7 @@ class Qonfig::Settings
   def __is_a_setting__(value)
     # NOTE: simplecov cant cover this line BUT this line is invoked oftenly (wtf?!)
 
-    # :nocov:
     value.is_a?(Qonfig::Settings)
-    # :nocov:
   end
 
   private
@@ -559,16 +557,6 @@ class Qonfig::Settings
     KeyGuard.new(key).prevent_core_method_intersection!
   end
 
-  # @param value [Any]
-  # @return [Boolean]
-  #
-  # @api private
-  # @since 0.13.0
-  def __is_a_setting__(value)
-    value.is_a?(Qonfig::Settings)
-  end
-
-  # rubocop:disable Layout/ClassS§tructure
   # @return [Array<String>]
   #
   # @api private
@@ -578,6 +566,5 @@ class Qonfig::Settings
     private_instance_methods(false) |
     %i[super define_singleton_method self]
   ).map(&:to_s).freeze
-  # rubocop:enable Layout/ClassStructure
 end
-# rubocop:enable Metrics/ClassLength
+# rubocop:enable Metrics/ClassLength, Layout/ClassStructure

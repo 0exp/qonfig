@@ -2,7 +2,7 @@
 
 # @api public
 # @since 0.1.0
-class Qonfig::DataSet
+class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   require_relative 'data_set/class_builder'
   require_relative 'data_set/lock'
 
