@@ -21,26 +21,34 @@ require 'qonfig'
 
 ## Usage
 
-- [Definition and Settings Access](#definition-and-access)
-- [Configuration](#configuration)
-- [Inheritance](#inheritance)
-- [Composition](#composition)
-- [Hash representation](#hash-representation)
-- [Iteration over setting keys](#iteration-over-setting-keys) (`#each_setting`, `#deep_each_setting`)
-- [Config reloading](#config-reloading) (reload config definitions and option values)
-- [Clear options](#clear-options) (set to nil)
-- [State freeze](#state-freeze)
-- [Settings as Predicates](#settings-as-predicates)
-- [Load from YAML file](#load-from-yaml-file)
-- [Expose YAML](#expose-yaml) (`Rails`-like environment-based YAML configs)
-- [Load from JSON file](#load-from-json-file)
-- [Load from ENV](#load-from-env)
-- [Load from \_\_END\_\_](#load-from-__end__) (aka `load_from_self`)
-- [Save to JSON file](#save-to-json-file) (`save_to_json`)
-- [Save to YAML file](#save-to-yaml-file) (`save_to_yaml`)
-- [Smart Mixin](#smart-mixin) (`Qonfig::Configurable`)
+- [Definition](#definition)
+  - [Definition and Settings Access](#definition-and-access)
+  - [Configuration](#configuration)
+  - [Inheritance](#inheritance)
+  - [Composition](#composition)
+  - [Hash representation](#hash-representation)
+  - [Smart Mixin](#smart-mixin) (`Qonfig::Configurable`)
+- [Interaction](#interaction)
+  - [Iteration over setting keys](#iteration-over-setting-keys) (`#each_setting`, `#deep_each_setting`)
+  - [Config reloading](#config-reloading) (reload config definitions and option values)
+  - [Clear options](#clear-options) (set to nil)
+  - [State freeze](#state-freeze)
+  - [Settings as Predicates](#settings-as-predicates)
+- [Validation](#validation)
+- [Work with files](#work-with-files)
+  - [Load from YAML file](#load-from-yaml-file)
+  - [Expose YAML](#expose-yaml) (`Rails`-like environment-based YAML configs)
+  - [Load from JSON file](#load-from-json-file)
+  - [Load from ENV](#load-from-env)
+  - [Load from \_\_END\_\_](#load-from-__end__) (aka `load_from_self`)
+  - [Save to JSON file](#save-to-json-file) (`save_to_json`)
+  - [Save to YAML file](#save-to-yaml-file) (`save_to_yaml`)
 - [Plugins](#plugins)
   - [toml](#plugins-toml) (provides `load_from_toml`, `save_to_toml`, `expose_toml`)
+---
+
+## Definition
+
 ---
 
 ### Definition and Access
@@ -275,6 +283,121 @@ Config.new.to_h
 
 ---
 
+### Smart Mixin
+
+- class-level:
+  - `.configuration` - settings definitions;
+  - `.configure` - configuration;
+  - `.config` - config object;
+  - settings definitions are inheritable;
+- instance-level:
+  - `#configure` - configuration;
+  - `#config` - config object;
+  - `#shared_config` - class-level config object;
+
+```ruby
+# --- usage ---
+
+class Application
+  # make configurable
+  include Qonfig::Configurable
+
+  configuration do
+    setting :user
+    setting :password
+  end
+end
+
+app = Application.new
+
+# class-level config
+Application.config.settings.user # => nil
+Application.config.settings.password # => nil
+
+# instance-level config
+app.config.settings.user # => nil
+app.config.settings.password # => nil
+
+# access to the class level config from an instance
+app.shared_config.settings.user # => nil
+app.shared_config.settings.password # => nil
+
+# class-level configuration
+Application.configure do |conf|
+  conf.user = '0exp'
+  conf.password = 'test123'
+end
+
+# instance-level configuration
+app.configure do |conf|
+  conf.user = 'admin'
+  conf.password = '123test'
+end
+
+# class has own config object
+Application.config.settings.user # => '0exp'
+Application.config.settings.password # => 'test123'
+
+# instance has own config object
+app.config.settings.user # => 'admin'
+app.config.settings.password # => '123test'
+
+# access to the class level config from an instance
+app.shared_config.settings.user # => '0exp'
+app.shared_config.settings.password # => 'test123'
+
+# and etc... (all Qonfig-related features)
+```
+
+```ruby
+# --- inheritance ---
+
+class BasicApplication
+  # make configurable
+  include Qonfig::Configurable
+
+  configuration do
+    setting :user
+    setting :pswd
+  end
+
+  configure do |conf|
+    conf.user = 'admin'
+    conf.pswd = 'admin'
+  end
+end
+
+class GeneralApplication < BasicApplication
+  # extend inherited definitions
+  configuration do
+    setting :db do
+      setting :adapter
+    end
+  end
+
+  configure do |conf|
+    conf.user = '0exp' # .user inherited from BasicApplication
+    conf.pswd = '123test' # .pswd inherited from BasicApplication
+    conf.db.adapter = 'pg'
+  end
+end
+
+BasicApplication.config.to_h
+{ 'user' => 'admin', 'pswd' => 'admin' }
+
+GeneralApplication.config.to_h
+{ 'user' => '0exp', 'pswd' => '123test', 'db' => { 'adapter' => 'pg' } }
+
+# and etc... (all Qonfig-related features)
+```
+
+---
+
+
+## Interaction
+
+---
+
 ### Iteration over setting keys
 
 - `#each_setting { |key, value| }`
@@ -464,6 +587,10 @@ config.settings.database.user? # => true ('0exp' => true)
 config.settings.database.host? # => false (false => false)
 config.settings.database.engine.driver? # => true (true => true)
 ```
+
+---
+
+## Work with files
 
 ---
 
@@ -962,116 +1089,6 @@ server:
   port: 12345
 enabled: true
 dynamic: 10
-```
-
----
-
-### Smart Mixin
-
-- class-level:
-  - `.configuration` - settings definitions;
-  - `.configure` - configuration;
-  - `.config` - config object;
-  - settings definitions are inheritable;
-- instance-level:
-  - `#configure` - configuration;
-  - `#config` - config object;
-  - `#shared_config` - class-level config object;
-
-```ruby
-# --- usage ---
-
-class Application
-  # make configurable
-  include Qonfig::Configurable
-
-  configuration do
-    setting :user
-    setting :password
-  end
-end
-
-app = Application.new
-
-# class-level config
-Application.config.settings.user # => nil
-Application.config.settings.password # => nil
-
-# instance-level config
-app.config.settings.user # => nil
-app.config.settings.password # => nil
-
-# access to the class level config from an instance
-app.shared_config.settings.user # => nil
-app.shared_config.settings.password # => nil
-
-# class-level configuration
-Application.configure do |conf|
-  conf.user = '0exp'
-  conf.password = 'test123'
-end
-
-# instance-level configuration
-app.configure do |conf|
-  conf.user = 'admin'
-  conf.password = '123test'
-end
-
-# class has own config object
-Application.config.settings.user # => '0exp'
-Application.config.settings.password # => 'test123'
-
-# instance has own config object
-app.config.settings.user # => 'admin'
-app.config.settings.password # => '123test'
-
-# access to the class level config from an instance
-app.shared_config.settings.user # => '0exp'
-app.shared_config.settings.password # => 'test123'
-
-# and etc... (all Qonfig-related features)
-```
-
-```ruby
-# --- inheritance ---
-
-class BasicApplication
-  # make configurable
-  include Qonfig::Configurable
-
-  configuration do
-    setting :user
-    setting :pswd
-  end
-
-  configure do |conf|
-    conf.user = 'admin'
-    conf.pswd = 'admin'
-  end
-end
-
-class GeneralApplication < BasicApplication
-  # extend inherited definitions
-  configuration do
-    setting :db do
-      setting :adapter
-    end
-  end
-
-  configure do |conf|
-    conf.user = '0exp' # .user inherited from BasicApplication
-    conf.pswd = '123test' # .pswd inherited from BasicApplication
-    conf.db.adapter = 'pg'
-  end
-end
-
-BasicApplication.config.to_h
-{ 'user' => 'admin', 'pswd' => 'admin' }
-
-GeneralApplication.config.to_h
-{ 'user' => '0exp', 'pswd' => '123test', 'db' => { 'adapter' => 'pg' } }
-
-# and etc... (all Qonfig-related features)
 ```
 
 ---
