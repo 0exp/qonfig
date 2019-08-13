@@ -25,7 +25,6 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   # @since 0.1.0
   def initialize(settings_map = {}, &configurations)
     @__lock__ = Qonfig::DataSet::Lock.new
-    @validator = Qonfig::Validator.new(self)
     thread_safe_definition { load!(settings_map, &configurations) }
   end
 
@@ -232,6 +231,14 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     validator.validate!
   end
 
+  # @return [void]
+  #
+  # @api private
+  # @since 0.13.0
+  def build_validator
+    @validator = Qonfig::Validator.new(self)
+  end
+
   # @param settings_map [Hash]
   # @param configurations [Proc]
   # @return [void]
@@ -250,6 +257,7 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   # @api private
   # @since 0.2.0
   def load!(settings_map = {}, &configurations)
+    build_validator
     build_settings
     apply_settings(settings_map, &configurations)
   end

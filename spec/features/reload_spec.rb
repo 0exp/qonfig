@@ -19,19 +19,24 @@ describe 'Config reloading' do
 
     config.configure { |conf| conf.logging = true } # change internal state
 
-    # re-define and append settings
+    # re-define and append settings and validations
     class ReloadableConfig
       setting :db do
         setting :adapter, 'mongoid' # re-define defaults
       end
 
       setting :enable_api, false # append new setting
+
+      validate :logging, :boolean
     end
 
     expect(config.to_h).to match(
       'db' => { 'adapter' => 'postgresql' },
       'logging' => true # internal state has initial value (not a changed previously)
     )
+
+    # new validator is not invoked (logging should be a boolean)
+    expect { config.settings.logging = nil }.not_to raise_error
 
     # reload config settings
     config.reload!
@@ -63,5 +68,8 @@ describe 'Config reloading' do
       'logging' => false,
       'enable_api' => true
     )
+
+    # reload and set invalid options
+    expect { config.reload!(logging: nil) }.to raise_error(Qonfig::ValidationError)
   end
 end
