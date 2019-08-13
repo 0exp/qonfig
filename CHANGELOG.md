@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.13.0] - ????-??-??
+## [Unreleased]
 ### Added
 - Iteration over setting keys (`#each_setting { |key, value| }`, `#deep_each_setting { |key, value| }`);
 - Brand new `Validation API` :);
