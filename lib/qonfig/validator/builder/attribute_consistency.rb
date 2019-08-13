@@ -5,7 +5,7 @@
 class Qonfig::Validator::Builder::AttributeConsistency
   class << self
     # @param setting_key_pattern [String, Symbol, NilClass]
-    # @param predefined_validation_logic [String, Symbol, NilClass]
+    # @param predefined_validator [String, Symbol, NilClass]
     # @param runtime_validation_method [String, Symbol, NilClass]
     # @param validation_logic [Proc, NilClass]
     # @return [void]
@@ -14,13 +14,13 @@ class Qonfig::Validator::Builder::AttributeConsistency
     # @since 0.13.0
     def check!(
       setting_key_pattern,
-      predefined_validation_logic,
+      predefined_validator,
       runtime_validation_method,
       validation_logic
     )
       new(
         setting_key_pattern,
-        predefined_validation_logic,
+        predefined_validator,
         runtime_validation_method,
         validation_logic
       ).check!
@@ -28,7 +28,7 @@ class Qonfig::Validator::Builder::AttributeConsistency
   end
 
   # @param setting_key_pattern [String, Symbol, NilClass]
-  # @param predefined_validation_logic [String, Symbol, NilClass]
+  # @param predefined_validator [String, Symbol, NilClass]
   # @param runtime_validation_method [String, Symbol, NilClass]
   # @param validation_logic [Proc, NilClass]
   # @return [void]
@@ -37,12 +37,12 @@ class Qonfig::Validator::Builder::AttributeConsistency
   # @since 0.13.0
   def initialize(
     setting_key_pattern,
-    predefined_validation_logic,
+    predefined_validator,
     runtime_validation_method,
     validation_logic
   )
     @setting_key_pattern = setting_key_pattern
-    @predefined_validation_logic = predefined_validation_logic
+    @predefined_validator = predefined_validator
     @runtime_validation_method = runtime_validation_method
     @validation_logic = validation_logic
   end
@@ -55,7 +55,7 @@ class Qonfig::Validator::Builder::AttributeConsistency
   # @since 0.13.0
   def check!
     consistent_method_choice!
-    consistent_predefined_validation_logic!
+    consistent_predefined_validator!
     cosnistent_runtime_validation_method!
     consistent_validation_logic!
     consistent_setting_key_pattern!
@@ -73,7 +73,7 @@ class Qonfig::Validator::Builder::AttributeConsistency
   #
   # @api private
   # @since 0.13.0
-  attr_reader :predefined_validation_logic
+  attr_reader :predefined_validator
 
   # @return [String, Symbol, NilClass]
   #
@@ -94,7 +94,7 @@ class Qonfig::Validator::Builder::AttributeConsistency
   # @api private
   # @since 0.13.0
   def consistent_method_choice!
-    unless runtime_validation_method || validation_logic || predefined_validation_logic
+    unless runtime_validation_method || validation_logic || predefined_validator
       raise(
         Qonfig::ValidatorArgumentError,
         'Empty validation (you should provide: dataset method OR proc OR predefined validator)'
@@ -102,7 +102,7 @@ class Qonfig::Validator::Builder::AttributeConsistency
     end
 
     if ((runtime_validation_method && validation_logic) ||
-       (predefined_validation_logic && (runtime_validation_method || validation_logic)))
+       (predefined_validator && (runtime_validation_method || validation_logic)))
       raise(
         Qonfig::ValidatorArgumentError,
         'Incosistent validation (you should use: dataset method OR proc OR predefined validator)'
@@ -116,10 +116,10 @@ class Qonfig::Validator::Builder::AttributeConsistency
   #
   # @api private
   # @since 0.13.0
-  def consistent_predefined_validation_logic!
-    return if predefined_validation_logic.nil?
-    return if predefined_validation_logic.is_a?(Symbol)
-    return if predefined_validation_logic.is_a?(String)
+  def consistent_predefined_validator!
+    return if predefined_validator.nil?
+    return if predefined_validator.is_a?(Symbol)
+    return if predefined_validator.is_a?(String)
 
     raise(
       Qonfig::ValidatorArgumentError,

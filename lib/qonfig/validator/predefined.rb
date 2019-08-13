@@ -27,7 +27,5 @@ module Qonfig::Validator::Predefined
   # @since 0.13.0
   register(:big_decimal) { |value| value.is_a?(BigDecimal) }
   # @since 0.13.0
-  register(:boolean) { |value| value.is_a?(TrueClass) || value.is_a?(FalsClass) }
-  # @since 0.13.0
-  register(:any) { |value| true }
+  register(:boolean) { |value| value.is_a?(TrueClass) || value.is_a?(FalseClass) }
 end

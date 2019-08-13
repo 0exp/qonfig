@@ -19,6 +19,70 @@ describe 'Validation' do
       end.to raise_error(Qonfig::ValidatorArgumentError)
     end
 
+    specify 'fails when you try to use both predefined validator and any validation method' do
+      expect do
+        Class.new(Qonfig::DataSet) do
+          validate '*', :integer do
+            true
+          end
+        end
+      end.to raise_error(Qonfig::ValidatorArgumentError)
+
+      expect do
+        Class.new(Qonfig::DataSet) do
+          validate '*', :integer, by: :check
+        end
+      end.to raise_error(Qonfig::ValidatorArgumentError)
+
+      expect do
+        Class.new(Qonfig::DataSet) do
+          validate '*', :integer, by: :check do
+            true
+          end
+        end
+      end.to raise_error(Qonfig::ValidatorArgumentError)
+    end
+
+    specify 'fails when required predefined validator does not exist' do
+      # NOTE: incorrect name => error
+      expect do
+        Class.new(Qonfig::DataSet) do
+          validate '*', 1923923
+        end
+      end.to raise_error(Qonfig::ValidatorArgumentError)
+
+      # NOTE: nonexistent predefined validator => error
+      expect do
+        Class.new(Qonfig::DataSet) do
+          validate '*', :abracadabra
+        end
+      end.to raise_error(Qonfig::ValidatorArgumentError)
+
+      # NOTE: existent predefined validator => ok
+      expect do
+        Class.new(Qonfig::DataSet) do
+          validate '*', :integer
+          validate '*', :float
+          validate '*', :string
+          validate '*', :symbol
+          validate '*', :numeric
+          validate '*', :hash
+          validate '*', :array
+          validate '*', :big_decimal
+          validate '*', :boolean
+        end
+      end.not_to raise_error
+    end
+
+    specify 'predefned validatiors can be selected by string and symbols' do
+      expect do
+        Class.new(Qonfig::DataSet) do
+          validate 'a', :integer
+          validate 'b', 'integer'
+        end
+      end.not_to raise_error
+    end
+
     specify 'dataset method validation (by:): fails on incorrect method name' do
       expect do
         # NOTE: only strings and symbols are supported
@@ -403,5 +467,50 @@ describe 'Validation' do
       expect { config_klass.new.settings.namespace.enabled = :false }.not_to raise_error
       expect { config_klass.new.settings.go_for_cybersport = 'NO' }.not_to raise_error
     end
+  end
+
+  specify 'predefined validators' do
+    config_klass = Class.new(Qonfig::DataSet) do
+      setting :enabled, false
+      setting :count, 123
+      setting :amount, 23.55
+      setting :adapter, 'sidekiq'
+      setting :switcher, :on
+      setting :data, [1, 2, 3]
+      setting :mappings, a: 1, b: 2
+      setting :age, 20
+
+      validate :enabled, :boolean
+      validate :count, :integer
+      validate :amount, :float
+      validate :adapter, :string
+      validate :switcher, :symbol
+      validate :data, :array
+      validate :mappings, :hash
+      validate :age, :numeric
+    end
+
+    # NOTE: all right (originally)
+    expect { config_klass.new }.not_to raise_error
+
+    # NOTE: invalid values
+    expect { config_klass.new.settings.enabled = nil }.to raise_error(Qonfig::ValidationError)
+    expect { config_klass.new.settings.count = '5' }.to raise_error(Qonfig::ValidationError)
+    expect { config_klass.new.settings.amount = 22 }.to raise_error(Qonfig::ValidationError)
+    expect { config_klass.new.settings.adapter = :resque }.to raise_error(Qonfig::ValidationError)
+    expect { config_klass.new.settings.switcher = 'off' }.to raise_error(Qonfig::ValidationError)
+    expect { config_klass.new.settings.data = {} }.to raise_error(Qonfig::ValidationError)
+    expect { config_klass.new.settings.mappings = [] }.to raise_error(Qonfig::ValidationError)
+    expect { config_klass.new.settings.age = nil }.to raise_error(Qonfig::ValidationError)
+
+    # NOTE: valid values
+    expect { config_klass.new.settings.enabled = true }.not_to raise_error
+    expect { config_klass.new.settings.count = 5 }.not_to raise_error
+    expect { config_klass.new.settings.amount = 22.0 }.not_to raise_error
+    expect { config_klass.new.settings.adapter = 'resque' }.not_to raise_error
+    expect { config_klass.new.settings.switcher = :off }.not_to raise_error
+    expect { config_klass.new.settings.data = [] }.not_to raise_error
+    expect { config_klass.new.settings.mappings = {} }.not_to raise_error
+    expect { config_klass.new.settings.age = 20.1 }.not_to raise_error
   end
 end

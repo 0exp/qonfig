@@ -27,11 +27,11 @@ class Qonfig::Validator::Builder
   #
   # @api private
   # @since 0.13.0
-  NO_PREDEFINED_VALIDATION_LOGIC = nil
+  NO_PREDEFINED_VALIDATOR = nil
 
   class << self
     # @option setting_key_pattern [String, Symbol, NilClass]
-    # @option predefined_validation_logic [String, Symbol, NilClass]
+    # @option predefined_validator [String, Symbol, NilClass]
     # @option runtime_validation_method [String, Symbol, NilClass]
     # @option validation_logic [Proc, NilClass]
     # @return [Qonfig::Validator::MethodBased, Qonfig::Validator::ProcBased]
@@ -42,11 +42,11 @@ class Qonfig::Validator::Builder
       setting_key_pattern: EMPTY_SETTING_KEY_PATTERN,
       runtime_validation_method: NO_RUNTIME_VALIDATION_METHOD,
       validation_logic: NO_VALIDATION_LOGIC,
-      predefined_validation_logic: NO_PREDEFINED_VALIDATION_LOGIC
+      predefined_validator: NO_PREDEFINED_VALIDATOR
     )
       new(
         setting_key_pattern,
-        predefined_validation_logic,
+        predefined_validator,
         runtime_validation_method,
         validation_logic
       ).build
@@ -54,7 +54,7 @@ class Qonfig::Validator::Builder
   end
 
   # @param setting_key_pattern [String, Symbol, NilClass]
-  # @param predefined_validation_logic [String, Symbol, NilClass]
+  # @param predefined_validator [String, Symbol, NilClass]
   # @param runtime_validation_method [String, Symbol, NilClass]
   # @param validation_logic [Proc, NilClass]
   # @return [void]
@@ -63,12 +63,12 @@ class Qonfig::Validator::Builder
   # @since 0.13.0
   def initialize(
     setting_key_pattern,
-    predefined_validation_logic,
+    predefined_validator,
     runtime_validation_method,
     validation_logic
   )
     @setting_key_pattern = setting_key_pattern
-    @predefined_validation_logic = predefined_validation_logic
+    @predefined_validator = predefined_validator
     @runtime_validation_method = runtime_validation_method
     @validation_logic = validation_logic
   end
@@ -94,7 +94,7 @@ class Qonfig::Validator::Builder
   #
   # @api private
   # @since 0.13.0
-  attr_reader :predefined_validation_logic
+  attr_reader :predefined_validator
 
   # @return [String, Symbol, NilClass]
   #
@@ -117,7 +117,7 @@ class Qonfig::Validator::Builder
   def validate_attributes!
     AttributeConsistency.check!(
       setting_key_pattern,
-      predefined_validation_logic,
+      predefined_validator,
       runtime_validation_method,
       validation_logic
     )
@@ -129,9 +129,9 @@ class Qonfig::Validator::Builder
   # @since 0.13.0
   def build_validator
     case
-    when predefined_validation_logic then build_predefined
-    when runtime_validation_method   then build_method_based
-    when validation_logic            then build_proc_based
+    when predefined_validator      then build_predefined
+    when runtime_validation_method then build_method_based
+    when validation_logic          then build_proc_based
     end
   end
 
@@ -164,6 +164,6 @@ class Qonfig::Validator::Builder
   # @api private
   # @since 0.13.0
   def build_predefined
-    Qonfig::Validator::Predefined.build(build_setting_key_matcher, predefined_validation_logic)
+    Qonfig::Validator::Predefined.build(predefined_validator, build_setting_key_matcher)
   end
 end

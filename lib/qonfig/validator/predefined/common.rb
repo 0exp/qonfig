@@ -10,6 +10,7 @@ class Qonfig::Validator::Predefined::Common < Qonfig::Validator::Basic
   attr_reader :validation
 
   # @param setting_key_matcher [Qonfig::Settings::KeyMatcher]
+  # @param validation [Proc]
   # @return [void]
   #
   # @api private
@@ -37,7 +38,16 @@ class Qonfig::Validator::Predefined::Common < Qonfig::Validator::Basic
     end
   end
 
+  # @param data_set [Qonfig::DataSet]
+  # @return [void]
+  #
+  # @raise [Qonfig::ValidationError]
+  #
+  # @api private
+  # @since 0.13.0
   def validate_full(data_set)
-    raise Qonfig::ValidationError, 'Predefined validator should be used only with a setting key'
+    # :nocov:
+    raise Qonfig::Error, 'Predefined validator should be used only with a setting key'
+    # :nocov:
   end
 end

@@ -31,7 +31,7 @@ module Qonfig::Validator::DSL
   end
 
   # @param setting_key_pattern [String, Symbol, NilClass]
-  # @option with [String, Symbol]
+  # @option predefined [String, Symbol]
   # @option by [String, Symbol, NilClass]
   # @param custom_validation [Proc]
   # @return [void]
@@ -40,10 +40,10 @@ module Qonfig::Validator::DSL
   #
   # @api private
   # @since 0.13.0
-  def validate(setting_key_pattern = nil, with: nil, by: nil, &custom_validation)
+  def validate(setting_key_pattern = nil, predefined = nil, by: nil, &custom_validation)
     validators << Qonfig::Validator::Builder.build(
       setting_key_pattern: setting_key_pattern,
-      predefined_validation_logic: with,
+      predefined_validator: predefined,
       runtime_validation_method: by,
       validation_logic: custom_validation
     )
