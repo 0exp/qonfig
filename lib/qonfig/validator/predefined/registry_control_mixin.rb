@@ -26,7 +26,7 @@ module Qonfig::Validator::Predefined::RegistryControlMixin
   #
   # @api private
   # @since 0.13.0
-  def register(name, &validation)
+  def predefine(name, &validation)
     registry.register(name, &validation)
   end
 
