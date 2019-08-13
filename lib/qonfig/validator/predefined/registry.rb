@@ -26,7 +26,7 @@ class Qonfig::Validator::Predefined::Registry
 
       raise(
         Qonfig::ValidatorArgumentError,
-        "Predefined validator with name '#{name} already exists."
+        "Predefined validator with name '#{name}' already exists."
       ) if validators.key?(name)
 
       validators[name] = validation
@@ -48,7 +48,7 @@ class Qonfig::Validator::Predefined::Registry
       rescue KeyError
         raise(
           Qonfig::ValidatorArgumentError,
-          "Predefined validator with name '#{name}'' does not exist."
+          "Predefined validator with name '#{name}' does not exist."
         )
       end
       # rubocop:enable Style/RedundantBegin
@@ -63,7 +63,7 @@ class Qonfig::Validator::Predefined::Registry
   # @since 0.13.0
   attr_reader :validators
 
-  # @param name [String]
+  # @param name [String, Symbol]
   # @return [String]
   #
   # @api private

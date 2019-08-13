@@ -31,7 +31,7 @@ module Qonfig::Validator::DSL
   end
 
   # @param setting_key_pattern [String, Symbol, NilClass]
-  # @option predefined [String, Symbol]
+  # @param predefined [String, Symbol]
   # @option by [String, Symbol, NilClass]
   # @param custom_validation [Proc]
   # @return [void]

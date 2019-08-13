@@ -4,7 +4,6 @@
 # @since 0.2.0
 module Qonfig::Settings::Builder
   class << self
-    # @param commands [Qonfig::CommandSet]
     # @param data_set [Qonfig::DataSet]
     # @return [Qonfig::Settings]
     #
