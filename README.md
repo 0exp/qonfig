@@ -599,7 +599,7 @@ If you want to check the config object completely you can define a custom valida
 
 **Features**:
 
-- is invoked on any mutation of any setting key
+- validation is invoked on any mutation of any setting:
   - during dataset instantiation;
   - when assigning new values;
   - when calling `#reload!`;
