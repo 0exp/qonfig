@@ -1,8 +1,8 @@
 # Qonfig &middot; [![Gem Version](https://badge.fury.io/rb/qonfig.svg)](https://badge.fury.io/rb/qonfig) [![Build Status](https://travis-ci.org/0exp/qonfig.svg?branch=master)](https://travis-ci.org/0exp/qonfig) [![Coverage Status](https://coveralls.io/repos/github/0exp/qonfig/badge.svg?branch=master)](https://coveralls.io/github/0exp/qonfig?branch=master)
 
 Config. Defined as a class. Used as an instance. Support for inheritance and composition.
-Lazy instantiation. Thread-safe. Command-style DSL. Validation layer. Support for YAML, TOML, JSON, __END__, ENV.
-Extremely simple to define. Extremely simple to use. That's all? NOT. :)
+Lazy instantiation. Thread-safe. Command-style DSL. Validation layer. Support for **YAML**, **TOML**, **JSON**, **\__END\__**, **ENV**.
+Extremely simple to define. Extremely simple to use. That's all? **NOT** :)
 
 ## Installation
 
@@ -36,6 +36,7 @@ require 'qonfig'
   - [State freeze](#state-freeze)
   - [Settings as Predicates](#settings-as-predicates)
 - [Validation](#validation)
+  - [Key search pattern](#key-search-pattern)
   - [Proc-based validation](#proc-based-validation)
   - [Method-based validation](#method-based-validation)
   - [Predefined validations](#predefined-validations)
@@ -52,8 +53,6 @@ require 'qonfig'
 ---
 
 ## Definition
-
----
 
 ### Definition and Access
 
@@ -597,11 +596,11 @@ config.settings.database.engine.driver? # => true (true => true)
 ## Validation
 
 Qonfig provides a lightweight DSL for defining validations and works in all cases when setting values are initialized or mutated.
-Settings are validated as keys (matched with a specific string pattern).
+Settings are validated as keys (matched with a [specific string pattern](#key-search-patern)).
 You can validate both a set of keys and each key separately.
 If you want to check the config object completely you can define a custom validation.
 
-Features:
+**Features**:
 
 - is invoked on any mutation of any setting key
   - during dataset instantiation;
@@ -609,10 +608,10 @@ Features:
   - when calling `#reload!`;
   - when calling `#clear!`;
 
-- provides special key search pattern for matching setting key names;
-- uses the key search pattern for definging what the setting key should be validated;
+- provides special [key search pattern](#key-search-pattern) for matching setting key names;
+- uses the [key search pattern](#key-search-pattern) for definging what the setting key should be validated;
 - you can define your own custom validation logic and validate dataset instance completely;
-- validation logic should return truthy or falsy value;
+- validation logic should return **truthy** or **falsy** value;
 
 - supprots two validation techniques (**proc-based** and **dataset-method-based**)
   - **proc-based** (`setting validation`)
@@ -660,6 +659,10 @@ Features:
   - `module`
   - `not_nil`
 
+---
+
+### Key search pattern
+
 **Key search pattern** works according to the following rules:
 
 - works in `RabbitMQ`-like key pattern ruleses;
@@ -679,7 +682,7 @@ Features:
 
 ---
 
-#### Proc-based validation
+### Proc-based validation
 
 - your proc should return truthy value or falsy value;
 - how to validate setting keys:
@@ -846,8 +849,6 @@ config.settings.ignorance = nil # => Qonfig::ValidationError (cant be nil)
 ---
 
 ## Work with files
-
----
 
 ### Load from YAML file
 
