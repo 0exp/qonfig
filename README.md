@@ -593,7 +593,7 @@ config.settings.database.engine.driver? # => true (true => true)
 ## Validation
 
 Qonfig provides a lightweight DSL for defining validations and works in all cases when setting values are initialized or mutated.
-Settings are validated as keys (matched with a [specific string pattern](#key-search-patern)).
+Settings are validated as keys (matched with a [specific string pattern](#key-search-pattern)).
 You can validate both a set of keys and each key separately.
 If you want to check the config object completely you can define a custom validation.
 
