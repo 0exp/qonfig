@@ -814,6 +814,7 @@ config.settings.enabled = nil # => Qonfig::ValidationError (should be a boolean)
   - `:boolean`
   - `:class`
   - `:module`
+  - `:proc`
 
 ```ruby
 class Config < Qonfig::DataSet
