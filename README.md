@@ -396,10 +396,7 @@ GeneralApplication.config.to_h
 
 ---
 
-
 ## Interaction
-
----
 
 ### Iteration over setting keys
 
