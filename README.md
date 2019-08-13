@@ -598,18 +598,15 @@ You can validate both a set of keys and each key separately.
 If you want to check the config object completely you can define a custom validation.
 
 **Features**:
-
 - validation is invoked on any mutation of any setting:
   - during dataset instantiation;
   - when assigning new values;
   - when calling `#reload!`;
   - when calling `#clear!`;
-
 - provides special [key search pattern](#key-search-pattern) for matching setting key names;
 - uses the [key search pattern](#key-search-pattern) for definging what the setting key should be validated;
 - you can define your own custom validation logic and validate dataset instance completely;
 - validation logic should return **truthy** or **falsy** value;
-
 - supprots two validation techniques (**proc-based** and **dataset-method-based**)
   - **proc-based** (`setting validation`)
     ```ruby
@@ -639,7 +636,6 @@ If you want to check the config object completely you can define a custom valida
         settings.user == User[1]
       end
     ```
-
 - provides a set of standard validations:
   - `integer`
   - `float`
