@@ -2,12 +2,15 @@
 
 # @api public
 # @since 0.1.0
-class Qonfig::DataSet
+class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   require_relative 'data_set/class_builder'
-  require_relative 'data_set/validator'
+  require_relative 'data_set/lock'
 
   # @since 0.1.0
   extend Qonfig::DSL
+
+  # @since 0.13.0
+  extend Qonfig::Validator::DSL
 
   # @return [Qonfig::Settings]
   #
@@ -15,16 +18,14 @@ class Qonfig::DataSet
   # @since 0.1.0
   attr_reader :settings
 
-  # @param options_map [Hash]
+  # @param settings_map [Hash]
   # @param configurations [Proc]
   #
   # @api public
   # @since 0.1.0
-  def initialize(options_map = {}, &configurations)
-    @__access_lock__ = Mutex.new
-    @__definition_lock__ = Mutex.new
-
-    thread_safe_definition { load!(options_map, &configurations) }
+  def initialize(settings_map = {}, &configurations)
+    @__lock__ = Qonfig::DataSet::Lock.new
+    thread_safe_definition { load!(settings_map, &configurations) }
   end
 
   # @return [void]
@@ -43,7 +44,7 @@ class Qonfig::DataSet
     thread_safe_access { settings.__is_frozen__ }
   end
 
-  # @param options_map [Hash]
+  # @param settings_map [Hash]
   # @param configurations [Proc]
   # @return [void]
   #
@@ -51,22 +52,21 @@ class Qonfig::DataSet
   #
   # @api public
   # @since 0.2.0
-  def reload!(options_map = {}, &configurations)
+  def reload!(settings_map = {}, &configurations)
     thread_safe_definition do
       raise Qonfig::FrozenSettingsError, 'Frozen config can not be reloaded' if frozen?
-      load!(options_map, &configurations)
+      load!(settings_map, &configurations)
     end
   end
 
-  # @param options_map [Hash]
+  # @param settings_map [Hash]
   # @return [void]
   #
   # @api public
   # @since 0.1.0
-  def configure(options_map = {})
+  def configure(settings_map = {}, &configurations)
     thread_safe_access do
-      settings.__apply_values__(options_map)
-      yield(settings) if block_given?
+      apply_settings(settings_map, &configurations)
     end
   end
 
@@ -172,25 +172,94 @@ class Qonfig::DataSet
     thread_safe_access { settings.__clear__ }
   end
 
+  # @param block [Proc]
+  # @return [Enumerable]
+  #
+  # @yield [setting_key, setting_value]
+  # @yieldparam setting_key [String]
+  # @yieldparam setting_value [Object]
+  #
+  # @api public
+  # @since 0.13.0
+  def each_setting(&block)
+    thread_safe_access { settings.__each_setting__(&block) }
+  end
+
+  # @param block [Proc]
+  # @return [Enumerable]
+  #
+  # @yield [setting_key, setting_value]
+  # @yieldparam setting_key [String]
+  # @yieldparam setting_value [Object]
+  #
+  # @api public
+  # @since 0.13.0
+  def deep_each_setting(&block)
+    thread_safe_access { settings.__deep_each_setting__(&block) }
+  end
+
+  # @return [Boolean]
+  #
+  # @api public
+  # @since 0.13.0
+  def valid?
+    thread_safe_access { validator.valid? }
+  end
+
+  # @return [void]
+  #
+  # @api public
+  # @since 0.13.0
+  def validate!
+    thread_safe_access { validator.validate! }
+  end
+
   private
 
-  # @return [Qonfig::Settings]
+  # @return [Qonfig::Validator]
+  #
+  # @api private
+  # @since 0.13.0
+  attr_reader :validator
+
+  # @return [void]
   #
   # @api private
   # @since 0.2.0
   def build_settings
-    Qonfig::Settings::Builder.build(self.class.commands.dup)
+    @settings = Qonfig::Settings::Builder.build(self)
+    validator.validate!
   end
 
-  # @param options_map [Hash]
+  # @return [void]
+  #
+  # @api private
+  # @since 0.13.0
+  def build_validator
+    @validator = Qonfig::Validator.new(self)
+  end
+
+  # @param settings_map [Hash]
+  # @param configurations [Proc]
+  # @return [void]
+  #
+  # @api private
+  # @since 0.13.0
+  def apply_settings(settings_map = {}, &configurations)
+    settings.__apply_values__(settings_map)
+    yield(settings) if block_given?
+  end
+
+  # @param settings_map [Hash]
   # @param configurations [Proc]
   # @return [void]
   #
   # @api private
   # @since 0.2.0
-  def load!(options_map = {}, &configurations)
-    @settings = build_settings
-    configure(options_map, &configurations)
+  def load!(settings_map = {}, &configurations)
+    build_validator
+    build_settings
+    apply_settings(settings_map, &configurations)
   end
 
   # @param instructions [Proc]
@@ -199,7 +268,7 @@ class Qonfig::DataSet
   # @api private
   # @since 0.2.0
   def thread_safe_access(&instructions)
-    @__access_lock__.synchronize(&instructions)
+    @__lock__.thread_safe_access(&instructions)
   end
 
   # @param instructions [Proc]
@@ -208,6 +277,6 @@ class Qonfig::DataSet
   # @api private
   # @since 0.2.0
   def thread_safe_definition(&instructions)
-    @__definition_lock__.synchronize(&instructions)
+    @__lock__.thread_safe_definition(&instructions)
   end
 end

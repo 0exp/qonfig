@@ -60,12 +60,13 @@ class Qonfig::Commands::ExposeYAML < Qonfig::Commands::Base
     @env       = env
   end
 
+  # @param data_set [Qonfig::DataSet]
   # @param settings [Qonfig::Settings]
   # @return [void]
   #
   # @api private
   # @since 0.7.0
-  def call(settings)
+  def call(data_set, settings)
     case via
     when EXPOSERS[:file_name]
       expose_file_name!(settings)

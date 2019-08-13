@@ -25,12 +25,13 @@ class Qonfig::Commands::LoadFromJSON < Qonfig::Commands::Base
     @strict = strict
   end
 
+  # @param data_set [Qonfig::DataSet]
   # @param settings [Qonfig::Settings]
   # @return [void]
   #
   # @api private
   # @since 0.5.0
-  def call(settings)
+  def call(data_set, settings)
     json_data = Qonfig::Loaders::JSON.load_file(file_path, fail_on_unexist: strict)
 
     raise(

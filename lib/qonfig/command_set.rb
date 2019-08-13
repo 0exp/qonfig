@@ -3,12 +3,18 @@
 # @api private
 # @since 0.1.0
 class Qonfig::CommandSet
+  # @api private
+  # @since 0.13.0
+  include Enumerable
+
   # @return [Array<Qonfig::Commands::Base>]
   #
   # @api private
   # @since 0.1.0
   attr_reader :commands
 
+  # @return [void]
+  #
   # @api private
   # @since 0.1.0
   def initialize
@@ -57,7 +63,7 @@ class Qonfig::CommandSet
   private
 
   # @param block [Proc]
-  # @return [Object]
+  # @return [Any]
   #
   # @api private
   # @since 0.2.0

@@ -25,6 +25,7 @@ class Qonfig::Commands::LoadFromYAML < Qonfig::Commands::Base
     @strict = strict
   end
 
+  # @param data_set [Qonfig::DataSet]
   # @param settings [Qonfig::Settings]
   # @return [void]
   #
@@ -32,7 +33,7 @@ class Qonfig::Commands::LoadFromYAML < Qonfig::Commands::Base
   #
   # @api private
   # @since 0.2.0
-  def call(settings)
+  def call(data_set, settings)
     yaml_data = Qonfig::Loaders::YAML.load_file(file_path, fail_on_unexist: strict)
 
     raise(

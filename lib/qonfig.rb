@@ -10,6 +10,7 @@ module Qonfig
   require_relative 'qonfig/uploaders'
   require_relative 'qonfig/commands'
   require_relative 'qonfig/command_set'
+  require_relative 'qonfig/validator'
   require_relative 'qonfig/settings'
   require_relative 'qonfig/dsl'
   require_relative 'qonfig/data_set'

@@ -25,12 +25,13 @@ class Qonfig::Commands::LoadFromTOML < Qonfig::Commands::Base
     @strict = strict
   end
 
+  # @param data_set [Qonfig::DataSet]
   # @param settings [Qonfig::Settings]
   # @return [void]
   #
   # @api private
   # @since 0.12.0
-  def call(settings)
+  def call(data_set, settings)
     toml_data = Qonfig::Loaders::TOML.load_file(file_path, fail_on_unexist: strict)
     toml_based_settings = build_data_set_class(toml_data).new.settings
     settings.__append_settings__(toml_based_settings)

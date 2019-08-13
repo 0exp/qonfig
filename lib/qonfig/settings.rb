@@ -2,11 +2,13 @@
 
 # @api private
 # @since 0.1.0
-# rubocop:disable Metrics/ClassLength
-class Qonfig::Settings
+# rubocop:disable Metrics/ClassLength, Layout/ClassStructure
+class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_METHODS constant
+  require_relative 'settings/callbacks'
   require_relative 'settings/lock'
   require_relative 'settings/builder'
   require_relative 'settings/key_guard'
+  require_relative 'settings/key_matcher'
 
   # @return [Proc]
   #
@@ -26,11 +28,49 @@ class Qonfig::Settings
   # @since 0.1.0
   attr_reader :__options__
 
+  # @return [Qonfig::Settings::Callbacks]
+  #
+  # @api private
+  # @since 0.13.0
+  attr_reader :__mutation_callbacks__
+
   # @api private
   # @since 0.1.0
-  def initialize
+  def initialize(__mutation_callbacks__)
     @__options__ = {}
     @__lock__ = Lock.new
+    @__mutation_callbacks__ = __mutation_callbacks__
+  end
+
+  # @param block [Proc]
+  # @return [Enumerable]
+  #
+  # @yield [key, value]
+  # @yieldparam key [String]
+  # @yieldparam value [Object]
+  #
+  # @api private
+  # @since 0.13.0
+  def __each_setting__(&block)
+    __lock__.thread_safe_access do
+      __each_key_value_pair__(&block)
+    end
+  end
+
+  # @param initial_setting_key [String, NilClass]
+  # @param block [Proc]
+  # @return [Enumerable]
+  #
+  # @yield [key, value]
+  # @yieldparam key [String]
+  # @yieldparam value [Object]
+  #
+  # @api private
+  # @since 0.13.0
+  def __deep_each_setting__(initial_setting_key = nil, &block)
+    __lock__.thread_safe_access do
+      __deep_each_key_value_pair__(initial_setting_key, &block)
+    end
   end
 
   # @param key [Symbol, String]
@@ -39,7 +79,7 @@ class Qonfig::Settings
   #
   # @api private
   # @since 0.1.0
-  def __define_setting__(key, value)
+  def __define_setting__(key, value) # rubocop:disable Metrics/AbcSize
     __lock__.thread_safe_definition do
       key = __indifferently_accessable_option_key__(key)
 
@@ -48,13 +88,15 @@ class Qonfig::Settings
       case
       when !__options__.key?(key)
         __options__[key] = value
-      when __options__[key].is_a?(Qonfig::Settings) && value.is_a?(Qonfig::Settings)
+      when __is_a_setting__(__options__[key]) && __is_a_setting__(value)
         __options__[key].__append_settings__(value)
       else
         __options__[key] = value
       end
 
-      __define_accessor__(key)
+      __define_option_reader__(key)
+      __define_option_writer__(key)
+      __define_option_predicate__(key)
     end
   end
 
@@ -69,6 +111,14 @@ class Qonfig::Settings
         __define_setting__(key, value)
       end
     end
+  end
+
+  # @return [void]
+  #
+  # @api private
+  # @since 0.13.0
+  def __invoke_mutation_callbacks__
+    __mutation_callbacks__.call
   end
 
   # @param key [Symbol, String]
@@ -90,13 +140,13 @@ class Qonfig::Settings
     __lock__.thread_safe_access { __set_value__(key, value) }
   end
 
-  # @param options_map [Hash]
+  # @param settings_map [Hash]
   # @return [void]
   #
   # @api private
   # @since 0.3.0
-  def __apply_values__(options_map)
-    __lock__.thread_safe_access { __set_values_from_map__(options_map) }
+  def __apply_values__(settings_map)
+    __lock__.thread_safe_access { __set_values_from_map__(settings_map) }
   end
 
   # @param keys [Array<String, Symbol>]
@@ -191,7 +241,7 @@ class Qonfig::Settings
       __options__.freeze
 
       __options__.each_value do |value|
-        value.__freeze__ if value.is_a?(Qonfig::Settings)
+        value.__freeze__ if __is_a_setting__(value)
       end
     end
   end
@@ -204,6 +254,15 @@ class Qonfig::Settings
     __lock__.thread_safe_access { __options__.frozen? }
   end
 
+  # @param value [Any]
+  # @return [Boolean]
+  #
+  # @api private
+  # @since 0.13.0
+  def __is_a_setting__(value)
+    value.is_a?(Qonfig::Settings)
+  end
+
   private
 
   # @return [Qonfig::Settings::Lock]
@@ -212,7 +271,47 @@ class Qonfig::Settings
   # @since 0.2.0
   attr_reader :__lock__
 
-  # @param options_map [Hash]
+  # @param block [Proc]
+  # @return [Enumerable]
+  #
+  # @yield [setting_key, setting_value]
+  # @yieldparam key [String]
+  # @yieldparam value [Object]
+  #
+  # @api private
+  # @since 0.13.0
+  def __each_key_value_pair__(&block)
+    __options__.each_pair(&block)
+  end
+
+  # @param initial_setting_key [String, NilClass]
+  # @param block [Proc]
+  # @return [Enumerable]
+  #
+  # @yield [setting_key, setting_value]
+  # @yieldparam setting_key [String]
+  # @yieldparam setting_value [Object]
+  #
+  # @api private
+  # @since 0.13.0
+  def __deep_each_key_value_pair__(initial_setting_key = nil, &block)
+    enumerator = Enumerator.new do |yielder|
+      __each_key_value_pair__ do |setting_key, setting_value|
+        final_setting_key =
+          initial_setting_key ? "#{initial_setting_key}.#{setting_key}" : setting_key
+
+        if __is_a_setting__(setting_value)
+          setting_value.__deep_each_setting__(final_setting_key, &block)
+        else
+          yielder.yield(final_setting_key, setting_value)
+        end
+      end
+    end
+
+    block_given? ? enumerator.each(&block) : enumerator
+  end
+
+  # @param settings_map [Hash]
   # @return [void]
   #
   # @raise [Qonfig::ArgumentError]
@@ -220,21 +319,21 @@ class Qonfig::Settings
   #
   # @api private
   # @since 0.3.0
-  def __set_values_from_map__(options_map)
+  def __set_values_from_map__(settings_map)
     ::Kernel.raise(
       Qonfig::ArgumentError, 'Options map should be represented as a hash'
-    ) unless options_map.is_a?(Hash)
+    ) unless settings_map.is_a?(Hash)
 
-    options_map.each_pair do |key, value|
+    settings_map.each_pair do |key, value|
       current_value = __get_value__(key)
 
       # NOTE: some duplications here was made only for the better code readability
       case
-      when !current_value.is_a?(Qonfig::Settings)
+      when !__is_a_setting__(current_value)
         __set_value__(key, value)
-      when current_value.is_a?(Qonfig::Settings) && value.is_a?(Hash)
+      when __is_a_setting__(current_value) && value.is_a?(Hash)
         current_value.__apply_values__(value)
-      when current_value.is_a?(Qonfig::Settings) && !value.is_a?(Hash)
+      when __is_a_setting__(current_value) && !value.is_a?(Hash)
         ::Kernel.raise(
           Qonfig::AmbiguousSettingValueError,
           "Can not redefine option <#{key}> that contains nested options"
@@ -255,12 +354,10 @@ class Qonfig::Settings
     ) if __options__.frozen?
 
     __options__.each_pair do |key, value|
-      if value.is_a?(Qonfig::Settings)
-        value.__clear__
-      else
-        __options__[key] = nil
-      end
+      __is_a_setting__(value) ? value.__clear__ : __options__[key] = nil
     end
+
+    __invoke_mutation_callbacks__
   end
 
   # @param key [String, Symbol]
@@ -301,14 +398,16 @@ class Qonfig::Settings
       ::Kernel.raise(Qonfig::FrozenSettingsError, 'Can not modify frozen settings')
     end
 
-    if __options__[key].is_a?(Qonfig::Settings)
+    if __is_a_setting__(__options__[key])
       ::Kernel.raise(
         Qonfig::AmbiguousSettingValueError,
         "Can not redefine option <#{key}> that contains nested options"
       )
     end
 
-    __options__[key] = value
+    (__options__[key] = value)
+
+    __invoke_mutation_callbacks__
   end
 
   # @param keys [Array<Symbol, String>]
@@ -328,12 +427,12 @@ class Qonfig::Settings
     case
     when rest_keys.empty?
       result
-    when !result.is_a?(Qonfig::Settings)
+    when !__is_a_setting__(result)
       ::Kernel.raise(
         Qonfig::UnknownSettingError,
         'Setting with required digging sequence does not exist!'
       )
-    when result.is_a?(Qonfig::Settings)
+    when __is_a_setting__(result)
       result.__dig__(*rest_keys)
     end
   end
@@ -350,7 +449,7 @@ class Qonfig::Settings
     {}.tap do |result|
       __deep_access__(*keys).tap do |setting|
         required_key = __indifferently_accessable_option_key__(keys.last)
-        result[required_key] = setting.is_a?(Qonfig::Settings) ? setting.__to_h__ : setting
+        result[required_key] = __is_a_setting__(setting) ? setting.__to_h__ : setting
       end
     end
   end
@@ -386,7 +485,7 @@ class Qonfig::Settings
           transform_key: transform_key,
           transform_value: transform_value
         )
-      when value.is_a?(Qonfig::Settings)
+      when __is_a_setting__(value)
         hash[final_key] = value.__to_hash__(
           transform_key: transform_key,
           transform_value: transform_value
@@ -402,16 +501,30 @@ class Qonfig::Settings
   # @return [void]
   #
   # @api private
-  # @since 0.1.0
-  def __define_accessor__(key)
+  # @since 0.13.0
+  def __define_option_reader__(key)
     define_singleton_method(key) do
       self.[](key)
     end
+  end
 
+  # @param key [Symbol, String]
+  # @return [void]
+  #
+  # @api private
+  # @since 0.13.0
+  def __define_option_writer__(key)
     define_singleton_method("#{key}=") do |value|
       self.[]=(key, value)
     end
+  end
 
+  # @param key [Symbol, String]
+  # @return [void]
+  #
+  # @api private
+  # @since 0.13.0
+  def __define_option_predicate__(key)
     define_singleton_method("#{key}?") do
       !!self.[](key)
     end
@@ -442,7 +555,6 @@ class Qonfig::Settings
     KeyGuard.new(key).prevent_core_method_intersection!
   end
 
-  # rubocop:disable Layout/ClassStructure
   # @return [Array<String>]
   #
   # @api private
@@ -452,6 +564,5 @@ class Qonfig::Settings
     private_instance_methods(false) |
     %i[super define_singleton_method self]
   ).map(&:to_s).freeze
-  # rubocop:enable Layout/ClassStructure
 end
-# rubocop:enable Metrics/ClassLength
+# rubocop:enable Metrics/ClassLength, Layout/ClassStructure
