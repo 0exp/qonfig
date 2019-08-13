@@ -590,6 +590,10 @@ config.settings.database.engine.driver? # => true (true => true)
 
 ---
 
+## Validation
+
+---
+
 ## Work with files
 
 ---
