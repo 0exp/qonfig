@@ -34,7 +34,7 @@ class Qonfig::Validator::ProcBased < Qonfig::Validator::Basic
       raise(
         Qonfig::ValidationError,
         "Invalid value of setting <#{setting_key}> (#{setting_value})"
-      ) unless validation.call(setting_value)
+      ) unless data_set.instance_exec(setting_value, &validation)
     end
   end
 
