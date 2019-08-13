@@ -35,6 +35,9 @@ require 'qonfig'
   - [State freeze](#state-freeze)
   - [Settings as Predicates](#settings-as-predicates)
 - [Validation](#validation)
+  - [Proc-based validation](#proc-based-validation)
+  - [Method-based validation](#method-based-validation)
+  - [Predefined validations](#predefined-validations)
 - [Work with files](#work-with-files)
   - [Load from YAML file](#load-from-yaml-file)
   - [Expose YAML](#expose-yaml) (`Rails`-like environment-based YAML configs)
@@ -591,6 +594,253 @@ config.settings.database.engine.driver? # => true (true => true)
 ---
 
 ## Validation
+
+Qonfig provides a lightweight DSL for defining validations and works in all cases when setting values are initialized or mutated.
+Settings are validated as keys (matched with a specific string pattern).
+You can validate both a set of keys and each key separately.
+If you want to check the config object completely you can define a custom validation.
+
+Features:
+
+- is invoked on any mutation of any setting key
+  - during dataset instantiation;
+  - when assigning new values;
+  - when calling `#reload!`;
+  - when calling `#clear!`;
+
+- provides special key search pattern for matching setting key names;
+- uses the key search pattern for definging what the setting key should be validated;
+- you can define your own custom validation logic and validate dataset instance completely;
+- validation logic should return truthy or falsy value;
+
+- supprots two validation techniques (**proc-based** and **dataset-method-based**)
+  - **proc-based** (`setting validation`)
+    ```ruby
+      validate 'db.user' do |value|
+        value.is_a?(String)
+      end
+    ```
+  - **proc-based** (`dataset validation`)
+    ```ruby
+      validate do
+        settings.user == User[1]
+      end
+    ```
+  - **dataset-method-based** (`setting validation`)
+    ```ruby
+      validate 'db.user', by: :check_user
+
+      def check_user(value)
+        value.is_a?(String)
+      end
+    ```
+  - **dataset-method-based** (`dataset validation`)
+    ```ruby
+      validate by: :check_config
+
+      def check_config
+        settings.user == User[1]
+      end
+    ```
+
+- provides a set of standard validations:
+  - `integer`
+  - `float`
+  - `numeric`
+  - `big_decimal`
+  - `boolean`
+  - `string`
+  - `symbol`
+  - `text` (string or symbol)
+  - `array`
+  - `hash`
+  - `proc`
+  - `class`
+  - `module`
+  - `not_nil`
+
+**Key search pattern** works according to the following rules:
+
+- works in `RabbitMQ`-like key pattern ruleses;
+- has a string format;
+- nested configs are defined by a set of keys separated by `.`-symbol;
+- if the setting key name at the current nesting level does not matter - use `*`;
+- if both the setting key name and nesting level does not matter - use `#`
+- examples:
+  - `db.settings.user` - matches to `db.settings.user` setting;
+  - `db.settings.*` - matches to all setting keys inside `db.settings` group of settings;
+  - `db.*.user` - matches to all `user` setting keys at the first level of `db` group of settings;
+  - `#.user` - matches to all `user` setting keys;
+  - `service.#.password` - matches to all `password` setting keys at all levels of `service` group of settings;
+  - `#` - matches to ALL setting keys;
+  - `*` - matches to all setting keys at the root level;
+  - and etc;
+
+---
+
+#### Proc-based validation
+
+- your proc should return truthy value or falsy value;
+- how to validate setting keys:
+  - define proc with attribute: `validate 'your.setting.path' do |value|; end`
+  - proc will receive setting value;
+- how to validate dataset instance:
+  - define proc without setting key pattern: `validate do; end`
+
+```ruby
+class Config < Qonfig::DataSet
+  setting :db do
+    setting :user, 'D@iVeR'
+    setting :password, 'test123'
+  end
+
+  setting :service do
+    setting :address, 'google.ru'
+    setting :protocol, 'https'
+
+    setting :creds do
+      seting :admin, 'D@iVeR'
+    end
+  end
+
+  setting :enabled, false
+
+  # validates:
+  #   - db.password
+  validate 'db.password' do |value|
+    value.is_a?(String)
+  end
+
+  # validates:
+  #   - service.address
+  #   - service.protocol
+  #   - service.creds.user
+  validate 'service.#' do |value|
+    value.is_a?(String)
+  end
+
+  # validates:
+  #   - dataset instance
+  validate do # NOTE: no setting key pattern
+    settings.enabled == false
+  end
+end
+
+config = Config.new
+config.settings.db.password = 123 # => Qonfig::ValidationError (should be a string)
+config.settings.service.address = 123 # => Qonfig::ValidationError (should be a string)
+config.settings.service.protocol = :http # => Qonfig::ValidationError (should be a string)
+config.settings.service.creds.admin = :billikota # => Qonfig::ValidationError (should be a string)
+config.settings.enabled = true # => Qonfig::ValidationError (isnt `true`)
+```
+
+---
+
+### Method-based validation
+
+- method should return truthy value or falsy value;
+- how to validate setting keys:
+  - define validation: `validate 'db.*.user', by: :your_custom_method`;
+  - define your method with attribute: `def your_custom_method(setting_value); end`
+- how to validate config instance
+  - define validation: `validate by: :your_custom_method`
+  - define your method without attributes: `def your_custom_method; end`
+
+```ruby
+class Config < Qonfig::DataSet
+  setting :services do
+    setting :counts do
+      setting :google, 2
+      setting :rambler, 3
+    end
+
+    setting :minimals do
+      setting :google, 1
+      setting :rambler, 0
+    end
+  end
+
+  setting :enabled, true
+
+  # validates:
+  #   - services.counts.google
+  #   - services.counts.rambler
+  #   - services.minimals.google
+  #   - services.minimals.rambler
+  validate 'services.#', by: :check_presence
+
+  # validates:
+  #   - dataset instance
+  validate by: :check_state # NOTE: no setting key pattern
+
+  def check_presence(value)
+    value.is_a?(Numeric) && value > 0
+  end
+
+  def check_state
+    settings.enabled.is_a?(TrueClass) || settings.enabled.is_a?(FalseClass)
+  end
+end
+
+config = Config.new
+
+config.settings.counts.google = 0 # => Qonfig::ValidationError (< 0)
+config.settings.counts.rambler = nil # => Qonfig::ValidationError (should be a numeric)
+config.settings.minimals.google = -1 # => Qonfig::ValidationError (< 0)
+config.settings.minimals.rambler = 'no' # => Qonfig::ValidationError (should be a numeric)
+config.settings.enabled = nil # => Qonfig::ValidationError (should be a boolean)
+```
+
+---
+
+### Predefined validations
+
+- DSL: `validate 'key.pattern', :predefned_validator`
+- predefined validators:
+  - `:not_nil`
+  - `:integer`
+  - `:float`
+  - `:numeric`
+  - `:big_decimal`
+  - `:array`
+  - `:hash`
+  - `:string`
+  - `:symbol`
+  - `:text` (`string` or `symbol`)
+  - `:boolean`
+  - `:class`
+  - `:module`
+
+```ruby
+class Config < Qonfig::DataSet
+  setting :user
+  setting :password
+
+  setting :service do
+    setting :provider
+    setting :protocol
+    setting :on_fail, -> { puts 'atata!' }
+  end
+
+  setting :ignorance, false
+
+  validate 'user', :string
+  validate 'password', :string
+  validate 'service.provider', :text
+  validate 'service.protocol', :text
+  validate 'service.on_fail', :proc
+  validate 'ignorance', :not_nil
+end
+
+config = Config.new do |conf|
+  conf.user = 'D@iVeR'
+  conf.password = 'test123'
+  conf.service.provider = :google
+  conf.service.protocol = :https
+end # NOTE: all right :)
+
+config.settings.ignorance = nil # => Qonfig::ValidationError (cant be nil)
+```
 
 ---
 

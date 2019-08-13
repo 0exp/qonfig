@@ -21,6 +21,8 @@ module Qonfig::Validator::Predefined
   # @since 0.13.0
   predefine(:symbol) { |value| value.is_a?(Symbol) }
   # @since 0.13.0
+  predefine(:text) { |value| value.is_a?(Symbol) || value.is_a?(String) }
+  # @since 0.13.0
   predefine(:array) { |value| value.is_a?(Array) }
   # @since 0.13.0
   predefine(:hash) { |value| value.is_a?(Hash) }
@@ -28,4 +30,12 @@ module Qonfig::Validator::Predefined
   predefine(:big_decimal) { |value| value.is_a?(BigDecimal) }
   # @since 0.13.0
   predefine(:boolean) { |value| value.is_a?(TrueClass) || value.is_a?(FalseClass) }
+  # @since 0.13.0
+  predefine(:proc) { |value| value.is_a?(Proc) }
+  # @since 0.13.0
+  predefine(:class) { |value| value.is_a?(Class) }
+  # @since 0.13.0
+  predefine(:module) { |value| value.is_a?(Module) }
+  # @since 0.13.0
+  predefine(:not_nil) { |value| !value.nil? }
 end
