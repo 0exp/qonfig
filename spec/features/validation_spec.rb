@@ -404,6 +404,28 @@ describe 'Validation' do
       expect { config_klass.new.settings.port = 5599 }.not_to raise_error
     end
 
+    specify 'proc-based validation wokrs inside dataset instance context' do
+      config_klass = Class.new(Qonfig::DataSet) do
+        setting :some_key, 555
+
+        validate 'some_key' do |value|
+          value > some_method
+        end
+
+        def some_method
+          123
+        end
+      end
+
+      # NOTE: all right (originally)
+      expect { config_klass.new }.not_to raise_error
+
+      # NOTE: invalid value
+      expect { config_klass.new(some_key: 122) }.to raise_error(Qonfig::ValidationError)
+      # NOTE: valid value
+      expect { config_klass.new(some_key: 1234) }.not_to raise_error
+    end
+
     specify 'setting key validation by custom method defined directly on dataset' do
       config_klass = Class.new(Qonfig::DataSet) do
         setting :db do
