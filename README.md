@@ -1110,11 +1110,8 @@ Qonfig.plugin(:toml)
 
 ## Roadmap
 
-- explicit "settings" object;
-- validation layer;
 - distributed configuration server;
 - support for Rails-like secrets;
-- "back-to-top" links;
 
 ## Contributing
 

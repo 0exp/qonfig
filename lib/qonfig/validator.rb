@@ -8,6 +8,7 @@ class Qonfig::Validator
   require_relative 'validator/proc_based'
   require_relative 'validator/builder'
   require_relative 'validator/collection'
+  require_relative 'validator/predefined'
   require_relative 'validator/dsl'
 
   # @param data_set [Qonfig::DataSet]
