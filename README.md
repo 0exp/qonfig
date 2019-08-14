@@ -50,6 +50,7 @@ require 'qonfig'
   - [Save to YAML file](#save-to-yaml-file) (`save_to_yaml`)
 - [Plugins](#plugins)
   - [toml](#plugins-toml) (provides `load_from_toml`, `save_to_toml`, `expose_toml`)
+- [Roadmap](#roadmap)
 ---
 
 ## Definition
