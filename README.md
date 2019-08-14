@@ -406,6 +406,7 @@ GeneralApplication.config.to_h
   - iterates over all setting keys (deep inside);
   - key object is represented as a string of `.`-joined keys;
 
+
 ```ruby
 class Config < Qonfig::DataSet
   setting :db do
@@ -421,16 +422,24 @@ class Config < Qonfig::DataSet
 end
 
 config = Config.new
+```
 
-# 1. #each_setting
+#### .each_setting
+
+```ruby
 config.each_setting { |key, value| { key => value } }
+
 # result of each step:
 { 'db' => <Qonfig::Settings:0x00007ff8> }
 { 'telegraf_url' => 'udp://localhost:8094' }
 { 'telegraf_prefix' => 'test' }
+```
 
-# 2. #deep_each_setting
+#### .deep_each_setting
+
+```ruby
 config.deep_each_setting { |key, value| { key => value } }
+
 # result of each step:
 { 'db.creds.user' => 'D@iveR' }
 { 'db.creds.password' => 'test123' }
