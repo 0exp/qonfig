@@ -404,7 +404,7 @@ GeneralApplication.config.to_h
   - iterates over the root setting keys;
 - `#deep_each_setting { |key, value| }`
   - iterates over all setting keys (deep inside);
-  - key object is represented as a string of `.`-joined keys;
+  - key object is represented as a string of `.`-joined setting key names;
 
 
 ```ruby
