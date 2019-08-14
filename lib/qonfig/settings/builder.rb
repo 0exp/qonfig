@@ -25,9 +25,10 @@ module Qonfig::Settings::Builder
     # @api private
     # @since 0.13.0
     def build_mutation_callbacks(data_set)
+      validation_callback = proc { data_set.validate! }
+
       Qonfig::Settings::Callbacks.new.tap do |callbacks|
-        # NOTE: validation callbacks
-        callbacks.add(proc { data_set.validate! })
+        callbacks.add(validation_callback)
       end
     end
   end

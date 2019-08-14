@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+### Changed
+- `Qonfig::Settings::Callbacks` is thread safe now;
+- Minor refactorings;
+
 ## [0.13.0] - 2019-08-13
 ### Added
 - Iteration over setting keys (`#each_setting { |key, value| }`, `#deep_each_setting { |key, value| }`);

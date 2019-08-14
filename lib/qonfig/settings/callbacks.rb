@@ -13,6 +13,7 @@ class Qonfig::Settings::Callbacks
   # @since 0.13.0
   def initialize
     @callbacks = []
+    @lock = Mutex.new
   end
 
   # @return [void]
@@ -20,7 +21,7 @@ class Qonfig::Settings::Callbacks
   # @api private
   # @since 0.13.0
   def call
-    callbacks.each(&:call)
+    thread_safe { callbacks.each(&:call) }
   end
 
   # @param callback [Proc, Qonfig::Settings::Callbacks, #call]
@@ -29,9 +30,8 @@ class Qonfig::Settings::Callbacks
   # @api private
   # @since 0.13.0
   def add(callback)
-    callbacks << callback
+    thread_safe { callbacks << callback }
   end
-  attr_reader :callback
 
   private
 
@@ -40,4 +40,12 @@ class Qonfig::Settings::Callbacks
   # @api private
   # @since 0.13.0
   attr_reader :callbacks
+
+  # @return [Any]
+  #
+  # @api private
+  # @since 0.14.0
+  def thread_safe(&block)
+    @lock.owned? ? yield : @lock.synchronize(&block)
+  end
 end
