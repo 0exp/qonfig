@@ -811,12 +811,12 @@ config.settings.enabled = nil # => Qonfig::ValidationError (should be a boolean)
 
 ```ruby
 class Config < Qonfig::DataSet
-  setting :user
-  setting :password
+  setting :user, 'empty'
+  setting :password, 'empty'
 
   setting :service do
-    setting :provider
-    setting :protocol
+    setting :provider, :empty
+    setting :protocol, :empty
     setting :on_fail, -> { puts 'atata!' }
   end
 
