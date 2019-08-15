@@ -646,8 +646,11 @@ If you want to check the config object completely you can define a custom valida
         settings.user == User[1]
       end
     ```
-- provides a set of standard validations ([doc](#predefined-validations)]:
-  - DSL: `validate 'key.pattern', :predefned_validator`;
+- provides a set of standard validations ([doc](#predefined-validations)):
+  - DSL:
+    ```ruby
+      validate 'key.pattern', :predefned_validator
+    ```
   - validators:
     - `integer`
     - `float`
