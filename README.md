@@ -617,7 +617,7 @@ If you want to check the config object completely you can define a custom valida
 - uses the [key search pattern](#key-search-pattern) for definging what the setting key should be validated;
 - you can define your own custom validation logic and validate dataset instance completely;
 - validation logic should return **truthy** or **falsy** value;
-- supprots two validation techniques (**proc-based** and **dataset-method-based**)
+- supprots two validation techniques (**proc-based** ([doc](#proc-based-validation)) and **dataset-method-based** ([doc](#method-based-validation))):
   - **proc-based** (`setting validation`)
     ```ruby
       validate 'db.user' do |value|
@@ -646,21 +646,23 @@ If you want to check the config object completely you can define a custom valida
         settings.user == User[1]
       end
     ```
-- provides a set of standard validations:
-  - `integer`
-  - `float`
-  - `numeric`
-  - `big_decimal`
-  - `boolean`
-  - `string`
-  - `symbol`
-  - `text` (string or symbol)
-  - `array`
-  - `hash`
-  - `proc`
-  - `class`
-  - `module`
-  - `not_nil`
+- provides a set of standard validations ([doc](#predefined-validations)]:
+  - DSL: `validate 'key.pattern', :predefned_validator`;
+  - validators:
+    - `integer`
+    - `float`
+    - `numeric`
+    - `big_decimal`
+    - `boolean`
+    - `string`
+    - `symbol`
+    - `text` (string or symbol)
+    - `array`
+    - `hash`
+    - `proc`
+    - `class`
+    - `module`
+    - `not_nil`
 
 ---
 
