@@ -36,6 +36,7 @@ require 'qonfig'
   - [State freeze](#state-freeze)
   - [Settings as Predicates](#settings-as-predicates)
 - [Validation](#validation)
+  - [Introduction](#introdaction)
   - [Key search pattern](#key-search-pattern)
   - [Proc-based validation](#proc-based-validation)
   - [Method-based validation](#method-based-validation)
@@ -601,6 +602,14 @@ config.settings.database.engine.driver? # => true (true => true)
 ---
 
 ## Validation
+
+- [Introduction](#introduction)
+- [Key Search Pattern](#key-search-pattern)
+- [Proc-based validation](#proc-based-validation)
+- [Method-based validation](#method-based-validation)
+- [Predefined validations](#predefined-validations)
+
+### Introduction
 
 Qonfig provides a lightweight DSL for defining validations and works in all cases when setting values are initialized or mutated.
 Settings are validated as keys (matched with a [specific string pattern](#key-search-pattern)).
