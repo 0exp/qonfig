@@ -63,6 +63,8 @@ require 'qonfig'
 - [Hash representation](#hash-representation)
 - [Smart Mixin](#smart-mixin) (`Qonfig::Configurable`)
 
+---
+
 ### Definition and Access
 
 ```ruby
@@ -413,6 +415,8 @@ GeneralApplication.config.to_h
 - [State freeze](#state-freeze)
 - [Settings as Predicates](#settings-as-predicates)
 
+---
+
 ### Iteration over setting keys
 
 - `#each_setting { |key, value| }`
@@ -621,6 +625,8 @@ config.settings.database.engine.driver? # => true (true => true)
 - [Proc-based validation](#proc-based-validation)
 - [Method-based validation](#method-based-validation)
 - [Predefined validations](#predefined-validations)
+
+---
 
 ### Introduction
 
@@ -885,6 +891,8 @@ config.settings.ignorance = nil # => Qonfig::ValidationError (cant be nil)
 - [Load from \_\_END\_\_](#load-from-__end__) (aka `load_from_self`)
 - [Save to JSON file](#save-to-json-file) (`save_to_json`)
 - [Save to YAML file](#save-to-yaml-file) (`save_to_yaml`)
+
+---
 
 ### Load from YAML file
 
