@@ -56,6 +56,13 @@ require 'qonfig'
 
 ## Definition
 
+- [Definition and Settings Access](#definition-and-access)
+- [Configuration](#configuration)
+- [Inheritance](#inheritance)
+- [Composition](#composition)
+- [Hash representation](#hash-representation)
+- [Smart Mixin](#smart-mixin) (`Qonfig::Configurable`)
+
 ### Definition and Access
 
 ```ruby
@@ -399,6 +406,12 @@ GeneralApplication.config.to_h
 ---
 
 ## Interaction
+
+- [Iteration over setting keys](#iteration-over-setting-keys) (`#each_setting`, `#deep_each_setting`)
+- [Config reloading](#config-reloading) (reload config definitions and option values)
+- [Clear options](#clear-options) (set to nil)
+- [State freeze](#state-freeze)
+- [Settings as Predicates](#settings-as-predicates)
 
 ### Iteration over setting keys
 
@@ -864,6 +877,14 @@ config.settings.ignorance = nil # => Qonfig::ValidationError (cant be nil)
 ---
 
 ## Work with files
+
+- [Load from YAML file](#load-from-yaml-file)
+- [Expose YAML](#expose-yaml) (`Rails`-like environment-based YAML configs)
+- [Load from JSON file](#load-from-json-file)
+- [Load from ENV](#load-from-env)
+- [Load from \_\_END\_\_](#load-from-__end__) (aka `load_from_self`)
+- [Save to JSON file](#save-to-json-file) (`save_to_json`)
+- [Save to YAML file](#save-to-yaml-file) (`save_to_yaml`)
 
 ### Load from YAML file
 
@@ -1373,6 +1394,10 @@ Qonfig.plugins # => array of strings
 # --- load specific plugin ---
 Qonfig.plugin(:plugin_name) # or Qonfig.plugin('plugin_name')
 ```
+
+Provided plugins:
+
+- [toml](#plugins-toml) (provides `load_from_toml`, `save_to_toml`, `expose_toml`)
 
 ---
 
