@@ -1211,6 +1211,7 @@ config.settings['RUN_CI'] # => '1'
 ### Load from \_\_END\_\_
 
 - aka `load_from_self`
+- works with `YAML` format;
 
 ```ruby
 class Config < Qonfig::DataSet
