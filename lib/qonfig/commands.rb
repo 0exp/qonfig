@@ -12,4 +12,6 @@ module Qonfig::Commands
   require_relative 'commands/load_from_self'
   require_relative 'commands/load_from_env'
   require_relative 'commands/expose_yaml'
+  require_relative 'commands/expose_json'
+  require_relative 'commands/expose_self'
 end

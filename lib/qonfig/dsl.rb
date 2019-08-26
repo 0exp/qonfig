@@ -119,4 +119,28 @@ module Qonfig::DSL
   def expose_yaml(file_path, strict: true, via:, env:)
     commands << Qonfig::Commands::ExposeYAML.new(file_path, strict: strict, via: via, env: env)
   end
+
+  # @param file_path [String]
+  # @option strict [Boolean]
+  # @option via [Symbol]
+  # @option env [Symbol, String]
+  # @return [void]
+  #
+  # @api public
+  # @since 0.14.0
+  def expose_json(file_path, strict: true, via:, env:)
+    commands << Qonfig::Commands::ExposeJSON.new(file_path, strict: strict, via: via, env: env)
+  end
+
+  # @option env [Symbol, String]
+  # @return [void]
+  #
+  # @see Qonfig::Commands::LoadFromSelf
+  #
+  # @api public
+  # @since 0.14.0
+  def expose_self(env:)
+    caller_location = caller(1, 1).first
+    commands << Qonfig::Commands::ExposeSelf.new(caller_location, env: env)
+  end
 end
