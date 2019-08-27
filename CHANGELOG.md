@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Added
+- `expose_json`
+  - a command that provides an ability to define config settings by loading them from a json file
+    where the concrete settings depends on the chosen environment;
+  - works in `expose_yaml` manner;
+- `expose_self`
+  - a command that provides an ability to define config settings by loading them from the current file
+    where `__END__` instruction is defined (concrete settings dependes on the chosen environment);
 ### Changed
 - `Qonfig::Settings::Callbacks` is thread safe now;
 - Minor refactorings;

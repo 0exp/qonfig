@@ -45,8 +45,10 @@ require 'qonfig'
   - [Load from YAML file](#load-from-yaml-file)
   - [Expose YAML](#expose-yaml) (`Rails`-like environment-based YAML configs)
   - [Load from JSON file](#load-from-json-file)
+  - [Expose JSON](#expose-json) (`Rails`-like environment-based JSON configs)
   - [Load from ENV](#load-from-env)
   - [Load from \_\_END\_\_](#load-from-__end__) (aka `load_from_self`)
+  - [Expose \_\_END\_\_](#expose-self) (aka `expose_self`; `Rails`-like environment-based **\_\_END\_\_** configs)
   - [Save to JSON file](#save-to-json-file) (`save_to_json`)
   - [Save to YAML file](#save-to-yaml-file) (`save_to_yaml`)
 - [Plugins](#plugins)
@@ -887,8 +889,10 @@ config.settings.ignorance = nil # => Qonfig::ValidationError (cant be nil)
 - [Load from YAML file](#load-from-yaml-file)
 - [Expose YAML](#expose-yaml) (`Rails`-like environment-based YAML configs)
 - [Load from JSON file](#load-from-json-file)
+- [Expose JSON](#expose-json) (`Rails`-like environment-based JSON configs)
 - [Load from ENV](#load-from-env)
 - [Load from \_\_END\_\_](#load-from-__end__) (aka `load_from_self`)
+- [Expose \_\_END\_\_](#expose-self) (aka `expose_self`; `Rails`-like environment-based **\_\_END\_\_** configs)
 - [Save to JSON file](#save-to-json-file) (`save_to_json`)
 - [Save to YAML file](#save-to-yaml-file) (`save_to_yaml`)
 
@@ -1140,6 +1144,10 @@ Config.new.to_h # => { "nonexistent_json" => {}, "another_key" => nil }
 
 ---
 
+### Expose JSON
+
+---
+
 ### Load from ENV
 
 - `:convert_values` (`false` by default):
@@ -1247,6 +1255,10 @@ connection_timeout:
   seconds: 10
   enabled: false
 ```
+
+---
+
+### Expose \_\_END\_\_
 
 ---
 
