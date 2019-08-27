@@ -13,3 +13,7 @@ AllCops:
     - qonfig.gemspec
     - bin/console
     - bin/rspec
+
+# NOTE: for code clarity in tests
+RSpec/LeakyConstantDeclaration:
+  Enabled: false

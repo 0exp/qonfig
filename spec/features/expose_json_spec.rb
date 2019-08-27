@@ -160,7 +160,7 @@ describe 'Expose JSON file' do
         expect { CompatibleEnvBasedJSONConfig.new }.not_to raise_error
       end
 
-      specify' fails when json structure is represented as a non-hash-like data in the root' do
+      specify 'fails when json structure is represented as a non-hash-like data in the root' do
         # NOTE:
         #  - file: spec/fixtures/expose_json/incompatible_root_structure.json
         #  - in the root: array
