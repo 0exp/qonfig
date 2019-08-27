@@ -27,6 +27,7 @@ All notable changes to this project will be documented in this file.
 - Support for **TOML** (`.toml`) format
   - realized as a plugin (`Qonfig.plugin(:toml)`);
   - provides `#save_to_toml`, `#load_from_toml`, `#expose_toml` methods and works in `#*_yaml`-like manner);
+  - depends on `gem toml-rb (>= 1)`
 - Custom `bin/rspec` command:
   - `bin/rspec -n` - run tests without plugin tests;
   - `bin/rspec -w` - run all tests;
