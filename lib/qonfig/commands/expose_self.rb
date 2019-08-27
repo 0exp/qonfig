@@ -53,7 +53,7 @@ class Qonfig::Commands::ExposeSelf < Qonfig::Commands::Base
       'YAML content should have a hash-like structure'
     ) unless yaml_data_slice.is_a?(Hash)
 
-    yaml_based_settings = build_data_set_class(yaml_data_slice).new.settings
+    yaml_based_settings = build_data_set_klass(yaml_data_slice).new.settings
     settings.__append_settings__(yaml_based_settings)
   end
 

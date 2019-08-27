@@ -33,7 +33,7 @@ class Qonfig::Commands::LoadFromTOML < Qonfig::Commands::Base
   # @since 0.12.0
   def call(data_set, settings)
     toml_data = Qonfig::Loaders::TOML.load_file(file_path, fail_on_unexist: strict)
-    toml_based_settings = build_data_set_class(toml_data).new.settings
+    toml_based_settings = build_data_set_klass(toml_data).new.settings
     settings.__append_settings__(toml_based_settings)
   end
 
@@ -44,7 +44,7 @@ class Qonfig::Commands::LoadFromTOML < Qonfig::Commands::Base
   #
   # @api private
   # @since 0.12.0
-  def build_data_set_class(toml_data)
+  def build_data_set_klass(toml_data)
     Qonfig::DataSet::ClassBuilder.build_from_hash(toml_data)
   end
 end

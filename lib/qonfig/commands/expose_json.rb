@@ -97,7 +97,7 @@ class Qonfig::Commands::ExposeJSON < Qonfig::Commands::Base
     realfile = dirname.join(envfile).to_s
 
     json_data = load_json_data(realfile)
-    json_based_settings = build_data_set_class(json_data).new.settings
+    json_based_settings = build_data_set_klass(json_data).new.settings
 
     settings.__append_settings__(json_based_settings)
   end
@@ -127,7 +127,7 @@ class Qonfig::Commands::ExposeJSON < Qonfig::Commands::Base
       'JSON content should have a hash-like structure'
     ) unless json_data_slice.is_a?(Hash)
 
-    json_based_settings = build_data_set_class(json_data_slice).new.settings
+    json_based_settings = build_data_set_klass(json_data_slice).new.settings
 
     settings.__append_settings__(json_based_settings)
   end
@@ -154,7 +154,7 @@ class Qonfig::Commands::ExposeJSON < Qonfig::Commands::Base
   #
   # @api private
   # @since 0.14.0
-  def build_data_set_class(json_data)
+  def build_data_set_klass(json_data)
     Qonfig::DataSet::ClassBuilder.build_from_hash(json_data)
   end
 end
