@@ -2,6 +2,16 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Added
+- `expose_json`
+  - a command that provides an ability to define config settings by loading them from a json file
+    where the concrete settings depends on the chosen environment;
+  - works in `expose_yaml` manner;
+- `expose_self`
+  - a command that provides an ability to define config settings by loading them from the current file
+    where `__END__` instruction is defined (concrete settings dependes on the chosen environment);
+  - works with `YAML` format;
+
 ### Changed
 - `Qonfig::Settings::Callbacks` is thread safe now;
 - Minor refactorings;
@@ -19,6 +29,7 @@ All notable changes to this project will be documented in this file.
 - Support for **TOML** (`.toml`) format
   - realized as a plugin (`Qonfig.plugin(:toml)`);
   - provides `#save_to_toml`, `#load_from_toml`, `#expose_toml` methods and works in `#*_yaml`-like manner);
+  - depends on `gem toml-rb (>= 1)`
 - Custom `bin/rspec` command:
   - `bin/rspec -n` - run tests without plugin tests;
   - `bin/rspec -w` - run all tests;

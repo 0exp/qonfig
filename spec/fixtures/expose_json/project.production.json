@@ -1,0 +1,7 @@
+{
+  "api_mode_enabled": true,
+  "logging": true,
+  "db_driver": "rom",
+  "throttle_requests": true,
+  "credentials": {}
+}

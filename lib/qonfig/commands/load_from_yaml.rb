@@ -41,7 +41,7 @@ class Qonfig::Commands::LoadFromYAML < Qonfig::Commands::Base
       'YAML content should have a hash-like structure'
     ) unless yaml_data.is_a?(Hash)
 
-    yaml_based_settings = build_data_set_class(yaml_data).new.settings
+    yaml_based_settings = build_data_set_klass(yaml_data).new.settings
 
     settings.__append_settings__(yaml_based_settings)
   end
@@ -53,7 +53,7 @@ class Qonfig::Commands::LoadFromYAML < Qonfig::Commands::Base
   #
   # @api private
   # @since 0.2.0
-  def build_data_set_class(yaml_data)
+  def build_data_set_klass(yaml_data)
     Qonfig::DataSet::ClassBuilder.build_from_hash(yaml_data)
   end
 end

@@ -1,0 +1,30 @@
+{
+  "development": {
+    "api_mode_enabled": true,
+    "logging": false,
+    "db_driver": "sequel",
+    "throttle_requests": false,
+    "credentials": {}
+  },
+  "test": {
+    "api_mode_enabled": true,
+    "logging": false,
+    "db_driver": "in_memory",
+    "throttle_requests": false,
+    "credentials": {}
+  },
+  "staging": {
+    "api_mode_enabled": true,
+    "logging": true,
+    "db_driver": "active_record",
+    "throttle_requests": true,
+    "credentials": {}
+  },
+  "production": {
+    "api_mode_enabled": true,
+    "logging": true,
+    "db_driver": "rom",
+    "throttle_requests": true,
+    "credentials": {}
+  }
+}

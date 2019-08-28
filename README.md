@@ -45,8 +45,10 @@ require 'qonfig'
   - [Load from YAML file](#load-from-yaml-file)
   - [Expose YAML](#expose-yaml) (`Rails`-like environment-based YAML configs)
   - [Load from JSON file](#load-from-json-file)
+  - [Expose JSON](#expose-json) (`Rails`-like environment-based JSON configs)
   - [Load from ENV](#load-from-env)
   - [Load from \_\_END\_\_](#load-from-__end__) (aka `load_from_self`)
+  - [Expose \_\_END\_\_](#expose-__end__) (aka `expose_self`)
   - [Save to JSON file](#save-to-json-file) (`save_to_json`)
   - [Save to YAML file](#save-to-yaml-file) (`save_to_yaml`)
 - [Plugins](#plugins)
@@ -887,8 +889,10 @@ config.settings.ignorance = nil # => Qonfig::ValidationError (cant be nil)
 - [Load from YAML file](#load-from-yaml-file)
 - [Expose YAML](#expose-yaml) (`Rails`-like environment-based YAML configs)
 - [Load from JSON file](#load-from-json-file)
+- [Expose JSON](#expose-json) (`Rails`-like environment-based JSON configs)
 - [Load from ENV](#load-from-env)
 - [Load from \_\_END\_\_](#load-from-__end__) (aka `load_from_self`)
+- [Expose \_\_END\_\_](#expose-__end__) (aka `expose_self`)
 - [Save to JSON file](#save-to-json-file) (`save_to_json`)
 - [Save to YAML file](#save-to-yaml-file) (`save_to_yaml`)
 
@@ -1140,6 +1144,120 @@ Config.new.to_h # => { "nonexistent_json" => {}, "another_key" => nil }
 
 ---
 
+### Expose JSON
+
+- load configurations from JSON file in Rails-like manner (with environments);
+- works in `load_from_jsom`/`expose_yaml` manner;
+- `via:` - how an environment will be determined:
+    - `:file_name`
+        - load configuration from JSON file that have an `:env` part in it's name;
+    - `:env_key`
+        - load configuration from JSON file;
+        - concrete configuration should be defined in the root key with `:env` name;
+- `env:` - your environment name (must be a type of `String`, `Symbol` or `Numeric`);
+- `strict:` - requires the existence of the file and/or key with the name of the used environment:
+    - `true`:
+        - file should exist;
+        - root key with `:env` name should exist (if `via: :env_key` is used);
+        - raises `Qonfig::ExposeError` if file does not contain the required env key (if `via: :env` key is used);
+        - raises `Qonfig::FileNotFoundError` if the required file does not exist;
+    - `false`:
+        - file is not required;
+        - root key with `:env` name is not required (if `via: :env_key` is used);
+
+#### Environment is defined as a root key of JSON file
+
+```json
+// config/project.json
+
+{
+  "development": {
+    "api_mode_enabled": true,
+    "logging": false,
+    "db_driver": "sequel",
+    "throttle_requests": false,
+    "credentials": {}
+  },
+  "test": {
+    "api_mode_enabled": true,
+    "logging": false,
+    "db_driver": "in_memory",
+    "throttle_requests": false,
+    "credentials": {}
+  },
+  "staging": {
+    "api_mode_enabled": true,
+    "logging": true,
+    "db_driver": "active_record",
+    "throttle_requests": true,
+    "credentials": {}
+  },
+  "production": {
+    "api_mode_enabled": true,
+    "logging": true,
+    "db_driver": "rom",
+    "throttle_requests": true,
+    "credentials": {}
+  }
+}
+```
+
+```ruby
+class Config < Qonfig::DataSet
+  expose_json 'config/project.json', via: :env_key, env: :production # load from production env
+
+  # NOTE: in rails-like application you can use this:
+  expose_json 'config/project.json', via: :env_key, env: Rails.env
+end
+
+config = Config.new
+
+config.settings.api_mode_enabled # => true (from :production subset of keys)
+config.settings.logging # => true (from :production subset of keys)
+config.settings.db_driver # => "rom" (from :production subset of keys)
+config.settings.throttle_requests # => true (from :production subset of keys)
+config.settings.credentials # => {} (from :production subset of keys)
+```
+
+#### Environment is defined as a part of JSON file name
+
+```json
+// config/sidekiq.staging.json
+{
+  "web": {
+    "username": "staging_admin",
+    "password": "staging_password"
+  }
+}
+```
+
+```json
+// config/sidekiq.production.json
+{
+  "web": {
+    "username": "urj1o2",
+    "password": "u192jd0ixz0"
+  }
+}
+```
+
+```ruby
+class SidekiqConfig < Qonfig::DataSet
+  # NOTE: file name should be described WITHOUT environment part (in file name attribute)
+  expose_json 'config/sidekiq.json', via: :file_name, env: :staging # load from staging env
+
+  # NOTE: in rails-like application you can use this:
+  expose_json 'config/sidekiq.json', via: :file_name, env: Rails.env
+end
+
+config = SidekiqConfig.new
+
+config.settings.web.username # => "staging_admin" (from sidekiq.staging.json)
+config.settings.web.password # => "staging_password" (from sidekiq.staging.json)
+```
+
+---
+
 ### Load from ENV
 
 - `:convert_values` (`false` by default):
@@ -1211,6 +1329,7 @@ config.settings['RUN_CI'] # => '1'
 ### Load from \_\_END\_\_
 
 - aka `load_from_self`
+- works with `YAML` format;
 
 ```ruby
 class Config < Qonfig::DataSet
@@ -1245,6 +1364,57 @@ api_host: super.puper-google.com
 connection_timeout:
   seconds: 10
   enabled: false
+```
+
+---
+
+### Expose \_\_END\_\_
+
+- aka `expose_self`;
+- works in `expose_json` and `expose_yaml` manner, but with `__END__` instruction of the current file;
+- `env:` - your environment name (must be a type of `String`, `Symbol` or `Numeric`);
+- works with `YAML` format;
+
+```ruby
+class Config < Qonfig::DataSet
+  expose_self env: :production
+
+  # NOTE: for Rails-like applications you can use this:
+  expose_self env: Rails.env
+end
+
+config = Config.new
+
+config.settings.log # => true (from :production environment)
+config.settings.api_enabled # => true (from :production environment)
+config.settings.creds.user # => "D@iVeR" (from :production environment)
+config.settings.creds.password # => "test123" (from :production environment)
+
+__END__
+default: &default
+  log: false
+  api_enabled: true
+  creds:
+    user: admin
+    password: 1234
+
+development:
+  <<: *default
+  log: true
+
+test:
+  <<: *default
+  log: false
+
+staging:
+  <<: *default
+
+production:
+  <<: *default
+  log: true
+  creds:
+    user: D@iVeR
+    password: test123
 ```
 
 ---

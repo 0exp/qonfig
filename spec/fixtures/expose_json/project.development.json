@@ -1,0 +1,7 @@
+{
+  "api_mode_enabled": true,
+  "logging": false,
+  "db_driver": "sequel",
+  "throttle_requests": false,
+  "credentials": {}
+}
