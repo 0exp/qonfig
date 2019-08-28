@@ -14,9 +14,10 @@ Gem::Specification.new do |spec|
   spec.email       = ['iamdaiver@icloud.com']
   spec.summary     = 'Config object'
   spec.description = 'Config. Defined as a class. Used as an instance. ' \
-                     'Support for inheritance and composition. ' \
-                     'Lazy instantiation. Thread-safe. Command-style DSL. ' \
-                     'Extremely simple to define. Extremely simple to use. That\'s all.'
+                     'Support for inheritance and composition. Lazy instantiation. Thread-safe. ' \
+                     'Command-style DSL. Validation layer. ' \
+                     'Support for YAML, TOML, JSON, __END__, ENV. ' \
+                     'Extremely simple to define. Extremely simple to use.'
   spec.homepage    = 'https://github.com/0exp/qonfig'
   spec.license     = 'MIT'
 
