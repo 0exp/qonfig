@@ -48,7 +48,7 @@ require 'qonfig'
   - [Expose JSON](#expose-json) (`Rails`-like environment-based JSON configs)
   - [Load from ENV](#load-from-env)
   - [Load from \_\_END\_\_](#load-from-__end__) (aka `load_from_self`)
-  - [Expose \_\_END\_\_](#expose-self) (aka `expose_self`)
+  - [Expose \_\_END\_\_](#expose-__end__) (aka `expose_self`)
   - [Save to JSON file](#save-to-json-file) (`save_to_json`)
   - [Save to YAML file](#save-to-yaml-file) (`save_to_yaml`)
 - [Plugins](#plugins)
@@ -1219,9 +1219,9 @@ config.settings.throttle_requests # => true (from :production subset of keys)
 config.settings.credentials # => {} (from :production subset of keys)
 ```
 
-#### Environment is defined as a part of YAML file name
+#### Environment is defined as a part of JSON file name
 
-```json
+```javascript
 // config/sidekiq.staging.json
 
 {
@@ -1232,7 +1232,7 @@ config.settings.credentials # => {} (from :production subset of keys)
 }
 ```
 
-```json
+```javascript
 // config/sidekiq.production.json
 
 {
