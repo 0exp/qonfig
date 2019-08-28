@@ -10,6 +10,8 @@ All notable changes to this project will be documented in this file.
 - `expose_self`
   - a command that provides an ability to define config settings by loading them from the current file
     where `__END__` instruction is defined (concrete settings dependes on the chosen environment);
+  - works with `YAML` format;
+
 ### Changed
 - `Qonfig::Settings::Callbacks` is thread safe now;
 - Minor refactorings;
