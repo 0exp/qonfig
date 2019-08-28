@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.14.0] - 2019-08-28
 ### Added
 - `expose_json`
   - a command that provides an ability to define config settings by loading them from a json file
