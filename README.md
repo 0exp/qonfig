@@ -1221,20 +1221,18 @@ config.settings.credentials # => {} (from :production subset of keys)
 
 #### Environment is defined as a part of JSON file name
 
-```javascript
+```json
 // config/sidekiq.staging.json
-
 {
-  "web" {
+  "web": {
     "username": "staging_admin",
     "password": "staging_password"
   }
 }
 ```
 
-```javascript
+```json
 // config/sidekiq.production.json
-
 {
   "web": {
     "username": "urj1o2",
