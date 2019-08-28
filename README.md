@@ -1370,7 +1370,7 @@ connection_timeout:
 
 ### Expose \_\_END\_\_
 
-- aka `expose_self`
+- aka `expose_self`;
 - works in `expose_json` and `expose_yaml` manner, but with `__END__` instruction of the current file;
 - `env:` - your environment name (must be a type of `String`, `Symbol` or `Numeric`);
 - works with `YAML` format;
