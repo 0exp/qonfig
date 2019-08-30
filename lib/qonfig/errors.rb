@@ -111,6 +111,12 @@ module Qonfig
   # @since 0.7.0
   ExposeError = Class.new(Error)
 
+  # @see Qonfig::Commands::LoadFromSelf
+  #
+  # @api public
+  # @since 0.15.0
+  UnsupportedExposeFormat = Class.new(ExposeError)
+
   # @see Qonfig::Plugin::TOMLFormat
   #
   # @api public
