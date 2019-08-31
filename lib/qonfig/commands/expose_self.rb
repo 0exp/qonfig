@@ -67,20 +67,9 @@ class Qonfig::Commands::ExposeSelf < Qonfig::Commands::Base
   # @api private
   # @since 0.14.0
   def load_self_placed_yaml_data
-    caller_file = caller_location.split(':').first
-
-    raise(
-      Qonfig::SelfDataNotFoundError,
-      "Caller file does not exist! (location: #{caller_location})"
-    ) unless File.exist?(caller_file)
-
-    data_match = IO.read(caller_file).match(/\n__END__\n(?<end_data>.*)/m)
-    raise Qonfig::SelfDataNotFoundError, '__END__ data not found!' unless data_match
-
-    end_data = data_match[:end_data]
-    raise Qonfig::SelfDataNotFoundError, '__END__ data not found!' unless end_data
-
+    end_data  = Qonfig::Commands::SelfBased::EndDataExtractor.extract(caller_location)
     yaml_data = Qonfig::Loaders::YAML.load(end_data)
+
     raise(
       Qonfig::IncompatibleYAMLStructureError,
       'YAML content should have a hash-like structure'

@@ -3,12 +3,6 @@
 # @api private
 # @since 0.2.0
 class Qonfig::Commands::LoadFromSelf < Qonfig::Commands::Base
-  # @return [Symbol]
-  #
-  # @api private
-  # @since 0.15.0
-  DEFAULT_FORMAT = :yaml
-
   # @return [String, Symbol]
   #
   # @api private
@@ -26,9 +20,7 @@ class Qonfig::Commands::LoadFromSelf < Qonfig::Commands::Base
   #
   # @api private
   # @since 0.2.0
-  def initialize(caller_location, format: DEFAULT_FORMAT)
-    validate_chosen_format(format)
-    @format = format
+  def initialize(caller_location)
     @caller_location = caller_location
   end
 
@@ -56,43 +48,15 @@ class Qonfig::Commands::LoadFromSelf < Qonfig::Commands::Base
   # @api private
   # @since 0.2.0
   def load_self_placed_yaml_data
-    caller_file = caller_location.split(':').first
-
-    raise(
-      Qonfig::SelfDataNotFoundError,
-      "Caller file does not exist! (location: #{caller_location})"
-    ) unless File.exist?(caller_file)
-
-    data_match = IO.read(caller_file).match(/\n__END__\n(?<end_data>.*)/m)
-    raise Qonfig::SelfDataNotFoundError, '__END__ data not found!' unless data_match
-
-    end_data = data_match[:end_data]
-    raise Qonfig::SelfDataNotFoundError, '__END__ data not found!' unless end_data
-
+    end_data  = Qonfig::Commands::SelfBased::EndDataExtractor.extract(caller_location)
     yaml_data = Qonfig::Loaders::YAML.load(end_data)
+
     raise(
       Qonfig::IncompatibleYAMLStructureError,
       'YAML content should have a hash-like structure'
     ) unless yaml_data.is_a?(Hash)
 
     yaml_data
-  end
-
-  # @param format [String, Symbol]
-  # @return [void]
-  #
-  # @raise [Qonfig::UnsupporteExposeFormat]
-  #
-  # @api private
-  # @since 0.15.0
-  def validate_chosen_format(format)
-    # TODO:
-    #   add Qonfig::Loaders resolvation logic
-    #     - Qonfig::Loaders.resolve(format) (instead of exlicit Qonfig::Loaders::YAML/JSON and etc)
-    #     - Qonfig::Loaders.support?(format) (instead of explicit format == :json/:yaml and etc)
-    return if format == :yml || format == :yaml || format == "yml" || format == "yaml"
-    return if format == :json || format == "json"
-    raise Qonfig::UnsupportedExposeFormat, "Chosne <#{format}> format is not supported."
   end
 
   # @param self_placed_yaml_data [Hash]
