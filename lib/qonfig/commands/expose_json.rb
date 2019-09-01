@@ -124,7 +124,7 @@ class Qonfig::Commands::ExposeJSON < Qonfig::Commands::Base
 
     raise(
       Qonfig::IncompatibleJSONStructureError,
-      'JSON content should have a hash-like structure'
+      'JSON content must be a hash-like structure'
     ) unless json_data_slice.is_a?(Hash)
 
     json_based_settings = build_data_set_klass(json_data_slice).new.settings
@@ -144,7 +144,7 @@ class Qonfig::Commands::ExposeJSON < Qonfig::Commands::Base
     Qonfig::Loaders::JSON.load_file(file_path, fail_on_unexist: strict).tap do |json_data|
       raise(
         Qonfig::IncompatibleJSONStructureError,
-        'JSON content should have a hash-like structure'
+        'JSON content must be a hash-like structure'
       ) unless json_data.is_a?(Hash)
     end
   end

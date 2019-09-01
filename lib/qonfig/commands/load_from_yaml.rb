@@ -38,11 +38,10 @@ class Qonfig::Commands::LoadFromYAML < Qonfig::Commands::Base
 
     raise(
       Qonfig::IncompatibleYAMLStructureError,
-      'YAML content should have a hash-like structure'
+      'YAML content must be a hash-like structure'
     ) unless yaml_data.is_a?(Hash)
 
     yaml_based_settings = build_data_set_klass(yaml_data).new.settings
-
     settings.__append_settings__(yaml_based_settings)
   end
 

@@ -124,7 +124,7 @@ class Qonfig::Commands::ExposeYAML < Qonfig::Commands::Base
 
     raise(
       Qonfig::IncompatibleYAMLStructureError,
-      'YAML content should have a hash-like structure'
+      'YAML content must be a hash-like structure'
     ) unless yaml_data_slice.is_a?(Hash)
 
     yaml_based_settings = build_data_set_klass(yaml_data_slice).new.settings
@@ -144,7 +144,7 @@ class Qonfig::Commands::ExposeYAML < Qonfig::Commands::Base
     Qonfig::Loaders::YAML.load_file(file_path, fail_on_unexist: strict).tap do |yaml_data|
       raise(
         Qonfig::IncompatibleYAMLStructureError,
-        'YAML content should have a hash-like structure'
+        'YAML content must be a hash-like structure'
       ) unless yaml_data.is_a?(Hash)
     end
   end

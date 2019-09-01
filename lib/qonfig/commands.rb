@@ -3,7 +3,6 @@
 # @api private
 # @since 0.1.0
 module Qonfig::Commands
-  require_relative 'commands/self_based'
   require_relative 'commands/base'
   require_relative 'commands/add_option'
   require_relative 'commands/add_nested_option'

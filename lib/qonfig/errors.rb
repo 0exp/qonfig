@@ -81,6 +81,12 @@ module Qonfig
   # @since 0.5.0
   IncompatibleJSONStructureError = Class.new(Error)
 
+  # @see Qonfig::Commands::LoadFromSelf
+  #
+  # @api public
+  # @since 0.15.0
+  IncompatibleEndDataStructureError = Class.new(Error)
+
   # @see Qonfig::Loaders::YAML
   #
   # @api public
@@ -110,6 +116,12 @@ module Qonfig
   # @api public
   # @since 0.7.0
   ExposeError = Class.new(Error)
+
+  # @see Qonfig::Loaders
+  #
+  # @api public
+  # @since 0.15.0
+  UnsupportedLoaderFormatError = Class.new(Error)
 
   # @see Qonfig::Plugin::TOMLFormat
   #

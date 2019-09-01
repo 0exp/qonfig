@@ -3,6 +3,12 @@
 # @api private
 # @since 0.14.0
 class Qonfig::Commands::ExposeSelf < Qonfig::Commands::Base
+  # @return [String, Symbol]
+  #
+  # @api private
+  # @since 0.15.0
+  attr_reader :format
+
   # @return [String]
   #
   # @api private
@@ -17,20 +23,20 @@ class Qonfig::Commands::ExposeSelf < Qonfig::Commands::Base
 
   # @param caller_location [String]
   # @option env [String, Symbol]
+  # @option format [String, Symbol]
   #
   # @api private
   # @since 0.14.0
-  def initialize(caller_location, env:)
+  def initialize(caller_location, env:, format:)
     unless env.is_a?(Symbol) || env.is_a?(String)
       raise Qonfig::ArgumentError, ':env should be a string or a symbol'
     end
 
-    if env.to_s.empty?
-      raise Qonfig::ArgumentError, ':env should be provided'
-    end
+    raise Qonfig::ArgumentError, ':env should be provided' if env.to_s.empty?
 
     @caller_location = caller_location
     @env = env
+    @format = format.tap { Qonfig::Loaders.resolve(format) }
   end
 
   # @param data_set [Qonfig::DataSet]
@@ -40,21 +46,22 @@ class Qonfig::Commands::ExposeSelf < Qonfig::Commands::Base
   # @api private
   # @since 0.14.0
   def call(data_set, settings)
-    yaml_data = load_self_placed_yaml_data
-    yaml_data_slice = yaml_data[env] || yaml_data[env.to_s] || yaml_data[env.to_sym]
+    self_placed_data = load_self_placed_end_data
+    env_based_data_slice =
+      self_placed_data[env] || self_placed_data[env.to_s] || self_placed_data[env.to_sym]
 
     raise(
       Qonfig::ExposeError,
       "#{file_path} file does not contain settings with <#{env}> environment key!"
-    ) unless yaml_data_slice
+    ) unless env_based_data_slice
 
     raise(
-      Qonfig::IncompatibleYAMLStructureError,
-      'YAML content should have a hash-like structure'
-    ) unless yaml_data_slice.is_a?(Hash)
+      Qonfig::IncompatibleEndDataStructureError,
+      '__END__-data content must be a hash-like structure'
+    ) unless env_based_data_slice.is_a?(Hash)
 
-    yaml_based_settings = build_data_set_klass(yaml_data_slice).new.settings
-    settings.__append_settings__(yaml_based_settings)
+    self_placed_settings = build_data_set_klass(env_based_data_slice).new.settings
+    settings.__append_settings__(self_placed_settings)
   end
 
   private
@@ -62,28 +69,28 @@ class Qonfig::Commands::ExposeSelf < Qonfig::Commands::Base
   # @return [Hash]
   #
   # @raise [Qonfig::SelfDataNotFound]
-  # @raise [Qonfig::IncompatibleYAMLStructureError]
+  # @raise [Qonfig::IncompatibleEndDataStructureError]
   #
   # @api private
   # @since 0.14.0
-  def load_self_placed_yaml_data
-    end_data  = Qonfig::Commands::SelfBased::EndDataExtractor.extract(caller_location)
-    yaml_data = Qonfig::Loaders::YAML.load(end_data)
+  def load_self_placed_end_data
+    end_data      = Qonfig::Loaders::EndData.extract(caller_location)
+    settings_data = Qonfig::Loaders.resolve(format).load(end_data)
 
     raise(
-      Qonfig::IncompatibleYAMLStructureError,
-      'YAML content should have a hash-like structure'
-    ) unless yaml_data.is_a?(Hash)
+      Qonfig::IncompatibleEndDataStructureError,
+      '__END__-data must be a hash-like structure'
+    ) unless settings_data.is_a?(Hash)
 
-    yaml_data
+    settings_data
   end
 
-  # @param self_placed_yaml_data [Hash]
+  # @param self_placed_settings [Hash]
   # @return [Class<Qonfig::DataSet>]
   #
   # @api private
   # @since 0.14.0
-  def build_data_set_klass(self_placed_yaml_data)
-    Qonfig::DataSet::ClassBuilder.build_from_hash(self_placed_yaml_data)
+  def build_data_set_klass(self_placed_settings)
+    Qonfig::DataSet::ClassBuilder.build_from_hash(self_placed_settings)
   end
 end
