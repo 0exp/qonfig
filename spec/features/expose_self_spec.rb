@@ -4,19 +4,19 @@ describe 'Expose self (expose __END__)' do
   specify 'defines config object by __END__ instructions and specific environment settings' do
     class ExposeSelfConfig < Qonfig::DataSet
       setting :test_env do
-        expose_self env: :test
+        expose_self env: :test # NOTE: format: :yaml by default
       end
 
       setting :dev_env do
-        expose_self env: :development
+        expose_self env: :development # NOTE: format: :yaml by default
       end
 
       setting :stage_env do
-        expose_self env: :staging
+        expose_self env: :staging # NOTE: format: :yaml by default
       end
 
       setting :prod_env do
-        expose_self env: :production
+        expose_self env: :production # NOTE: format: :yaml by default
       end
     end
 
