@@ -82,6 +82,7 @@ module Qonfig
   IncompatibleJSONStructureError = Class.new(Error)
 
   # @see Qonfig::Commands::LoadFromSelf
+  # @see Qonfig::Commands::ExposeSelf
   #
   # @api public
   # @since 0.15.0
