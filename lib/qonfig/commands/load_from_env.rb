@@ -63,9 +63,7 @@ class Qonfig::Commands::LoadFromENV < Qonfig::Commands::Base
   # @since 0.2.0
   def call(data_set, settings)
     env_data = extract_env_data
-
     env_based_settings = build_data_set_klass(env_data).new.settings
-
     settings.__append_settings__(env_based_settings)
   end
 

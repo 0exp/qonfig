@@ -36,11 +36,10 @@ class Qonfig::Commands::LoadFromJSON < Qonfig::Commands::Base
 
     raise(
       Qonfig::IncompatibleJSONStructureError,
-      'JSON object should have a hash-like structure'
+      'JSON object must be a hash-like structure'
     ) unless json_data.is_a?(Hash)
 
     json_based_settings = build_data_set_klass(json_data).new.settings
-
     settings.__append_settings__(json_based_settings)
   end
 

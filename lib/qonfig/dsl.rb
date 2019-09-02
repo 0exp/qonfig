@@ -77,9 +77,9 @@ module Qonfig::DSL
   #
   # @api public
   # @since 0.2.0
-  def load_from_self
+  def load_from_self(format: :yaml)
     caller_location = caller(1, 1).first
-    commands << Qonfig::Commands::LoadFromSelf.new(caller_location)
+    commands << Qonfig::Commands::LoadFromSelf.new(caller_location, format: format)
   end
 
   # @option convert_values [Boolean]
@@ -139,8 +139,8 @@ module Qonfig::DSL
   #
   # @api public
   # @since 0.14.0
-  def expose_self(env:)
+  def expose_self(env:, format: :yaml)
     caller_location = caller(1, 1).first
-    commands << Qonfig::Commands::ExposeSelf.new(caller_location, env: env)
+    commands << Qonfig::Commands::ExposeSelf.new(caller_location, env: env, format: format)
   end
 end

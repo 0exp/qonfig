@@ -3,6 +3,12 @@
 # @api private
 # @since 0.2.0
 class Qonfig::Commands::LoadFromSelf < Qonfig::Commands::Base
+  # @return [String, Symbol]
+  #
+  # @api private
+  # @since 0.15.0
+  attr_reader :format
+
   # @return [String]
   #
   # @api private
@@ -10,11 +16,17 @@ class Qonfig::Commands::LoadFromSelf < Qonfig::Commands::Base
   attr_reader :caller_location
 
   # @param caller_location [String]
+  # @option format [String, Symbol]
   #
   # @api private
   # @since 0.2.0
-  def initialize(caller_location)
+  def initialize(caller_location, format:)
+    unless format.is_a?(String) || format.is_a?(Symbol)
+      raise Qonfig::ArgumentError, 'Format should be a symbol or a string'
+    end
+
     @caller_location = caller_location
+    @format = format.tap { Qonfig::Loaders.resolve(format) }
   end
 
   # @param data_set [Qonfig::DataSet]
@@ -24,11 +36,10 @@ class Qonfig::Commands::LoadFromSelf < Qonfig::Commands::Base
   # @api private
   # @since 0.2.0
   def call(data_set, settings)
-    yaml_data = load_self_placed_yaml_data
+    self_placed_end_data = load_self_placed_end_data
+    self_placed_settings = build_data_set_klass(self_placed_end_data).new.settings
 
-    yaml_based_settings = build_data_set_klass(yaml_data).new.settings
-
-    settings.__append_settings__(yaml_based_settings)
+    settings.__append_settings__(self_placed_settings)
   end
 
   private
@@ -40,35 +51,24 @@ class Qonfig::Commands::LoadFromSelf < Qonfig::Commands::Base
   #
   # @api private
   # @since 0.2.0
-  def load_self_placed_yaml_data
-    caller_file = caller_location.split(':').first
+  def load_self_placed_end_data
+    end_data      = Qonfig::Loaders::EndData.extract(caller_location)
+    settings_data = Qonfig::Loaders.resolve(format).load(end_data)
 
     raise(
-      Qonfig::SelfDataNotFoundError,
-      "Caller file does not exist! (location: #{caller_location})"
-    ) unless File.exist?(caller_file)
+      Qonfig::IncompatibleEndDataStructureError,
+      '__END__-data must be a hash-like structure'
+    ) unless settings_data.is_a?(Hash)
 
-    data_match = IO.read(caller_file).match(/\n__END__\n(?<end_data>.*)/m)
-    raise Qonfig::SelfDataNotFoundError, '__END__ data not found!' unless data_match
-
-    end_data = data_match[:end_data]
-    raise Qonfig::SelfDataNotFoundError, '__END__ data not found!' unless end_data
-
-    yaml_data = Qonfig::Loaders::YAML.load(end_data)
-    raise(
-      Qonfig::IncompatibleYAMLStructureError,
-      'YAML content should have a hash-like structure'
-    ) unless yaml_data.is_a?(Hash)
-
-    yaml_data
+    settings_data
   end
 
-  # @param self_placed_yaml_data [Hash]
+  # @param self_placed_settings [Hash]
   # @return [Class<Qonfig::DataSet>]
   #
   # @api private
   # @since 0.2.0
-  def build_data_set_klass(self_placed_yaml_data)
-    Qonfig::DataSet::ClassBuilder.build_from_hash(self_placed_yaml_data)
+  def build_data_set_klass(self_placed_settings)
+    Qonfig::DataSet::ClassBuilder.build_from_hash(self_placed_settings)
   end
 end
