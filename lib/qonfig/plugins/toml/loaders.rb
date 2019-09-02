@@ -15,7 +15,7 @@ module Qonfig::Loaders
       # @api private
       # @since 0.15.0
       def resolve(format)
-        return Qonfig::Loaders::TOML if format.to_s == "toml"
+        return Qonfig::Loaders::TOML if format.to_s == 'toml'
         super(format)
       end
     end)

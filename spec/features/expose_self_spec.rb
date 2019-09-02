@@ -47,7 +47,6 @@ describe 'Expose self (expose __END__)' do
     expect(settings.stage_env.credentials).to eq({})
   end
 
-
   describe 'failures and inconsistent situations' do
     describe 'definition level errors' do
       specify 'fails when :env attribute has non-string / non-symbol / non-numeric value' do

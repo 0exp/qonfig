@@ -18,9 +18,9 @@ module Qonfig::Loaders
     # @since 0.15.0
     def resolve(format)
       case format.to_s
-      when "yaml", "yml"
+      when 'yaml', 'yml'
         Qonfig::Loaders::YAML
-      when "json"
+      when 'json'
         Qonfig::Loaders::JSON
       else
         raise(Qonfig::UnsupportedLoaderFormatError, "<#{format}> format is not supported.")

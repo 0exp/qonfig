@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe '#load_from_self => format: :yaml' do
-  specify ":yaml/:yml-format support" do
+  specify ':yaml/:yml-format support' do
     class YamlEndDataConfig < Qonfig::DataSet
       setting :by_yml do
         load_from_self format: :yml # the same as :yaml
