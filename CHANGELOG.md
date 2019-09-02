@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.15.0] - 2019-09-02
+### Added
+- `:format`-option for `load_from_self` and `expose_self` commands thath identifies which data format
+  should be chosen for parsing;
+
 ## [0.14.0] - 2019-08-28
 ### Added
 - `expose_json`
