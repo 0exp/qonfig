@@ -1329,14 +1329,17 @@ config.settings['RUN_CI'] # => '1'
 ### Load from \_\_END\_\_
 
 - aka `load_from_self`
-- works with `YAML` format;
+- `:format` - specify the format of data placed under the `__END__` instruction:
+  - `format: :yaml` - **YAML** format (by default);
+  - `format: :json` - **JSON** format;
+  - `format: :toml` - **TOML** format (via `toml`-plugin);
 
 ```ruby
 class Config < Qonfig::DataSet
-  load_from_self # on the root
+  load_from_self # on the root (format: :yaml is used by default)
 
   setting :nested do
-    load_from_self # nested
+    load_from_self, format: :yaml # with explicitly identified YAML format
   end
 end
 
@@ -1373,11 +1376,14 @@ connection_timeout:
 - aka `expose_self`;
 - works in `expose_json` and `expose_yaml` manner, but with `__END__` instruction of the current file;
 - `env:` - your environment name (must be a type of `String`, `Symbol` or `Numeric`);
-- works with `YAML` format;
+- `:format` - specify the format of data placed under the `__END__` instruction:
+  - `format: :yaml` - **YAML** format (by default);
+  - `format: :json` - **JSON** format;
+  - `format: :toml` - **TOML** format (via `toml`-plugin);
 
 ```ruby
 class Config < Qonfig::DataSet
-  expose_self env: :production
+  expose_self env: :production, format: :yaml # with explicitly identified YAML format
 
   # NOTE: for Rails-like applications you can use this:
   expose_self env: Rails.env
@@ -1391,6 +1397,7 @@ config.settings.creds.user # => "D@iVeR" (from :production environment)
 config.settings.creds.password # => "test123" (from :production environment)
 
 __END__
+
 default: &default
   log: false
   api_enabled: true
