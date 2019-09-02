@@ -8,8 +8,9 @@ module Qonfig::Loaders
       # @param format [String, Symbol]
       # @return [Module]
       #
-      # @see Qonfig::Loaders.resolve(format)
       # @raise [Qonfig::UnsupportedLoaderFormatError]
+      #
+      # @see Qonfig::Loaders.resolve
       #
       # @api private
       # @since 0.15.0
