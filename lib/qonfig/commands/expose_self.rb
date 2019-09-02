@@ -34,6 +34,10 @@ class Qonfig::Commands::ExposeSelf < Qonfig::Commands::Base
 
     raise Qonfig::ArgumentError, ':env should be provided' if env.to_s.empty?
 
+    unless format.is_a?(String) || format.is_a?(Symbol)
+      raise Qonfig::ArgumentError, 'Format should be a symbol or a string'
+    end
+
     @caller_location = caller_location
     @env = env
     @format = format.tap { Qonfig::Loaders.resolve(format) }
