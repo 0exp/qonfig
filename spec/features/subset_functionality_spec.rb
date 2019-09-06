@@ -42,6 +42,10 @@ describe '(#subset)-functionality' do
     # subset invokation over unexistent option
     expect { config.subset([:db, :creds, :session]) }.to raise_error(Qonfig::UnknownSettingError)
     expect { config.subset([:a, :b, :c, :d]) }.to raise_error(Qonfig::UnknownSettingError)
+
+    # invokation with incorret subset key attributes
+    expect { config.subset([:db, :creds, Object.new]) }.to raise_error(Qonfig::ArgumentError)
+    expect { config.subset(:db, 123) }.to raise_error(Qonfig::ArgumentError)
   end
 end
 # rubocop:enable Metrics/LineLength
