@@ -176,7 +176,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
     __lock__.thread_safe_access { __deep_slice_value__(*keys) }
   end
 
-  # @param keys [Array<String, Symbol, Array<String, Symbol, Array, ...>>]
+  # @param keys [Array<String, Symbol, Array<String, Symbol>>]
   # @return [Hash]
   #
   # @api private
@@ -493,7 +493,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
           else
             raise(
               Qonfig::ArgumentError,
-              "All setting keys should be a symbol/string or an array of symbols/strings!"
+              'All setting keys should be a symbol/string or an array of symbols/strings!'
             )
           end
 
