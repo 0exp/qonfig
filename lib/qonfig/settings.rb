@@ -487,6 +487,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
         required_keys =
           case key_set
           when String, Symbol
+            # TODO: support for patterns
             __indifferently_accessable_option_key__(key_set)
           when Array
             key_set.map(&method(:__indifferently_accessable_option_key__))
