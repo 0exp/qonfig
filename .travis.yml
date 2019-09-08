@@ -5,13 +5,13 @@ matrix:
   - rvm: 2.3.8
     gemfile: gemfiles/with_external_deps.gemfile
     env: TEST_PLUGINS=true
-  - rvm: 2.4.6
+  - rvm: 2.4.7
     gemfile: gemfiles/with_external_deps.gemfile
     env: TEST_PLUGINS=true
-  - rvm: 2.5.5
+  - rvm: 2.5.6
     gemfile: gemfiles/with_external_deps.gemfile
     env: TEST_PLUGINS=true
-  - rvm: 2.6.3
+  - rvm: 2.6.4
     gemfile: gemfiles/with_external_deps.gemfile
     env: TEST_PLUGINS=true
   - rvm: ruby-head
@@ -22,11 +22,11 @@ matrix:
     env: TEST_PLUGINS=true
   - rvm: 2.3.8
     gemfile: gemfiles/without_external_deps.gemfile
-  - rvm: 2.4.6
+  - rvm: 2.4.7
     gemfile: gemfiles/without_external_deps.gemfile
-  - rvm: 2.5.5
+  - rvm: 2.5.6
     gemfile: gemfiles/without_external_deps.gemfile
-  - rvm: 2.6.3
+  - rvm: 2.6.4
     gemfile: gemfiles/without_external_deps.gemfile
   - rvm: ruby-head
     gemfile: gemfiles/without_external_deps.gemfile
