@@ -35,7 +35,7 @@ require 'qonfig'
   - [Composition](#composition)
   - [Hash representation](#hash-representation)
   - [Smart Mixin](#smart-mixin) (`Qonfig::Configurable`)
-  - [Instantiation without class definition](#instantiation-without-class-definition)
+  - [Instantiation without class definition](#instantiation-without-class-definition) (`Qonfig::DataSet.build(&definitions)`)
 - [Interaction](#interaction)
   - [Iteration over setting keys](#iteration-over-setting-keys) (`#each_setting`, `#deep_each_setting`)
   - [Config reloading](#config-reloading) (reload config definitions and option values)
