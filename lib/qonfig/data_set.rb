@@ -164,6 +164,15 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     thread_safe_access { settings.__slice_value__(*keys) }
   end
 
+  # @param keys [Array<String, Symbol, Array<String, Symbol>>]
+  # @return [Hash]
+  #
+  # @api private
+  # @since 0.16.0
+  def subset(*keys)
+    thread_safe_access { settings.__subset__(*keys) }
+  end
+
   # @return [void]
   #
   # @api public

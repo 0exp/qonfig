@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+### Added
+- `#subset` - get a subset of config settings represented as a hash;
+
 ## [0.15.0] - 2019-09-02
 ### Added
 - `:format`-option for `load_from_self` and `expose_self` commands that identifies which data format

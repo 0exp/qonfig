@@ -24,6 +24,12 @@ require 'qonfig'
 
 - [Definition](#definition)
   - [Definition and Settings Access](#definition-and-access)
+    - [access via method](#access-via-method)
+    - [index-method](#index-method)
+    - [.dig](#dig)
+    - [.slice](#slice)
+    - [.slice_value](#slice_value)
+    - [.subset](#subset)
   - [Configuration](#configuration)
   - [Inheritance](#inheritance)
   - [Composition](#composition)
@@ -86,18 +92,32 @@ class Config < Qonfig::DataSet
   setting :vendor_api do
     setting :user, 'test_user'
   end
+
+  # deep nesting
+  setting :credentials do
+    setting :user do
+      setting :login, 'D@iVeR'
+      setting :password, 'test123'
+    end
+  end
 end
 
 config = Config.new # your configuration object instance
+```
 
-# --- setting access ---
+#### access via method
 
+```ruby
 # get option value via method
 config.settings.project_id # => nil
 config.settings.vendor_api.host # => 'app.service.com'
 config.settings.vendor_api.user # => 'test_user'
 config.settings.enable_graphql # => false
+```
 
+#### index-method []
+
+```ruby
 # get option value via index (with indifferent (string / symbol / mixed) access)
 config.settings[:project_id] # => nil
 config.settings[:vendor_api][:host] # => 'app.service.com'
@@ -115,22 +135,49 @@ config['project_id'] # => nil
 config['enable_graphql'] # => false
 config[:project_id] # => nil
 config[:enable_graphql] # => false
+```
 
-# get option value in Hash#dig manner (and fail when the required key does not exist)
+#### .dig
+
+```ruby
+# get option value in Hash#dig manner (and fail when the required key does not exist);
 config.dig(:vendor_api, :host) # => 'app.service.com' # (key exists)
 config.dig(:vendor_api, :port) # => Qonfig::UnknownSettingError # (key does not exist)
+```
 
-# get a hash slice of setting options (and fail when the required key does not exist)
+#### .slice
+
+```ruby
+# get a hash slice of setting options (and fail when the required key does not exist);
 config.slice(:vendor_api) # => { 'vendor_api' => { 'host' => 'app_service', 'user' => 'test_user' } }
 config.slice(:vendor_api, :user) # => { 'user' => 'test_user' }
 config.slice(:project_api) # => Qonfig::UnknownSettingError # (key does not exist)
 config.slice(:vendor_api, :port) # => Qonfig::UnknownSettingError # (key does not exist)
+```
 
-# get value from the slice of setting options using the given key set (and fail when the required key does not exist) (works in slice manner)
+#### .slice_value
+
+```ruby
+# get value from the slice of setting options using the given key set
+# (and fail when the required key does not exist) (works in slice manner);
+
 config.slice_value(:vendor_api) # => { 'host' => 'app_service', 'user' => 'test_user' }
 config.slice_value(:vendor_api, :user) # => 'test_user'
 config.slice_value(:project_api) # => Qonfig::UnknownSettingError # (key does not exist)
 config.slice_value(:vendor_api, :port) # => Qonfig::UnknownSettingError # (key does not exist)
+```
+
+#### .subset
+
+```ruby
+# - get a subset (a set of sets) of config settings represented as a hash;
+# - each key (or key set) represents a requirement of a certain setting key;
+
+config.subet(:vendor_api, :enable_graphql)
+# => { 'vendor_api' => { 'user' => ..., 'host' => ... }, 'enable_graphql' => false }
+
+config.subset(:project_id, [:vendor_api, :host], [:credentials, :user, :login])
+# => { 'project_id' => nil, 'host' => 'app.service.com', 'login' => 'D@iVeR' }
 ```
 
 ---

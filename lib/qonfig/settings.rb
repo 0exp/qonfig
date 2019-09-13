@@ -176,6 +176,15 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
     __lock__.thread_safe_access { __deep_slice_value__(*keys) }
   end
 
+  # @param keys [Array<String, Symbol, Array<String, Symbol>>]
+  # @return [Hash]
+  #
+  # @api private
+  # @since 0.16.0
+  def __subset__(*keys)
+    __lock__.thread_safe_access { __deep_subset__(*keys) }
+  end
+
   # @option transform_key [Proc]
   # @option transform_value [Proc]
   # @return [Hash]
@@ -465,6 +474,34 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   def __deep_slice_value__(*keys)
     required_key = __indifferently_accessable_option_key__(keys.last)
     __deep_slice__(*keys)[required_key]
+  end
+
+  # @param keys [Array<String, Symbol, Array<String, Symbol>>]
+  # @return [Hash]
+  #
+  # @api private
+  # @since 0.16.0
+  def __deep_subset__(*keys)
+    {}.tap do |result|
+      keys.each do |key_set|
+        required_keys =
+          case key_set
+          when String, Symbol
+            # TODO: support for patterns
+            __indifferently_accessable_option_key__(key_set)
+          when Array
+            key_set.map(&method(:__indifferently_accessable_option_key__))
+          else
+            raise(
+              Qonfig::ArgumentError,
+              'All setting keys should be a symbol/string or an array of symbols/strings!'
+            )
+          end
+
+        required_options = __deep_slice__(*required_keys)
+        result.merge!(required_options)
+      end
+    end
   end
 
   # @param options_part [Hash]
