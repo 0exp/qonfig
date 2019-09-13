@@ -12,6 +12,17 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   # @since 0.13.0
   extend Qonfig::Validator::DSL
 
+  class << self
+    # @param config_klass_definitions [Proc]
+    # @return [Qonfig::DataSet]
+    #
+    # @api public
+    # @since 0.16.0
+    def build(&config_klass_definitions)
+      Class.new(self, &config_klass_definitions).new
+    end
+  end
+
   # @return [Qonfig::Settings]
   #
   # @api private

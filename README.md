@@ -35,6 +35,7 @@ require 'qonfig'
   - [Composition](#composition)
   - [Hash representation](#hash-representation)
   - [Smart Mixin](#smart-mixin) (`Qonfig::Configurable`)
+  - [Instantiation without class definition](#instantiation-without-class-definition)
 - [Interaction](#interaction)
   - [Iteration over setting keys](#iteration-over-setting-keys) (`#each_setting`, `#deep_each_setting`)
   - [Config reloading](#config-reloading) (reload config definitions and option values)
@@ -452,6 +453,20 @@ GeneralApplication.config.to_h
 { 'user' => '0exp', 'pswd' => '123test', 'db' => { 'adapter' => 'pg' } }
 
 # and etc... (all Qonfig-related features)
+```
+
+### Instantiation without class definition
+
+```ruby
+config = Qonfig::DataSet.build do
+  setting :user, 'D@iVeR'
+  setting :password, 'test123'
+end
+
+config.is_a?(Qonfig::DataSet) # => true
+
+config.settings.user # => 'D@iVeR'
+config.settings.password # => 'test123'
 ```
 
 ---
