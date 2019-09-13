@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.16.0] - 2019-09-13
 ### Added
 - `Qonfig::DataSet.build(&config_klass_definitions)` - build config instance immidietly without `Qonfig::DataSet`-class definition;
 - `#subset` - get a subset of config settings represented as a hash;
