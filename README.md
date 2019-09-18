@@ -25,7 +25,7 @@ require 'qonfig'
 - [Definition](#definition)
   - [Definition and Settings Access](#definition-and-access)
     - [access via method](#access-via-method)
-    - [access via index-method \[\]](#index-method)
+    - [access via index-method \[\]](#access-via-index-method-)
     - [.dig](#dig)
     - [.slice](#slice)
     - [.slice_value](#slice_value)
