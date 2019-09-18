@@ -25,7 +25,7 @@ require 'qonfig'
 - [Definition](#definition)
   - [Definition and Settings Access](#definition-and-access)
     - [access via method](#access-via-method)
-    - [index-method](#index-method)
+    - [access via index-method \[\]](#index-method)
     - [.dig](#dig)
     - [.slice](#slice)
     - [.slice_value](#slice_value)
@@ -116,7 +116,7 @@ config.settings.vendor_api.user # => 'test_user'
 config.settings.enable_graphql # => false
 ```
 
-#### index-method []
+#### access via index-method []
 
 ```ruby
 # get option value via index (with indifferent (string / symbol / mixed) access)
