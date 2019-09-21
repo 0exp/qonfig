@@ -23,7 +23,7 @@ module Qonfig::Exporting
     #
     # @api public
     # @since 0.17.0
-    def export_config(config, *setting_keys)
+    def export_configs(config, *setting_keys)
 
     end
   end
