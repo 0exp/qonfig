@@ -2,8 +2,8 @@
 
 # @api public
 # @since 0.17.0
-module Qonfig::Importing
-  require_relative 'importing/importer'
+module Qonfig::Imports
+  require_relative 'imports/importer'
 
   class << self
     # @param base_klass [Class]
@@ -12,13 +12,13 @@ module Qonfig::Importing
     # @api private
     # @since 0.17.0
     def included(base_klass)
-      base_klass.extend(DSL)
+      base_klass.extend(ClassMethods)
     end
   end
 
   # @api private
   # @since 0.17.0
-  module DSL
+  module ClassMethods
     # @param config [Qonfig::DataSet]
     # @param setting_keys [Array<String,Symbol>]
     # @option prefix [String, Symbol]
@@ -31,11 +31,11 @@ module Qonfig::Importing
     def import_settings(
       config,
       *setting_keys,
-      prefix: Qonfig::Importing::Importer::EMPTY_PREFIX,
+      prefix: Qonfig::Imports::Importer::EMPTY_PREFIX,
       raw: false,
-      mappings: Qonfig::Importing::Importer::EMPTY_MAPPINGS
+      mappings: Qonfig::Imports::Importer::EMPTY_MAPPINGS
     )
-      Qonfig::Importing::Importer.import!(
+      Qonfig::Imports::Importer.import!(
         self, config, *setting_keys, prefix: prefix, raw: raw, mappings: mappings
       )
     end

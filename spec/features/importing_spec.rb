@@ -21,17 +21,22 @@ describe 'Config imports' do
     ImpConfig = ImportedConfig.new
 
     class UltraSimpleApplication
-      include Qonfig::Importing
+      include Qonfig::Imports
 
-      import_settings(ImpConfig,
-                      'credentials.login',
-                      'credentials.password',
-                      'job_que.options',
-                      prefix: 'config_')
+      import_settings(
+        ImpConfig,
+        'credentials.login',
+        'credentials.password',
+        'job_que.options',
+        prefix: 'config_'
+      )
     end
 
     app = UltraSimpleApplication.new
+    # binding.pry
 
+    simple_object = Object.new
+    ImpConfig.export_settings(simple_object, 'credentials.login', prefix: 'config_')
     # binding.pry
   end
 end

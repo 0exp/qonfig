@@ -15,7 +15,7 @@ module Qonfig
   require_relative 'qonfig/dsl'
   require_relative 'qonfig/data_set'
   require_relative 'qonfig/configurable'
-  require_relative 'qonfig/importing'
+  require_relative 'qonfig/imports'
   require_relative 'qonfig/plugins'
 
   # @api public

@@ -2,7 +2,7 @@
 
 # @api private
 # @since 0.17.0
-class Qonfig::Importing::Importer
+class Qonfig::Imports::Importer
   # @return [String]
   #
   # @api private
@@ -81,34 +81,45 @@ class Qonfig::Importing::Importer
   # @api private
   # @since 0.17.0
   def import!
-    imported_settings_interface = Module.new {}
+    imported_settings_interface = Module.new
 
-    imported_config.deep_each_setting do |setting_key, _setting_value|
-
-      binding.pry
-
+    key_matchers.each do |key_matcher|
+      # NOTE: step one: check that exported key is exist
       raise(
         Qonfig::UnknownSettingError,
-        "Setting with <#{setting_key}> key does not exist!"
-      ) unless key_matchers.any? { |matcher| matcher.match?(setting_key) }
+        "Setting with <#{key_matcher.scope_pattern}> key does not exist!"
+      ) unless (imported_config.keys(all_variants: true).any? do |setting_key|
+        key_matcher.match?(setting_key)
+      end)
 
-      setting_key_path_sequence = setting_key.split('.')
-      access_method_name = setting_key_path_sequence.last
-      access_method_name = "#{prefix}#{access_method_name}" unless prefix.empty?
+      # NOTE: step two: import matched keys
+      imported_config.keys(all_variants: true).each do |setting_key|
+        next unless key_matcher.match?(setting_key)
 
-      imported_settings_interface.module_eval do
-        unless raw
-          define_method(access_method_name) do
-            imported_config.slice_value(*setting_key_path_sequence)
-          end
-        else
-          define_method(access_method_name) do
-            imported_config.dig(*setting_key_path_sequence)
+        setting_key_path_sequence = setting_key.split('.')
+        access_method_name = setting_key_path_sequence.last
+        access_method_name = "#{prefix}#{access_method_name}" unless prefix.empty?
+
+        imported_settings_interface.module_exec(raw, imported_config) do |raw, imported_config|
+          unless raw
+            # NOTE: get setting value as a real value
+            define_method(access_method_name) do
+              imported_config.slice_value(*setting_key_path_sequence)
+            end
+          else
+            # NOTE: get setting value (or Qonfig::Settings object)
+            define_method(access_method_name) do
+              imported_config.dig(*setting_key_path_sequence)
+            end
           end
         end
       end
     end
 
+    # NOTE:
+    #   step three: include new interface
+    #   (no prenend cuz we want to give a user an ability to define its own methods with the same
+    #   names that provides our new generated interface)
     seeded_klass.include(imported_settings_interface)
   end
 

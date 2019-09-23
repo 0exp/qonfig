@@ -234,6 +234,51 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     thread_safe_access { validator.validate! }
   end
 
+  # @option all_variants [Boolean]
+  # @return [Array<String>]
+  #
+  # @api public
+  # @since 0.17.0
+  def keys(all_variants: false)
+    thread_safe_access { settings.__keys__(all_variants: all_variants) }
+  end
+
+  # @return [Array<String>]
+  #
+  # @api public
+  # @since 0.17.0
+  def root_keys
+    thread_safe_access { settings.__root_keys__ }
+  end
+
+  # @return [void]
+  #
+  # @api public
+  # @since 0.17.0
+  def export_settings(
+    exportable_object,
+    *exported_setting_keys,
+    prefix: Qonfig::Imports::Importer::EMPTY_PREFIX,
+    raw: false,
+    mappings: Qonfig::Imports::Importer::EMPTY_MAPPINGS
+  )
+    thread_safe_access do
+      unless exportable_object.is_a?(Module)
+        exportable_object = exportable_object.singleton_class
+      end
+
+      Qonfig::Imports::Importer.import!(
+        exportable_object,
+        self,
+        *exported_setting_keys,
+        prefix: prefix,
+        raw: raw,
+        mappings: mappings
+      )
+    end
+  end
+
+
   private
 
   # @return [Qonfig::Validator]

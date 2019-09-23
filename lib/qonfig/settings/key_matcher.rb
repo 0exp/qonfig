@@ -39,6 +39,12 @@ class Qonfig::Settings::KeyMatcher
   # @since 0.13.0
   INFINITE_REGEXP_PATTERN = '\.*.*'
 
+  # @return [String]
+  #
+  # @api private
+  # @since 0.13.0
+  attr_reader :scope_pattern
+
   # @param scope_pattern [String, Symbol]
   # @return [void]
   #
@@ -50,7 +56,7 @@ class Qonfig::Settings::KeyMatcher
     scope_pattern = scope_pattern.to_s if scope_pattern.is_a?(Symbol)
     raise Qonfig::ArgumentError unless scope_pattern.is_a?(String)
 
-    @scope_pattern      = scope_pattern
+    @scope_pattern      = scope_pattern.dup.freeze
     @scope_pattern_size = count_scope_pattern_size(scope_pattern)
     @pattern_matcher    = build_pattern_matcher(scope_pattern)
   end
@@ -72,12 +78,6 @@ class Qonfig::Settings::KeyMatcher
   # @api private
   # @since 0.13.0
   attr_reader :pattern_matcher
-
-  # @return [String]
-  #
-  # @api private
-  # @since 0.13.0
-  attr_reader :scope_pattern
 
   # @return [Integer, Float::INFINITY]
   #
