@@ -129,4 +129,16 @@ module Qonfig
   # @api public
   # @since 0.12.0
   UnresolvedPluginDependencyError = Class.new(PluginError)
+
+  # @see Qonfig::Imports
+  #
+  # @api public
+  # @since 0.17.0
+  IncompatibleImportedConfigError = Class.new(ArgumentError)
+
+  # @see Qonfig::Imports
+  #
+  # @api public
+  # @since 0.17.0
+  IncompatbileImportKeyError = Class.new(ArgumentError)
 end

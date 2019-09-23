@@ -39,7 +39,7 @@ class Qonfig::Settings::KeyMatcher
   # @since 0.13.0
   INFINITE_REGEXP_PATTERN = '\.*.*'
 
-  # @param scope_pattern [String]
+  # @param scope_pattern [String, Symbol]
   # @return [void]
   #
   # @raise [Qonfig::ArgumentError]
@@ -47,6 +47,7 @@ class Qonfig::Settings::KeyMatcher
   # @api private
   # @since 0.13.0
   def initialize(scope_pattern)
+    scope_pattern = scope_pattern.to_s if scope_pattern.is_a?(Symbol)
     raise Qonfig::ArgumentError unless scope_pattern.is_a?(String)
 
     @scope_pattern      = scope_pattern
