@@ -1,8 +1,5 @@
 # frozen_string_literal: true
-
-# @api private
-# @since 0.1.0
-# rubocop:disable Metrics/ClassLength, Layout/ClassStructure
+ # rubocop:disable Metrics/ClassLength, Layout/ClassStructure
 class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_METHODS constant
   require_relative 'settings/callbacks'
   require_relative 'settings/lock'
