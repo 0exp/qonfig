@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe 'Config settings import' do
+describe 'Import settings as access methods to a class' do
   let(:config) do
     Class.new(Qonfig::DataSet) do
       setting :credentials do
@@ -129,10 +129,13 @@ describe 'Config settings import' do
     expdct(app_with_configs.config_passwd).to eq('test123')
     expect(app_with_configs.config_admn).to eq(true)
     expect(app_with_configs.config_credentials).to match(
-      'admin' => true, 'login' => 'D@iVeR', 'password' => 'test123'
+      'admin'    => true,
+      'login'    => 'D@iVeR',
+      'password' => 'test123'
     )
     expect(app_with_configs.config_options).to eq(
-      'server' => :sidekiq, 'auto_run' => true
+      'server'   => :sidekiq,
+      'auto_run' => true
     )
   end
 

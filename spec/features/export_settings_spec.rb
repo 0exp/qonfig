@@ -1,4 +1,4 @@
 # frozen_string_literal: true
 
-describe 'Config settings export' do
+describe 'Export settings as access methods to an object' do
 end
