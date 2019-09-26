@@ -31,6 +31,12 @@ require 'qonfig'
     - [.slice_value](#slice_value)
     - [.subset](#subset)
   - [Configuration](#configuration)
+    - [configure via proc](#configure-via-proc)
+    - [configure via settings object (by option name)](#configure-via-settings-object-by-option-name)
+    - [configure via settings object (by setting key)](#configure-via-settings-object-by-setting-key)
+    - [instant configuration via proc](#instant-configuration-via-proc)
+    - [using a hash](#using-a-hash)
+    - [using both hash and proc](#using-both-hash-and-proc-proc-has-higher-priority)
   - [Inheritance](#inheritance)
   - [Composition](#composition)
   - [Hash representation](#hash-representation)
@@ -200,40 +206,58 @@ class Config < Qonfig::DataSet
 end
 
 config = Config.new
+```
 
-# configure via proc
+#### configure via proc
+
+```ruby
 config.configure do |conf|
   conf.enable_middlewares = true
   conf.geo_api.provider = :yandex_maps
   conf.testing.engine = :mini_test
 end
+```
 
-# configure via settings object (by option name)
+#### configure via settings object (by option name)
+
+```ruby
 config.settings.enable_middlewares = false
 config.settings.geo_api.provider = :apple_maps
 config.settings.testing.engine = :ultra_test
+```
 
-# configure via settings object (by setting key)
+#### configure via settings object (by setting key)
+
+```ruby
 config.settings[:enable_middlewares] = true
 config.settings[:geo_api][:provider] = :rambler_maps
 config.settings[:testing][:engine] = :mega_test
+```
 
-# instant configuration via proc
+#### instant configuration via proc
+
+```ruby
 config = Config.new do |conf|
   conf.enable_middlewares = false
   conf.geo_api.provider = :amazon_maps
   conf.testing.engine = :crypto_test
 end
+```
 
-# using a hash
+#### using a hash
+
+```ruby
 config = Config.new(
   testing: { engine: :mini_test, parallel: false },
   geo_api: { provider: :rambler_maps },
   enable_middlewares: true
 )
 config.configure(enable_middlewares: false)
+```
 
-# using both hash and proc (proc has higher priority)
+#### using both hash and proc (proc has higher priority)
+
+```ruby
 config = Config.new(enable_middlewares: true) do |conf|
   conf.testing.parallel = true
 end
