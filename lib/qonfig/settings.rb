@@ -278,7 +278,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   # @api private
   # @since 0.17.0
   def __has_key__(*key_path)
-    __lock__.thread_safe_access { __is_key_exists__(key) }
+    __lock__.thread_safe_access { __is_key_exists__(*key_path) }
   end
 
   private
@@ -298,7 +298,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
     begin
       __deep_access__(*key_path)
       true
-    rescue => Qonfig::UnknownSettingError
+    rescue Qonfig::UnknownSettingError
       false
     end
   end
