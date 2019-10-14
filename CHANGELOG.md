@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+### Added
+- Setting's key existence check methods: `#key?(*key_path)`, `#setting?(*key_path)`, `#option?(*key_path)`;
+
 ## [0.16.0] - 2019-09-13
 ### Added
 - `Qonfig::DataSet.build(&config_klass_definitions)` - build config instance immidietly without `Qonfig::DataSet`-class definition;
