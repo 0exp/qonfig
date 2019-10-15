@@ -71,6 +71,8 @@ class Qonfig::Imports::Importer
     @seeded_klass     = seeded_klass
     @imported_config  = imported_config
     @imported_keys    = imported_keys
+
+    # NOTE: think about it :thinking: (refactor, please, refactor!!!)
     @key_matchers     = imported_keys.map { |key| Qonfig::Settings::KeyMatcher.new(key) }
     @mapping_matchers = mappings.each_with_object({}) do |(method_name, imported_key), matchers|
       matchers[method_name] = Qonfig::Settings::KeyMatcher.new(key)
@@ -174,6 +176,7 @@ class Qonfig::Imports::Importer
     end)
   end
 
+  # TODO: totally refactor this shit
   def seed_from_keys(imported_settings_interface)
     key_matchers.each do |key_matcher|
       # NOTE: step one: check that exported key is exist
@@ -209,9 +212,10 @@ class Qonfig::Imports::Importer
     end
   end
 
+  # NOTE: wtf???
   def seed_from_mappings(imported_settings_interface)
     mapping_matchers.each do |key_matcher|
-
+      # TODO: realize?
     end
   end
 end
