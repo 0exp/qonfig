@@ -295,12 +295,10 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   # @api private
   # @since 0.17.0
   def __is_key_exists__(*key_path)
-    begin
-      __deep_access__(*key_path)
-      true
-    rescue Qonfig::UnknownSettingError
-      false
-    end
+    __deep_access__(*key_path)
+    true
+  rescue Qonfig::UnknownSettingError
+    false
   end
 
   # @param block [Proc]

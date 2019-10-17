@@ -242,6 +242,7 @@ describe 'Validation' do
       expect { deep_config_klass.new(db: { password: 123 }) }.not_to raise_error
       expect { deep_config_klass.new.settings.db.password = 555 }.not_to raise_error
     end
+
     specify 'child class inherits the base class validations' do
       base_config_klass = Class.new(Qonfig::DataSet) do
         setting :adapter, 'sidekiq'
