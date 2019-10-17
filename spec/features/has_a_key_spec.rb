@@ -19,7 +19,7 @@ describe 'Has a key? (option? / setting?)' do
     expect(config.setting?('credentials')).to eq(true)
     expect(config.setting?(:credentials)).to eq(true)
 
-    # deeply nested key (with mixed types of keys)
+    # deeply nested key (with mixed types of params)
     expect(config.key?('credentials', :user)).to eq(true)
     expect(config.key?(:credentials, 'user')).to eq(true)
     expect(config.key?(:credentials, :user)).to eq(true)
@@ -41,5 +41,8 @@ describe 'Has a key? (option? / setting?)' do
 
     expect(config.setting?(:user, :password)).to eq(false)
     expect(config.setting?('options')).to eq(false)
+
+    # incorrect key type
+    expect { config.setting?(Object.new) }.to raise_error(Qonfig::ArgumentError)
   end
 end
