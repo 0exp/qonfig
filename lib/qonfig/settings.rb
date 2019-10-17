@@ -121,7 +121,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
     __mutation_callbacks__.call
   end
 
-  # @param key [Symbol, String]™
+  # @param key [Symbol, String]
   # @return [Object]
   #
   # @api public
