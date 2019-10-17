@@ -1729,6 +1729,7 @@ Qonfig.plugin(:toml)
 
 - distributed configuration server;
 - support for Rails-like secrets;
+- support for persistent data storages (we want to store configs in multiple databases and files);
 
 ## Contributing
 
