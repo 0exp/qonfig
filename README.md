@@ -48,6 +48,7 @@ require 'qonfig'
   - [Clear options](#clear-options) (set to nil)
   - [State freeze](#state-freeze)
   - [Settings as Predicates](#settings-as-predicates)
+  - [Setting key existence](#setting-key-existence) (`#key?`/`#option?`/`#setting?`)
 - [Validation](#validation)
   - [Introduction](#introdaction)
   - [Key search pattern](#key-search-pattern)
@@ -502,6 +503,7 @@ config.settings.password # => 'test123'
 - [Clear options](#clear-options) (set to nil)
 - [State freeze](#state-freeze)
 - [Settings as Predicates](#settings-as-predicates)
+- [Setting key existence](#setting-key-existence) (`#key?`/`#option?`/`#setting?`)
 
 ---
 
@@ -702,6 +704,37 @@ end
 config.settings.database.user? # => true ('0exp' => true)
 config.settings.database.host? # => false (false => false)
 config.settings.database.engine.driver? # => true (true => true)
+```
+
+---
+
+### Setting key existence
+
+- `#key?(*key_path)` / `#option?(*key_path)` / `#setting?(*key_path)`
+  - `*key_path` - an array of symbols and strings that represents a path to the concrete setting key;
+  - (for example, `config.key?(:credentials, :user)` tries to check that `config.settings.credentials.user` is exist);
+  - returns `true` if the concrete key is exist;
+  - returns `false` if the concrete key does not exist;
+
+```ruby
+class Config < Qonfig::DataSet
+  setting :credentials do
+    setting :user, 'D@iVeR'
+    setting :password, 'test123'
+  end
+end
+
+config = Config.new
+
+config.key?('credentials', 'user') # => true
+config.key?('credentials', 'token') # => false (key does not exist)
+
+config.key?('credentials') # => true
+config.key?('que_adapter') # => false (key does not exist)
+
+# aliases
+config.setting?('credentials') # => true
+config.option?(:credentials, :password) # => true
 ```
 
 ---

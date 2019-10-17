@@ -184,6 +184,17 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     thread_safe_access { settings.__subset__(*keys) }
   end
 
+  # @param key_path [Array<String, Symbol>]
+  # @return [Boolean]
+  #
+  # @api public
+  # @since 0.17.0
+  def key?(*key_path)
+    thread_safe_access { settings.__has_key__(*key_path) }
+  end
+  alias_method :option?, :key?
+  alias_method :setting?, :key?
+
   # @return [void]
   #
   # @api public

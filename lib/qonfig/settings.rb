@@ -272,6 +272,15 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
     value.is_a?(Qonfig::Settings)
   end
 
+  # @param key_path [Array<Symbol, String>]
+  # @return [Boolean]
+  #
+  # @api private
+  # @since 0.17.0
+  def __has_key__(*key_path)
+    __lock__.thread_safe_access { __is_key_exists__(*key_path) }
+  end
+
   private
 
   # @return [Qonfig::Settings::Lock]
@@ -279,6 +288,18 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   # @api private
   # @since 0.2.0
   attr_reader :__lock__
+
+  # @param key_path [Array<String, Symbol>]
+  # @return [Boolean]
+  #
+  # @api private
+  # @since 0.17.0
+  def __is_key_exists__(*key_path)
+    __deep_access__(*key_path)
+    true
+  rescue Qonfig::UnknownSettingError
+    false
+  end
 
   # @param block [Proc]
   # @return [Enumerable]
