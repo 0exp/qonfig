@@ -49,7 +49,7 @@ require 'qonfig'
   - [State freeze](#state-freeze)
   - [Settings as Predicates](#settings-as-predicates)
   - [Setting key existence](#setting-key-existence) (`#key?`/`#option?`/`#setting?`)
-  - [Run arbitary code with temporary settings](#run-arbitary-code-with-temporary-settings) (`#with(configs = {}, &arbitary_code))
+  - [Run arbitary code with temporary settings](#run-arbitary-code-with-temporary-settings) (`#with(configs = {}, &arbitary_code)`)
 - [Validation](#validation)
   - [Introduction](#introdaction)
   - [Key search pattern](#key-search-pattern)
