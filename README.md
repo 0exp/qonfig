@@ -480,6 +480,8 @@ GeneralApplication.config.to_h
 # and etc... (all Qonfig-related features)
 ```
 
+---
+
 ### Instantiation without class definition
 
 ```ruby
