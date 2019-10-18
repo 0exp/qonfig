@@ -767,12 +767,11 @@ config = Config.new
 
 # run a block of code with temporary queue.adapter setting
 config.with(queue: { adapter: 'que' }) do
+  # your changed settings
+  config.settings.queue.adapter # => 'que'
+
   # you can temporary change settings by your code too
   config.settings.queue.options = { concurrency: 10 }
-
-  # your changed settings:
-  config.settings.queue.adapter # => 'que'
-  config.settings.queue.options # => { concurrency: 10 }
 
   # ...your another code...
 end
