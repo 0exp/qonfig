@@ -13,13 +13,18 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   extend Qonfig::Validator::DSL
 
   class << self
+    # @param base_dataset_klass [Class<Qonfig::DataSet>]
     # @param config_klass_definitions [Proc]
     # @return [Qonfig::DataSet]
     #
     # @api public
     # @since 0.16.0
-    def build(&config_klass_definitions)
-      Class.new(self, &config_klass_definitions).new
+    def build(base_dataset_klass = self, &config_klass_definitions)
+      unless base_dataset_klass <= Qonfig::DataSet
+        raise(Qonfig::ArgumentError, 'Base inherited class should be a type of Qonfig::DataSet')
+      end
+
+      Class.new(base_dataset_klass, &config_klass_definitions).new
     end
   end
 
@@ -245,6 +250,43 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     thread_safe_access { validator.validate! }
   end
 
+  # @param temporary_configurations [Hash<Symbol|String,Any>]
+  # @param arbitary_code [Block]
+  # @return [void]
+  #
+  # @api public
+  # @since 0.17.0
+  def with(temporary_configurations = {}, &arbitary_code)
+    with_arbitary_access do
+      # rubocop:disable Style/RedundantBegin
+      begin
+        original_settings = @settings
+
+        temporary_settings = self.class.build.dup.tap do |copied_config|
+          copied_config.configure(temporary_configurations)
+        end.settings
+
+        @settings = temporary_settings
+        yield if block_given?
+      ensure
+        @settings = original_settings
+      end
+      # rubocop:enable Style/RedundantBegin
+    end
+  end
+
+  # @return [Qonfig::DataSet]
+  #
+  # @api public
+  # @since 0.17.0
+  def dup
+    thread_safe_definition do
+      self.class.build.tap do |duplicate|
+        duplicate.configure(to_h)
+      end
+    end
+  end
+
   private
 
   # @return [Qonfig::Validator]
@@ -309,5 +351,9 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   # @since 0.2.0
   def thread_safe_definition(&instructions)
     @__lock__.thread_safe_definition(&instructions)
+  end
+
+  def with_arbitary_access(&instructions)
+    @__lock__.with_arbitary_access(&instructions)
   end
 end

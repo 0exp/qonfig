@@ -21,4 +21,5 @@ RSpec.configure do |config|
   config.order = :random
   Kernel.srand config.seed
   config.expect_with(:rspec) { |c| c.syntax = :expect }
+  Thread.abort_on_exception = true
 end

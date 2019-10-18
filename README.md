@@ -45,10 +45,11 @@ require 'qonfig'
 - [Interaction](#interaction)
   - [Iteration over setting keys](#iteration-over-setting-keys) (`#each_setting`, `#deep_each_setting`)
   - [Config reloading](#config-reloading) (reload config definitions and option values)
-  - [Clear options](#clear-options) (set to nil)
+  - [Clear options](#clear-options) (set to `nil`)
   - [State freeze](#state-freeze)
   - [Settings as Predicates](#settings-as-predicates)
   - [Setting key existence](#setting-key-existence) (`#key?`/`#option?`/`#setting?`)
+  - [Run arbitary code with temporary settings](#run-arbitary-code-with-temporary-settings) (`#with(configs = {}, &arbitary_code)`)
 - [Validation](#validation)
   - [Introduction](#introdaction)
   - [Key search pattern](#key-search-pattern)
@@ -511,6 +512,7 @@ config.custom_method # => 'custom_result'
 - [State freeze](#state-freeze)
 - [Settings as Predicates](#settings-as-predicates)
 - [Setting key existence](#setting-key-existence) (`#key?`/`#option?`/`#setting?`)
+- [Run arbitary code with temporary settings](#run-arbitary-code-with-temporary-settings)
 
 ---
 
@@ -742,6 +744,41 @@ config.key?('que_adapter') # => false (key does not exist)
 # aliases
 config.setting?('credentials') # => true
 config.option?(:credentials, :password) # => true
+```
+
+---
+
+### Run arbitary code with temporary settings
+
+- provides a way to run an arbitary code with temporarily specified settings;
+- your arbitary code can temporary change any setting too - all settings will be returned to the original state;
+- (it is convenient to run code samples by this way in tests (with substitued configs));
+- it is fully thread-safe `:)`;
+
+```ruby
+class Config < Qonfig::DataSet
+  setting :queue do
+    setting :adapter, :sidekiq
+    setting :options, {}
+  end
+end
+
+config = Config.new
+
+# run a block of code with temporary queue.adapter setting
+config.with(queue: { adapter: 'que' }) do
+  # your changed settings
+  config.settings.queue.adapter # => 'que'
+
+  # you can temporary change settings by your code too
+  config.settings.queue.options = { concurrency: 10 }
+
+  # ...your another code...
+end
+
+# original settings has not changed :)
+config.settings.queue.adapter # => :sidekiq
+config.settings.queue.options # => {}
 ```
 
 ---
