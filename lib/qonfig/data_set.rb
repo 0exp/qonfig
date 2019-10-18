@@ -257,7 +257,7 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   # @api public
   # @since 0.17.0
   def with(temporary_configurations = {}, &arbitary_code)
-    @__lock__.with_arbitary_access do
+    with_arbitary_access do
       # rubocop:disable Style/RedundantBegin
       begin
         original_settings = @settings
@@ -351,5 +351,9 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   # @since 0.2.0
   def thread_safe_definition(&instructions)
     @__lock__.thread_safe_definition(&instructions)
+  end
+
+  def with_arbitary_access(&instructions)
+    @__lock__.with_arbitary_access(&instructions)
   end
 end
