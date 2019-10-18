@@ -49,6 +49,7 @@ require 'qonfig'
   - [State freeze](#state-freeze)
   - [Settings as Predicates](#settings-as-predicates)
   - [Setting key existence](#setting-key-existence) (`#key?`/`#option?`/`#setting?`)
+  - [Run arbitary code with temporary settings](#run-arbitary-code-with-temporary-settings)
 - [Validation](#validation)
   - [Introduction](#introdaction)
   - [Key search pattern](#key-search-pattern)
@@ -504,6 +505,7 @@ config.settings.password # => 'test123'
 - [State freeze](#state-freeze)
 - [Settings as Predicates](#settings-as-predicates)
 - [Setting key existence](#setting-key-existence) (`#key?`/`#option?`/`#setting?`)
+- [Run arbitary code with temporary settings](#run-arbitary-code-with-temporary-settings)
 
 ---
 
@@ -735,6 +737,42 @@ config.key?('que_adapter') # => false (key does not exist)
 # aliases
 config.setting?('credentials') # => true
 config.option?(:credentials, :password) # => true
+```
+
+---
+
+### Run arbitary code with temporary settings
+
+- provides a way to run an arbitary code with temporarily specified settings;
+- your arbitary code can temporary change any setting too - all settings will be returned to the original state;
+- (it is convenient to run code samples by this way in tests (with substitued configs));
+- it is fully thread-safe `:)`;
+
+```ruby
+class Config < Qonfig::DataSet
+  setting :queue do
+    setting :adapter, :sidekiq
+    setting :options, {}
+  end
+end
+
+config = Config.new
+
+# run a block of code with temporary queue.adapter setting
+config.with(queue: { adapter: 'que' }) do
+  # you can temporary change settings by your code too
+  config.settings.queue.options = { concurrency: 10 }
+
+  # your changed settings:
+  config.settings.queue.adapter # => 'que'
+  config.settings.queue.options # => { concurrency: 10 }
+
+  # ...your another code...
+end
+
+# original settings has not changed :)
+config.settings.queue.adapter # => :sidekiq
+config.settings.queue.options # => {}
 ```
 
 ---
