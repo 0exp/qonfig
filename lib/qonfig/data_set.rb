@@ -277,6 +277,22 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     end
   end
 
+  # @return [Qonfig::DataSet]
+  #
+  # @api public
+  # @since 0.17.0
+  def clone
+    self # TODO: realize
+  end
+
+  # @return [Qonfig::DataSet]
+  #
+  # @api public
+  # @since 0.17.0
+  def dup
+    self # TODO: realize
+  end
+
   private
 
   # @return [Qonfig::Validator]
