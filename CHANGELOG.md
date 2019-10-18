@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - `Qonfig::DataSet.build` now supports a Qonfig::DataSet-class attribute that should be inherited (`self` is used by default):
-  - new signature: `Qonfig::DataSet.build(base_config_klass, &config_class_definitions)`;
+  - new signature: `Qonfig::DataSet.build(base_config_klass = self, &config_class_definitions)`;
 
 ## [0.16.0] - 2019-09-13
 ### Added
