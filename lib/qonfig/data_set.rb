@@ -262,13 +262,11 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
       begin
         original_settings = @settings
 
-        temporary_settings = self.class.build.tap do |copied_config|
-          copied_config.configure(to_h)
+        temporary_settings = self.class.build.dup.tap do |copied_config|
           copied_config.configure(temporary_configurations)
         end.settings
 
         @settings = temporary_settings
-
         yield if block_given?
       ensure
         @settings = original_settings
@@ -281,16 +279,12 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   #
   # @api public
   # @since 0.17.0
-  def clone
-    self # TODO: realize
-  end
-
-  # @return [Qonfig::DataSet]
-  #
-  # @api public
-  # @since 0.17.0
   def dup
-    self # TODO: realize
+    thread_safe_definition do
+      self.class.build.tap do |duplicate|
+        duplicate.configure(to_h)
+      end
+    end
   end
 
   private
