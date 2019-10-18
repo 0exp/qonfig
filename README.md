@@ -481,18 +481,25 @@ GeneralApplication.config.to_h
 # and etc... (all Qonfig-related features)
 ```
 
+---
+
 ### Instantiation without class definition
 
 ```ruby
 config = Qonfig::DataSet.build do
   setting :user, 'D@iVeR'
   setting :password, 'test123'
+
+  def custom_method
+    'custom_result'
+  end
 end
 
 config.is_a?(Qonfig::DataSet) # => true
 
 config.settings.user # => 'D@iVeR'
 config.settings.password # => 'test123'
+config.custom_method # => 'custom_result'
 ```
 
 ---
