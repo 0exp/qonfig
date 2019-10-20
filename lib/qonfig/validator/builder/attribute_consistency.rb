@@ -133,7 +133,7 @@ class Qonfig::Validator::Builder::AttributeConsistency
     unless strict.is_a?(TrueClass) || strict.is_a?(FalseClass)
       raise(
         Qonfig::ValidatorArgumentError,
-        ':strict should be a value of true or false'
+        ':strict should be a boolean'
       )
     end
   end
