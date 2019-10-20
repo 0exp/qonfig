@@ -27,7 +27,7 @@ describe 'Config reloading' do
 
       setting :enable_api, false # append new setting
 
-      validate :logging, :boolean
+      validate :logging, :boolean, strict: true
     end
 
     expect(config.to_h).to match(
@@ -69,7 +69,7 @@ describe 'Config reloading' do
       'enable_api' => true
     )
 
-    # reload and set invalid options
+    # reload and set invalid options (logging cant be nil)
     expect { config.reload!(logging: nil) }.to raise_error(Qonfig::ValidationError)
   end
 end
