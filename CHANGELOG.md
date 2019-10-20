@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- Introduce `strict` validations: `strict: false` option ignores `nil` values and used by default;
 - Setting's key existence check methods: `#key?(*key_path)`, `#setting?(*key_path)`, `#option?(*key_path)`;
 - `#with(temporary_configurations = {}, &arbitary_code)` - run arbitary code with temporary settings;
 
