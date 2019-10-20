@@ -51,7 +51,7 @@ require 'qonfig'
   - [Setting key existence](#setting-key-existence) (`#key?`/`#option?`/`#setting?`)
   - [Run arbitary code with temporary settings](#run-arbitary-code-with-temporary-settings) (`#with(configs = {}, &arbitary_code)`)
 - [Validation](#validation)
-  - [Introduction](#introdaction)
+  - [Introduction](#introduction)
   - [Key search pattern](#key-search-pattern)
   - [Proc-based validation](#proc-based-validation)
   - [Method-based validation](#method-based-validation)
