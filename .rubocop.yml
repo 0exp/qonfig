@@ -17,3 +17,7 @@ AllCops:
 # NOTE: for code clarity in tests
 RSpec/LeakyConstantDeclaration:
   Enabled: false
+
+# NOTE: support for old ruby versions
+Style/RedundantBegin:
+  Enabled: false
