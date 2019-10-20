@@ -815,29 +815,29 @@ If you want to check the config object completely you can define a custom valida
 - you can define your own custom validation logic and validate dataset instance completely;
 - validation logic should return **truthy** or **falsy** value;
 - supprots two validation techniques (**proc-based** ([doc](#proc-based-validation)) and **dataset-method-based** ([doc](#method-based-validation))):
-  - **proc-based** (`setting validation`)
+  - **proc-based** (`setting validation`) ([doc](#proc-based-validation))
     ```ruby
-      validate 'db.user' do |value|
+      validate('db.user', strict: true) do |value|
         value.is_a?(String)
       end
     ```
-  - **proc-based** (`dataset validation`)
+  - **proc-based** (`dataset validation`) ([doc](#proc-based-validation))
     ```ruby
-      validate do
+      validate(strict: false) do
         settings.user == User[1]
       end
     ```
-  - **dataset-method-based** (`setting validation`)
+  - **dataset-method-based** (`setting validation`) ([doc](#method-based-validation))
     ```ruby
-      validate 'db.user', by: :check_user
+      validate 'db.user', by: :check_user, strict: true
 
       def check_user(value)
         value.is_a?(String)
       end
     ```
-  - **dataset-method-based** (`dataset validation`)
+  - **dataset-method-based** (`dataset validation`) ([doc](#method-based-validation))
     ```ruby
-      validate by: :check_config
+      validate by: :check_config, strict: false
 
       def check_config
         settings.user == User[1]
@@ -845,7 +845,8 @@ If you want to check the config object completely you can define a custom valida
     ```
 - provides a **set of standard validations** ([doc](#predefined-validations)):
   - DSL: `validate 'key.pattern', :predefned_validator`;
-  - validators:
+  - supports `strict` behavior;
+  - realized validators:
     - `integer`
     - `float`
     - `numeric`
@@ -1025,6 +1026,8 @@ config.settings.timeout = nil # => Qonfig::ValidationError (nil is not ignored, 
 ### Predefined validations
 
 - DSL: `validate 'key.pattern', :predefned_validator`
+- `nil` values are ignored by default;
+- set `strict: true` to disable `nil` ignorance (`strict: false` is used by default);
 - predefined validators:
   - `:not_nil`
   - `:integer`
