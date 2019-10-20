@@ -66,10 +66,10 @@ describe 'Validation' do
           validate '*', :string
           validate '*', :symbol
           validate '*', :numeric
-          validate '*', :hash
-          validate '*', :array
-          validate '*', :big_decimal
-          validate '*', :boolean
+          validate '*', :hash, strict: true
+          validate '*', :array, strict: true
+          validate '*', :big_decimal, strict: true
+          validate '*', :boolean, strict: true
         end
       end.not_to raise_error
     end
@@ -78,7 +78,7 @@ describe 'Validation' do
       expect do
         Class.new(Qonfig::DataSet) do
           validate 'a', :integer
-          validate 'b', 'integer'
+          validate 'b', 'integer', strict: true
         end
       end.not_to raise_error
     end
@@ -139,6 +139,29 @@ describe 'Validation' do
         end
       end.to raise_error(Qonfig::ValidatorArgumentError)
     end
+
+    specify ':strict and non-strict both can be used' do
+      expect do
+        Class.new(Qonfig::DataSet) do
+          validate(:kek, strict: true) {}
+          validate(:pek, strict: false) {}
+        end
+      end.not_to raise_error
+    end
+
+    specify 'fails with error on non-boolean values of :strict attribute' do
+      expect do
+        Class.new(Qonfig::DataSet) do
+          validate(:check, strict: Object.new) {}
+        end
+      end.to raise_error(Qonfig::ValidatorArgumentError)
+
+      expect do
+        Class.new(Qonfig::DataSet) do
+          validate(:check, strict: nil) {}
+        end
+      end.to raise_error(Qonfig::ValidatorArgumentError)
+    end
   end
 
   describe 'validations' do
@@ -147,7 +170,7 @@ describe 'Validation' do
         setting :telegraf_url, 'test' # NOTE: all right
 
         # NOTE: check that telegraf_url is a string value
-        validate 'telegraf_url' do |value|
+        validate('telegraf_url', strict: true) do |value|
           value.is_a?(String)
         end
       end
@@ -246,7 +269,7 @@ describe 'Validation' do
     specify 'child class inherits the base class validations' do
       base_config_klass = Class.new(Qonfig::DataSet) do
         setting :adapter, 'sidekiq'
-        validate(:adapter) { |value| value.is_a?(String) }
+        validate(:adapter, strict: true) { |value| value.is_a?(String) }
       end
 
       child_config_klass = Class.new(base_config_klass) do
@@ -354,31 +377,31 @@ describe 'Validation' do
 
         # only the root setting key
         # (port)
-        validate 'port' do |value|
+        validate('port', strict: true) do |value|
           value.is_a?(Numeric)
         end
 
         # all .user setting keys
         # (db.creds.user, sidekiq.admin.user)
-        validate '#.user' do |value|
+        validate('#.user', strict: true) do |value|
           value.is_a?(String)
         end
 
         # one level inside db AND all password setting keys there
         # (db.creds.password)
-        validate 'db.*.password' do |value|
+        validate('db.*.password', strict: true) do |value|
           value.is_a?(String)
         end
 
         # all .adapter setting keys
         # (adapter)
-        validate '#.adapter' do |value|
+        validate('#.adapter', strict: true) do |value|
           value.is_a?(Symbol)
         end
 
         # all keys inside sidekiq setting group
         # (sidekiq.admin.user, sidekiq.admin.password, sidekiq.logger_level)
-        validate 'sidekiq.#' do |value|
+        validate('sidekiq.#', strict: true) do |value|
           value.is_a?(String)
         end
       end
@@ -492,48 +515,143 @@ describe 'Validation' do
     end
   end
 
-  specify 'predefined validators' do
-    config_klass = Class.new(Qonfig::DataSet) do
-      setting :enabled, false
-      setting :count, 123
-      setting :amount, 23.55
-      setting :adapter, 'sidekiq'
-      setting :switcher, :on
-      setting :data, [1, 2, 3]
-      setting :mappings, a: 1, b: 2
-      setting :age, 20
+  describe 'strict behaviour' do
+    specify 'non-strict by default (validation ignores nil values)' do
+      config = Qonfig::DataSet.build do
+        setting :login, 'D@iVeR'
+        setting :password, 'atata123'
+        setting :enabled, true
 
-      validate :enabled, :boolean
-      validate :count, :integer
-      validate :amount, :float
-      validate :adapter, :string
-      validate :switcher, :symbol
-      validate :data, :array
-      validate :mappings, :hash
-      validate :age, :numeric
+        validate :login, :string
+        validate(:password) { |value| value.is_a?(String) }
+        validate :enabled, by: :check_enabled_setting
+
+        def check_enabled_setting(value)
+          value.is_a?(FalseClass) || value.is_a?(TrueClass)
+        end
+      end
+
+      expect(config.valid?).to eq(true)
+      expect { config.settings.login = nil }.not_to raise_error
+      expect { config.settings.password = nil }.not_to raise_error
+      expect { config.settings.enabled = nil }.not_to raise_error
+      expect(config.valid?).to eq(true)
     end
 
-    # NOTE: all right (originally)
-    expect { config_klass.new }.not_to raise_error
+    specify 'strict validation does not ignore nil value' do
+      config = Qonfig::DataSet.build do
+        setting :login, '0exp'
+        setting :password, 'test123'
+        setting :enabled, false
 
-    # NOTE: invalid values
-    expect { config_klass.new.settings.enabled = nil }.to raise_error(Qonfig::ValidationError)
-    expect { config_klass.new.settings.count = '5' }.to raise_error(Qonfig::ValidationError)
-    expect { config_klass.new.settings.amount = 22 }.to raise_error(Qonfig::ValidationError)
-    expect { config_klass.new.settings.adapter = :resque }.to raise_error(Qonfig::ValidationError)
-    expect { config_klass.new.settings.switcher = 'off' }.to raise_error(Qonfig::ValidationError)
-    expect { config_klass.new.settings.data = {} }.to raise_error(Qonfig::ValidationError)
-    expect { config_klass.new.settings.mappings = [] }.to raise_error(Qonfig::ValidationError)
-    expect { config_klass.new.settings.age = nil }.to raise_error(Qonfig::ValidationError)
+        validate :login, :string, strict: true
+        validate(:password, strict: true) { |value| value.is_a?(String) }
+        validate :enabled, by: :check_enabled_setting, strict: true
 
-    # NOTE: valid values
-    expect { config_klass.new.settings.enabled = true }.not_to raise_error
-    expect { config_klass.new.settings.count = 5 }.not_to raise_error
-    expect { config_klass.new.settings.amount = 22.0 }.not_to raise_error
-    expect { config_klass.new.settings.adapter = 'resque' }.not_to raise_error
-    expect { config_klass.new.settings.switcher = :off }.not_to raise_error
-    expect { config_klass.new.settings.data = [] }.not_to raise_error
-    expect { config_klass.new.settings.mappings = {} }.not_to raise_error
-    expect { config_klass.new.settings.age = 20.1 }.not_to raise_error
+        def check_enabled_setting(value)
+          value.is_a?(FalseClass) || value.is_a?(TrueClass)
+        end
+      end
+
+      expect(config.valid?).to eq(true)
+      expect { config.settings.login = nil }.to raise_error(Qonfig::ValidationError)
+      expect { config.settings.password = nil }.to raise_error(Qonfig::ValidationError)
+      expect { config.settings.enabled = nil }.to raise_error(Qonfig::ValidationError)
+      expect(config.valid?).to eq(false)
+    end
+  end
+
+  describe 'predefined validators' do
+    specify 'common behaviour (strict)' do
+      config_klass = Class.new(Qonfig::DataSet) do
+        setting :enabled, false
+        setting :count, 123
+        setting :amount, 23.55
+        setting :adapter, 'sidekiq'
+        setting :switcher, :on
+        setting :data, [1, 2, 3]
+        setting :mappings, a: 1, b: 2
+        setting :age, 20
+
+        validate :enabled, :boolean, strict: true
+        validate :count, :integer, strict: true
+        validate :amount, :float, strict: true
+        validate :adapter, :string, strict: true
+        validate :switcher, :symbol, strict: true
+        validate :data, :array, strict: true
+        validate :mappings, :hash, strict: true
+        validate :age, :numeric, strict: true
+      end
+
+      # NOTE: all right (originally)
+      expect { config_klass.new }.not_to raise_error
+
+      # NOTE: invalid values
+      expect { config_klass.new.settings.enabled = nil }.to raise_error(Qonfig::ValidationError)
+      expect { config_klass.new.settings.count = '5' }.to raise_error(Qonfig::ValidationError)
+      expect { config_klass.new.settings.amount = 22 }.to raise_error(Qonfig::ValidationError)
+      expect { config_klass.new.settings.adapter = :resque }.to raise_error(Qonfig::ValidationError)
+      expect { config_klass.new.settings.switcher = 'off' }.to raise_error(Qonfig::ValidationError)
+      expect { config_klass.new.settings.data = {} }.to raise_error(Qonfig::ValidationError)
+      expect { config_klass.new.settings.mappings = [] }.to raise_error(Qonfig::ValidationError)
+      expect { config_klass.new.settings.age = nil }.to raise_error(Qonfig::ValidationError)
+
+      # NOTE: valid values
+      expect { config_klass.new.settings.enabled = true }.not_to raise_error
+      expect { config_klass.new.settings.count = 5 }.not_to raise_error
+      expect { config_klass.new.settings.amount = 22.0 }.not_to raise_error
+      expect { config_klass.new.settings.adapter = 'resque' }.not_to raise_error
+      expect { config_klass.new.settings.switcher = :off }.not_to raise_error
+      expect { config_klass.new.settings.data = [] }.not_to raise_error
+      expect { config_klass.new.settings.mappings = {} }.not_to raise_error
+      expect { config_klass.new.settings.age = 20.1 }.not_to raise_error
+    end
+
+    specify 'common behaviour (non-strict)' do
+      config_klass = Class.new(Qonfig::DataSet) do
+        setting :enabled, false
+        setting :count, 123
+        setting :amount, 23.55
+        setting :adapter, 'sidekiq'
+        setting :switcher, :on
+        setting :data, [1, 2, 3]
+        setting :mappings, a: 1, b: 2
+        setting :age, 20
+
+        validate :enabled, :boolean
+        validate :count, :integer
+        validate :amount, :float
+        validate :adapter, :string
+        validate :switcher, :symbol
+        validate :data, :array
+        validate :mappings, :hash
+        validate :age, :numeric
+      end
+
+      # NOTE: all right (originally)
+      expect { config_klass.new }.not_to raise_error
+
+      # NOTE: invalid values
+      expect { config_klass.new.settings.count = '5' }.to raise_error(Qonfig::ValidationError)
+      expect { config_klass.new.settings.amount = 22 }.to raise_error(Qonfig::ValidationError)
+      expect { config_klass.new.settings.adapter = :resque }.to raise_error(Qonfig::ValidationError)
+      expect { config_klass.new.settings.switcher = 'off' }.to raise_error(Qonfig::ValidationError)
+      expect { config_klass.new.settings.data = {} }.to raise_error(Qonfig::ValidationError)
+      expect { config_klass.new.settings.mappings = [] }.to raise_error(Qonfig::ValidationError)
+
+      # NOTE: non-strict values (validation ignores nil values)
+      expect { config_klass.new.settings.age = nil }.not_to raise_error
+      expect { config_klass.new.settings.enabled = nil }.not_to raise_error
+
+      # NOTE: valid values
+      expect { config_klass.new.settings.enabled = true }.not_to raise_error
+      expect { config_klass.new.settings.count = 5 }.not_to raise_error
+      expect { config_klass.new.settings.amount = 22.0 }.not_to raise_error
+      expect { config_klass.new.settings.adapter = 'resque' }.not_to raise_error
+      expect { config_klass.new.settings.switcher = :off }.not_to raise_error
+      expect { config_klass.new.settings.data = [] }.not_to raise_error
+      expect { config_klass.new.settings.mappings = {} }.not_to raise_error
+      expect { config_klass.new.settings.age = 20.1 }.not_to raise_error
+    end
   end
 end

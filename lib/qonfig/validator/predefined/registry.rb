@@ -42,7 +42,6 @@ class Qonfig::Validator::Predefined::Registry
   # @since 0.13.0
   def resolve(name)
     thread_safe do
-      # rubocop:disable Style/RedundantBegin
       begin
         validators.fetch(indifferently_accessable_name(name))
       rescue KeyError
@@ -51,7 +50,6 @@ class Qonfig::Validator::Predefined::Registry
           "Predefined validator with name '#{name}' does not exist."
         )
       end
-      # rubocop:enable Style/RedundantBegin
     end
   end
 

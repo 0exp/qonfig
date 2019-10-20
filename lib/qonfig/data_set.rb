@@ -258,7 +258,6 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   # @since 0.17.0
   def with(temporary_configurations = {}, &arbitary_code)
     with_arbitary_access do
-      # rubocop:disable Style/RedundantBegin
       begin
         original_settings = @settings
 
@@ -271,7 +270,6 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
       ensure
         @settings = original_settings
       end
-      # rubocop:enable Style/RedundantBegin
     end
   end
 

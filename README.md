@@ -806,34 +806,38 @@ If you want to check the config object completely you can define a custom valida
   - when assigning new values;
   - when calling `#reload!`;
   - when calling `#clear!`;
+- provides `strict` and `non-strict` behavior (`strict: true` and `strict: false` respectively):
+  - `strict: false` ignores validations for settings with `nil` (allows `nil` value);
+  - `strict: true` does not ignores validations for settings with `nil`;
+  - `strict: false` is used by default;
 - provides special [key search pattern](#key-search-pattern) for matching setting key names;
 - uses the [key search pattern](#key-search-pattern) for definging what the setting key should be validated;
 - you can define your own custom validation logic and validate dataset instance completely;
 - validation logic should return **truthy** or **falsy** value;
 - supprots two validation techniques (**proc-based** ([doc](#proc-based-validation)) and **dataset-method-based** ([doc](#method-based-validation))):
-  - **proc-based** (`setting validation`)
+  - **proc-based** (`setting validation`) ([doc](#proc-based-validation))
     ```ruby
-      validate 'db.user' do |value|
+      validate('db.user', strict: true) do |value|
         value.is_a?(String)
       end
     ```
-  - **proc-based** (`dataset validation`)
+  - **proc-based** (`dataset validation`) ([doc](#proc-based-validation))
     ```ruby
-      validate do
+      validate(strict: false) do
         settings.user == User[1]
       end
     ```
-  - **dataset-method-based** (`setting validation`)
+  - **dataset-method-based** (`setting validation`) ([doc](#method-based-validation))
     ```ruby
-      validate 'db.user', by: :check_user
+      validate 'db.user', by: :check_user, strict: true
 
       def check_user(value)
         value.is_a?(String)
       end
     ```
-  - **dataset-method-based** (`dataset validation`)
+  - **dataset-method-based** (`dataset validation`) ([doc](#method-based-validation))
     ```ruby
-      validate by: :check_config
+      validate by: :check_config, strict: false
 
       def check_config
         settings.user == User[1]
@@ -841,7 +845,8 @@ If you want to check the config object completely you can define a custom valida
     ```
 - provides a **set of standard validations** ([doc](#predefined-validations)):
   - DSL: `validate 'key.pattern', :predefned_validator`;
-  - validators:
+  - supports `strict` behavior;
+  - realized validators:
     - `integer`
     - `float`
     - `numeric`
@@ -883,11 +888,13 @@ If you want to check the config object completely you can define a custom valida
 ### Proc-based validation
 
 - your proc should return truthy value or falsy value;
+- `nil` values are ignored by default;
+- set `strict: true` to disable `nil` ignorance (`strict: false` is used by default);
 - how to validate setting keys:
   - define proc with attribute: `validate 'your.setting.path' do |value|; end`
   - proc will receive setting value;
 - how to validate dataset instance:
-  - define proc without setting key pattern: `validate do; end`
+  - define proc without setting key pattern: `validate do; end`;
 
 ```ruby
 class Config < Qonfig::DataSet
@@ -906,6 +913,7 @@ class Config < Qonfig::DataSet
   end
 
   setting :enabled, false
+  setting :token, '1a2a3a', strict: true
 
   # validates:
   #   - db.password
@@ -926,6 +934,11 @@ class Config < Qonfig::DataSet
   validate do # NOTE: no setting key pattern
     settings.enabled == false
   end
+
+  # do not ignore `nil` (strict: true)
+  validate(:token, strict: true) do
+    value.is_a?(String)
+  end
 end
 
 config = Config.new
@@ -934,6 +947,9 @@ config.settings.service.address = 123 # => Qonfig::ValidationError (should be a 
 config.settings.service.protocol = :http # => Qonfig::ValidationError (should be a string)
 config.settings.service.creds.admin = :billikota # => Qonfig::ValidationError (should be a string)
 config.settings.enabled = true # => Qonfig::ValidationError (isnt `true`)
+
+config.settings.db.password = nil # ok, nil is ignored (non-strict behavior)
+config.settings.token = nil # => Qonfig::ValidationError (nil is not ignored, strict behavior) (should be a type of string)
 ```
 
 ---
@@ -941,6 +957,8 @@ config.settings.enabled = true # => Qonfig::ValidationError (isnt `true`)
 ### Method-based validation
 
 - method should return truthy value or falsy value;
+- `nil` values are ignored by default;
+- set `strict: true` to disable `nil` ignorance (`strict: false` is used by default);
 - how to validate setting keys:
   - define validation: `validate 'db.*.user', by: :your_custom_method`;
   - define your method with attribute: `def your_custom_method(setting_value); end`
@@ -963,6 +981,7 @@ class Config < Qonfig::DataSet
   end
 
   setting :enabled, true
+  setting :timeout, 12345, strict: true
 
   # validates:
   #   - services.counts.google
@@ -975,6 +994,9 @@ class Config < Qonfig::DataSet
   #   - dataset instance
   validate by: :check_state # NOTE: no setting key pattern
 
+  # do not ignore `nil` (strict: true)
+  validate :timeout, strict: true, by: :check_timeout
+
   def check_presence(value)
     value.is_a?(Numeric) && value > 0
   end
@@ -982,15 +1004,21 @@ class Config < Qonfig::DataSet
   def check_state
     settings.enabled.is_a?(TrueClass) || settings.enabled.is_a?(FalseClass)
   end
+
+  def check_timeout(value)
+    value.is_a?(Numeric)
+  end
 end
 
 config = Config.new
 
 config.settings.counts.google = 0 # => Qonfig::ValidationError (< 0)
-config.settings.counts.rambler = nil # => Qonfig::ValidationError (should be a numeric)
 config.settings.minimals.google = -1 # => Qonfig::ValidationError (< 0)
 config.settings.minimals.rambler = 'no' # => Qonfig::ValidationError (should be a numeric)
-config.settings.enabled = nil # => Qonfig::ValidationError (should be a boolean)
+
+config.settings.counts.rambler = nil # ok, nil is ignored (default non-strict behavior)
+config.settings.enabled = nil # ok, nil is ignored (default non-strict behavior)
+config.settings.timeout = nil # => Qonfig::ValidationError (nil is not ignored, strict behavior) (should be a type of numeric)
 ```
 
 ---
@@ -998,6 +1026,8 @@ config.settings.enabled = nil # => Qonfig::ValidationError (should be a boolean)
 ### Predefined validations
 
 - DSL: `validate 'key.pattern', :predefned_validator`
+- `nil` values are ignored by default;
+- set `strict: true` to disable `nil` ignorance (`strict: false` is used by default);
 - predefined validators:
   - `:not_nil`
   - `:integer`
