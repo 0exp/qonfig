@@ -1803,6 +1803,7 @@ Qonfig.plugin(:toml)
 
 - **Major**:
   - distributed configuration server;
+  - cli toolchain;
   - support for Rails-like secrets;
   - support for persistent data storages (we want to store configs in multiple databases and files);
 - **Minor**:
