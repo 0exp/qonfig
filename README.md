@@ -1806,6 +1806,7 @@ Qonfig.plugin(:toml)
   - cli toolchain;
   - support for Rails-like secrets;
   - support for persistent data storages (we want to store configs in multiple databases and files);
+  - Rails reload plugin;
 - **Minor**:
   - custom global (and class-level) validators (with a special Validator Definition DSL);
   - support for "dot notation" in `#key?`, `#option?`, `#setting?`, `#dig`, `#subset`, `#slice`, `#slice_value`;
