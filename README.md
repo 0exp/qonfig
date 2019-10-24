@@ -1801,15 +1801,22 @@ Qonfig.plugin(:toml)
 
 ## Roadmap
 
-- distributed configuration server;
-- support for Rails-like secrets;
-- support for persistent data storages (we want to store configs in multiple databases and files);
+- **Major**:
+  - distributed configuration server;
+  - support for Rails-like secrets;
+  - support for persistent data storages (we want to store configs in multiple databases and files);
+- **Minor**:
+  - custom global (and class-level) validators (with a special Validator Definition DSL);
+  - support for "dot notation" in `#key?`, `#option?`, `#setting?`, `#dig`, `#subset`, `#slice`, `#slice_value`;
+  - "load setting values from a file" (at instance level);
+  - config improts (and exports);
+  - pretty print :)));
 
 ## Contributing
 
 - Fork it ( https://github.com/0exp/qonfig/fork )
 - Create your feature branch (`git checkout -b feature/my-new-feature`)
-- Commit your changes (`git commit -am 'Add some feature'`)
+- Commit your changes (`git commit -am '[my-new-featre] Add some feature'`)
 - Push to the branch (`git push origin feature/my-new-feature`)
 - Create new Pull Request
 
