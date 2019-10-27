@@ -16,4 +16,17 @@ class Qonfig::DataSet
     end
   end
   alias_method :dump_to_toml, :save_to_toml
+
+  # @param file_path [String]
+  # @param strict [Boolean]
+  # @param expose [NilClass, String, Symbol] Environment key
+  # @return [void]
+  #
+  # @see Qonfig::DataSet#load_from_file
+  #
+  # @api public
+  # @since 0.17.0
+  def load_from_toml(file_path, strict: true, expose: nil)
+    load_from_file(file_path, format: :toml, strict: strict, expose: expose)
+  end
 end

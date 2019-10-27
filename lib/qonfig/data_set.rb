@@ -30,7 +30,7 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
 
   # @return [Qonfig::Settings]
   #
-  # @api private
+  # @api public
   # @since 0.1.0
   attr_reader :settings
 
@@ -73,6 +73,59 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
       raise Qonfig::FrozenSettingsError, 'Frozen config can not be reloaded' if frozen?
       load!(settings_map, &configurations)
     end
+  end
+
+  # @param file_path [String, Symbol]
+  # @option format [String, Symbol]
+  # @option strict [Boolean]
+  # @option expose [NilClass, String, Symbol] Environment key
+  # @return [void]
+  #
+  # @see Qonfig::DataSet#load_setting_values_from_file
+  #
+  # @api public
+  # @since 0.17.0
+  def load_from_file(file_path, format: :dynamic, strict: true, expose: nil)
+    thread_safe_access do
+      load_setting_values_from_file(file_path, format: format, strict: strict, expose: expose)
+    end
+  end
+
+  # @param file_path [String]
+  # @param strict [Boolean]
+  # @param expose [NilClass, String, Symbol] Environment key
+  # @return [void]
+  #
+  # @see Qonfig::DataSet#load_from_file
+  #
+  # @api public
+  # @since 0.17.0
+  def load_from_yaml(file_path, strict: true, expose: nil)
+    load_from_file(file_path, format: :yml, strict: strict, expose: expose)
+  end
+
+  # @param file_path [String]
+  # @param strict [Boolean]
+  # @param expose [NilClass, String, Symbol] Environment key
+  # @return [void]
+  #
+  # @see Qonfig::DataSet#load_from_file
+  #
+  # @api public
+  # @since 0.17.0
+  def load_from_json(file_path, strict: true, expose: nil)
+    load_from_file(file_path, format: :json, strict: strict, expose: expose)
+  end
+
+  # @option format [String, Symbol]
+  # @option strict [Boolean]
+  # @option expose [NilClass, String, Symbol]
+  # @return [void]
+  #
+  # @api public
+  # @since 0.17.0
+  def load_from_self(format: :dynamic, strict: true, expose: nil)
+    load_from_file(:self, format: format, strict: strict, expose: expose)
   end
 
   # @param settings_map [Hash]
@@ -342,6 +395,24 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     build_settings
     call_instance_management_commands
     apply_settings(settings_map, &configurations)
+  end
+
+  # @param file_path [String, Symbol]
+  # @option format [String, Symbol]
+  # @option strict [Boolean]
+  # @option expose [NilClass, String, Symbol]
+  # @return [void]
+  #
+  # @see Qonfig::Commands::Instantiation::ValuesFile
+  #
+  # @api private
+  # @since 0.17.0
+  def load_setting_values_from_file(file_path, format: :dynamic, strict: true, expose: nil)
+    caller_location = caller(1, 1)
+
+    Qonfig::Commands::Instantiation::ValuesFile.new(
+      file_path, caller_location, format: format, strict: strict, expose: expose
+    ).call(self, settings)
   end
 
   # @param instructions [Proc]
