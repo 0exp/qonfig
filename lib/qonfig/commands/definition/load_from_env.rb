@@ -2,7 +2,7 @@
 
 # @api private
 # @since 0.2.0
-class Qonfig::Commands::LoadFromENV < Qonfig::Commands::Base
+class Qonfig::Commands::Definition::LoadFromENV < Qonfig::Commands::Base
   require_relative 'load_from_env/value_converter'
 
   # @return [Boolean]
