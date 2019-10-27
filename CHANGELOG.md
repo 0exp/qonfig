@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 - Introduce `strict` validations: `strict: false` option ignores `nil` values and used by default;
 - Setting's key existence check methods: `#key?(*key_path)`, `#setting?(*key_path)`, `#option?(*key_path)`;
 - `#with(temporary_configurations = {}, &arbitary_code)` - run arbitary code with temporary settings;
+- `TOML` plugin: support for TOML version 0.5.0;
 
 ### Changed
 - `Qonfig::DataSet.build` now supports a Qonfig::DataSet-class attribute that should be inherited (`self` is used by default):
