@@ -61,7 +61,7 @@ class Qonfig::Commands::Instantiation::ValuesFile < Qonfig::Commands::Base
   # @param caller_location [String]
   # @option format [String, Symbol]
   # @option strict [Boolean]
-  # @opton expose [NilClass, String, Symbol]
+  # @option expose [NilClass, String, Symbol]
   # @return [void]
   #
   # @api private
