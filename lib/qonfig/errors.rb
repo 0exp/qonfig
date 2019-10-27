@@ -47,8 +47,8 @@ module Qonfig
 
   # @see Qonfig::Settings
   # @see Qonfig::Settings::KeyGuard
-  # @see Qonfig::Commands::AddOption
-  # @see Qonfig::Commands::AddNestedOption
+  # @see Qonfig::Commands::Definition::AddOption
+  # @see Qonfig::Commands::Definition::AddNestedOption
   #
   # @api public
   # @since 0.2.0
@@ -69,24 +69,30 @@ module Qonfig
     # :nocov:
   end
 
-  # @see Qonfig::Commands::LoadFromYAML
+  # @see Qonfig::Commands1::Instantiation::ValuesFile
+  #
+  # @api public
+  # @since 0.17.0
+  IncompatibleDataStructureError = Class.new(Error)
+
+  # @see Qonfig::Commands::Definition::LoadFromYAML
   #
   # @api public
   # @since 0.2.0
-  IncompatibleYAMLStructureError = Class.new(Error)
+  IncompatibleYAMLStructureError = Class.new(IncompatibleDataStructureError)
 
-  # @see Qonfig::Commands::LoadFromJSON
+  # @see Qonfig::Commands::Definition::LoadFromJSON
   #
   # @api public
   # @since 0.5.0
-  IncompatibleJSONStructureError = Class.new(Error)
+  IncompatibleJSONStructureError = Class.new(IncompatibleDataStructureError)
 
-  # @see Qonfig::Commands::LoadFromSelf
-  # @see Qonfig::Commands::ExposeSelf
+  # @see Qonfig::Commands::Definition::LoadFromSelf
+  # @see Qonfig::Commands::Definition::ExposeSelf
   #
   # @api public
   # @since 0.15.0
-  IncompatibleEndDataStructureError = Class.new(Error)
+  IncompatibleEndDataStructureError = Class.new(IncompatibleDataStructureError)
 
   # @see Qonfig::Loaders::YAML
   #
@@ -94,11 +100,30 @@ module Qonfig
   # @since 0.2.0
   FileNotFoundError = Class.new(Errno::ENOENT)
 
-  # @see Qonfig::Commands::LoadFromSelf
+  # @see Qonfig::Commands::Definition::LoadFromSelf
+  # @see Qonfig::Loaders::EndData
   #
   # @api public
   # @since 0.2.0
   SelfDataNotFoundError = Class.new(Error)
+
+  # @see Qonfig::Loaders::JSON
+  #
+  # @api public
+  # @since 0.17.0
+  JSONLoaderParseError = Class.new(::JSON::ParserError)
+
+  # @see Qonfig::Loaders::YAML
+  #
+  # @api public
+  # @since 0.17.0
+  YAMLLoaderParseError = Class.new(::Psych::SyntaxError)
+
+  # @see Qonfig::Loaders::Dynamic
+  #
+  # @api public
+  # @since 0.17.0
+  DynamicLoaderParseError = Class.new(Error)
 
   # @see Qonfig::Plugins::Regsitry
   #
@@ -112,7 +137,7 @@ module Qonfig
   # @since 0.4.0
   UnregisteredPluginError = Class.new(Error)
 
-  # @see Qonfig::Commands::ExposeYAML
+  # @see Qonfig::Commands::Definition::ExposeYAML
   #
   # @api public
   # @since 0.7.0

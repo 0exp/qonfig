@@ -2,7 +2,7 @@
 
 # @api private
 # @since 0.5.0
-class Qonfig::Commands::LoadFromJSON < Qonfig::Commands::Base
+class Qonfig::Commands::Definition::LoadFromJSON < Qonfig::Commands::Base
   # @return [String]
   #
   # @api private

@@ -1783,7 +1783,7 @@ Provided plugins:
 
 - adds support for `toml` format ([specification](https://github.com/toml-lang/toml));
 - depends on `toml-rb` gem ([link](https://github.com/emancu/toml-rb));
-- supports TOML `0.4.0` format (dependency lock);
+- supports TOML `0.5.0` format (dependency lock);
 - provides `load_from_toml` (works in `load_from_yaml` manner ([doc](#load-from-yaml-file)));
 - provides `save_to_toml` (works in `save_to_yaml` manner ([doc](#save-to-yaml-file))) (`toml-rb` has no native options);
 - provides `expose_toml` (works in `expose_yaml` manner ([doc](#expose-yaml)));

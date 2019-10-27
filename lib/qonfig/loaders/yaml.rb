@@ -11,6 +11,12 @@ class Qonfig::Loaders::YAML < Qonfig::Loaders::Basic
     # @since 0.2.0
     def load(data)
       ::YAML.load(ERB.new(data).result)
+    rescue ::Psych::SyntaxError => error
+      raise(
+        Qonfig::YAMLLoaderParseError.new(error.message).tap do |exception|
+          exception.set_backtrace(error.backtrace)
+        end
+      )
     end
 
     # @return [Object]

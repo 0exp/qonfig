@@ -10,7 +10,9 @@ module Qonfig::DSL
   # @api public
   # @since 0.12.0
   def load_from_toml(file_path, strict: true)
-    commands << Qonfig::Commands::LoadFromTOML.new(file_path, strict: strict)
+    definition_commands << Qonfig::Commands::LoadFromTOML.new(
+      file_path, strict: strict
+    )
   end
 
   # @param file_path [String]
@@ -22,6 +24,8 @@ module Qonfig::DSL
   # @api public
   # @since 0.12.0
   def expose_toml(file_path, strict: true, via:, env:)
-    commands << Qonfig::Commands::ExposeTOML.new(file_path, strict: strict, via: via, env: env)
+    definition_commands << Qonfig::Commands::ExposeTOML.new(
+      file_path, strict: strict, via: via, env: env
+    )
   end
 end
