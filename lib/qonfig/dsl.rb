@@ -11,15 +11,15 @@ module Qonfig::DSL
     # @since 0.1.0
     def extended(child_klass)
       child_klass.instance_variable_set(:@definition_commands, Qonfig::CommandSet.new)
-      child_klass.instance_variable_set(:@instantiation_commands, Qonfig::CommandSet.new)
+      child_klass.instance_variable_set(:@instance_commands, Qonfig::CommandSet.new)
 
       child_klass.singleton_class.prepend(Module.new do
         def inherited(child_klass)
           child_klass.instance_variable_set(:@definition_commands, Qonfig::CommandSet.new)
-          child_klass.instance_variable_set(:@instantiation_commands, Qonfig::CommandSet.new)
+          child_klass.instance_variable_set(:@instance_commands, Qonfig::CommandSet.new)
 
           child_klass.definition_commands.concat(definition_commands)
-          child_klass.instantiation_commands.concat(instantiation_commands)
+          child_klass.instance_commands.concat(instance_commands)
           super
         end
       end)
@@ -38,8 +38,8 @@ module Qonfig::DSL
   #
   # @api private
   # @since 0.17.0
-  def instantiation_commands
-    @instantiation_commands
+  def instance_commands
+    @instance_commands
   end
 
   # @param key [Symbol, String]
@@ -179,7 +179,7 @@ module Qonfig::DSL
   def values_file(file_path, format: :dynamic, strict: false, expose: nil)
     caller_location = caller(1, 1).first
 
-    instantiation_commands << Qonfig::Commands::Instantiation::ValuesFile.new(
+    instance_commands << Qonfig::Commands::Instantiation::ValuesFile.new(
       file_path, caller_location, format: format, strict: strict, expose: expose
     )
   end

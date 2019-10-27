@@ -8,5 +8,5 @@ module Qonfig
   #
   # @api public
   # @since 0.17.0
-  TOMLLoaderParseError = Class.new(::TomlRB::ParseErrors)
+  TOMLLoaderParseError = Class.new(::TomlRB::ParseError)
 end

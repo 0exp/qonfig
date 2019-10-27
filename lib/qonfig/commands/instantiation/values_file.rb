@@ -79,6 +79,7 @@ class Qonfig::Commands::Instantiation::ValuesFile < Qonfig::Commands::Base
     @caller_location = caller_location
     @format = format
     @strict = strict
+    @expose = expose
   end
 
   # @param data_set [Qonfig::DataSet]
@@ -89,8 +90,8 @@ class Qonfig::Commands::Instantiation::ValuesFile < Qonfig::Commands::Base
   # @since 0.17.0
   def call(data_set, settings)
     settings_values = load_settings_values
+    return unless settings_values
     settings_values = (settings_values[expose.to_sym] || settings_values[expose.to_s]) if expose
-
     data_set.configure(settings_values) if settings_values
   end
 
@@ -103,12 +104,37 @@ class Qonfig::Commands::Instantiation::ValuesFile < Qonfig::Commands::Base
   # @api private
   # @since 0.17.0
   def load_settings_values
+    (file_path == SELF_LOCATED_FILE_DEFINITION) ? load_from_self : load_from_file
+  end
+
+  # @return [Hash]
+  #
+  # @api private
+  # @since 0.17.0
+  def load_from_file
     Qonfig::Loaders.resolve(format).load_file(file_path, fail_on_unexist: strict).tap do |values|
       raise(
         Qonfig::IncompatibleDataStructureError,
         'Setting values must be a hash-like structure'
       ) unless values.is_a?(Hash)
     end
+  end
+
+  # @return [Hash]
+  #
+  # @api private
+  # @since 0.17.0
+  def load_from_self
+    end_data = Qonfig::Loaders::EndData.extract(caller_location)
+
+    Qonfig::Loaders.resolve(format).load(end_data).tap do |values|
+      raise(
+        Qonfig::IncompatibleDataStructureError,
+        'Setting values must be a hash-like structure'
+      ) unless values.is_a?(Hash)
+    end
+  rescue Qonfig::SelfDataNotFoundError => error
+    raise(error) if strict
   end
 
   # @param file_path [String, Symbol]
