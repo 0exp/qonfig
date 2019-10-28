@@ -1,16 +1,11 @@
 # frozen_string_literal: true
 
-describe 'Plugins(toml): .values_file / #load_from_self (without __END__ data)', :plugin do
-  before do
-    require 'toml-rb'
-    Qonfig.plugin(:toml)
-  end
-
+describe '.values_file / #load_from_self (without __END__ data) (JSON format)' do
   describe 'DSL macros' do
     context 'strict behavior' do
       let(:config_klass) do
         Class.new(Qonfig::DataSet) do
-          values_file :self, format: :toml, strict: true
+          values_file :self, format: :json, strict: true
           setting :user, 'D@iVeR'
         end
       end
@@ -23,7 +18,7 @@ describe 'Plugins(toml): .values_file / #load_from_self (without __END__ data)',
     context 'non-strict behavior (default)' do
       let(:config_klass) do
         Class.new(Qonfig::DataSet) do
-          values_file :self, format: :toml
+          values_file :self, format: :json
           setting :user, 'D@iVeR'
         end
       end
@@ -46,7 +41,7 @@ describe 'Plugins(toml): .values_file / #load_from_self (without __END__ data)',
         config = config_klass.new
 
         expect do
-          config.load_from_self(format: :toml, strict: true)
+          config.load_from_self(format: :json, strict: true)
         end.to raise_error(Qonfig::SelfDataNotFoundError)
       end
     end
@@ -60,7 +55,7 @@ describe 'Plugins(toml): .values_file / #load_from_self (without __END__ data)',
         config = config_klass.new
 
         expect do
-          config.load_from_self(format: :toml, strict: false)
+          config.load_from_self(format: :json, strict: false)
         end.not_to raise_error
 
         expect(config.settings.user).to eq('D@iVeR')

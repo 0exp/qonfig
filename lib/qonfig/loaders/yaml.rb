@@ -13,9 +13,14 @@ class Qonfig::Loaders::YAML < Qonfig::Loaders::Basic
       ::YAML.load(ERB.new(data).result)
     rescue ::Psych::SyntaxError => error
       raise(
-        Qonfig::YAMLLoaderParseError.new(error.message).tap do |exception|
-          exception.set_backtrace(error.backtrace)
-        end
+        Qonfig::YAMLLoaderParseError.new(
+          error.file,
+          error.line,
+          error.column,
+          error.offset,
+          error.problem,
+          error.context
+        ).tap { |exception| exception.set_backtrace(error.backtrace) }
       )
     end
 
