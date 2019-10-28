@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
-describe '.values_file / #load_from_file (shared behavior)' do
+describe 'Plugin(:toml) .values_file / #load_from_file (shared behavior)', :plugin do
+  before do
+    require 'toml-rb'
+    Qonfig.plugin(:toml)
+  end
+
   describe 'unsupported format failures' do
     describe 'DSL macros' do
       specify 'fails on unsupported format' do
@@ -26,6 +31,7 @@ __END__
 
 user: 0exp
 ASDF|"asSDF"
+[test]
 <xml>
   <data>
     <key>123</key>
