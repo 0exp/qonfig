@@ -125,7 +125,13 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   # @api public
   # @since 0.17.0
   def load_from_self(format: :dynamic, strict: true, expose: nil)
-    load_from_file(:self, format: format, strict: strict, expose: expose)
+    caller_location = caller(1, 1).first
+
+    thread_safe_access do
+      load_setting_values_from_file(
+        :self, format: format, strict: strict, expose: expose, caller_location: caller_location
+      )
+    end
   end
 
   # @param settings_map [Hash]
@@ -407,9 +413,13 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   #
   # @api private
   # @since 0.17.0
-  def load_setting_values_from_file(file_path, format: :dynamic, strict: true, expose: nil)
-    caller_location = caller(1, 1)
-
+  def load_setting_values_from_file(
+    file_path,
+    format: :dynamic,
+    strict: true,
+    expose: nil,
+    caller_location: nil
+  )
     Qonfig::Commands::Instantiation::ValuesFile.new(
       file_path, caller_location, format: format, strict: strict, expose: expose
     ).call(self, settings)
