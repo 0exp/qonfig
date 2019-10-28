@@ -128,7 +128,6 @@ class Qonfig::Commands::Instantiation::ValuesFile < Qonfig::Commands::Base
     end_data = Qonfig::Loaders::EndData.extract(caller_location)
 
     Qonfig::Loaders.resolve(format).load(end_data).tap do |values|
-      binding.pry
       raise(
         Qonfig::IncompatibleDataStructureError,
         'Setting values must be a hash-like structure'
