@@ -97,4 +97,26 @@ shared_examples 'load setting values from file by macros' do |file_name:, file_w
 
     expect { config_klass.new }.to raise_error(Qonfig::FileNotFoundError)
   end
+
+  specify 'fails when method attributes are incorrect' do
+    # incorrect file path
+    expect do
+      Class.new(Qonfig::DataSet) { values_file 123 }
+    end.to raise_error(Qonfig::ArgumentError)
+
+    # incorrect :format
+    expect do
+      Class.new(Qonfig::DataSet) { values_file file_name, format: 123 }
+    end.to raise_error(Qonfig::ArgumentError)
+
+    # incorrect :expose
+    expect do
+      Class.new(Qonfig::DataSet) { values_file file_name, expose: 123 }
+    end.to raise_error(Qonfig::ArgumentError)
+
+    # incorrect :strict
+    expect do
+      Class.new(Qonfig::DataSet) { values_file file_name, strict: 123 }
+    end.to raise_error(Qonfig::ArgumentError)
+  end
 end

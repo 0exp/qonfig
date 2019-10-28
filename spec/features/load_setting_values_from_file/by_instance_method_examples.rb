@@ -91,4 +91,27 @@ shared_examples 'load setting values from file by instance methods' do |file_nam
     expect(config.settings.credentials.user).to eq(nil)
     expect(config.settings.credentials.timeout).to eq(nil)
   end
+
+  specify 'fails when method attributes are incorrect' do
+    config = Class.new(Qonfig::DataSet) do
+      setting :enabled, true
+      setting :adapter, 'undefined'
+      setting(:credentials) { setting :user; setting :timeout }
+    end.new
+
+    # incorrect file path
+    expect do
+      config.public_send(load_by, 123)
+    end.to raise_error(Qonfig::ArgumentError)
+
+    # incorrect :expose
+    expect do
+      config.public_send(load_by, file_name, expose: 123)
+    end.to raise_error(Qonfig::ArgumentError)
+
+    # incorrect :strict
+    expect do
+      config.public_send(load_by, file_name, strict: 123)
+    end.to raise_error(Qonfig::ArgumentError)
+  end
 end
