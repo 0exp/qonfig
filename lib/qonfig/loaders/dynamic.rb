@@ -8,7 +8,7 @@ class Qonfig::Loaders::Dynamic < Qonfig::Loaders::Basic
     # @return [Object]
     #
     # @api private
-    # @since 0.5.0
+    # @since 0.17.0
     def load(data)
       try_to_load_json_data(data)
     rescue Qonfig::JSONLoaderParseError
@@ -22,7 +22,7 @@ class Qonfig::Loaders::Dynamic < Qonfig::Loaders::Basic
     # @return [Hash]
     #
     # @api private
-    # @since 0.5.0
+    # @since 0.17.0
     def load_empty_data
       {}
     end
