@@ -7,6 +7,8 @@ class Qonfig::Loaders::TOML < Qonfig::Loaders::Basic
     # @param data [String]
     # @return [Object]
     #
+    # @raise [Qonfig::TOMLLoaderParseError]
+    #
     # @api private
     # @since 0.12.0
     def load(data)

@@ -18,8 +18,8 @@ class Qonfig::DataSet
   alias_method :dump_to_toml, :save_to_toml
 
   # @param file_path [String]
-  # @param strict [Boolean]
-  # @param expose [NilClass, String, Symbol] Environment key
+  # @option strict [Boolean]
+  # @option expose [NilClass, String, Symbol] Environment key
   # @return [void]
   #
   # @see Qonfig::DataSet#load_from_file

@@ -108,12 +108,14 @@ module Qonfig
   SelfDataNotFoundError = Class.new(Error)
 
   # @see Qonfig::Loaders::JSON
+  # @see Qonfig::Loaders::Dynamic
   #
   # @api public
   # @since 0.17.0
   JSONLoaderParseError = Class.new(::JSON::ParserError)
 
   # @see Qonfig::Loaders::YAML
+  # @see Qonfig::Loaders::Dynamic
   #
   # @api public
   # @since 0.17.0

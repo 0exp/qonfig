@@ -7,6 +7,8 @@ class Qonfig::Loaders::JSON < Qonfig::Loaders::Basic
     # @param data [String]
     # @return [Object]
     #
+    # @raise [Qonfig::JSONLoaderParseError]
+    #
     # @api private
     # @since 0.5.0
     def load(data)

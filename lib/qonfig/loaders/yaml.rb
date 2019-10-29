@@ -7,6 +7,8 @@ class Qonfig::Loaders::YAML < Qonfig::Loaders::Basic
     # @param data [String]
     # @return [Object]
     #
+    # @raise [Qonfig::YAMLLoaderParseError]
+    #
     # @api private
     # @since 0.2.0
     def load(data)

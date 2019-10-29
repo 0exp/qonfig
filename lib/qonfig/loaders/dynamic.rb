@@ -7,6 +7,8 @@ class Qonfig::Loaders::Dynamic < Qonfig::Loaders::Basic
     # @param data [String]
     # @return [Object]
     #
+    # @raise [Qonfig::DynamicLoaderParseError]
+    #
     # @api private
     # @since 0.17.0
     def load(data)
@@ -29,6 +31,7 @@ class Qonfig::Loaders::Dynamic < Qonfig::Loaders::Basic
 
     private
 
+    # @param data [String]
     # @return [Object]
     #
     # @api private
@@ -37,6 +40,7 @@ class Qonfig::Loaders::Dynamic < Qonfig::Loaders::Basic
       Qonfig::Loaders::YAML.load(data)
     end
 
+    # @param data [String]
     # @return [Object]
     #
     # @api private

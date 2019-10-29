@@ -92,8 +92,8 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   end
 
   # @param file_path [String]
-  # @param strict [Boolean]
-  # @param expose [NilClass, String, Symbol] Environment key
+  # @option strict [Boolean]
+  # @option expose [NilClass, String, Symbol] Environment key
   # @return [void]
   #
   # @see Qonfig::DataSet#load_from_file
@@ -105,8 +105,8 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   end
 
   # @param file_path [String]
-  # @param strict [Boolean]
-  # @param expose [NilClass, String, Symbol] Environment key
+  # @option strict [Boolean]
+  # @option expose [NilClass, String, Symbol] Environment key
   # @return [void]
   #
   # @see Qonfig::DataSet#load_from_file
@@ -407,6 +407,7 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   # @option format [String, Symbol]
   # @option strict [Boolean]
   # @option expose [NilClass, String, Symbol]
+  # @option callcer_location [NilClass, String]
   # @return [void]
   #
   # @see Qonfig::Commands::Instantiation::ValuesFile
