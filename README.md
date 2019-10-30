@@ -67,8 +67,8 @@ require 'qonfig'
     - [Expose \_\_END\_\_](#expose-__end__) (aka `.expose_self`)
   - **Setting values**
     - [Default setting values file](#default-setting-values-file)
-    - [Load setting values from YAML](#load-setting-values-from-yaml-by-instance)
-    - [Load setting values from JSON](#load-setting-values-from-json-by-instance)
+    - [Load setting values from YAML file](#load-setting-values-from-yaml-file-by-instance)
+    - [Load setting values from JSON file](#load-setting-values-from-json-file-by-instance)
     - [Load setting values from \_\_END\_\_](#load-setting-values-from-__end__-by-instance)
     - [Load setting values from file manually](#load-setting-values-from-file-manually-by-instance)
   - **Daily work**
@@ -1097,8 +1097,8 @@ config.settings.ignorance = nil # => Qonfig::ValidationError (cant be nil)
   - [Expose \_\_END\_\_](#expose-__end__) (aka `expose_self`)
 - **Setting values**
   - [Default setting values file](#default-setting-values-file)
-  - [Load setting values from YAML](#load-setting-values-from-yaml-by-instance)
-  - [Load setting values from JSON](#load-setting-values-from-json-by-instance)
+  - [Load setting values from YAML file](#load-setting-values-from-yaml-file-by-instance)
+  - [Load setting values from JSON file](#load-setting-values-from-json-file-by-instance)
   - [Load setting values from \_\_END\_\_](#load-setting-values-from-__end__-by-instance)
   - [Load setting values from file manually](#load-setting-values-from-file-manually-by-instance)
 - **Daily work**
@@ -1752,7 +1752,7 @@ config = Config.new # no error
 
 ---
 
-### Load setting values from YAML (by instance)
+### Load setting values from YAML file (by instance)
 
 - prvoides an ability to load predefined setting values from a yaml file;
 - `#load_from_yaml(file_path, strict: true, expose: nil)`
@@ -1850,7 +1850,7 @@ config.settings.creds.auth_token # => "kek.pek" (from config.yml)
 
 ---
 
-### Load setting values from JSON (by instance)
+### Load setting values from JSON file (by instance)
 
 - prvoides an ability to load predefined setting values from a json file;
 - `#load_from_yaml(file_path, strict: true, expose: nil)`
