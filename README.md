@@ -2183,14 +2183,14 @@ __END__
 ### Load setting values from file manually (by instance)
 
 - prvoides an ability to load predefined setting values from a file;
-- works in `#load_from_yaml` / `#load_from_json` / `#load_from_self` manner;
+- works in instance-based `#load_from_yaml` / `#load_from_json` / `#load_from_self` manner;
 - signature: `#load_from_file(file_path, format: :dynamic, strict: true, expose: nil)`:
   - `file_path` - full file path or `:self` (`:self` means "load setting values from __END__ data");
   - `:format` - defines the format of file (`:dynamic` means "try to automatically infer the file format") (`:dynamic` by default);
     - supports `:yaml`, `:json`, `:toml` (via `Qonfig.plugin(:toml)`), `:dynamic` (automatic format detection);
   - `:strict` - rerquires that file (or __END__-data) should exist (`true` by default);
   - `:expose` - what the environment-based subset of keys should be used (`nil` means "do not use any subset of keys") (`nil` by default);
-- see examples for `#load_from_yaml` / `#load_from_json` / `#load_from_self`;
+- see examples for instance-based `#load_from_yaml` ([doc](#load-setting-values-from-yaml-by-instance)) / `#load_from_json` ([doc](#load-setting-values-from-json-by-instance)) / `#load_from_self` ([doc](#load-setting-values-from-__end__-by-instance));
 
 ---
 
