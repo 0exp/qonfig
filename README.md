@@ -63,16 +63,17 @@ require 'qonfig'
     - [Load from JSON file](#load-from-json-file)
     - [Expose JSON](#expose-json) (`Rails`-like environment-based JSON configs)
     - [Load from ENV](#load-from-env)
-    - [Load from \_\_END\_\_](#load-from-__end__) (aka `load_from_self`)
-    - [Expose \_\_END\_\_](#expose-__end__) (aka `expose_self`)
-    - [Save to JSON file](#save-to-json-file) (`save_to_json`)
-    - [Save to YAML file](#save-to-yaml-file) (`save_to_yaml`)
+    - [Load from \_\_END\_\_](#load-from-__end__) (aka `.load_from_self`)
+    - [Expose \_\_END\_\_](#expose-__end__) (aka `.expose_self`)
   - **Setting values**
     - [Default setting values file](#default-setting-values-file)
     - [Load setting values from YAML](#load-setting-values-from-yaml-by-instance)
     - [Load setting values from JSON](#load-setting-values-from-json-by-instance)
     - [Load setting values from \_\_END\_\_](#load-setting-values-from-__end__-by-instance)
     - [Load setting values from file manually](#load-setting-values-from-file-manually-by-instance)
+  - **Daily work**
+    - [Save to JSON file](#save-to-json-file) (`#save_to_json`)
+    - [Save to YAML file](#save-to-yaml-file) (`#save_to_yaml`)
 - [Plugins](#plugins)
   - [toml](#plugins-toml) (provides `load_from_toml`, `save_to_toml`, `expose_toml`)
 - [Roadmap](#roadmap)
@@ -1086,15 +1087,23 @@ config.settings.ignorance = nil # => Qonfig::ValidationError (cant be nil)
 
 ## Work with files
 
-- [Load from YAML file](#load-from-yaml-file)
-- [Expose YAML](#expose-yaml) (`Rails`-like environment-based YAML configs)
-- [Load from JSON file](#load-from-json-file)
-- [Expose JSON](#expose-json) (`Rails`-like environment-based JSON configs)
-- [Load from ENV](#load-from-env)
-- [Load from \_\_END\_\_](#load-from-__end__) (aka `load_from_self`)
-- [Expose \_\_END\_\_](#expose-__end__) (aka `expose_self`)
-- [Save to JSON file](#save-to-json-file) (`save_to_json`)
-- [Save to YAML file](#save-to-yaml-file) (`save_to_yaml`)
+- **Setting keys definition**
+  - [Load from YAML file](#load-from-yaml-file)
+  - [Expose YAML](#expose-yaml) (`Rails`-like environment-based YAML configs)
+  - [Load from JSON file](#load-from-json-file)
+  - [Expose JSON](#expose-json) (`Rails`-like environment-based JSON configs)
+  - [Load from ENV](#load-from-env)
+  - [Load from \_\_END\_\_](#load-from-__end__) (aka `load_from_self`)
+  - [Expose \_\_END\_\_](#expose-__end__) (aka `expose_self`)
+- **Setting values**
+  - [Default setting values file](#default-setting-values-file)
+  - [Load setting values from YAML](#load-setting-values-from-yaml-by-instance)
+  - [Load setting values from JSON](#load-setting-values-from-json-by-instance)
+  - [Load setting values from \_\_END\_\_](#load-setting-values-from-__end__-by-instance)
+  - [Load setting values from file manually](#load-setting-values-from-file-manually-by-instance)
+- **Daily work**
+  - [Save to JSON file](#save-to-json-file) (`save_to_json`)
+  - [Save to YAML file](#save-to-yaml-file) (`save_to_yaml`)
 
 ---
 
@@ -1626,150 +1635,6 @@ production:
 
 ---
 
-### Save to JSON file
-
-- `#save_to_json` - represents config object as a json structure and saves it to a file:
-  - uses native `::JSON.generate` under the hood;
-  - writes new file (or rewrites existing file);
-  - attributes:
-    - `:path` - (required) - file path;
-    - `:options` - (optional) - native `::JSON.generate` options (from stdlib):
-      - `:indent` - `" "` by default;
-      - `:space` - `" "` by default/
-      - `:object_nl` - `"\n"` by default;
-    - `&value_preprocessor` - (optional) - value pre-processor;
-
-#### Without value preprocessing (standard usage)
-
-```ruby
-class AppConfig < Qonfig::DataSet
-  setting :server do
-    setting :address, 'localhost'
-    setting :port, 12_345
-  end
-
-  setting :enabled, true
-end
-
-config = AppConfig.new
-
-# NOTE: save to json file
-config.save_to_json(path: 'config.json')
-```
-
-```json
-{
- "sentry": {
-  "address": "localhost",
-  "port": 12345
- },
- "enabled": true
-}
-```
-
-#### With value preprocessing and custom options
-
-```ruby
-class AppConfig < Qonfig::DataSet
-  setting :server do
-    setting :address, 'localhost'
-    setting :port, 12_345
-  end
-
-  setting :enabled, true
-  setting :dynamic, -> { 1 + 2 }
-end
-
-config = AppConfig.new
-
-# NOTE: save to json file with custom options (no spaces / no new line / no indent; call procs)
-config.save_to_json(path: 'config.json', options: { indent: '', space: '', object_nl: '' }) do |value|
-  value.is_a?(Proc) ? value.call : value
-end
-```
-
-```json
-// no spaces / no new line / no indent / calculated "dynamic" setting key
-{"sentry":{"address":"localhost","port":12345},"enabled":true,"dynamic":3}
-```
-
----
-
-### Save to YAML file
-
-- `#save_to_yaml` - represents config object as a yaml structure and saves it to a file:
-  - uses native `::Psych.dump` under the hood;
-  - writes new file (or rewrites existing file);
-  - attributes:
-    - `:path` - (required) - file path;
-    - `:options` - (optional) - native `::Psych.dump` options (from stdlib):
-      - `:indentation` - `2` by default;
-      - `:line_width` - `-1` by default;
-      - `:canonical` - `false` by default;
-      - `:header` - `false` by default;
-      - `:symbolize_keys` - (non-native option) - `false` by default;
-    - `&value_preprocessor` - (optional) - value pre-processor;
-
-#### Without value preprocessing (standard usage)
-
-```ruby
-class AppConfig < Qonfig::DataSet
-  setting :server do
-    setting :address, 'localhost'
-    setting :port, 12_345
-  end
-
-  setting :enabled, true
-end
-
-config = AppConfig.new
-
-# NOTE: save to yaml file
-config.save_to_yaml(path: 'config.yml')
-```
-
-```yaml
----
-server:
-  address: localhost
-  port: 12345
-enabled: true
-```
-
-#### With value preprocessing and custom options
-
-```ruby
-class AppConfig < Qonfig::DataSet
-  setting :server do
-    setting :address, 'localhost'
-    setting :port, 12_345
-  end
-
-  setting :enabled, true
-  setting :dynamic, -> { 5 + 5 }
-end
-
-config = AppConfig.new
-
-# NOTE: save to yaml file with custom options (add yaml version header; call procs)
-config.save_to_yaml(path: 'config.yml', options: { header: true }) do |value|
-  value.is_a?(Proc) ? value.call : value
-end
-```
-
-```yaml
-# yaml version header / calculated "dynamic" setting key
-%YAML 1.1
----
-server:
-  address: localhost
-  port: 12345
-enabled: true
-dynamic: 10
-```
-
----
-
 ### Default setting values file
 
 - defines a file that should be used for setting values initialization for your config object;
@@ -2193,6 +2058,148 @@ __END__
 - see examples for instance-based `#load_from_yaml` ([doc](#load-setting-values-from-yaml-by-instance)) / `#load_from_json` ([doc](#load-setting-values-from-json-by-instance)) / `#load_from_self` ([doc](#load-setting-values-from-__end__-by-instance));
 
 ---
+
+### Save to JSON file
+
+- `#save_to_json` - represents config object as a json structure and saves it to a file:
+  - uses native `::JSON.generate` under the hood;
+  - writes new file (or rewrites existing file);
+  - attributes:
+    - `:path` - (required) - file path;
+    - `:options` - (optional) - native `::JSON.generate` options (from stdlib):
+      - `:indent` - `" "` by default;
+      - `:space` - `" "` by default/
+      - `:object_nl` - `"\n"` by default;
+    - `&value_preprocessor` - (optional) - value pre-processor;
+
+#### Without value preprocessing (standard usage)
+
+```ruby
+class AppConfig < Qonfig::DataSet
+  setting :server do
+    setting :address, 'localhost'
+    setting :port, 12_345
+  end
+
+  setting :enabled, true
+end
+
+config = AppConfig.new
+
+# NOTE: save to json file
+config.save_to_json(path: 'config.json')
+```
+
+```json
+{
+ "sentry": {
+  "address": "localhost",
+  "port": 12345
+ },
+ "enabled": true
+}
+```
+
+#### With value preprocessing and custom options
+
+```ruby
+class AppConfig < Qonfig::DataSet
+  setting :server do
+    setting :address, 'localhost'
+    setting :port, 12_345
+  end
+
+  setting :enabled, true
+  setting :dynamic, -> { 1 + 2 }
+end
+
+config = AppConfig.new
+
+# NOTE: save to json file with custom options (no spaces / no new line / no indent; call procs)
+config.save_to_json(path: 'config.json', options: { indent: '', space: '', object_nl: '' }) do |value|
+  value.is_a?(Proc) ? value.call : value
+end
+```
+
+```json
+// no spaces / no new line / no indent / calculated "dynamic" setting key
+{"sentry":{"address":"localhost","port":12345},"enabled":true,"dynamic":3}
+```
+
+---
+
+### Save to YAML file
+
+- `#save_to_yaml` - represents config object as a yaml structure and saves it to a file:
+  - uses native `::Psych.dump` under the hood;
+  - writes new file (or rewrites existing file);
+  - attributes:
+    - `:path` - (required) - file path;
+    - `:options` - (optional) - native `::Psych.dump` options (from stdlib):
+      - `:indentation` - `2` by default;
+      - `:line_width` - `-1` by default;
+      - `:canonical` - `false` by default;
+      - `:header` - `false` by default;
+      - `:symbolize_keys` - (non-native option) - `false` by default;
+    - `&value_preprocessor` - (optional) - value pre-processor;
+
+#### Without value preprocessing (standard usage)
+
+```ruby
+class AppConfig < Qonfig::DataSet
+  setting :server do
+    setting :address, 'localhost'
+    setting :port, 12_345
+  end
+
+  setting :enabled, true
+end
+
+config = AppConfig.new
+
+# NOTE: save to yaml file
+config.save_to_yaml(path: 'config.yml')
+```
+
+```yaml
+---
+server:
+  address: localhost
+  port: 12345
+enabled: true
+```
+
+#### With value preprocessing and custom options
+
+```ruby
+class AppConfig < Qonfig::DataSet
+  setting :server do
+    setting :address, 'localhost'
+    setting :port, 12_345
+  end
+
+  setting :enabled, true
+  setting :dynamic, -> { 5 + 5 }
+end
+
+config = AppConfig.new
+
+# NOTE: save to yaml file with custom options (add yaml version header; call procs)
+config.save_to_yaml(path: 'config.yml', options: { header: true }) do |value|
+  value.is_a?(Proc) ? value.call : value
+end
+```
+
+```yaml
+# yaml version header / calculated "dynamic" setting key
+%YAML 1.1
+---
+server:
+  address: localhost
+  port: 12345
+enabled: true
+dynamic: 10
+```
 
 ### Plugins
 
