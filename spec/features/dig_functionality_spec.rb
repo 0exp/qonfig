@@ -26,11 +26,11 @@ describe '#dig-functionality (Hash#dig-like behaviour)' do
     # try to dig into the hash value (setting with a hash value)
     expect { config.dig(:db, :creds, :user, :test) }.to raise_error(Qonfig::UnknownSettingError)
 
-    # rubocop:disable Lint/UnneededSplatExpansion
+    # rubocop:disable Lint/RedundantSplatExpansion
     # dig with empty key lists
     expect { config.dig(*[]) }.to raise_error(Qonfig::ArgumentError)
     expect { config.dig }.to raise_error(Qonfig::ArgumentError)
-    # rubocop:enable Lint/UnneededSplatExpansion
+    # rubocop:enable Lint/RedundantSplatExpansion
 
     # dig into unexistent option
     expect do
