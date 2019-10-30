@@ -69,7 +69,7 @@ module Qonfig
     # :nocov:
   end
 
-  # @see Qonfig::Commands1::Instantiation::ValuesFile
+  # @see Qonfig::Commands::Instantiation::ValuesFile
   #
   # @api public
   # @since 0.17.0
