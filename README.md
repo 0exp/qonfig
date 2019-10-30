@@ -2250,7 +2250,6 @@ Qonfig.plugin(:toml)
 - **Minor**:
   - custom global (and class-level) validators (with a special Validator Definition DSL);
   - support for "dot notation" in `#key?`, `#option?`, `#setting?`, `#dig`, `#subset`, `#slice`, `#slice_value`;
-  - "load setting values from a file" (at instance level);
   - config improts (and exports);
   - pretty print :)));
 
