@@ -1735,19 +1735,19 @@ config.settings.options.threads # => 10 (development keys subset)
 #### File does not exist
 
 ```ruby
-# strict behavior (default)
+# non-strict behavior (default)
 class Config < Qonfig::DataSet
   values_file 'sidekiq.yml'
 end
 
-config = Config.new # => Qonfig::FileNotFoundError
+config = Config.new # no error
 
-# non-strict behavior (strict: false)
+# strict behavior (strict: true)
 class Config < Qonfig::DataSet
-  values_file 'sidekiq.yml', strict: false
+  values_file 'sidekiq.yml', strict: true
 end
 
-config = Config.new # no error
+config = Config.new # => Qonfig::FileNotFoundError
 ```
 
 ---
