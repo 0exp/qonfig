@@ -57,7 +57,7 @@ require 'qonfig'
   - [Method-based validation](#method-based-validation)
   - [Predefined validations](#predefined-validations)
 - [Work with files](#work-with-files)
-  - [Setting keys definition]
+  - **Setting keys definition**
     - [Load from YAML file](#load-from-yaml-file)
     - [Expose YAML](#expose-yaml) (`Rails`-like environment-based YAML configs)
     - [Load from JSON file](#load-from-json-file)
@@ -67,10 +67,12 @@ require 'qonfig'
     - [Expose \_\_END\_\_](#expose-__end__) (aka `expose_self`)
     - [Save to JSON file](#save-to-json-file) (`save_to_json`)
     - [Save to YAML file](#save-to-yaml-file) (`save_to_yaml`)
-  - [Setting values]
-    - [Load setting values from JSON]
-    - [Load setting values from YAML]
-    - [Load setting values from \_\_END\_\_]
+  - **Setting values**
+    - [Default setting values file](#default-setting-values-file)
+    - [Load setting values from YAML](#load-setting-values-from-yaml-by-instance)
+    - [Load setting values from JSON](#load-setting-values-from-json-by-instance)
+    - [Load setting values from \_\_END\_\_](#load-setting-values-from-__end__-by-instance)
+    - [Load setting values from file manually](#load-setting-values-from-file-manually-by-instance)
 - [Plugins](#plugins)
   - [toml](#plugins-toml) (provides `load_from_toml`, `save_to_toml`, `expose_toml`)
 - [Roadmap](#roadmap)
@@ -1770,6 +1772,7 @@ dynamic: 10
 
 ### Default setting values file
 
+- defines a file that should be used for setting values initialization for your config object;
 - `.values_file(file_path, format: :dynamic, strict: false, expose: nil)`
   - `file_path` - full file path or `:self` (`:self` menas "load setting values from __END__ data");
   - `:format` - defines the format of file (`:dynamic` means "try to automatically infer the file format") (`:dynamic` by default);
@@ -1886,6 +1889,7 @@ config = Config.new # no error
 
 ### Load setting values from YAML (by instance)
 
+- prvoides an ability to load predefined setting values from a yaml file;
 - `#load_from_yaml(file_path, strict: true, expose: nil)`
   - `file_path` - full file path or `:self` (`:self` means "load setting values from __END__ data");
   - `:strict` - rerquires that file (or __END__-data) should exist (`true` by default);
@@ -1983,6 +1987,7 @@ config.settings.creds.auth_token # => "kek.pek" (from config.yml)
 
 ### Load setting values from JSON (by instance)
 
+- prvoides an ability to load predefined setting values from a json file;
 - `#load_from_yaml(file_path, strict: true, expose: nil)`
   - `file_path` - full file path or `:self` (`:self` means "load setting values from __END__ data");
   - `:strict` - rerquires that file (or __END__-data) should exist (`true` by default);
@@ -2090,10 +2095,11 @@ config.settings.creds.auth_token # => "kek.pek" (from config.json)
 
 ### Load setting values from \_\_END\_\_ (by instance)
 
+- prvoides an ability to load predefined setting values from `__END__` file section;
 - `#load_from_self(strict: true, expose: nil)`
   - `:format` - defines the format of file (`:dynamic` means "try to automatically infer the file format") (`:dynamic` by default);
     - supports `:yaml`, `:json`, `:toml` (via `Qonfig.plugin(:toml)`), `:dynamic` (automatic format detection);
-  - `:strict` - __END__-data should exist (`true` by default);
+  - `:strict` - requires that __END__-data should exist (`true` by default);
   - `:expose` - what the environment-based subset of keys should be used (`nil` means "do not use any subset of keys") (`nil` by default);
 
 #### Default behavior
@@ -2171,6 +2177,20 @@ __END__
   }
 }
 ```
+
+---
+
+### Load setting values from file manually (by instance)
+
+- prvoides an ability to load predefined setting values from a file;
+- works in `#load_from_yaml` / `#load_from_json` / `#load_from_self` manner;
+- signature: `#load_from_file(file_path, format: :dynamic, strict: true, expose: nil)`:
+  - `file_path` - full file path or `:self` (`:self` means "load setting values from __END__ data");
+  - `:format` - defines the format of file (`:dynamic` means "try to automatically infer the file format") (`:dynamic` by default);
+    - supports `:yaml`, `:json`, `:toml` (via `Qonfig.plugin(:toml)`), `:dynamic` (automatic format detection);
+  - `:strict` - rerquires that file (or __END__-data) should exist (`true` by default);
+  - `:expose` - what the environment-based subset of keys should be used (`nil` means "do not use any subset of keys") (`nil` by default);
+- see examples for `#load_from_yaml` / `#load_from_json` / `#load_from_self`;
 
 ---
 
