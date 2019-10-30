@@ -2,7 +2,7 @@
 
 # @api private
 # @since 0.7.0
-class Qonfig::Commands::ExposeYAML < Qonfig::Commands::Base
+class Qonfig::Commands::Definition::ExposeYAML < Qonfig::Commands::Base
   # @return [Hash]
   #
   # @api private

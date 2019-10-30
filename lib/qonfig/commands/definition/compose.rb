@@ -2,7 +2,7 @@
 
 # @api private
 # @since 0.1.0
-class Qonfig::Commands::Compose < Qonfig::Commands::Base
+class Qonfig::Commands::Definition::Compose < Qonfig::Commands::Base
   # @return [Qonfig::DataSet]
   #
   # @api private

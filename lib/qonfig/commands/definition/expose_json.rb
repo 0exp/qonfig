@@ -2,7 +2,7 @@
 
 # @api private
 # @since 0.14.0
-class Qonfig::Commands::ExposeJSON < Qonfig::Commands::Base
+class Qonfig::Commands::Definition::ExposeJSON < Qonfig::Commands::Base
   # @return [Hash]
   #
   # @api private

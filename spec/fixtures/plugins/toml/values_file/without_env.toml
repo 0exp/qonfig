@@ -1,0 +1,6 @@
+enabled = false
+adapter = 'sidekiq'
+
+[credentials]
+  user = '0exp'
+  timeout = 123

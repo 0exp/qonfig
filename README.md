@@ -57,15 +57,23 @@ require 'qonfig'
   - [Method-based validation](#method-based-validation)
   - [Predefined validations](#predefined-validations)
 - [Work with files](#work-with-files)
-  - [Load from YAML file](#load-from-yaml-file)
-  - [Expose YAML](#expose-yaml) (`Rails`-like environment-based YAML configs)
-  - [Load from JSON file](#load-from-json-file)
-  - [Expose JSON](#expose-json) (`Rails`-like environment-based JSON configs)
-  - [Load from ENV](#load-from-env)
-  - [Load from \_\_END\_\_](#load-from-__end__) (aka `load_from_self`)
-  - [Expose \_\_END\_\_](#expose-__end__) (aka `expose_self`)
-  - [Save to JSON file](#save-to-json-file) (`save_to_json`)
-  - [Save to YAML file](#save-to-yaml-file) (`save_to_yaml`)
+  - **Setting keys definition**
+    - [Load from YAML file](#load-from-yaml-file)
+    - [Expose YAML](#expose-yaml) (`Rails`-like environment-based YAML configs)
+    - [Load from JSON file](#load-from-json-file)
+    - [Expose JSON](#expose-json) (`Rails`-like environment-based JSON configs)
+    - [Load from ENV](#load-from-env)
+    - [Load from \_\_END\_\_](#load-from-__end__) (aka `.load_from_self`)
+    - [Expose \_\_END\_\_](#expose-__end__) (aka `.expose_self`)
+  - **Setting values**
+    - [Default setting values file](#default-setting-values-file)
+    - [Load setting values from YAML file](#load-setting-values-from-yaml-file-by-instance)
+    - [Load setting values from JSON file](#load-setting-values-from-json-file-by-instance)
+    - [Load setting values from \_\_END\_\_](#load-setting-values-from-__end__-by-instance)
+    - [Load setting values from file manually](#load-setting-values-from-file-manually-by-instance)
+  - **Daily work**
+    - [Save to JSON file](#save-to-json-file) (`#save_to_json`)
+    - [Save to YAML file](#save-to-yaml-file) (`#save_to_yaml`)
 - [Plugins](#plugins)
   - [toml](#plugins-toml) (provides `load_from_toml`, `save_to_toml`, `expose_toml`)
 - [Roadmap](#roadmap)
@@ -1079,15 +1087,23 @@ config.settings.ignorance = nil # => Qonfig::ValidationError (cant be nil)
 
 ## Work with files
 
-- [Load from YAML file](#load-from-yaml-file)
-- [Expose YAML](#expose-yaml) (`Rails`-like environment-based YAML configs)
-- [Load from JSON file](#load-from-json-file)
-- [Expose JSON](#expose-json) (`Rails`-like environment-based JSON configs)
-- [Load from ENV](#load-from-env)
-- [Load from \_\_END\_\_](#load-from-__end__) (aka `load_from_self`)
-- [Expose \_\_END\_\_](#expose-__end__) (aka `expose_self`)
-- [Save to JSON file](#save-to-json-file) (`save_to_json`)
-- [Save to YAML file](#save-to-yaml-file) (`save_to_yaml`)
+- **Setting keys definition**
+  - [Load from YAML file](#load-from-yaml-file)
+  - [Expose YAML](#expose-yaml) (`Rails`-like environment-based YAML configs)
+  - [Load from JSON file](#load-from-json-file)
+  - [Expose JSON](#expose-json) (`Rails`-like environment-based JSON configs)
+  - [Load from ENV](#load-from-env)
+  - [Load from \_\_END\_\_](#load-from-__end__) (aka `load_from_self`)
+  - [Expose \_\_END\_\_](#expose-__end__) (aka `expose_self`)
+- **Setting values**
+  - [Default setting values file](#default-setting-values-file)
+  - [Load setting values from YAML file](#load-setting-values-from-yaml-file-by-instance)
+  - [Load setting values from JSON file](#load-setting-values-from-json-file-by-instance)
+  - [Load setting values from \_\_END\_\_](#load-setting-values-from-__end__-by-instance)
+  - [Load setting values from file manually](#load-setting-values-from-file-manually-by-instance)
+- **Daily work**
+  - [Save to JSON file](#save-to-json-file) (`save_to_json`)
+  - [Save to YAML file](#save-to-yaml-file) (`save_to_yaml`)
 
 ---
 
@@ -1619,6 +1635,430 @@ production:
 
 ---
 
+### Default setting values file
+
+- defines a file that should be used for setting values initialization for your config object;
+- `.values_file(file_path, format: :dynamic, strict: false, expose: nil)`
+  - `file_path` - full file path or `:self` (`:self` menas "load setting values from __END__ data");
+  - `:format` - defines the format of file (`:dynamic` means "try to automatically infer the file format") (`:dynamic` by default);
+    - supports `:yaml`, `:json`, `:toml` (via `Qonfig.plugin(:toml)`), `:dynamic` (automatic format detection);
+  - `:strict` - rerquires that file (or __END__-data) should exist (`false` by default);
+  - `:expose` - what the environment-based subset of keys should be used (`nil` means "do not use any subset of keys") (`nil` by default);
+- extra keys that does not exist in your config will cause an exception `Qonfig::SettingNotFound` respectively;
+- initial values will be rewritten by values defined in your file;
+
+#### Default behavior
+
+```yaml
+# sidekiq.yml
+
+adapter: sidekiq
+options:
+  processes: 10
+```
+
+```ruby
+class Config < Qonfig::DataSet
+  values_file 'sidekiq.yml', format: :yaml
+
+  setting :adapter, 'que'
+  setting :options do
+    setting :processes, 2
+    setting :threads, 5
+    setting :protected, false
+  end
+end
+
+config = Config.new
+
+config.settings.adapter # => "sidekiq" (from sidekiq.yml)
+config.settings.options.processes # => 10 (from sidekiq.yml)
+config.settings.options.threads # => 5 (original value)
+config.settings.options.protected # => false (original value)
+```
+
+#### Load values from \_\_END\_\_-data
+
+```ruby
+class Config < Qonfig::DataSet
+  values_file :self, format: :yaml
+
+  setting :user
+  setting :password
+  setting :enabled, true
+end
+
+config = Config.new
+
+config.settings.user # => "D@iVeR" (from __END__ data)
+config.settings.password # => "test123" (from __END__ data)
+config.settings.enabled # => true (original value)
+
+__END__
+
+user: 'D@iVeR'
+password: 'test123'
+```
+
+#### Setting values with environment separation
+
+```yaml
+# sidekiq.yml
+
+development:
+  adapter: :in_memory
+  options:
+    threads: 10
+
+production:
+  adapter: :sidekiq
+  options:
+    threads: 150
+```
+
+```ruby
+class Config < Qonfig::DataSet
+  values_file 'sidekiq.yml', format: :yaml, expose: :development
+
+  setting :adapter
+  setting :options do
+    setting :threads
+  end
+end
+
+config = Config.new
+
+config.settings.adapter # => 'in_memory' (development keys subset)
+config.settings.options.threads # => 10 (development keys subset)
+```
+
+#### File does not exist
+
+```ruby
+# strict behavior (default)
+class Config < Qonfig::DataSet
+  values_file 'sidekiq.yml'
+end
+
+config = Config.new # => Qonfig::FileNotFoundError
+
+# non-strict behavior (strict: false)
+class Config < Qonfig::DataSet
+  values_file 'sidekiq.yml', strict: false
+end
+
+config = Config.new # no error
+```
+
+---
+
+### Load setting values from YAML file (by instance)
+
+- prvoides an ability to load predefined setting values from a yaml file;
+- `#load_from_yaml(file_path, strict: true, expose: nil)`
+  - `file_path` - full file path or `:self` (`:self` means "load setting values from __END__ data");
+  - `:strict` - rerquires that file (or __END__-data) should exist (`true` by default);
+  - `:expose` - what the environment-based subset of keys should be used (`nil` means "do not use any subset of keys") (`nil` by default);
+
+#### Default behavior
+
+```yaml
+# config.yml
+
+domain: google.ru
+creds:
+  auth_token: test123
+```
+
+```ruby
+class Config < Qonfig::DataSet
+  seting :domain, 'test.com'
+  setting :creds do
+    setting :auth_token, 'test'
+  end
+end
+
+config = Config.new
+config.settings.domain # => "test.com"
+config.settings.creds.auth_token # => "test"
+
+# load new values
+config.load_from_yaml('config.yml')
+
+config.settings.domain # => "google.ru" (from config.yml)
+config.settings.creds.auth_token # => "test123" (from config.yml)
+```
+
+#### Load from \_\_END\_\_
+
+```ruby
+class Config < Qonfig::DataSet
+  seting :domain, 'test.com'
+  setting :creds do
+    setting :auth_token, 'test'
+  end
+end
+
+config = Config.new
+config.settings.domain # => "test.com"
+config.settings.creds.auth_token # => "test"
+
+# load new values
+config.load_from_yaml(:self)
+config.settings.domain # => "yandex.ru" (from __END__-data)
+config.settings.creds.auth_token # => "CK0sIdA" (from __END__-data)
+
+__END__
+
+domain: yandex.ru
+creds:
+  auth_token: CK0sIdA
+```
+
+#### Setting values with environment separation
+
+```yaml
+# config.yml
+
+development:
+  domain: dev.google.ru
+  creds:
+    auth_token: kekpek
+
+production:
+  domain: google.ru
+  creds:
+    auth_token: Asod1
+```
+
+```ruby
+class Config < Qonfig::DataSet
+  setting :domain, 'test.com'
+  setting :creds do
+    setting :auth_token
+  end
+end
+
+config = Config.new
+
+# load new values (expose development settings)
+config.load_from_yaml('config.yml', expose: :development)
+
+config.settings.domain # => "dev.google.ru" (from config.yml)
+config.settings.creds.auth_token # => "kek.pek" (from config.yml)
+```
+
+---
+
+### Load setting values from JSON file (by instance)
+
+- prvoides an ability to load predefined setting values from a json file;
+- `#load_from_yaml(file_path, strict: true, expose: nil)`
+  - `file_path` - full file path or `:self` (`:self` means "load setting values from __END__ data");
+  - `:strict` - rerquires that file (or __END__-data) should exist (`true` by default);
+  - `:expose` - what the environment-based subset of keys should be used (`nil` means "do not use any subset of keys") (`nil` by default);
+
+#### Default behavior
+
+```json
+// config.json
+
+{
+  "domain": "google.ru",
+  "creds": {
+    "auth_token": "test123"
+  }
+}
+```
+
+```ruby
+class Config < Qonfig::DataSet
+  seting :domain, 'test.com'
+  setting :creds do
+    setting :auth_token, 'test'
+  end
+end
+
+config = Config.new
+config.settings.domain # => "test.com"
+config.settings.creds.auth_token # => "test"
+
+# load new values
+config.load_from_json('config.json')
+
+config.settings.domain # => "google.ru" (from config.json)
+config.settings.creds.auth_token # => "test123" (from config.json)
+```
+
+#### Load from \_\_END\_\_
+
+```ruby
+class Config < Qonfig::DataSet
+  seting :domain, 'test.com'
+  setting :creds do
+    setting :auth_token, 'test'
+  end
+end
+
+config = Config.new
+config.settings.domain # => "test.com"
+config.settings.creds.auth_token # => "test"
+
+# load new values
+config.load_from_json(:self)
+config.settings.domain # => "yandex.ru" (from __END__-data)
+config.settings.creds.auth_token # => "CK0sIdA" (from __END__-data)
+
+__END__
+
+{
+  "domain": "yandex.ru",
+  "creds": {
+    "auth_token": "CK0sIdA"
+  }
+}
+```
+
+#### Setting values with environment separation
+
+```json
+// config.json
+
+{
+  "development": {
+    "domain": "dev.google.ru",
+    "creds": {
+      "auth_token": "kekpek"
+    }
+  },
+  "production": {
+    "domain": "google.ru",
+    "creds": {
+      "auth_token": "Asod1"
+    }
+  }
+}
+```
+
+```ruby
+class Config < Qonfig::DataSet
+  setting :domain, 'test.com'
+  setting :creds do
+    setting :auth_token
+  end
+end
+
+config = Config.new
+
+# load new values (from development subset)
+config.load_from_json('config.json', expose: :development)
+
+config.settings.domain # => "dev.google.ru" (from config.json)
+config.settings.creds.auth_token # => "kek.pek" (from config.json)
+```
+---
+
+### Load setting values from \_\_END\_\_ (by instance)
+
+- prvoides an ability to load predefined setting values from `__END__` file section;
+- `#load_from_self(strict: true, expose: nil)`
+  - `:format` - defines the format of file (`:dynamic` means "try to automatically infer the file format") (`:dynamic` by default);
+    - supports `:yaml`, `:json`, `:toml` (via `Qonfig.plugin(:toml)`), `:dynamic` (automatic format detection);
+  - `:strict` - requires that __END__-data should exist (`true` by default);
+  - `:expose` - what the environment-based subset of keys should be used (`nil` means "do not use any subset of keys") (`nil` by default);
+
+#### Default behavior
+
+```ruby
+class Config < Qonfig::DataSet
+  setting :account, 'test'
+  setting :options do
+    setting :login, '0exp'
+    setting :password, 'test123'
+  end
+end
+
+config = Config.new
+config.settings.account # => "test" (original value)
+config.settings.options.login # => "0exp" (original value)
+config.settings.options.password # => "test123" (original value)
+
+# load new values
+config.load_from_self(format: :yaml)
+# or config.load_from_self
+
+config.settings.account # => "real" (from __END__-data)
+config.settings.options.login # => "D@iVeR" (from __END__-data)
+config.settings.options.password # => "azaza123" (from __END__-data)
+
+__END__
+
+account: real
+options:
+  login: D@iVeR
+  password: azaza123
+```
+
+#### Setting values with envvironment separation
+
+```ruby
+class Config < Qonfig::DataSet
+  setting :domain, 'test.google.ru'
+  setting :options do
+    setting :login, 'test'
+    setting :password, 'test123'
+  end
+end
+
+config = Config.new
+config.settings.domain # => "test.google.ru" (original value)
+config.settings.options.login # => "test" (original value)
+config.settings.options.password # => "test123" (original value)
+
+# load new values
+config.load_from_self(format: :json, expose: :production)
+# or config.load_from_self(expose: production)
+
+config.settings.domain # => "prod.google.ru" (from __END__-data)
+config.settings.options.login # => "prod" (from __END__-data)
+config.settings.options.password # => "prod123" (from __END__-data)
+
+__END__
+
+{
+  "development": {
+    "domain": "dev.google.ru",
+    "options": {
+      "login": "dev",
+      "password": "dev123"
+    }
+  },
+  "production": {
+    "domain": "prod.google.ru",
+    "options": {
+      "login": "prod",
+      "password": "prod123"
+    }
+  }
+}
+```
+
+---
+
+### Load setting values from file manually (by instance)
+
+- prvoides an ability to load predefined setting values from a file;
+- works in instance-based `#load_from_yaml` / `#load_from_json` / `#load_from_self` manner;
+- signature: `#load_from_file(file_path, format: :dynamic, strict: true, expose: nil)`:
+  - `file_path` - full file path or `:self` (`:self` means "load setting values from __END__ data");
+  - `:format` - defines the format of file (`:dynamic` means "try to automatically infer the file format") (`:dynamic` by default);
+    - supports `:yaml`, `:json`, `:toml` (via `Qonfig.plugin(:toml)`), `:dynamic` (automatic format detection);
+  - `:strict` - rerquires that file (or __END__-data) should exist (`true` by default);
+  - `:expose` - what the environment-based subset of keys should be used (`nil` means "do not use any subset of keys") (`nil` by default);
+- see examples for instance-based `#load_from_yaml` ([doc](#load-setting-values-from-yaml-by-instance)) / `#load_from_json` ([doc](#load-setting-values-from-json-by-instance)) / `#load_from_self` ([doc](#load-setting-values-from-__end__-by-instance));
+
+---
+
 ### Save to JSON file
 
 - `#save_to_json` - represents config object as a json structure and saves it to a file:
@@ -1761,8 +2201,6 @@ enabled: true
 dynamic: 10
 ```
 
----
-
 ### Plugins
 
 ```ruby
@@ -1783,10 +2221,12 @@ Provided plugins:
 
 - adds support for `toml` format ([specification](https://github.com/toml-lang/toml));
 - depends on `toml-rb` gem ([link](https://github.com/emancu/toml-rb));
-- supports TOML `0.4.0` format (dependency lock);
-- provides `load_from_toml` (works in `load_from_yaml` manner ([doc](#load-from-yaml-file)));
-- provides `save_to_toml` (works in `save_to_yaml` manner ([doc](#save-to-yaml-file))) (`toml-rb` has no native options);
-- provides `expose_toml` (works in `expose_yaml` manner ([doc](#expose-yaml)));
+- supports TOML `0.5.0` format (dependency lock);
+- provides `.load_from_toml` (works in `.load_from_yaml` manner ([doc](#load-from-yaml-file)));
+- provides `.expose_toml` (works in `.expose_yaml` manner ([doc](#expose-yaml)));
+- provides `#save_to_toml` (works in `#save_to_yaml` manner ([doc](#save-to-yaml-file))) (`toml-rb` has no native options);
+- provides `format: :toml` for `.values_file` ([doc]());
+- provides `#load_from_toml` (work in `#load_from_yaml` manner ([doc](#load-setting-values-from-yaml)));
 
 ```ruby
 # 1) require external dependency
