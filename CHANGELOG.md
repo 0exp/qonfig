@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.17.0] - 2019-10-30
 ### Added
 - Introduce `strict` validations: `strict: false` option ignores `nil` values and used by default;
 - Setting's key existence check methods: `#key?(*key_path)`, `#setting?(*key_path)`, `#option?(*key_path)`;
