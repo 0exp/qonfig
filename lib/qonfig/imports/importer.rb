@@ -1,18 +1,18 @@
 # frozen_string_literal: true
 
 # @api private
-# @since 0.17.0
+# @since 0.18.0
 class Qonfig::Imports::Importer
   # @return [String]
   #
   # @api private
-  # @since 0.17.0
+  # @since 0.18.0
   EMPTY_PREFIX = ''
 
   # @return [Hash]
   #
   # @api private
-  # @since 0.17.0
+  # @since 0.18.0
   EMPTY_MAPPINGS = {}.freeze
 
   class << self
@@ -25,7 +25,7 @@ class Qonfig::Imports::Importer
     # @return [void]
     #
     # @api private
-    # @since 0.17.0
+    # @since 0.18.0
     def import!(
       seeded_klass,
       imported_config,
@@ -54,7 +54,7 @@ class Qonfig::Imports::Importer
   # @return [void]
   #
   # @api private
-  # @since 0.17.0
+  # @since 0.18.0
   def initialize(
     seeded_klass,
     imported_config,
@@ -84,7 +84,7 @@ class Qonfig::Imports::Importer
   # @raise [Qonfig::UnknownSettingError]
   #
   # @api private
-  # @since 0.17.0
+  # @since 0.18.0
   def import!
     imported_settings_interface = Module.new
 
@@ -99,43 +99,43 @@ class Qonfig::Imports::Importer
   # @return seeded_klass [Class]
   #
   # @api private
-  # @since 0.17.0
+  # @since 0.18.0
   attr_reader :seeded_klass
 
   # @return imported_config [Qonfig::DataSet]
   #
   # @api private
-  # @since 0.17.0
+  # @since 0.18.0
   attr_reader :imported_config
 
   # @return imported_keys [Array<String,Symbol>]
   #
   # @api private
-  # @since 0.17.0
+  # @since 0.18.0
   attr_reader :imported_keys
 
   # @return [Array<Qonfig::Setting::KeyMatcher>]
   #
   # @api private
-  # @since 0.17.0
+  # @since 0.18.0
   attr_reader :key_matchers
 
   # @return [String]
   #
   # @api private
-  # @since 0.17.0
+  # @since 0.18.0
   attr_reader :prefix
 
   # @return [Boolean]
   #
   # @api private
-  # @since 0.17.0
+  # @since 0.18.0
   attr_reader :raw
 
   # @return [Hash<String|Symbol,String|Symbol>]
   #
   # @pai private
-  # @since 0.17.0
+  # @since 0.18.0
   attr_reader :mappings
 
   # @param config [Qonfig::DataSet]
@@ -150,7 +150,7 @@ class Qonfig::Imports::Importer
   # @raise [Qonfig::IncompatibleImportMappingsError]
   #
   # @api private
-  # @since 0.17.0
+  # @since 0.18.0
   def prevent_incompatible_import_params!(config, keys, prefix, mappings)
     raise(
       Qonfig::IncompatibleImportedConfigError,

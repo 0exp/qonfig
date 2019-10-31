@@ -326,33 +326,6 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     thread_safe_access { settings.__root_keys__ }
   end
 
-  # @return [void]
-  #
-  # @api public
-  # @since 0.17.0
-  def export_settings(
-    exportable_object,
-    *exported_setting_keys,
-    prefix: Qonfig::Imports::Importer::EMPTY_PREFIX,
-    raw: false,
-    mappings: Qonfig::Imports::Importer::EMPTY_MAPPINGS
-  )
-    thread_safe_access do
-      unless exportable_object.is_a?(Module)
-        exportable_object = exportable_object.singleton_class
-      end
-
-      Qonfig::Imports::Importer.import!(
-        exportable_object,
-        self,
-        *exported_setting_keys,
-        prefix: prefix,
-        raw: raw,
-        mappings: mappings
-      )
-    end
-  end
-
   # @param temporary_configurations [Hash<Symbol|String,Any>]
   # @param arbitary_code [Block]
   # @return [void]
@@ -385,6 +358,33 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
       self.class.build.tap do |duplicate|
         duplicate.configure(to_h)
       end
+    end
+  end
+
+  # @return [void]
+  #
+  # @api public
+  # @since 0.18.0
+  def export_settings(
+    exportable_object,
+    *exported_setting_keys,
+    prefix: Qonfig::Imports::Importer::EMPTY_PREFIX,
+    raw: false,
+    mappings: Qonfig::Imports::Importer::EMPTY_MAPPINGS
+  )
+    thread_safe_access do
+      unless exportable_object.is_a?(Module)
+        exportable_object = exportable_object.singleton_class
+      end
+
+      Qonfig::Imports::Importer.import!(
+        exportable_object,
+        self,
+        *exported_setting_keys,
+        prefix: prefix,
+        raw: raw,
+        mappings: mappings
+      )
     end
   end
 
