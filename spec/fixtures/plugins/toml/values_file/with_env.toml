@@ -1,0 +1,13 @@
+[test]
+  enabled = false
+  adapter = 'sidekiq'
+  [test.credentials]
+    user = 'D@iVeR'
+    timeout = 321
+
+[production]
+  enabled = true
+  adapter = 'que'
+  [production.credentials]
+    user = '0exp'
+    timeout = 123

@@ -2,11 +2,13 @@
 
 # @api private
 # @since 0.13.0
+# rubocop:disable Metrics/ClassLength
 class Qonfig::Validator::Builder::AttributeConsistency
   class << self
     # @param setting_key_pattern [String, Symbol, NilClass]
     # @param predefined_validator [String, Symbol, NilClass]
     # @param runtime_validation_method [String, Symbol, NilClass]
+    # @param strict [Boolean]
     # @param validation_logic [Proc, NilClass]
     # @return [void]
     #
@@ -16,12 +18,14 @@ class Qonfig::Validator::Builder::AttributeConsistency
       setting_key_pattern,
       predefined_validator,
       runtime_validation_method,
+      strict,
       validation_logic
     )
       new(
         setting_key_pattern,
         predefined_validator,
         runtime_validation_method,
+        strict,
         validation_logic
       ).check!
     end
@@ -39,11 +43,13 @@ class Qonfig::Validator::Builder::AttributeConsistency
     setting_key_pattern,
     predefined_validator,
     runtime_validation_method,
+    strict,
     validation_logic
   )
     @setting_key_pattern = setting_key_pattern
     @predefined_validator = predefined_validator
     @runtime_validation_method = runtime_validation_method
+    @strict = strict
     @validation_logic = validation_logic
   end
 
@@ -54,6 +60,7 @@ class Qonfig::Validator::Builder::AttributeConsistency
   # @api private
   # @since 0.13.0
   def check!
+    consistent_strict_behaviour!
     consistent_method_choice!
     consistent_predefined_validator!
     cosnistent_runtime_validation_method!
@@ -81,6 +88,12 @@ class Qonfig::Validator::Builder::AttributeConsistency
   # @since 0.13.0
   attr_reader :runtime_validation_method
 
+  # @return [Boolean]
+  #
+  # @api private
+  # @since 0.17.0
+  attr_reader :strict
+
   # @return [Proc, NilClass]
   #
   # @api private
@@ -106,6 +119,21 @@ class Qonfig::Validator::Builder::AttributeConsistency
       raise(
         Qonfig::ValidatorArgumentError,
         'Incosistent validation (you should use: dataset method OR proc OR predefined validator)'
+      )
+    end
+  end
+
+  # @return [void]
+  #
+  # @raise [Qonfig::ValidatorArgumentError]
+  #
+  # @api private
+  # @since 0.17.0
+  def consistent_strict_behaviour!
+    unless strict.is_a?(TrueClass) || strict.is_a?(FalseClass)
+      raise(
+        Qonfig::ValidatorArgumentError,
+        ':strict should be a boolean'
       )
     end
   end
@@ -179,3 +207,4 @@ class Qonfig::Validator::Builder::AttributeConsistency
     )
   end
 end
+# rubocop:enable Metrics/ClassLength

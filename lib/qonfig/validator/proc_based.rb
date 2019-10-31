@@ -10,13 +10,14 @@ class Qonfig::Validator::ProcBased < Qonfig::Validator::Basic
   attr_reader :validation
 
   # @param setting_key_matcher [Qonfig::Settings::KeyMatcher, NilClass]
+  # @param strict [Boolean]
   # @param vaidation [Proc]
   # @return [void]
   #
   # @api private
   # @since 0.13.0
-  def initialize(setting_key_matcher, validation)
-    super(setting_key_matcher)
+  def initialize(setting_key_matcher, strict, validation)
+    super(setting_key_matcher, strict)
     @validation = validation
   end
 
@@ -30,6 +31,7 @@ class Qonfig::Validator::ProcBased < Qonfig::Validator::Basic
   def validate_concrete(data_set)
     data_set.settings.__deep_each_setting__ do |setting_key, setting_value|
       next unless setting_key_matcher.match?(setting_key)
+      next if !strict && setting_value.nil?
 
       raise(
         Qonfig::ValidationError,

@@ -6,6 +6,7 @@ module Qonfig::Loaders
   require_relative 'loaders/basic'
   require_relative 'loaders/json'
   require_relative 'loaders/yaml'
+  require_relative 'loaders/dynamic'
   require_relative 'loaders/end_data'
 
   class << self
@@ -22,6 +23,8 @@ module Qonfig::Loaders
         Qonfig::Loaders::YAML
       when 'json'
         Qonfig::Loaders::JSON
+      when 'dynamic'
+        Qonfig::Loaders::Dynamic
       else
         raise(Qonfig::UnsupportedLoaderFormatError, "<#{format}> format is not supported.")
       end

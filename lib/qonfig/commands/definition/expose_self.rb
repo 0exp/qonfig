@@ -2,7 +2,7 @@
 
 # @api private
 # @since 0.14.0
-class Qonfig::Commands::ExposeSelf < Qonfig::Commands::Base
+class Qonfig::Commands::Definition::ExposeSelf < Qonfig::Commands::Base
   # @return [String, Symbol]
   #
   # @api private

@@ -1,6 +1,23 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.17.0] - 2019-10-30
+### Added
+- Introduce `strict` validations: `strict: false` option ignores `nil` values and used by default;
+- Setting's key existence check methods: `#key?(*key_path)`, `#setting?(*key_path)`, `#option?(*key_path)`;
+- `#with(temporary_configurations = {}, &arbitary_code)` - run arbitary code with temporary settings;
+- `TOML` plugin: support for TOML version 0.5.0;
+- Introduce instance-level file loading methods that specifies a file with setting values for your defined settings:
+  - `.values_file` - define a file that will be used during instantiation process;
+  - `#load_from_file`, `#load_from_self`, `#load_from_yaml`, `#load_from_json`, `#load_from_toml` (toml plugin) -
+    instance methods for loading setting values on your config instance directly from a file;
+
+### Changed
+- `Qonfig::DataSet.build` now supports a Qonfig::DataSet-class attribute that should be inherited (`self` is used by default):
+  - new signature: `Qonfig::DataSet.build(base_config_klass = self, &config_class_definitions)`;
+- Refacored DSL commands: introduce `Qonfig::Commands::Definition` commands and `Qonfig::Commands::Instantiation` commands;
+- Updated runtime (`toml-rb` `1` -> `2`) and development dependencies;
+
 ## [0.16.0] - 2019-09-13
 ### Added
 - `Qonfig::DataSet.build(&config_klass_definitions)` - build config instance immidietly without `Qonfig::DataSet`-class definition;

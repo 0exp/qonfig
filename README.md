@@ -31,6 +31,12 @@ require 'qonfig'
     - [.slice_value](#slice_value)
     - [.subset](#subset)
   - [Configuration](#configuration)
+    - [configure via proc](#configure-via-proc)
+    - [configure via settings object (by option name)](#configure-via-settings-object-by-option-name)
+    - [configure via settings object (by setting key)](#configure-via-settings-object-by-setting-key)
+    - [instant configuration via proc](#instant-configuration-via-proc)
+    - [using a hash](#using-a-hash)
+    - [using both hash and proc](#using-both-hash-and-proc-proc-has-higher-priority)
   - [Inheritance](#inheritance)
   - [Composition](#composition)
   - [Hash representation](#hash-representation)
@@ -39,25 +45,35 @@ require 'qonfig'
 - [Interaction](#interaction)
   - [Iteration over setting keys](#iteration-over-setting-keys) (`#each_setting`, `#deep_each_setting`)
   - [Config reloading](#config-reloading) (reload config definitions and option values)
-  - [Clear options](#clear-options) (set to nil)
+  - [Clear options](#clear-options) (set to `nil`)
   - [State freeze](#state-freeze)
   - [Settings as Predicates](#settings-as-predicates)
+  - [Setting key existence](#setting-key-existence) (`#key?`/`#option?`/`#setting?`)
+  - [Run arbitary code with temporary settings](#run-arbitary-code-with-temporary-settings) (`#with(configs = {}, &arbitary_code)`)
 - [Validation](#validation)
-  - [Introduction](#introdaction)
+  - [Introduction](#introduction)
   - [Key search pattern](#key-search-pattern)
   - [Proc-based validation](#proc-based-validation)
   - [Method-based validation](#method-based-validation)
   - [Predefined validations](#predefined-validations)
 - [Work with files](#work-with-files)
-  - [Load from YAML file](#load-from-yaml-file)
-  - [Expose YAML](#expose-yaml) (`Rails`-like environment-based YAML configs)
-  - [Load from JSON file](#load-from-json-file)
-  - [Expose JSON](#expose-json) (`Rails`-like environment-based JSON configs)
-  - [Load from ENV](#load-from-env)
-  - [Load from \_\_END\_\_](#load-from-__end__) (aka `load_from_self`)
-  - [Expose \_\_END\_\_](#expose-__end__) (aka `expose_self`)
-  - [Save to JSON file](#save-to-json-file) (`save_to_json`)
-  - [Save to YAML file](#save-to-yaml-file) (`save_to_yaml`)
+  - **Setting keys definition**
+    - [Load from YAML file](#load-from-yaml-file)
+    - [Expose YAML](#expose-yaml) (`Rails`-like environment-based YAML configs)
+    - [Load from JSON file](#load-from-json-file)
+    - [Expose JSON](#expose-json) (`Rails`-like environment-based JSON configs)
+    - [Load from ENV](#load-from-env)
+    - [Load from \_\_END\_\_](#load-from-__end__) (aka `.load_from_self`)
+    - [Expose \_\_END\_\_](#expose-__end__) (aka `.expose_self`)
+  - **Setting values**
+    - [Default setting values file](#default-setting-values-file)
+    - [Load setting values from YAML file](#load-setting-values-from-yaml-file-by-instance)
+    - [Load setting values from JSON file](#load-setting-values-from-json-file-by-instance)
+    - [Load setting values from \_\_END\_\_](#load-setting-values-from-__end__-by-instance)
+    - [Load setting values from file manually](#load-setting-values-from-file-manually-by-instance)
+  - **Daily work**
+    - [Save to JSON file](#save-to-json-file) (`#save_to_json`)
+    - [Save to YAML file](#save-to-yaml-file) (`#save_to_yaml`)
 - [Plugins](#plugins)
   - [toml](#plugins-toml) (provides `load_from_toml`, `save_to_toml`, `expose_toml`)
 - [Roadmap](#roadmap)
@@ -200,40 +216,58 @@ class Config < Qonfig::DataSet
 end
 
 config = Config.new
+```
 
-# configure via proc
+#### configure via proc
+
+```ruby
 config.configure do |conf|
   conf.enable_middlewares = true
   conf.geo_api.provider = :yandex_maps
   conf.testing.engine = :mini_test
 end
+```
 
-# configure via settings object (by option name)
+#### configure via settings object (by option name)
+
+```ruby
 config.settings.enable_middlewares = false
 config.settings.geo_api.provider = :apple_maps
 config.settings.testing.engine = :ultra_test
+```
 
-# configure via settings object (by setting key)
+#### configure via settings object (by setting key)
+
+```ruby
 config.settings[:enable_middlewares] = true
 config.settings[:geo_api][:provider] = :rambler_maps
 config.settings[:testing][:engine] = :mega_test
+```
 
-# instant configuration via proc
+#### instant configuration via proc
+
+```ruby
 config = Config.new do |conf|
   conf.enable_middlewares = false
   conf.geo_api.provider = :amazon_maps
   conf.testing.engine = :crypto_test
 end
+```
 
-# using a hash
+#### using a hash
+
+```ruby
 config = Config.new(
   testing: { engine: :mini_test, parallel: false },
   geo_api: { provider: :rambler_maps },
   enable_middlewares: true
 )
 config.configure(enable_middlewares: false)
+```
 
-# using both hash and proc (proc has higher priority)
+#### using both hash and proc (proc has higher priority)
+
+```ruby
 config = Config.new(enable_middlewares: true) do |conf|
   conf.testing.parallel = true
 end
@@ -455,18 +489,25 @@ GeneralApplication.config.to_h
 # and etc... (all Qonfig-related features)
 ```
 
+---
+
 ### Instantiation without class definition
 
 ```ruby
 config = Qonfig::DataSet.build do
   setting :user, 'D@iVeR'
   setting :password, 'test123'
+
+  def custom_method
+    'custom_result'
+  end
 end
 
 config.is_a?(Qonfig::DataSet) # => true
 
 config.settings.user # => 'D@iVeR'
 config.settings.password # => 'test123'
+config.custom_method # => 'custom_result'
 ```
 
 ---
@@ -478,6 +519,8 @@ config.settings.password # => 'test123'
 - [Clear options](#clear-options) (set to nil)
 - [State freeze](#state-freeze)
 - [Settings as Predicates](#settings-as-predicates)
+- [Setting key existence](#setting-key-existence) (`#key?`/`#option?`/`#setting?`)
+- [Run arbitary code with temporary settings](#run-arbitary-code-with-temporary-settings)
 
 ---
 
@@ -682,6 +725,72 @@ config.settings.database.engine.driver? # => true (true => true)
 
 ---
 
+### Setting key existence
+
+- `#key?(*key_path)` / `#option?(*key_path)` / `#setting?(*key_path)`
+  - `*key_path` - an array of symbols and strings that represents a path to the concrete setting key;
+  - (for example, `config.key?(:credentials, :user)` tries to check that `config.settings.credentials.user` is exist);
+  - returns `true` if the concrete key is exist;
+  - returns `false` if the concrete key does not exist;
+
+```ruby
+class Config < Qonfig::DataSet
+  setting :credentials do
+    setting :user, 'D@iVeR'
+    setting :password, 'test123'
+  end
+end
+
+config = Config.new
+
+config.key?('credentials', 'user') # => true
+config.key?('credentials', 'token') # => false (key does not exist)
+
+config.key?('credentials') # => true
+config.key?('que_adapter') # => false (key does not exist)
+
+# aliases
+config.setting?('credentials') # => true
+config.option?(:credentials, :password) # => true
+```
+
+---
+
+### Run arbitary code with temporary settings
+
+- provides a way to run an arbitary code with temporarily specified settings;
+- your arbitary code can temporary change any setting too - all settings will be returned to the original state;
+- (it is convenient to run code samples by this way in tests (with substitued configs));
+- it is fully thread-safe `:)`;
+
+```ruby
+class Config < Qonfig::DataSet
+  setting :queue do
+    setting :adapter, :sidekiq
+    setting :options, {}
+  end
+end
+
+config = Config.new
+
+# run a block of code with temporary queue.adapter setting
+config.with(queue: { adapter: 'que' }) do
+  # your changed settings
+  config.settings.queue.adapter # => 'que'
+
+  # you can temporary change settings by your code too
+  config.settings.queue.options = { concurrency: 10 }
+
+  # ...your another code...
+end
+
+# original settings has not changed :)
+config.settings.queue.adapter # => :sidekiq
+config.settings.queue.options # => {}
+```
+
+---
+
 ## Validation
 
 - [Introduction](#introduction)
@@ -705,34 +814,38 @@ If you want to check the config object completely you can define a custom valida
   - when assigning new values;
   - when calling `#reload!`;
   - when calling `#clear!`;
+- provides `strict` and `non-strict` behavior (`strict: true` and `strict: false` respectively):
+  - `strict: false` ignores validations for settings with `nil` (allows `nil` value);
+  - `strict: true` does not ignores validations for settings with `nil`;
+  - `strict: false` is used by default;
 - provides special [key search pattern](#key-search-pattern) for matching setting key names;
 - uses the [key search pattern](#key-search-pattern) for definging what the setting key should be validated;
 - you can define your own custom validation logic and validate dataset instance completely;
 - validation logic should return **truthy** or **falsy** value;
 - supprots two validation techniques (**proc-based** ([doc](#proc-based-validation)) and **dataset-method-based** ([doc](#method-based-validation))):
-  - **proc-based** (`setting validation`)
+  - **proc-based** (`setting validation`) ([doc](#proc-based-validation))
     ```ruby
-      validate 'db.user' do |value|
+      validate('db.user', strict: true) do |value|
         value.is_a?(String)
       end
     ```
-  - **proc-based** (`dataset validation`)
+  - **proc-based** (`dataset validation`) ([doc](#proc-based-validation))
     ```ruby
-      validate do
+      validate(strict: false) do
         settings.user == User[1]
       end
     ```
-  - **dataset-method-based** (`setting validation`)
+  - **dataset-method-based** (`setting validation`) ([doc](#method-based-validation))
     ```ruby
-      validate 'db.user', by: :check_user
+      validate 'db.user', by: :check_user, strict: true
 
       def check_user(value)
         value.is_a?(String)
       end
     ```
-  - **dataset-method-based** (`dataset validation`)
+  - **dataset-method-based** (`dataset validation`) ([doc](#method-based-validation))
     ```ruby
-      validate by: :check_config
+      validate by: :check_config, strict: false
 
       def check_config
         settings.user == User[1]
@@ -740,7 +853,8 @@ If you want to check the config object completely you can define a custom valida
     ```
 - provides a **set of standard validations** ([doc](#predefined-validations)):
   - DSL: `validate 'key.pattern', :predefned_validator`;
-  - validators:
+  - supports `strict` behavior;
+  - realized validators:
     - `integer`
     - `float`
     - `numeric`
@@ -782,11 +896,13 @@ If you want to check the config object completely you can define a custom valida
 ### Proc-based validation
 
 - your proc should return truthy value or falsy value;
+- `nil` values are ignored by default;
+- set `strict: true` to disable `nil` ignorance (`strict: false` is used by default);
 - how to validate setting keys:
   - define proc with attribute: `validate 'your.setting.path' do |value|; end`
   - proc will receive setting value;
 - how to validate dataset instance:
-  - define proc without setting key pattern: `validate do; end`
+  - define proc without setting key pattern: `validate do; end`;
 
 ```ruby
 class Config < Qonfig::DataSet
@@ -805,6 +921,7 @@ class Config < Qonfig::DataSet
   end
 
   setting :enabled, false
+  setting :token, '1a2a3a', strict: true
 
   # validates:
   #   - db.password
@@ -825,6 +942,11 @@ class Config < Qonfig::DataSet
   validate do # NOTE: no setting key pattern
     settings.enabled == false
   end
+
+  # do not ignore `nil` (strict: true)
+  validate(:token, strict: true) do
+    value.is_a?(String)
+  end
 end
 
 config = Config.new
@@ -833,6 +955,9 @@ config.settings.service.address = 123 # => Qonfig::ValidationError (should be a 
 config.settings.service.protocol = :http # => Qonfig::ValidationError (should be a string)
 config.settings.service.creds.admin = :billikota # => Qonfig::ValidationError (should be a string)
 config.settings.enabled = true # => Qonfig::ValidationError (isnt `true`)
+
+config.settings.db.password = nil # ok, nil is ignored (non-strict behavior)
+config.settings.token = nil # => Qonfig::ValidationError (nil is not ignored, strict behavior) (should be a type of string)
 ```
 
 ---
@@ -840,6 +965,8 @@ config.settings.enabled = true # => Qonfig::ValidationError (isnt `true`)
 ### Method-based validation
 
 - method should return truthy value or falsy value;
+- `nil` values are ignored by default;
+- set `strict: true` to disable `nil` ignorance (`strict: false` is used by default);
 - how to validate setting keys:
   - define validation: `validate 'db.*.user', by: :your_custom_method`;
   - define your method with attribute: `def your_custom_method(setting_value); end`
@@ -862,6 +989,7 @@ class Config < Qonfig::DataSet
   end
 
   setting :enabled, true
+  setting :timeout, 12345, strict: true
 
   # validates:
   #   - services.counts.google
@@ -874,6 +1002,9 @@ class Config < Qonfig::DataSet
   #   - dataset instance
   validate by: :check_state # NOTE: no setting key pattern
 
+  # do not ignore `nil` (strict: true)
+  validate :timeout, strict: true, by: :check_timeout
+
   def check_presence(value)
     value.is_a?(Numeric) && value > 0
   end
@@ -881,15 +1012,21 @@ class Config < Qonfig::DataSet
   def check_state
     settings.enabled.is_a?(TrueClass) || settings.enabled.is_a?(FalseClass)
   end
+
+  def check_timeout(value)
+    value.is_a?(Numeric)
+  end
 end
 
 config = Config.new
 
 config.settings.counts.google = 0 # => Qonfig::ValidationError (< 0)
-config.settings.counts.rambler = nil # => Qonfig::ValidationError (should be a numeric)
 config.settings.minimals.google = -1 # => Qonfig::ValidationError (< 0)
 config.settings.minimals.rambler = 'no' # => Qonfig::ValidationError (should be a numeric)
-config.settings.enabled = nil # => Qonfig::ValidationError (should be a boolean)
+
+config.settings.counts.rambler = nil # ok, nil is ignored (default non-strict behavior)
+config.settings.enabled = nil # ok, nil is ignored (default non-strict behavior)
+config.settings.timeout = nil # => Qonfig::ValidationError (nil is not ignored, strict behavior) (should be a type of numeric)
 ```
 
 ---
@@ -897,6 +1034,8 @@ config.settings.enabled = nil # => Qonfig::ValidationError (should be a boolean)
 ### Predefined validations
 
 - DSL: `validate 'key.pattern', :predefned_validator`
+- `nil` values are ignored by default;
+- set `strict: true` to disable `nil` ignorance (`strict: false` is used by default);
 - predefined validators:
   - `:not_nil`
   - `:integer`
@@ -948,15 +1087,23 @@ config.settings.ignorance = nil # => Qonfig::ValidationError (cant be nil)
 
 ## Work with files
 
-- [Load from YAML file](#load-from-yaml-file)
-- [Expose YAML](#expose-yaml) (`Rails`-like environment-based YAML configs)
-- [Load from JSON file](#load-from-json-file)
-- [Expose JSON](#expose-json) (`Rails`-like environment-based JSON configs)
-- [Load from ENV](#load-from-env)
-- [Load from \_\_END\_\_](#load-from-__end__) (aka `load_from_self`)
-- [Expose \_\_END\_\_](#expose-__end__) (aka `expose_self`)
-- [Save to JSON file](#save-to-json-file) (`save_to_json`)
-- [Save to YAML file](#save-to-yaml-file) (`save_to_yaml`)
+- **Setting keys definition**
+  - [Load from YAML file](#load-from-yaml-file)
+  - [Expose YAML](#expose-yaml) (`Rails`-like environment-based YAML configs)
+  - [Load from JSON file](#load-from-json-file)
+  - [Expose JSON](#expose-json) (`Rails`-like environment-based JSON configs)
+  - [Load from ENV](#load-from-env)
+  - [Load from \_\_END\_\_](#load-from-__end__) (aka `load_from_self`)
+  - [Expose \_\_END\_\_](#expose-__end__) (aka `expose_self`)
+- **Setting values**
+  - [Default setting values file](#default-setting-values-file)
+  - [Load setting values from YAML file](#load-setting-values-from-yaml-file-by-instance)
+  - [Load setting values from JSON file](#load-setting-values-from-json-file-by-instance)
+  - [Load setting values from \_\_END\_\_](#load-setting-values-from-__end__-by-instance)
+  - [Load setting values from file manually](#load-setting-values-from-file-manually-by-instance)
+- **Daily work**
+  - [Save to JSON file](#save-to-json-file) (`save_to_json`)
+  - [Save to YAML file](#save-to-yaml-file) (`save_to_yaml`)
 
 ---
 
@@ -1488,6 +1635,430 @@ production:
 
 ---
 
+### Default setting values file
+
+- defines a file that should be used for setting values initialization for your config object;
+- `.values_file(file_path, format: :dynamic, strict: false, expose: nil)`
+  - `file_path` - full file path or `:self` (`:self` menas "load setting values from __END__ data");
+  - `:format` - defines the format of file (`:dynamic` means "try to automatically infer the file format") (`:dynamic` by default);
+    - supports `:yaml`, `:json`, `:toml` (via `Qonfig.plugin(:toml)`), `:dynamic` (automatic format detection);
+  - `:strict` - rerquires that file (or __END__-data) should exist (`false` by default);
+  - `:expose` - what the environment-based subset of keys should be used (`nil` means "do not use any subset of keys") (`nil` by default);
+- extra keys that does not exist in your config will cause an exception `Qonfig::SettingNotFound` respectively;
+- initial values will be rewritten by values defined in your file;
+
+#### Default behavior
+
+```yaml
+# sidekiq.yml
+
+adapter: sidekiq
+options:
+  processes: 10
+```
+
+```ruby
+class Config < Qonfig::DataSet
+  values_file 'sidekiq.yml', format: :yaml
+
+  setting :adapter, 'que'
+  setting :options do
+    setting :processes, 2
+    setting :threads, 5
+    setting :protected, false
+  end
+end
+
+config = Config.new
+
+config.settings.adapter # => "sidekiq" (from sidekiq.yml)
+config.settings.options.processes # => 10 (from sidekiq.yml)
+config.settings.options.threads # => 5 (original value)
+config.settings.options.protected # => false (original value)
+```
+
+#### Load values from \_\_END\_\_-data
+
+```ruby
+class Config < Qonfig::DataSet
+  values_file :self, format: :yaml
+
+  setting :user
+  setting :password
+  setting :enabled, true
+end
+
+config = Config.new
+
+config.settings.user # => "D@iVeR" (from __END__ data)
+config.settings.password # => "test123" (from __END__ data)
+config.settings.enabled # => true (original value)
+
+__END__
+
+user: 'D@iVeR'
+password: 'test123'
+```
+
+#### Setting values with environment separation
+
+```yaml
+# sidekiq.yml
+
+development:
+  adapter: :in_memory
+  options:
+    threads: 10
+
+production:
+  adapter: :sidekiq
+  options:
+    threads: 150
+```
+
+```ruby
+class Config < Qonfig::DataSet
+  values_file 'sidekiq.yml', format: :yaml, expose: :development
+
+  setting :adapter
+  setting :options do
+    setting :threads
+  end
+end
+
+config = Config.new
+
+config.settings.adapter # => 'in_memory' (development keys subset)
+config.settings.options.threads # => 10 (development keys subset)
+```
+
+#### File does not exist
+
+```ruby
+# non-strict behavior (default)
+class Config < Qonfig::DataSet
+  values_file 'sidekiq.yml'
+end
+
+config = Config.new # no error
+
+# strict behavior (strict: true)
+class Config < Qonfig::DataSet
+  values_file 'sidekiq.yml', strict: true
+end
+
+config = Config.new # => Qonfig::FileNotFoundError
+```
+
+---
+
+### Load setting values from YAML file (by instance)
+
+- prvoides an ability to load predefined setting values from a yaml file;
+- `#load_from_yaml(file_path, strict: true, expose: nil)`
+  - `file_path` - full file path or `:self` (`:self` means "load setting values from __END__ data");
+  - `:strict` - rerquires that file (or __END__-data) should exist (`true` by default);
+  - `:expose` - what the environment-based subset of keys should be used (`nil` means "do not use any subset of keys") (`nil` by default);
+
+#### Default behavior
+
+```yaml
+# config.yml
+
+domain: google.ru
+creds:
+  auth_token: test123
+```
+
+```ruby
+class Config < Qonfig::DataSet
+  seting :domain, 'test.com'
+  setting :creds do
+    setting :auth_token, 'test'
+  end
+end
+
+config = Config.new
+config.settings.domain # => "test.com"
+config.settings.creds.auth_token # => "test"
+
+# load new values
+config.load_from_yaml('config.yml')
+
+config.settings.domain # => "google.ru" (from config.yml)
+config.settings.creds.auth_token # => "test123" (from config.yml)
+```
+
+#### Load from \_\_END\_\_
+
+```ruby
+class Config < Qonfig::DataSet
+  seting :domain, 'test.com'
+  setting :creds do
+    setting :auth_token, 'test'
+  end
+end
+
+config = Config.new
+config.settings.domain # => "test.com"
+config.settings.creds.auth_token # => "test"
+
+# load new values
+config.load_from_yaml(:self)
+config.settings.domain # => "yandex.ru" (from __END__-data)
+config.settings.creds.auth_token # => "CK0sIdA" (from __END__-data)
+
+__END__
+
+domain: yandex.ru
+creds:
+  auth_token: CK0sIdA
+```
+
+#### Setting values with environment separation
+
+```yaml
+# config.yml
+
+development:
+  domain: dev.google.ru
+  creds:
+    auth_token: kekpek
+
+production:
+  domain: google.ru
+  creds:
+    auth_token: Asod1
+```
+
+```ruby
+class Config < Qonfig::DataSet
+  setting :domain, 'test.com'
+  setting :creds do
+    setting :auth_token
+  end
+end
+
+config = Config.new
+
+# load new values (expose development settings)
+config.load_from_yaml('config.yml', expose: :development)
+
+config.settings.domain # => "dev.google.ru" (from config.yml)
+config.settings.creds.auth_token # => "kek.pek" (from config.yml)
+```
+
+---
+
+### Load setting values from JSON file (by instance)
+
+- prvoides an ability to load predefined setting values from a json file;
+- `#load_from_yaml(file_path, strict: true, expose: nil)`
+  - `file_path` - full file path or `:self` (`:self` means "load setting values from __END__ data");
+  - `:strict` - rerquires that file (or __END__-data) should exist (`true` by default);
+  - `:expose` - what the environment-based subset of keys should be used (`nil` means "do not use any subset of keys") (`nil` by default);
+
+#### Default behavior
+
+```json
+// config.json
+
+{
+  "domain": "google.ru",
+  "creds": {
+    "auth_token": "test123"
+  }
+}
+```
+
+```ruby
+class Config < Qonfig::DataSet
+  seting :domain, 'test.com'
+  setting :creds do
+    setting :auth_token, 'test'
+  end
+end
+
+config = Config.new
+config.settings.domain # => "test.com"
+config.settings.creds.auth_token # => "test"
+
+# load new values
+config.load_from_json('config.json')
+
+config.settings.domain # => "google.ru" (from config.json)
+config.settings.creds.auth_token # => "test123" (from config.json)
+```
+
+#### Load from \_\_END\_\_
+
+```ruby
+class Config < Qonfig::DataSet
+  seting :domain, 'test.com'
+  setting :creds do
+    setting :auth_token, 'test'
+  end
+end
+
+config = Config.new
+config.settings.domain # => "test.com"
+config.settings.creds.auth_token # => "test"
+
+# load new values
+config.load_from_json(:self)
+config.settings.domain # => "yandex.ru" (from __END__-data)
+config.settings.creds.auth_token # => "CK0sIdA" (from __END__-data)
+
+__END__
+
+{
+  "domain": "yandex.ru",
+  "creds": {
+    "auth_token": "CK0sIdA"
+  }
+}
+```
+
+#### Setting values with environment separation
+
+```json
+// config.json
+
+{
+  "development": {
+    "domain": "dev.google.ru",
+    "creds": {
+      "auth_token": "kekpek"
+    }
+  },
+  "production": {
+    "domain": "google.ru",
+    "creds": {
+      "auth_token": "Asod1"
+    }
+  }
+}
+```
+
+```ruby
+class Config < Qonfig::DataSet
+  setting :domain, 'test.com'
+  setting :creds do
+    setting :auth_token
+  end
+end
+
+config = Config.new
+
+# load new values (from development subset)
+config.load_from_json('config.json', expose: :development)
+
+config.settings.domain # => "dev.google.ru" (from config.json)
+config.settings.creds.auth_token # => "kek.pek" (from config.json)
+```
+---
+
+### Load setting values from \_\_END\_\_ (by instance)
+
+- prvoides an ability to load predefined setting values from `__END__` file section;
+- `#load_from_self(strict: true, expose: nil)`
+  - `:format` - defines the format of file (`:dynamic` means "try to automatically infer the file format") (`:dynamic` by default);
+    - supports `:yaml`, `:json`, `:toml` (via `Qonfig.plugin(:toml)`), `:dynamic` (automatic format detection);
+  - `:strict` - requires that __END__-data should exist (`true` by default);
+  - `:expose` - what the environment-based subset of keys should be used (`nil` means "do not use any subset of keys") (`nil` by default);
+
+#### Default behavior
+
+```ruby
+class Config < Qonfig::DataSet
+  setting :account, 'test'
+  setting :options do
+    setting :login, '0exp'
+    setting :password, 'test123'
+  end
+end
+
+config = Config.new
+config.settings.account # => "test" (original value)
+config.settings.options.login # => "0exp" (original value)
+config.settings.options.password # => "test123" (original value)
+
+# load new values
+config.load_from_self(format: :yaml)
+# or config.load_from_self
+
+config.settings.account # => "real" (from __END__-data)
+config.settings.options.login # => "D@iVeR" (from __END__-data)
+config.settings.options.password # => "azaza123" (from __END__-data)
+
+__END__
+
+account: real
+options:
+  login: D@iVeR
+  password: azaza123
+```
+
+#### Setting values with envvironment separation
+
+```ruby
+class Config < Qonfig::DataSet
+  setting :domain, 'test.google.ru'
+  setting :options do
+    setting :login, 'test'
+    setting :password, 'test123'
+  end
+end
+
+config = Config.new
+config.settings.domain # => "test.google.ru" (original value)
+config.settings.options.login # => "test" (original value)
+config.settings.options.password # => "test123" (original value)
+
+# load new values
+config.load_from_self(format: :json, expose: :production)
+# or config.load_from_self(expose: production)
+
+config.settings.domain # => "prod.google.ru" (from __END__-data)
+config.settings.options.login # => "prod" (from __END__-data)
+config.settings.options.password # => "prod123" (from __END__-data)
+
+__END__
+
+{
+  "development": {
+    "domain": "dev.google.ru",
+    "options": {
+      "login": "dev",
+      "password": "dev123"
+    }
+  },
+  "production": {
+    "domain": "prod.google.ru",
+    "options": {
+      "login": "prod",
+      "password": "prod123"
+    }
+  }
+}
+```
+
+---
+
+### Load setting values from file manually (by instance)
+
+- prvoides an ability to load predefined setting values from a file;
+- works in instance-based `#load_from_yaml` / `#load_from_json` / `#load_from_self` manner;
+- signature: `#load_from_file(file_path, format: :dynamic, strict: true, expose: nil)`:
+  - `file_path` - full file path or `:self` (`:self` means "load setting values from __END__ data");
+  - `:format` - defines the format of file (`:dynamic` means "try to automatically infer the file format") (`:dynamic` by default);
+    - supports `:yaml`, `:json`, `:toml` (via `Qonfig.plugin(:toml)`), `:dynamic` (automatic format detection);
+  - `:strict` - rerquires that file (or __END__-data) should exist (`true` by default);
+  - `:expose` - what the environment-based subset of keys should be used (`nil` means "do not use any subset of keys") (`nil` by default);
+- see examples for instance-based `#load_from_yaml` ([doc](#load-setting-values-from-yaml-by-instance)) / `#load_from_json` ([doc](#load-setting-values-from-json-by-instance)) / `#load_from_self` ([doc](#load-setting-values-from-__end__-by-instance));
+
+---
+
 ### Save to JSON file
 
 - `#save_to_json` - represents config object as a json structure and saves it to a file:
@@ -1630,8 +2201,6 @@ enabled: true
 dynamic: 10
 ```
 
----
-
 ### Plugins
 
 ```ruby
@@ -1652,10 +2221,12 @@ Provided plugins:
 
 - adds support for `toml` format ([specification](https://github.com/toml-lang/toml));
 - depends on `toml-rb` gem ([link](https://github.com/emancu/toml-rb));
-- supports TOML `0.4.0` format (dependency lock);
-- provides `load_from_toml` (works in `load_from_yaml` manner ([doc](#load-from-yaml-file)));
-- provides `save_to_toml` (works in `save_to_yaml` manner ([doc](#save-to-yaml-file))) (`toml-rb` has no native options);
-- provides `expose_toml` (works in `expose_yaml` manner ([doc](#expose-yaml)));
+- supports TOML `0.5.0` format (dependency lock);
+- provides `.load_from_toml` (works in `.load_from_yaml` manner ([doc](#load-from-yaml-file)));
+- provides `.expose_toml` (works in `.expose_yaml` manner ([doc](#expose-yaml)));
+- provides `#save_to_toml` (works in `#save_to_yaml` manner ([doc](#save-to-yaml-file))) (`toml-rb` has no native options);
+- provides `format: :toml` for `.values_file` ([doc]());
+- provides `#load_from_toml` (work in `#load_from_yaml` manner ([doc](#load-setting-values-from-yaml)));
 
 ```ruby
 # 1) require external dependency
@@ -1670,14 +2241,23 @@ Qonfig.plugin(:toml)
 
 ## Roadmap
 
-- distributed configuration server;
-- support for Rails-like secrets;
+- **Major**:
+  - distributed configuration server;
+  - cli toolchain;
+  - support for Rails-like secrets;
+  - support for persistent data storages (we want to store configs in multiple databases and files);
+  - Rails reload plugin;
+- **Minor**:
+  - custom global (and class-level) validators (with a special Validator Definition DSL);
+  - support for "dot notation" in `#key?`, `#option?`, `#setting?`, `#dig`, `#subset`, `#slice`, `#slice_value`;
+  - config improts (and exports);
+  - pretty print :)));
 
 ## Contributing
 
 - Fork it ( https://github.com/0exp/qonfig/fork )
 - Create your feature branch (`git checkout -b feature/my-new-feature`)
-- Commit your changes (`git commit -am 'Add some feature'`)
+- Commit your changes (`git commit -am '[my-new-featre] Add some feature'`)
 - Push to the branch (`git push origin feature/my-new-feature`)
 - Create new Pull Request
 

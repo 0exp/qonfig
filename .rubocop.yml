@@ -4,7 +4,7 @@ inherit_gem:
     - lib/rubocop.rspec.yml
 
 AllCops:
-  TargetRubyVersion: 2.6.4
+  TargetRubyVersion: 2.6.5
   Include:
     - lib/**/*.rb
     - spec/**/*.rb
@@ -16,4 +16,8 @@ AllCops:
 
 # NOTE: for code clarity in tests
 RSpec/LeakyConstantDeclaration:
+  Enabled: false
+
+# NOTE: support for old ruby versions
+Style/RedundantBegin:
   Enabled: false
