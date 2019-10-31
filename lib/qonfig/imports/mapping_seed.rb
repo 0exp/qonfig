@@ -2,5 +2,6 @@
 
 # @api private
 # @since 0.18.0
-module Qonfig::Imports::MappingImport
+class Qonfig::Imports::MappingSeed
+
 end

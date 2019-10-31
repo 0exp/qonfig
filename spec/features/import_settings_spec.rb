@@ -2,7 +2,7 @@
 
 describe 'Import settings as access methods to a class' do
   let(:config) do
-    Class.new(Qonfig::DataSet) do
+    Qonfig::DataSet.build do
       setting :credentials do
         setting :admin, true
         setting :login, 'D@iVeR'
@@ -16,7 +16,7 @@ describe 'Import settings as access methods to a class' do
           setting :auto_run, true
         end
       end
-    end.new
+    end
   end
 
   before { stub_const('AppConfig', config) }
@@ -137,9 +137,5 @@ describe 'Import settings as access methods to a class' do
       'server'   => :sidekiq,
       'auto_run' => true
     )
-  end
-
-  describe 'invalid imports' do
-
   end
 end

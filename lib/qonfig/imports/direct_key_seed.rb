@@ -2,5 +2,5 @@
 
 # @api private
 # @since 0.18.0
-module Qonfig::Import::DirectKeyImport
+module Qonfig::Import::DirectKeySeed
 end
