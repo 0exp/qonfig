@@ -3,9 +3,10 @@
 # @api public
 # @since 0.18.0
 module Qonfig::Imports
-  require_relative 'imports/importer'
-  require_relative 'imports/direct_key_import'
-  require_relative 'imports/mapping_import'
+  require_relative 'imports/abstract'
+  require_relative 'imports/direct_key'
+  require_relative 'imports/mappings'
+  require_relative 'imports/general'
 
   class << self
     # @param base_klass [Class]
@@ -33,13 +34,13 @@ module Qonfig::Imports
     def import_settings(
       config,
       *setting_keys,
-      prefix: Qonfig::Imports::Importer::EMPTY_PREFIX,
-      raw: false,
-      mappings: Qonfig::Imports::Importer::EMPTY_MAPPINGS
+      prefix: Qonfig::Imports::Abstract::EMPTY_PREFIX,
+      raw: Qonfig::Imports::Abstract::DEFAULT_RAW_BEHAVIOR,
+      mappings: Qonfig::Imports::Mappings::EMPTY_MAPPINGS
     )
-      Qonfig::Imports::Importer.import!(
+      Qonfig::Imports::General.new(
         self, config, *setting_keys, prefix: prefix, raw: raw, mappings: mappings
-      )
+      ).import!
     end
   end
 end
