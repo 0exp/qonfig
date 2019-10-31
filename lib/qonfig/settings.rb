@@ -212,7 +212,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   # @return [Array<String>]
   #
   # @api private
-  # @since 0.17.0
+  # @since 0.18.0
   def __keys__(all_variants: false)
     __lock__.thread_safe_access { __setting_keys__(all_variants: all_variants) }
   end
@@ -220,7 +220,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   # @return [Array<String>]
   #
   # @api private
-  # @since 0.17.0
+  # @since 0.18.0
   def __root_keys__
     __lock__.thread_safe_access { __root_setting_keys__ }
   end
@@ -310,7 +310,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   # @return [Array<String>]
   #
   # @api private
-  # @since 0.17.0
+  # @since 0.18.0
   def __setting_keys__(all_variants: false)
     # NOTE: generate a set of keys return simple 'a.b.c.d'
     setting_keys_set = Set.new.tap do |setting_keys|
@@ -346,7 +346,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   # @return [Array<String>]
   #
   # @api private
-  # @since 0.17.0
+  # @since 0.18.0
   def __root_setting_keys__
     __options__.keys
   end
