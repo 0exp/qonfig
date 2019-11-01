@@ -33,14 +33,14 @@ module Qonfig::Imports::DSL
       raw: Qonfig::Imports::Abstract::DEFAULT_RAW_BEHAVIOR,
       mappings: Qonfig::Imports::Mappings::EMPTY_MAPPINGS
     )
-      Qonfig::Imports::General.new(
+      Qonfig::Imports::General.import!(
         self,
         imported_config,
         *imported_setting_keys,
         prefix: prefix,
         raw: raw,
         mappings: mappings
-      ).import!
+      )
     end
   end
 end

@@ -3,7 +3,37 @@
 # @api private
 # @since 0.18.0
 class Qonfig::Imports::General
-  # @param seeded_klass [Class]
+  class << self
+    # @param seeded_klass [Class, Object]
+    # @param imported_config [Qonfig::DataSet]
+    # @param imported_keys [Array<String, Symbol>]
+    # @option mappings [Hash<String|Symbol,String|Symbol>]
+    # @option prefix [String, Symbol]
+    # @option raw [Boolean]
+    # @return void]
+    #
+    # @api private
+    # @since 0.18.0
+    def import!(
+      seeded_klass,
+      imported_config,
+      *imported_keys,
+      mappings: EMPTY_MAPPINGS,
+      prefix: EMPTY_PREFIX,
+      raw: false
+    )
+      new(
+        seeded_klass,
+        imported_config,
+        *imported_keys,
+        mappings: mappings,
+        prefix: prefix,
+        raw: raw
+      ).import!
+    end
+  end
+
+  # @param seeded_klass [Class, Object]
   # @param imported_config [Qonfig::DataSet]
   # @param imported_keys [Array<String, Symbol>]
   # @option mappings [Hash<String|Symbol,String|Symbol>]

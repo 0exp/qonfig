@@ -8,6 +8,7 @@ module Qonfig::Imports
   require_relative 'imports/mappings'
   require_relative 'imports/general'
   require_relative 'imports/dsl'
+  require_relative 'imports/export'
 
   class << self
     # @param base_klass [Class]
