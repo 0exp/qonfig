@@ -71,7 +71,7 @@ class Qonfig::Imports::Abstract
   # @return [void]
   #
   # @raise [Qonfig::IncompatibleImportedConfigError]
-  # @raise [Qonfig::IncompatibleImportPrefixError]
+  # @raise [Qonfig::IncorrectImportPrefixError]
   #
   # @api private
   # @since 0.18.0
@@ -82,7 +82,7 @@ class Qonfig::Imports::Abstract
     ) unless imported_config.is_a?(Qonfig::DataSet)
 
     raise(
-      Qonfig::IncompatibleImportPrefixError,
+      Qonfig::IncorrectImportPrefixError,
       'Import method prefix should be a type of string or symbol'
     ) unless prefix.is_a?(String) || prefix.is_a?(Symbol)
   end

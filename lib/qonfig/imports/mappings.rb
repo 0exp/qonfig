@@ -88,8 +88,8 @@ class Qonfig::Imports::Mappings < Qonfig::Imports::Abstract
   # @return [void]
   #
   # @raise [Qonfig::IncompatibleImportedConfigError]
-  # @raise [Qonfig::IncompatibleImportPrefixError]
-  # @raise [Qonfig::IncompatibeImportMappingsError]
+  # @raise [Qonfig::IncorrectImportPrefixError]
+  # @raise [Qonfig::IncorrectImportMappingsError]
   #
   # @see Qonfig::Imports::Abstract#prevent_incompatible_import_params!
   #
@@ -99,7 +99,7 @@ class Qonfig::Imports::Mappings < Qonfig::Imports::Abstract
     super(imported_config, prefix)
 
     raise(
-      Qonfig::IncompatibeImportMappingsError,
+      Qonfig::IncorrectImportMappingsError,
       'Import mappings should be a type of hash with String-or-Symbol keys and values'
     ) unless mappings.is_a?(Hash) && (mappings.each_pair.all? do |(mapping_key, mapping_value)|
       (mapping_key.is_a?(String) || mapping_key.is_a?(Symbol)) &&

@@ -84,8 +84,8 @@ class Qonfig::Imports::DirectKey < Qonfig::Imports::Abstract
   # @return [void]
   #
   # @raise [Qonfig::IncompatibleImportedConfigError]
-  # @raise [Qonfig::IncompatibleImportPrefixError]
-  # @raise [Qonfig::IncompatbileImportKeyError]
+  # @raise [Qonfig::IncorrectImportPrefixError]
+  # @raise [Qonfig::IncorrectImportKeyError]
   #
   # @see Qonfig::Imports::Abstract#prevent_incompatible_import_params
   #
@@ -95,7 +95,7 @@ class Qonfig::Imports::DirectKey < Qonfig::Imports::Abstract
     super(imported_config, prefix)
 
     raise(
-      Qonfig::IncompatbileImportKeyError,
+      Qonfig::IncorrectImportKeyError,
       'Imported config keys should be a type of string or symbol'
     ) unless keys.all? { |key| key.is_a?(String) || key.is_a?(Symbol) }
   end

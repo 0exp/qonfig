@@ -142,4 +142,91 @@ describe 'Import settings as access methods to a class' do
       'auto_run' => true
     )
   end
+
+  specify 'raw setting import (Qonfig::Settings object - or <value>)' do
+    # NOTE: default non-raw import (import nested settings as hashes)
+    class NonRawImportCheckApp
+      include Qonfig::Imports
+      import_settings(AppConfig, 'job_que', mappings: { creds: 'credentials' }, raw: false)
+    end
+
+    app_with_configs = NonRawImportCheckApp.new
+
+    expect(app_with_configs).to respond_to(:job_que)
+    expect(app_with_configs).to respond_to(:creds)
+    expect(app_with_configs.creds).to be_a(Hash)
+    expect(app_with_configs.job_que).to be_a(Hash)
+    expect(app_with_configs.creds).to match(
+      'admin' => true,
+      'login' => 'D@iVeR',
+      'password' => 'test123'
+    )
+    expect(app_with_configs.job_que).to match(
+      'adapter' => :sidekiq,
+      'options' => {
+        'server' => 'cloud',
+        'auto_run' => true
+      }
+    )
+
+    # NOTE: raw import (import nested settings as Qonfig::Settings objects)
+    class RawImportCheckApp
+      include Qonfig::Imports
+      import_settings(AppConfig, 'job_que', mappings: { creds: 'credentials' }, raw: true)
+    end
+
+    app_with_configs = RawImportCheckApp.new
+
+    expect(app_with_configs).to respond_to(:job_que)
+    expect(app_with_configs).to respond_to(:creds)
+    expect(app_with_configs.job_que).to be_a(Qonfig::Settings)
+    expect(app_with_configs.creds).to be_a(Qonfig::Settings)
+    expect(app_with_configs.job_que.adapter).to eq(:sidekiq)
+    expect(app_with_configs.job_que.options.server).to eq('cloud')
+    expect(app_with_configs.job_que.options.auto_run).to eq(true)
+    expect(app_with_configs.creds.admin).to eq(true)
+    expect(app_with_configs.creds.login).to eq('D@iVeR')
+    expect(app_with_configs.creds.password).to eq('test123')
+  end
+
+  specify 'incorrect attributes' do
+    expect do
+      Class.new do
+        include Qonfig::Imports
+        import_settings(123)
+      end
+    end.to raise_error(Qonfig::IncompatibleImportedConfigError)
+
+    expect do
+      Class.new do
+        include Qonfig::Imports
+        import_settings(AppConfig, 'kek.pek', prefix: Object.new)
+      end
+    end.to raise_error(Qonfig::IncorrectImportPrefixError)
+
+    expect do
+      Class.new do
+        include Qonfig::Imports
+        import_settings(AppConfig, 'pek.kek', 'kek.pek', Object.new)
+      end
+    end.to raise_error(Qonfig::IncorrectImportKeyError)
+
+    expect do
+      Class.new do
+        include Qonfig::Imports
+        import_settings(AppConfig, 'kek.pek', mappings: {
+          Object.new => 'kek.pek'
+        })
+      end
+    end.to raise_error(Qonfig::IncorrectImportMappingsError)
+
+    expect do
+      Class.new do
+        include Qonfig::Imports
+        import_settings(AppConfig, 'kek.pek', mappings: {
+          some_method: Object.new
+        })
+      end
+    end.to raise_error(Qonfig::IncorrectImportMappingsError)
+  end
 end
