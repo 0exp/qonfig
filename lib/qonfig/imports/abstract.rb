@@ -24,8 +24,6 @@ class Qonfig::Imports::Abstract
   # @api private
   # @since 0.18.0
   def initialize(seeded_klass, imported_config, prefix: EMPTY_PREFIX, raw: DEFAULT_RAW_BEHAVIOR)
-    prevent_incompatible_import_params!(imported_config, prefix)
-
     @seeded_klass = seeded_klass
     @imported_config = imported_config
     @prefix = prefix

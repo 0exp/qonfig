@@ -78,7 +78,11 @@ describe 'Import settings as access methods to a class' do
       })
 
       # NOTE: with prefix
-      import_settings(AppConfig, mappings: { job_server: 'cloud' }, prefix: 'config_')
+      import_settings(
+        AppConfig,
+        mappings: { job_server: 'job_que.options.server' },
+        prefix: 'config_'
+      )
     end
 
     app_with_configs = ImportWithMappingsApp.new
@@ -93,13 +97,12 @@ describe 'Import settings as access methods to a class' do
     expect(app_with_configs.job_adapter).to eq(:sidekiq)
     expect(app_with_configs.config_job_server).to eq('cloud')
 
-
     # NOTE: change cofnigs and check that each new method returns the real config value
     AppConfig.configure do |config|
       config.credentials.password = 'tratata123'
       config.credentials.login = '0exp'
       config.job_que.adapter = :resque
-      config.job_que.server = 'aws'
+      config.job_que.options.server = 'aws'
     end
 
     expect(app_with_configs.user_password).to eq('tratata123')
@@ -112,7 +115,8 @@ describe 'Import settings as access methods to a class' do
     class MixedImportCheckApp
       include Qonfig::Imports
 
-      import_settings(AppConfig,
+      import_settings(
+        AppConfig,
         'credentials', 'job_que.options', # simple keys
         mappings: { passwd: 'credentials.password', admn: 'credentials.admin' }, # mappings
         prefix: 'config_' # and prefix
@@ -126,7 +130,7 @@ describe 'Import settings as access methods to a class' do
     expect(app_with_configs).to respond_to(:config_credentials)
     expect(app_with_configs).to respond_to(:config_options)
 
-    expdct(app_with_configs.config_passwd).to eq('test123')
+    expect(app_with_configs.config_passwd).to eq('test123')
     expect(app_with_configs.config_admn).to eq(true)
     expect(app_with_configs.config_credentials).to match(
       'admin'    => true,
@@ -134,7 +138,7 @@ describe 'Import settings as access methods to a class' do
       'password' => 'test123'
     )
     expect(app_with_configs.config_options).to eq(
-      'server'   => :sidekiq,
+      'server'   => 'cloud',
       'auto_run' => true
     )
   end

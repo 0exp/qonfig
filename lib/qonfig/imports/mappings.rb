@@ -36,7 +36,36 @@ class Qonfig::Imports::Mappings < Qonfig::Imports::Abstract
   #
   # @api private
   # @since 0.18.0
-  def import!(settings_interface = Module.new)
+  def import!(settings_interface = Module.new) # rubocop:disable Metrics/AbcSize
+    key_matchers.each_pair do |(mapped_method_name, key_matcher)|
+      raise(
+        Qonfig::UnknownSettingError,
+        "Setting with <#{key_matcher.scope_pattern}> key does not exist!"
+      ) unless (imported_config.keys(all_variants: true).any? do |setting_key|
+        key_matcher.match?(setting_key)
+      end)
+
+      imported_config.keys(all_variants: true).each do |setting_key|
+        next unless key_matcher.match?(setting_key)
+
+        setting_key_path_sequence = setting_key.split('.')
+        mapped_method_name = "#{prefix}#{mapped_method_name}" unless prefix.empty?
+
+        settings_interface.module_exec(raw, imported_config) do |raw, imported_config|
+          unless raw
+            # NOTE: get setting value via slice_value
+            define_method(mapped_method_name) do
+              imported_config.slice_value(*setting_key_path_sequence)
+            end
+          else
+            # NOTE: get setting object (concrete value or Qonfig::Settings object)
+            define_method(mapped_method_name) do
+              imported_config.dig(*setting_key_path_sequence)
+            end
+          end
+        end
+      end
+    end
   end
 
   private
@@ -62,7 +91,7 @@ class Qonfig::Imports::Mappings < Qonfig::Imports::Abstract
   # @raise [Qonfig::IncompatibleImportPrefixError]
   # @raise [Qonfig::IncompatibeImportMappingsError]
   #
-  # @see Qonfig::Imports::AbstractImporter
+  # @see Qonfig::Imports::Abstract#prevent_incompatible_import_params!
   #
   # @api private
   # @since 0.18.0
@@ -84,8 +113,8 @@ class Qonfig::Imports::Mappings < Qonfig::Imports::Abstract
   # @api private
   # @since 0.18.0
   def build_setting_key_matchers(mappings)
-    mappings.each_with_object({}) do |(method_name, required_setting_key), matchers|
-      matchers[method_name] = Qonfig::Settings::KeyMatcher.new(required_setting_key)
+    mappings.each_with_object({}) do |(mapped_method_name, required_setting_key), matchers|
+      matchers[mapped_method_name] = Qonfig::Settings::KeyMatcher.new(required_setting_key)
     end
   end
 end

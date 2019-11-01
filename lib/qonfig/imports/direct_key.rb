@@ -25,14 +25,14 @@ class Qonfig::Imports::DirectKey < Qonfig::Imports::Abstract
     @key_matchers = build_setting_key_matchers(keys)
   end
 
+  # @param settings_interfcae [Module]
   # @return [void]
   #
   # @api private
   # @since 0.18.0
-  def import!(settings_interface = Module.new)
+  def import!(settings_interface = Module.new) # rubocop:disable Metrics/AbcSize
     # step one: iterate each key matcher (that contain importing key from #keys)
     key_matchers.each do |key_matcher|
-      # step two: check that imported key is exist
       raise(
         Qonfig::UnknownSettingError,
         "Setting with <#{key_matcher.scope_pattern}> key does not exist!"
@@ -40,7 +40,6 @@ class Qonfig::Imports::DirectKey < Qonfig::Imports::Abstract
         key_matcher.match?(setting_key)
       end)
 
-      # step three: import matched keys
       imported_config.keys(all_variants: true).each do |setting_key|
         next unless key_matcher.match?(setting_key)
 
@@ -48,14 +47,14 @@ class Qonfig::Imports::DirectKey < Qonfig::Imports::Abstract
         access_method_name = setting_key_path_sequence.last
         access_method_name = "#{prefix}#{access_method_name}" unless prefix.empty?
 
-        imported_settings_interface.module_exec(raw, imported_config) do |raw, imported_config|
+        settings_interface.module_exec(raw, imported_config) do |raw, imported_config|
           unless raw
-            # NOTE: get setting value as a real value
+            # NOTE: get setting value via slice_value
             define_method(access_method_name) do
               imported_config.slice_value(*setting_key_path_sequence)
             end
           else
-            # NOTE: get setting value (or Qonfig::Settings object)
+            # NOTE: get setting object (concrete value or Qonfig::Settings object)
             define_method(access_method_name) do
               imported_config.dig(*setting_key_path_sequence)
             end
@@ -73,6 +72,12 @@ class Qonfig::Imports::DirectKey < Qonfig::Imports::Abstract
   # @since 0.18.8
   attr_reader :keys
 
+  # @return [Array<Qonfig::Settings::KeyMatcher>]
+  #
+  # @api private
+  # @since 0.18.0
+  attr_reader :key_matchers
+
   # @param imported_config [Qonfig::DataSet]
   # @param prefix [String, Symbol]
   # @param keys [Array<String,Symbol>]
@@ -82,7 +87,7 @@ class Qonfig::Imports::DirectKey < Qonfig::Imports::Abstract
   # @raise [Qonfig::IncompatibleImportPrefixError]
   # @raise [Qonfig::IncompatbileImportKeyError]
   #
-  # @see Qonfig::Imports::AbstractImporter
+  # @see Qonfig::Imports::Abstract#prevent_incompatible_import_params
   #
   # @api private
   # @since 0.18.0
