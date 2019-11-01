@@ -2201,6 +2201,8 @@ enabled: true
 dynamic: 10
 ```
 
+---
+
 ### Plugins
 
 ```ruby
