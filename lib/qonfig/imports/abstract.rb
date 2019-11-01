@@ -35,7 +35,9 @@ class Qonfig::Imports::Abstract
   # @api private
   # @since 0.18.0
   def import!(settings_interface = Module.new)
+    # :nocov:
     raise NoMethodError
+    # :nocov:
   end
 
   private
