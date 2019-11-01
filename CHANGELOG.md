@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+### Added
+- `#keys`
+- `#root_keys`
+- `include Qonfig::Imports` / `.import_settings`
+- `#export_settings`
+
 ## [0.17.0] - 2019-10-30
 ### Added
 - Introduce `strict` validations: `strict: false` option ignores `nil` values and used by default;

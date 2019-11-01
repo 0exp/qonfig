@@ -60,6 +60,7 @@ class Qonfig::Imports::General
     )
   end
 
+  # @param settings_interface [Module]
   # @return [void]
   #
   # @api private

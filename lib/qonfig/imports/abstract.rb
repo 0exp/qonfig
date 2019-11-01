@@ -30,6 +30,7 @@ class Qonfig::Imports::Abstract
     @raw = !!raw
   end
 
+  # @param settings_interface [Module]
   # @return [void]
   #
   # @api private

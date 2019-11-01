@@ -371,8 +371,6 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   # @option prefix [String, Symbol]
   # @return [void]
   #
-  # @see Qonfig::Imports::General
-  #
   # @api public
   # @since 0.18.0
   def export_settings(
