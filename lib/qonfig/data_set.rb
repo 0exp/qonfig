@@ -310,12 +310,15 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   end
 
   # @option all_variants [Boolean]
+  # @option only_root [Boolean]
   # @return [Array<String>]
   #
   # @api public
   # @since 0.18.0
-  def keys(all_variants: false)
-    thread_safe_access { settings.__keys__(all_variants: all_variants) }
+  def keys(all_variants: false, only_root: false)
+    thread_safe_access do
+      only_root ? settings.__root_keys__ : settings.__keys__(all_variants: all_variants)
+    end
   end
 
   # @return [Array<String>]
