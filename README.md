@@ -49,7 +49,7 @@ require 'qonfig'
   - [State freeze](#state-freeze)
   - [Settings as Predicates](#settings-as-predicates)
   - [Setting key existence](#setting-key-existence) (`#key?`/`#option?`/`#setting?`)
-  - [Run arbitary code with temporary settings](#run-arbitary-code-with-temporary-settings) (`#with(configs = {}, &arbitary_code)`)
+  - [Run arbitrary code with temporary settings](#run-arbitrary-code-with-temporary-settings) (`#with(configs = {}, &arbitrary_code)`)
 - [Import/Export](#import--export)
   - [Import config settings](#import-config-settings) (`as instance methods`)
   - [Export config settings](#export-config-settings) (`as singleton methods`)
@@ -523,7 +523,7 @@ config.custom_method # => 'custom_result'
 - [State freeze](#state-freeze)
 - [Settings as Predicates](#settings-as-predicates)
 - [Setting key existence](#setting-key-existence) (`#key?`/`#option?`/`#setting?`)
-- [Run arbitary code with temporary settings](#run-arbitary-code-with-temporary-settings)
+- [Run arbitrary code with temporary settings](#run-arbitrary-code-with-temporary-settings)
 
 ---
 
@@ -759,10 +759,10 @@ config.option?(:credentials, :password) # => true
 
 ---
 
-### Run arbitary code with temporary settings
+### Run arbitrary code with temporary settings
 
-- provides a way to run an arbitary code with temporarily specified settings;
-- your arbitary code can temporary change any setting too - all settings will be returned to the original state;
+- provides a way to run an arbitrary code with temporarily specified settings;
+- your arbitrary code can temporary change any setting too - all settings will be returned to the original state;
 - (it is convenient to run code samples by this way in tests (with substitued configs));
 - it is fully thread-safe `:)`;
 
@@ -799,9 +799,173 @@ config.settings.queue.options # => {}
 - [Import config settings](#import-config-settings) (`as instance methods`)
 - [Export config settings](#export-config-settings) (`as singleton methods`)
 
+Sometimes the nesting of configs in your project is quite high, and it makes you write the rather "cumbersome" code
+('config.settings.web_api.credentials.account.auth_token` for example). Frequent access to configs in this way is inconvinient - so developers wraps
+such code by method or variable. In order to make developer's wokr easer `Qonfig` provides a special Import API that simplifies the config importing
+(`.import_settings` DSL) and gives an ability to instant config setting export from a config object (`#export_settings` config's method).
+
+---
+
 ### Import config settings
 
+- `Qonfig::Imports` - a special mixin that provides the convenient DSL to work with config import features (`.import_settings` method);
+- `import_settings` imports config settings as access methods (`attr_reader`s for your configs)
+- signature: `.import_settings(config_object, *setting_keys, mappings: {}, prefix: '', raw: false)`
+  - `config_object` - an instance of `Qonfig::DataSet` whose config settings should be imported;
+  - `*setting_keys` - an array of dot-notaed config's setting keys that should be imported
+    (dot-notaed key is a key that describes each part of nested setting key as a string separated by `dot`-symbol);
+    - last part of dot-notated key will become a name of the setting access instance method;
+  - `mappings:` - a map of keys that describes custom method names for each imported setting;
+  - `prefix:` - prexifies setting access method name with custom prefix;
+  - `raw:` - use nested settings as objects or hashify them (`false` by default (means "hashify nested settings"));
+
+
+```ruby
+# NOTE: config sample (Qonfig::DataSet.build creates a class and instantly instantiates it)
+
+AppConfig = Qonfig::DataSet.build do
+  setting :web_api do
+    setting :credentials do
+      setting :account do
+        setting :login, 'DaiveR'
+        setting :auth_token, 'IAdkoa0@()1239uA'
+      end
+    end
+  end
+end
+```
+
+#### Import a set of setting keys (simple dot-noated key list)
+
+- last part of dot-notated key will become a name of the setting access instance method;
+
+```ruby
+class ServiceObject
+  include Qonfig::Imports
+
+  import_settings(AppConfig,
+    'web_api.credentials.account.login',
+    'web_api.credentials.account'
+  )
+end
+
+service = ServiceObject.new
+
+service.login # => "D@iVeR"
+service.account # => { "login" => "D@iVeR", "auth_token" => IAdkoa0@()1239uA" }
+```
+
+#### Import with custom method names (mappings)
+
+- `mappings:` - импорт конфигураций с произвольным именем метода доступа к импортируемому конфигу:
+
+```ruby
+class ServiceObject
+  include Qonfig::Imports
+
+  import_settings(AppConfig, mappings: {
+    account_data: 'web_api.credentials.account',
+    secret_token: 'web_api.credentials.account.auth_token'
+  })
+end
+
+service = ServiceObject.new
+
+service.account_data # => { "login" => "D@iVeR", "auth_token" => "IAdkoa0@()1239uA" }
+service.auth_token # => "IAdkoa0@()1239uA"
+```
+
+#### Prefixed method names
+
+```ruby
+class ServiceObject
+  include Qonfig::Imports
+
+  import_settings(AppConfig,
+    'web_api.credentials.account',
+    mappings: { secret_token: 'web_api.credentials.account.auth_token' },
+    prefix: 'config_'
+  )
+end
+
+service = ServiceObject.new
+
+service.config_credentials # => { login" => "D@iVeR", "auth_token" => "IAdkoa0@()1239uA" }
+service.config_secret_token # => "IAdkoa0@()1239uA"
+```
+
+#### Import nested settings as raw Qonfig::Settings objects
+
+- `raw: false` is used by default (hashify nested settings)
+
+```ruby
+# NOTE: import nested settings as raw objects (raw: true)
+class ServiceObject
+  include Qonfig::Imports
+
+  import_settings(AppConfig, 'web_api.credentials', raw: true)
+end
+
+service = ServiceObject.new
+
+service.credentials # => <Qonfig::Settings:0x00007ff8>
+service.credentials.account.login # => "D@iVeR"
+service.credentials.account.auth_token # => "IAdkoa0@()1239uA"
+```
+
+```ruby
+# NOTE: import nested settings as converted-to-hash objects (raw: false) (default behavior)
+class ServiceObject
+  include Qonfig::Imports
+
+  import_settings(AppConfig, 'web_api.credentials', raw: false)
+end
+
+service = ServiceObject.new
+
+service.credentials # => { "account" => { "login" => "D@iVeR", "auth_token" => "IAdkoa0@()1239uA"} }
+```
+
+---
+
 ### Export config settings
+
+- all config objects can export their settings to an arbitrary object as singleton methods;
+- signature: `#export(exportable_object, *setting_keys, mappings: {}, prefix: '', raw: false)
+  - `exportable_object` - an arbitrary object for exporting;
+  - `*setting_keys` - an array of dot-notaed config's setting keys that should be exported
+    (dot-notaed key is a key that describes each part of nested setting key as a string separated by `dot`-symbol);
+    - last part of dot-notated key will become a name of the setting access instance method;
+  - `mappings:` - a map of keys that describes custom method names for each exported setting;
+  - `prefix:` - prexifies setting access method name with custom prefix;
+  - `raw:` - use nested settings as objects or hashify them (`false` by default (means "hashify nested settings"));
+- works in `.import_settings` manner [doc](#import-config-settings) (see examples and documentation above `:)`)
+
+```ruby
+class Config < Qonfig::DataSet
+  setting :web_api do
+    setting :credentials do
+      setting :account do
+        setting :login, 'DaiveR'
+        setting :auth_token, 'IAdkoa0@()1239uA'
+      end
+    end
+  end
+end
+
+class ServiceObject; end
+
+config = Config.new
+service = ServiceObject.new
+
+service.config_account # => NoMethodError
+
+# NOTE: export settings
+config.export(service, 'web_api.credentials.account', prefix: 'config_')
+
+# NOTE: our settings :)
+service.account # => { "login" => "D@iVeR", "auth_token" => "IAdkoa0@()1239uA" }
+```
 
 ---
 
