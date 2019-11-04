@@ -717,6 +717,9 @@ config.settings.enable_api # => true # value from instant change
 
 ### Clear options
 
+- set all config's settings to `nil`;
+- method signature: `#clear!`;
+
 ```ruby
 class Config
   setting :database do
