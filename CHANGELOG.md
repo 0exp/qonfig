@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.18.0] - 2019-11-04
 ### Added
 - `#keys` - returns a list of all config keys in dot-notation format;
 - `#root_keys` - returns a list of root config keys;
