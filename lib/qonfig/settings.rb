@@ -194,11 +194,11 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   # rubocop:disable Metrics/LineLength
   def __to_hash__(transform_key: BASIC_SETTING_KEY_TRANSFORMER, transform_value: BASIC_SETTING_VALUE_TRANSFORMER)
     unless transform_key.is_a?(Proc)
-      ::Kernel.raise(Qonfig::IncorrectKeyTransformerError, 'Key transformer should be a proc')
+      ::Kernel.raise(Qonfig::IncorrectKeyTransformerError, 'Key transformer should be a type of proc')
     end
 
     unless transform_value.is_a?(Proc)
-      ::Kernel.raise(Qonfig::IncorrectValueTransformerError, 'Value transformer should be a proc')
+      ::Kernel.raise(Qonfig::IncorrectValueTransformerError, 'Value transformer should be a type of proc')
     end
 
     __lock__.thread_safe_access do
@@ -207,6 +207,23 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   end
   # rubocop:enable Metrics/LineLength
   alias_method :__to_h__, :__to_hash__
+
+  # @option all_variants [Boolean]
+  # @return [Array<String>]
+  #
+  # @api private
+  # @since 0.18.0
+  def __keys__(all_variants: false)
+    __lock__.thread_safe_access { __setting_keys__(all_variants: all_variants) }
+  end
+
+  # @return [Array<String>]
+  #
+  # @api private
+  # @since 0.18.0
+  def __root_keys__
+    __lock__.thread_safe_access { __root_setting_keys__ }
+  end
 
   # @return [void]
   #
@@ -289,6 +306,51 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   # @since 0.2.0
   attr_reader :__lock__
 
+  # @option all_variants [Boolean]
+  # @return [Array<String>]
+  #
+  # @api private
+  # @since 0.18.0
+  def __setting_keys__(all_variants: false)
+    # NOTE: generate a set of keys return simple 'a.b.c.d'
+    setting_keys_set = Set.new.tap do |setting_keys|
+      __deep_each_key_value_pair__ do |setting_key, _setting_value|
+        setting_keys << setting_key
+      end
+    end
+
+    if all_variants
+      # NOTE:
+      #   We have { a: { b: { c: { d : 1 } } } }
+      #   Its mean that we have these keys:
+      #     - 'a' # => returns { b: { c: { d: 1 } } }
+      #     - 'a.b' # => returns { c: { d: 1 } }
+      #     - 'a.b.c' # => returns { d: 1 }
+      #     - 'a.b.c.d' # => returns 1
+      #   So, get them all :)
+
+      setting_keys_set.each_with_object(Set.new) do |setting_key, varianted_setting_keys|
+        setting_key_paths = setting_key.split('.')
+        combination_size  = setting_key_paths.size
+
+        combination_size.times do |merged_key_patterns_count|
+          sub_setting_key = setting_key_paths.slice(0..merged_key_patterns_count).join('.')
+          varianted_setting_keys << sub_setting_key
+        end
+      end
+    else
+      setting_keys_set
+    end
+  end
+
+  # @return [Array<String>]
+  #
+  # @api private
+  # @since 0.18.0
+  def __root_setting_keys__
+    __options__.keys
+  end
+
   # @param key_path [Array<String, Symbol>]
   # @return [Boolean]
   #
@@ -302,7 +364,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   end
 
   # @param block [Proc]
-  # @return [Enumerable]
+  # @return [Enumerator]
   #
   # @yield [setting_key, setting_value]
   # @yieldparam key [String]
@@ -316,7 +378,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
 
   # @param initial_setting_key [String, NilClass]
   # @param block [Proc]
-  # @return [Enumerable]
+  # @return [Enumerator]
   #
   # @yield [setting_key, setting_value]
   # @yieldparam setting_key [String]

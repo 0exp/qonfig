@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+### Added
+- `#keys` - returns a list of all config keys in dot-notation format;
+- `#root_keys` - returns a list of root config keys;
+- Inroduce `Import API`:
+  - `.import_settings` - DSL method for importing configuration settings (from a config instance) as instance methods of a class;
+  - `#export_settings` - config's instance method that exports config settings to an arbitrary object as singelton methods;
+
 ## [0.17.0] - 2019-10-30
 ### Added
 - Introduce `strict` validations: `strict: false` option ignores `nil` values and used by default;

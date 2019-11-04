@@ -44,12 +44,16 @@ require 'qonfig'
   - [Instantiation without class definition](#instantiation-without-class-definition) (`Qonfig::DataSet.build(&definitions)`)
 - [Interaction](#interaction)
   - [Iteration over setting keys](#iteration-over-setting-keys) (`#each_setting`, `#deep_each_setting`)
+  - [List of config keys](#list-of-config-keys) (`#keys`, `#root_keys`)
   - [Config reloading](#config-reloading) (reload config definitions and option values)
   - [Clear options](#clear-options) (set to `nil`)
   - [State freeze](#state-freeze)
   - [Settings as Predicates](#settings-as-predicates)
   - [Setting key existence](#setting-key-existence) (`#key?`/`#option?`/`#setting?`)
-  - [Run arbitary code with temporary settings](#run-arbitary-code-with-temporary-settings) (`#with(configs = {}, &arbitary_code)`)
+  - [Run arbitrary code with temporary settings](#run-arbitrary-code-with-temporary-settings) (`#with(configs = {}, &arbitrary_code)`)
+- [Import settings / Export settings](#import-settings--export-settings)
+  - [Import config settings](#import-config-settings) (`as instance methods`)
+  - [Export config settings](#export-config-settings) (`as singleton methods`)
 - [Validation](#validation)
   - [Introduction](#introduction)
   - [Key search pattern](#key-search-pattern)
@@ -75,7 +79,7 @@ require 'qonfig'
     - [Save to JSON file](#save-to-json-file) (`#save_to_json`)
     - [Save to YAML file](#save-to-yaml-file) (`#save_to_yaml`)
 - [Plugins](#plugins)
-  - [toml](#plugins-toml) (provides `load_from_toml`, `save_to_toml`, `expose_toml`)
+  - [toml](#plugins-toml) (support for `TOML` format)
 - [Roadmap](#roadmap)
 ---
 
@@ -515,12 +519,13 @@ config.custom_method # => 'custom_result'
 ## Interaction
 
 - [Iteration over setting keys](#iteration-over-setting-keys) (`#each_setting`, `#deep_each_setting`)
+- [List of config keys](#list-of-config-keys) (`#keys`, `#root_keys`)
 - [Config reloading](#config-reloading) (reload config definitions and option values)
 - [Clear options](#clear-options) (set to nil)
 - [State freeze](#state-freeze)
 - [Settings as Predicates](#settings-as-predicates)
 - [Setting key existence](#setting-key-existence) (`#key?`/`#option?`/`#setting?`)
-- [Run arbitary code with temporary settings](#run-arbitary-code-with-temporary-settings)
+- [Run arbitrary code with temporary settings](#run-arbitrary-code-with-temporary-settings)
 
 ---
 
@@ -576,7 +581,95 @@ config.deep_each_setting { |key, value| { key => value } }
 
 ---
 
+### List of config keys
+
+- `#keys` - returns a list of all config keys in dot-notation format;
+  - `all_variants:` - get all possible variants of the config's keys sequences (`false` by default);
+  - `only_root:` - get only the root config keys (`false` by default);
+- `#root_keys` - returns a list of root config keys (an alias for `#keys(only_root: true)`);
+
+```ruby
+# NOTE: suppose we have the following config
+
+class Config < Qonfig::DataSet
+  setting :credentials do
+    setting :social do
+      setting :service, 'instagram'
+      setting :login, '0exp'
+    end
+
+    setting :admin do
+      setting :enabled, true
+    end
+  end
+
+  setting :server do
+    setting :type, 'cloud'
+    setting :options do
+      setting :os, 'CentOS'
+    end
+  end
+end
+
+config = Config.new
+```
+
+#### Default behavior
+
+```ruby
+config.keys
+
+# the result:
+[
+  "credentials.social.service",
+  "credentials.social.login",
+  "credentials.admin.enabled",
+  "server.type",
+  "server.options.os"
+]
+```
+
+#### All key variants
+
+```ruby
+config.keys(all_variants: true)
+
+# the result:
+[
+  "credentials",
+  "credentials.social",
+  "credentials.social.service",
+  "credentials.social.login",
+  "credentials.admin",
+  "credentials.admin.enabled",
+  "server",
+  "server.type",
+  "server.options",
+  "server.options.os"
+]
+```
+
+#### Only root keys
+
+```ruby
+config.keys(only_root: true)
+
+# the result:
+['credentials', 'server']
+```
+
+```ruby
+config.root_keys
+
+# the result:
+['credentials', 'server']
+```
+
+---
+
 ### Config reloading
+
+- method signature: `#reload!(configurations = {}, &configuration)`;
 
 ```ruby
 class Config < Qonfig::DataSet
@@ -756,10 +849,10 @@ config.option?(:credentials, :password) # => true
 
 ---
 
-### Run arbitary code with temporary settings
+### Run arbitrary code with temporary settings
 
-- provides a way to run an arbitary code with temporarily specified settings;
-- your arbitary code can temporary change any setting too - all settings will be returned to the original state;
+- provides a way to run an arbitrary code with temporarily specified settings;
+- your arbitrary code can temporary change any setting too - all settings will be returned to the original state;
 - (it is convenient to run code samples by this way in tests (with substitued configs));
 - it is fully thread-safe `:)`;
 
@@ -787,6 +880,186 @@ end
 # original settings has not changed :)
 config.settings.queue.adapter # => :sidekiq
 config.settings.queue.options # => {}
+```
+
+---
+
+## Import settings / Export settings
+
+- [Import config settings](#import-config-settings) (`as instance methods`)
+- [Export config settings](#export-config-settings) (`as singleton methods`)
+
+Sometimes the nesting of configs in your project is quite high, and it makes you write the rather "cumbersome" code
+(`config.settings.web_api.credentials.account.auth_token` for example). Frequent access to configs in this way is inconvinient - so developers wraps
+such code by methods or variables. In order to make developer's life easer `Qonfig` provides a special Import API simplifies the config importing
+(gives you `.import_settings` DSL) and gives an ability to instant config setting export from a config object (gives you `#export_settings` config's method).
+
+---
+
+### Import config settings
+
+- `Qonfig::Imports` - a special mixin that provides the convenient DSL to work with config import features (`.import_settings` method);
+- `.import_settings` - DSL method for importing configuration settings (from a config instance) as instance methods of a class;
+- (**IMPORTANT**) `import_settings` imports config settings as access methods to config's settings (creates `attr_reader`s for your config);
+- signature: `.import_settings(config_object, *setting_keys, mappings: {}, prefix: '', raw: false)`
+  - `config_object` - an instance of `Qonfig::DataSet` whose config settings should be imported;
+  - `*setting_keys` - an array of dot-notaed config's setting keys that should be imported
+    (dot-notaed key is a key that describes each part of nested setting key as a string separated by `dot`-symbol);
+    - last part of dot-notated key will become a name of the setting access instance method;
+  - `mappings:` - a map of keys that describes custom method names for each imported setting;
+  - `prefix:` - prexifies setting access method name with custom prefix;
+  - `raw:` - use nested settings as objects or hashify them (`false` by default (means "hashify nested settings"));
+
+---
+
+Suppose we have a config with deeply nested keys:
+
+```ruby
+# NOTE: (Qonfig::DataSet.build creates a class and instantly instantiates it)
+AppConfig = Qonfig::DataSet.build do
+  setting :web_api do
+    setting :credentials do
+      setting :account do
+        setting :login, 'DaiveR'
+        setting :auth_token, 'IAdkoa0@()1239uA'
+      end
+    end
+  end
+end
+```
+
+Let's see what we can to do :)
+
+#### Import a set of setting keys (simple dot-noated key list)
+
+- last part of dot-notated key will become a name of the setting access instance method;
+
+```ruby
+class ServiceObject
+  include Qonfig::Imports
+
+  import_settings(AppConfig,
+    'web_api.credentials.account.login',
+    'web_api.credentials.account'
+  )
+end
+
+service = ServiceObject.new
+
+service.login # => "D@iVeR"
+service.account # => { "login" => "D@iVeR", "auth_token" => IAdkoa0@()1239uA" }
+```
+
+#### Import with custom method names (mappings)
+
+- `mappings:` defines a map of keys that describes custom method names for each imported setting;
+
+```ruby
+class ServiceObject
+  include Qonfig::Imports
+
+  import_settings(AppConfig, mappings: {
+    account_data: 'web_api.credentials.account', # NOTE: name access method with "account_data"
+    secret_token: 'web_api.credentials.account.auth_token' # NOTE: name access method with "secret_token"
+  })
+end
+
+service = ServiceObject.new
+
+service.account_data # => { "login" => "D@iVeR", "auth_token" => "IAdkoa0@()1239uA" }
+service.auth_token # => "IAdkoa0@()1239uA"
+```
+
+#### Prexify method name
+
+- `prefix:` - prexifies setting access method name with custom prefix;
+
+```ruby
+class ServiceObject
+  include Qonfig::Imports
+
+  import_settings(AppConfig,
+    'web_api.credentials.account',
+    mappings: { secret_token: 'web_api.credentials.account.auth_token' },
+    prefix: 'config_'
+  )
+end
+
+service = ServiceObject.new
+
+service.config_credentials # => { login" => "D@iVeR", "auth_token" => "IAdkoa0@()1239uA" }
+service.config_secret_token # => "IAdkoa0@()1239uA"
+```
+
+#### Import nested settings as raw Qonfig::Settings objects
+
+- `raw: false` is used by default (hashify nested settings)
+
+```ruby
+# NOTE: import nested settings as raw objects (raw: true)
+class ServiceObject
+  include Qonfig::Imports
+
+  import_settings(AppConfig, 'web_api.credentials', raw: true)
+end
+
+service = ServiceObject.new
+
+service.credentials # => <Qonfig::Settings:0x00007ff8>
+service.credentials.account.login # => "D@iVeR"
+service.credentials.account.auth_token # => "IAdkoa0@()1239uA"
+```
+
+```ruby
+# NOTE: import nested settings as converted-to-hash objects (raw: false) (default behavior)
+class ServiceObject
+  include Qonfig::Imports
+
+  import_settings(AppConfig, 'web_api.credentials', raw: false)
+end
+
+service = ServiceObject.new
+
+service.credentials # => { "account" => { "login" => "D@iVeR", "auth_token" => "IAdkoa0@()1239uA"} }
+```
+
+---
+
+### Export config settings
+
+- all config objects can export their settings to an arbitrary object as singleton methods;
+- (**IMPORTANT**) `export_settings` exports config settings as access methods to config's settings (creates `attr_reader`s for your config);
+- signature: `#export(exportable_object, *setting_keys, mappings: {}, prefix: '', raw: false)`:
+  - `exportable_object` - an arbitrary object for exporting;
+  - `*setting_keys` - an array of dot-notaed config's setting keys that should be exported
+    (dot-notaed key is a key that describes each part of nested setting key as a string separated by `dot`-symbol);
+    - last part of dot-notated key will become a name of the setting access instance method;
+  - `mappings:` - a map of keys that describes custom method names for each exported setting;
+  - `prefix:` - prexifies setting access method name with custom prefix;
+  - `raw:` - use nested settings as objects or hashify them (`false` by default (means "hashify nested settings"));
+- works in `.import_settings` manner [doc](#import-config-settings) (see examples and documentation above `:)`)
+
+```ruby
+class Config < Qonfig::DataSet
+  setting :web_api do
+    setting :credentials do
+      setting :account do
+        setting :login, 'DaiveR'
+        setting :auth_token, 'IAdkoa0@()1239uA'
+      end
+    end
+  end
+end
+
+class ServiceObject; end
+
+config = Config.new
+service = ServiceObject.new
+
+service.config_account # => NoMethodError
+# NOTE: export missing settings :)
+config.export(service, 'web_api.credentials.account', prefix: 'config_')
+service.account # => { "login" => "D@iVeR", "auth_token" => "IAdkoa0@()1239uA" }
 ```
 
 ---
@@ -2252,7 +2525,6 @@ Qonfig.plugin(:toml)
 - **Minor**:
   - custom global (and class-level) validators (with a special Validator Definition DSL);
   - support for "dot notation" in `#key?`, `#option?`, `#setting?`, `#dig`, `#subset`, `#slice`, `#slice_value`;
-  - config improts (and exports);
   - pretty print :)));
 
 ## Contributing

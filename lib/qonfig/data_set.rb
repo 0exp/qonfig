@@ -21,7 +21,7 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     # @since 0.16.0
     def build(base_dataset_klass = self, &config_klass_definitions)
       unless base_dataset_klass <= Qonfig::DataSet
-        raise(Qonfig::ArgumentError, 'Base inherited class should be a type of Qonfig::DataSet')
+        raise(Qonfig::ArgumentError, 'Base class should be a type of Qonfig::DataSet')
       end
 
       Class.new(base_dataset_klass, &config_klass_definitions).new
@@ -309,6 +309,26 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     thread_safe_access { validator.validate! }
   end
 
+  # @option all_variants [Boolean]
+  # @option only_root [Boolean]
+  # @return [Array<String>]
+  #
+  # @api public
+  # @since 0.18.0
+  def keys(all_variants: false, only_root: false)
+    thread_safe_access do
+      only_root ? settings.__root_keys__ : settings.__keys__(all_variants: all_variants)
+    end
+  end
+
+  # @return [Array<String>]
+  #
+  # @api public
+  # @since 0.18.0
+  def root_keys
+    thread_safe_access { settings.__root_keys__ }
+  end
+
   # @param temporary_configurations [Hash<Symbol|String,Any>]
   # @param arbitary_code [Block]
   # @return [void]
@@ -341,6 +361,34 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
       self.class.build.tap do |duplicate|
         duplicate.configure(to_h)
       end
+    end
+  end
+
+  # @param exportable_object [Object]
+  # @param exported_setting_keys [Array<String,Symbol>]
+  # @option mappings [Hash<String|Symbol,String|Symbol>]
+  # @option raw [Boolean]
+  # @option prefix [String, Symbol]
+  # @return [void]
+  #
+  # @api public
+  # @since 0.18.0
+  def export_settings(
+    exportable_object,
+    *exported_setting_keys,
+    mappings: Qonfig::Imports::Abstract::EMPTY_MAPPINGS,
+    raw: false,
+    prefix: Qonfig::Imports::Abstract::EMPTY_PREFIX
+  )
+    thread_safe_access do
+      Qonfig::Imports::Export.export!(
+        exportable_object,
+        self,
+        *exported_setting_keys,
+        prefix: prefix,
+        raw: raw,
+        mappings: mappings
+      )
     end
   end
 

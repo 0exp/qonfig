@@ -156,4 +156,28 @@ module Qonfig
   # @api public
   # @since 0.12.0
   UnresolvedPluginDependencyError = Class.new(PluginError)
+
+  # @see Qonfig::Imports::Abstract
+  #
+  # @api public
+  # @since 0.18.0
+  IncompatibleImportedConfigError = Class.new(ArgumentError)
+
+  # @see Qonfig::Imports::DirectKey
+  #
+  # @api public
+  # @since 0.18.0
+  IncorrectImportKeyError = Class.new(ArgumentError)
+
+  # @see Qonfig::Imports::Abstract
+  #
+  # @api public
+  # @since 0.18.0
+  IncorrectImportPrefixError = Class.new(ArgumentError)
+
+  # @see Qonfig::Imports::Mappings
+  #
+  # @api public
+  # @since 0.18.0
+  IncorrectImportMappingsError = Class.new(ArgumentError)
 end
