@@ -610,6 +610,8 @@ class Config < Qonfig::DataSet
     end
   end
 end
+
+config = Config.new
 ```
 
 #### Default behavior
@@ -666,6 +668,8 @@ config.root_keys
 ---
 
 ### Config reloading
+
+- method signature: `#reload!(configurations = {}, &configuration)`;
 
 ```ruby
 class Config < Qonfig::DataSet
