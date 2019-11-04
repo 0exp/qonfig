@@ -540,7 +540,7 @@ config.settings.web_api # => "api.google.com"
 - [Iteration over setting keys](#iteration-over-setting-keys) (`#each_setting`, `#deep_each_setting`)
 - [List of config keys](#list-of-config-keys) (`#keys`, `#root_keys`)
 - [Config reloading](#config-reloading) (reload config definitions and option values)
-- [Clear options](#clear-options) (set to nil)
+- [Clear options](#clear-options) (set to `nil`)
 - [State freeze](#state-freeze)
 - [Settings as Predicates](#settings-as-predicates)
 - [Setting key existence](#setting-key-existence) (`#key?`/`#option?`/`#setting?`)
