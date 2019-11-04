@@ -1057,8 +1057,10 @@ config = Config.new
 service = ServiceObject.new
 
 service.config_account # => NoMethodError
-# NOTE: export missing settings :)
+
+# NOTE: export settings as access methods to config's settings
 config.export(service, 'web_api.credentials.account', prefix: 'config_')
+
 service.account # => { "login" => "D@iVeR", "auth_token" => "IAdkoa0@()1239uA" }
 ```
 
