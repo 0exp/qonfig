@@ -820,7 +820,9 @@ such code by methods or variables. In order to make developer's life easer `Qonf
   - `prefix:` - prexifies setting access method name with custom prefix;
   - `raw:` - use nested settings as objects or hashify them (`false` by default (means "hashify nested settings"));
 
-Suggest we have a config with deeply nested keys (and see what we can to do :)):
+---
+
+Suggest we have a config with deeply nested keys:
 
 ```ruby
 # NOTE: (Qonfig::DataSet.build creates a class and instantly instantiates it)
@@ -835,6 +837,8 @@ AppConfig = Qonfig::DataSet.build do
   end
 end
 ```
+
+Let's see what we can to do :)
 
 #### Import a set of setting keys (simple dot-noated key list)
 
