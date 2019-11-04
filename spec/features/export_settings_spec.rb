@@ -50,6 +50,6 @@ describe 'Export settings as instance-level access methods' do
 
     expect(my_simple_object.kek_credentials.login).to eq('0exp')
     expect(my_simple_object.kek_credentials.password).to eq('test123')
-     expect(my_simple_object.kek_adapter).to eq(:sidekiq)
+    expect(my_simple_object.kek_adapter).to eq(:sidekiq)
   end
 end

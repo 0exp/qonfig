@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/LineLength, Style/Semicolon
 shared_examples 'load setting values from file by instance methods' do |file_name:, file_with_env_name:, file_format:, load_by:|
   specify "load values from #{file_format} file over existing (strict, explicit format, no env)" do
     config = Class.new(Qonfig::DataSet) do
@@ -115,3 +116,4 @@ shared_examples 'load setting values from file by instance methods' do |file_nam
     end.to raise_error(Qonfig::ArgumentError)
   end
 end
+# rubocop:enable Metrics/LineLength, Style/Semicolon
