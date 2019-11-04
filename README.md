@@ -51,7 +51,7 @@ require 'qonfig'
   - [Settings as Predicates](#settings-as-predicates)
   - [Setting key existence](#setting-key-existence) (`#key?`/`#option?`/`#setting?`)
   - [Run arbitrary code with temporary settings](#run-arbitrary-code-with-temporary-settings) (`#with(configs = {}, &arbitrary_code)`)
-- [Import settings / Export settings](#settings-import--settings-export)
+- [Import settings / Export settings](#import-settings--export-settings)
   - [Import config settings](#import-config-settings) (`as instance methods`)
   - [Export config settings](#export-config-settings) (`as singleton methods`)
 - [Validation](#validation)
