@@ -50,7 +50,7 @@ require 'qonfig'
   - [Settings as Predicates](#settings-as-predicates)
   - [Setting key existence](#setting-key-existence) (`#key?`/`#option?`/`#setting?`)
   - [Run arbitrary code with temporary settings](#run-arbitrary-code-with-temporary-settings) (`#with(configs = {}, &arbitrary_code)`)
-- [Import/Export](#import--export)
+- [Settings Import / Settings Export](#settings-import--settings-export)
   - [Import config settings](#import-config-settings) (`as instance methods`)
   - [Export config settings](#export-config-settings) (`as singleton methods`)
 - [Validation](#validation)
@@ -794,7 +794,7 @@ config.settings.queue.options # => {}
 
 ---
 
-## Import / Export
+## Settings Import / Settings Export
 
 - [Import config settings](#import-config-settings) (`as instance methods`)
 - [Export config settings](#export-config-settings) (`as singleton methods`)
@@ -858,15 +858,15 @@ service.account # => { "login" => "D@iVeR", "auth_token" => IAdkoa0@()1239uA" }
 
 #### Import with custom method names (mappings)
 
-- `mappings:` - импорт конфигураций с произвольным именем метода доступа к импортируемому конфигу:
+- `mappings:` defines a map of keys that describes custom method names for each imported setting;
 
 ```ruby
 class ServiceObject
   include Qonfig::Imports
 
   import_settings(AppConfig, mappings: {
-    account_data: 'web_api.credentials.account',
-    secret_token: 'web_api.credentials.account.auth_token'
+    account_data: 'web_api.credentials.account', # NOTE: name access method with "account_data"
+    secret_token: 'web_api.credentials.account.auth_token' # NOTE: name access method with "secret_token"
   })
 end
 
@@ -876,7 +876,9 @@ service.account_data # => { "login" => "D@iVeR", "auth_token" => "IAdkoa0@()1239
 service.auth_token # => "IAdkoa0@()1239uA"
 ```
 
-#### Prefixed method names
+#### Prexify method name
+
+- `prefix:` - prexifies setting access method name with custom prefix;
 
 ```ruby
 class ServiceObject
