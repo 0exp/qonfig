@@ -44,6 +44,7 @@ require 'qonfig'
   - [Instantiation without class definition](#instantiation-without-class-definition) (`Qonfig::DataSet.build(&definitions)`)
 - [Interaction](#interaction)
   - [Iteration over setting keys](#iteration-over-setting-keys) (`#each_setting`, `#deep_each_setting`)
+  - [List of config keys](#list-of-config-keys) (`#keys`, `#root_keys`)
   - [Config reloading](#config-reloading) (reload config definitions and option values)
   - [Clear options](#clear-options) (set to `nil`)
   - [State freeze](#state-freeze)
@@ -518,6 +519,7 @@ config.custom_method # => 'custom_result'
 ## Interaction
 
 - [Iteration over setting keys](#iteration-over-setting-keys) (`#each_setting`, `#deep_each_setting`)
+- [List of config keys](#list-of-config-keys) (`#keys`, `#root_keys`)
 - [Config reloading](#config-reloading) (reload config definitions and option values)
 - [Clear options](#clear-options) (set to nil)
 - [State freeze](#state-freeze)
@@ -575,6 +577,88 @@ config.deep_each_setting { |key, value| { key => value } }
 { 'db.creds.data' => { test: false } }
 { 'telegraf_url' => 'udp://localhost:8094' }
 { 'telegraf_prefix' => 'test' }
+```
+
+---
+
+### List of config keys
+
+- `#keys` - returns a list of all config keys in dot-notation format;
+  - `all_variants:` - return the all possible variants of the config's keys sequences (`false` by default);
+  - `only_root:` - return only the root config keys (`false` by default);
+- `#root_keys` - returns a list of root config keys (an alias for `#keys(only_root: true)`);
+
+```ruby
+class Config < Qonfig::DataSet
+  setting :credentials do
+    setting :social do
+      setting :service, 'instagram'
+      setting :login, '0exp'
+    end
+
+    setting :admin do
+      setting :enabled, true
+    end
+  end
+
+  setting :server do
+    setting :type, 'cloud'
+    setting :options do
+      setting :os, 'CentOS'
+    end
+  end
+end
+```
+
+#### Default behavior
+
+```ruby
+config.keys
+
+# the result:
+[
+  "credentials.social.service",
+  "credentials.social.login",
+  "credentials.admin.enabled",
+  "server.type",
+  "server.options.os"
+]
+```
+
+#### All key variants
+
+```ruby
+config.keys(all_variants: true)
+
+# the result:
+[
+  "credentials",
+  "credentials.social",
+  "credentials.social.service",
+  "credentials.social.login",
+  "credentials.admin",
+  "credentials.admin.enabled",
+  "server",
+  "server.type",
+  "server.options",
+  "server.options.os"
+]
+```
+
+#### Only root keys
+
+```ruby
+config.keys(only_root: true)
+
+# the result:
+['credentials', 'server']
+```
+
+```ruby
+config.root_keys
+
+# the result:
+['credentials', 'server']
 ```
 
 ---
