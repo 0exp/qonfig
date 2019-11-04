@@ -755,6 +755,8 @@ config.settings.web_api.endpoint # => nil
 
 ### State freeze
 
+- method signature: `#freeze!`;
+
 ```ruby
 class Config < Qonfig::DataSet
   setting :logger, Logger.new(STDOUT)
