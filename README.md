@@ -939,7 +939,7 @@ service.credentials # => { "account" => { "login" => "D@iVeR", "auth_token" => "
 
 - all config objects can export their settings to an arbitrary object as singleton methods;
 - (**IMPORTANT**) `export_settings` exports config settings as access methods to config's settings (creates `attr_reader`s for your config);
-- signature: `#export(exportable_object, *setting_keys, mappings: {}, prefix: '', raw: false)
+- signature: `#export(exportable_object, *setting_keys, mappings: {}, prefix: '', raw: false)`:
   - `exportable_object` - an arbitrary object for exporting;
   - `*setting_keys` - an array of dot-notaed config's setting keys that should be exported
     (dot-notaed key is a key that describes each part of nested setting key as a string separated by `dot`-symbol);

@@ -31,7 +31,6 @@ class Qonfig::Imports::DirectKey < Qonfig::Imports::Abstract
   # @api private
   # @since 0.18.0
   def import!(settings_interface = Module.new) # rubocop:disable Metrics/AbcSize
-    # step one: iterate each key matcher (that contain importing key from #keys)
     key_matchers.each do |key_matcher|
       raise(
         Qonfig::UnknownSettingError,
