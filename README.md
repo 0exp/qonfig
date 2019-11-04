@@ -50,7 +50,7 @@ require 'qonfig'
   - [Settings as Predicates](#settings-as-predicates)
   - [Setting key existence](#setting-key-existence) (`#key?`/`#option?`/`#setting?`)
   - [Run arbitrary code with temporary settings](#run-arbitrary-code-with-temporary-settings) (`#with(configs = {}, &arbitrary_code)`)
-- [Settings Import / Settings Export](#settings-import--settings-export)
+- [Import settings / Export settings](#settings-import--settings-export)
   - [Import config settings](#import-config-settings) (`as instance methods`)
   - [Export config settings](#export-config-settings) (`as singleton methods`)
 - [Validation](#validation)
@@ -794,15 +794,15 @@ config.settings.queue.options # => {}
 
 ---
 
-## Settings Import / Settings Export
+## Import settings / Export settings
 
 - [Import config settings](#import-config-settings) (`as instance methods`)
 - [Export config settings](#export-config-settings) (`as singleton methods`)
 
 Sometimes the nesting of configs in your project is quite high, and it makes you write the rather "cumbersome" code
-('config.settings.web_api.credentials.account.auth_token` for example). Frequent access to configs in this way is inconvinient - so developers wraps
-such code by method or variable. In order to make developer's wokr easer `Qonfig` provides a special Import API that simplifies the config importing
-(`.import_settings` DSL) and gives an ability to instant config setting export from a config object (`#export_settings` config's method).
+(`config.settings.web_api.credentials.account.auth_token` for example). Frequent access to configs in this way is inconvinient - so developers wraps
+such code by methods or variables. In order to make developer's life easer `Qonfig` provides a special Import API simplifies the config importing
+(gives you `.import_settings` DSL) and gives an ability to instant config setting export from a config object (gives you `#export_settings` config's method).
 
 ---
 
@@ -820,10 +820,10 @@ such code by method or variable. In order to make developer's wokr easer `Qonfig
   - `prefix:` - prexifies setting access method name with custom prefix;
   - `raw:` - use nested settings as objects or hashify them (`false` by default (means "hashify nested settings"));
 
+Suggest we have a config with deeply nested keys (and see what we can to do :)):
 
 ```ruby
-# NOTE: config sample (Qonfig::DataSet.build creates a class and instantly instantiates it)
-
+# NOTE: (Qonfig::DataSet.build creates a class and instantly instantiates it)
 AppConfig = Qonfig::DataSet.build do
   setting :web_api do
     setting :credentials do
@@ -963,11 +963,8 @@ config = Config.new
 service = ServiceObject.new
 
 service.config_account # => NoMethodError
-
-# NOTE: export settings as access methdos
+# NOTE: export missing settings :)
 config.export(service, 'web_api.credentials.account', prefix: 'config_')
-
-# NOTE: our settings :)
 service.account # => { "login" => "D@iVeR", "auth_token" => "IAdkoa0@()1239uA" }
 ```
 
