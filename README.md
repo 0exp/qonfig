@@ -50,9 +50,9 @@ require 'qonfig'
   - [Settings as Predicates](#settings-as-predicates)
   - [Setting key existence](#setting-key-existence) (`#key?`/`#option?`/`#setting?`)
   - [Run arbitary code with temporary settings](#run-arbitary-code-with-temporary-settings) (`#with(configs = {}, &arbitary_code)`)
-- [Import/Export](#import-export)
-  - [Import config settings](#import) (`as instance methods`)
-  - [Export config settings](#export) (`as singleton methods`)
+- [Import/Export](#import--export)
+  - [Import config settings](#import-config-settings) (`as instance methods`)
+  - [Export config settings](#export-config-settings) (`as singleton methods`)
 - [Validation](#validation)
   - [Introduction](#introduction)
   - [Key search pattern](#key-search-pattern)
@@ -78,7 +78,7 @@ require 'qonfig'
     - [Save to JSON file](#save-to-json-file) (`#save_to_json`)
     - [Save to YAML file](#save-to-yaml-file) (`#save_to_yaml`)
 - [Plugins](#plugins)
-  - [toml](#plugins-toml) (provides `load_from_toml`, `save_to_toml`, `expose_toml`)
+  - [toml](#plugins-toml) (support for `TOML` format)
 - [Roadmap](#roadmap)
 ---
 
@@ -2264,7 +2264,6 @@ Qonfig.plugin(:toml)
 - **Minor**:
   - custom global (and class-level) validators (with a special Validator Definition DSL);
   - support for "dot notation" in `#key?`, `#option?`, `#setting?`, `#dig`, `#subset`, `#slice`, `#slice_value`;
-  - config improts (and exports);
   - pretty print :)));
 
 ## Contributing
