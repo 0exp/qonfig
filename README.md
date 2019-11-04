@@ -50,6 +50,9 @@ require 'qonfig'
   - [Settings as Predicates](#settings-as-predicates)
   - [Setting key existence](#setting-key-existence) (`#key?`/`#option?`/`#setting?`)
   - [Run arbitary code with temporary settings](#run-arbitary-code-with-temporary-settings) (`#with(configs = {}, &arbitary_code)`)
+- [Import/Export](#import-export)
+  - [Import config settings](#import) (`as instance methods`)
+  - [Export config settings](#export) (`as singleton methods`)
 - [Validation](#validation)
   - [Introduction](#introduction)
   - [Key search pattern](#key-search-pattern)
@@ -788,6 +791,17 @@ end
 config.settings.queue.adapter # => :sidekiq
 config.settings.queue.options # => {}
 ```
+
+---
+
+## Import / Export
+
+- [Import config settings](#import-config-settings) (`as instance methods`)
+- [Export config settings](#export-config-settings) (`as singleton methods`)
+
+### Import config settings
+
+### Export config settings
 
 ---
 
