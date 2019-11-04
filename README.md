@@ -552,10 +552,10 @@ config.settings.web_api # => "api.google.com"
 
 - `#each_setting { |key, value| }`
   - iterates over the root setting keys;
-- `#deep_each_setting { |key, value| }`
+- `#deep_each_setting(yield_all: false) { |key, value| }`
   - iterates over all setting keys (deep inside);
   - key object is represented as a string of `.`-joined setting key names;
-
+  - `yield_all:` means "yield all config objects" (end values and root setting objects those have nested settings) (`false` by default);
 
 ```ruby
 class Config < Qonfig::DataSet
@@ -594,6 +594,21 @@ config.deep_each_setting { |key, value| { key => value } }
 { 'db.creds.user' => 'D@iveR' }
 { 'db.creds.password' => 'test123' }
 { 'db.creds.data' => { test: false } }
+{ 'telegraf_url' => 'udp://localhost:8094' }
+{ 'telegraf_prefix' => 'test' }
+```
+
+#### .deep_each_setting(yield_all: true)
+
+```ruby
+config.deep_each_setting(yield_all: true) { |key, value| { key => value } }
+
+# result of each step:
+{ 'db' => <Qonfig::Settings:0x00007ff8> } # (yield_all: true)
+{ 'db.creds' => <Qonfig::Settings:0x00002ff1> } # (yield_all: true)
+{ 'db.creds.user' => 'D@iVeR' }
+{ 'db.creds.password' => 'test123' }
+{ 'db.crds.data' => { test: false } }
 { 'telegraf_url' => 'udp://localhost:8094' }
 { 'telegraf_prefix' => 'test' }
 ```

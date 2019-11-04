@@ -59,6 +59,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
 
   # @param initial_setting_key [String, NilClass]
   # @param block [Proc]
+  # @option yield_all [Boolean]
   # @return [Enumerable]
   #
   # @yield [key, value]
@@ -67,9 +68,9 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   #
   # @api private
   # @since 0.13.0
-  def __deep_each_setting__(initial_setting_key = nil, &block)
+  def __deep_each_setting__(initial_setting_key = nil, yield_all: false, &block)
     __lock__.thread_safe_access do
-      __deep_each_key_value_pair__(initial_setting_key, &block)
+      __deep_each_key_value_pair__(initial_setting_key, yield_all: yield_all, &block)
     end
   end
 
@@ -312,35 +313,19 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   # @api private
   # @since 0.18.0
   def __setting_keys__(all_variants: false)
-    # NOTE: generate a set of keys return simple 'a.b.c.d'
-    setting_keys_set = Set.new.tap do |setting_keys|
-      __deep_each_key_value_pair__ do |setting_key, _setting_value|
+    # NOTE: (if all_variants == true)
+    #   We have { a: { b: { c: { d : 1 } } } }
+    #   Its mean that we have these keys:
+    #     - 'a' # => returns { b: { c: { d: 1 } } }
+    #     - 'a.b' # => returns { c: { d: 1 } }
+    #     - 'a.b.c' # => returns { d: 1 }
+    #     - 'a.b.c.d' # => returns 1
+
+    Set.new.tap do |setting_keys|
+      __deep_each_key_value_pair__(yield_all: all_variants) do |setting_key, _setting_value|
         setting_keys << setting_key
       end
-    end
-
-    if all_variants
-      # NOTE:
-      #   We have { a: { b: { c: { d : 1 } } } }
-      #   Its mean that we have these keys:
-      #     - 'a' # => returns { b: { c: { d: 1 } } }
-      #     - 'a.b' # => returns { c: { d: 1 } }
-      #     - 'a.b.c' # => returns { d: 1 }
-      #     - 'a.b.c.d' # => returns 1
-      #   So, get them all :)
-
-      setting_keys_set.each_with_object(Set.new) do |setting_key, varianted_setting_keys|
-        setting_key_paths = setting_key.split('.')
-        combination_size  = setting_key_paths.size
-
-        combination_size.times do |merged_key_patterns_count|
-          sub_setting_key = setting_key_paths.slice(0..merged_key_patterns_count).join('.')
-          varianted_setting_keys << sub_setting_key
-        end
-      end
-    else
-      setting_keys_set
-    end
+    end.to_a
   end
 
   # @return [Array<String>]
@@ -378,6 +363,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
 
   # @param initial_setting_key [String, NilClass]
   # @param block [Proc]
+  # @option yield_all [Boolean]
   # @return [Enumerator]
   #
   # @yield [setting_key, setting_value]
@@ -386,14 +372,15 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   #
   # @api private
   # @since 0.13.0
-  def __deep_each_key_value_pair__(initial_setting_key = nil, &block)
+  def __deep_each_key_value_pair__(initial_setting_key = nil, yield_all: false, &block)
     enumerator = Enumerator.new do |yielder|
       __each_key_value_pair__ do |setting_key, setting_value|
         final_setting_key =
           initial_setting_key ? "#{initial_setting_key}.#{setting_key}" : setting_key
 
         if __is_a_setting__(setting_value)
-          setting_value.__deep_each_setting__(final_setting_key, &block)
+          yielder.yield(final_setting_key, setting_value) if yield_all
+          setting_value.__deep_each_setting__(final_setting_key, yield_all: yield_all, &block)
         else
           yielder.yield(final_setting_key, setting_value)
         end

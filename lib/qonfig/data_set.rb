@@ -281,6 +281,7 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   end
 
   # @param block [Proc]
+  # @option yield_all [Boolean]
   # @return [Enumerable]
   #
   # @yield [setting_key, setting_value]
@@ -289,8 +290,8 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   #
   # @api public
   # @since 0.13.0
-  def deep_each_setting(&block)
-    thread_safe_access { settings.__deep_each_setting__(&block) }
+  def deep_each_setting(yield_all: false, &block)
+    thread_safe_access { settings.__deep_each_setting__(yield_all: yield_all, &block) }
   end
 
   # @return [Boolean]

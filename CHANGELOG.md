@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.18.1] - 2019-11-05
+### Added
+- New `yield_all:` attribute for `#deep_each_setting` method (`#deep_each_setting(yield_all: false, &block)`))
+  - `yield_all:` means "yield all config objects" (end values and root setting objects those have nested settings) (`false` by default)
+
+### Fixed
+- `#keys(all_variants: true)` returns incorrect set of keys when some of keys has name in dot-notated format;
+
 ## [0.18.0] - 2019-11-04
 ### Added
 - `#keys` - returns a list of all config keys in dot-notation format;
