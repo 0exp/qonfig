@@ -584,11 +584,13 @@ config.deep_each_setting { |key, value| { key => value } }
 ### List of config keys
 
 - `#keys` - returns a list of all config keys in dot-notation format;
-  - `all_variants:` - return the all possible variants of the config's keys sequences (`false` by default);
-  - `only_root:` - return only the root config keys (`false` by default);
+  - `all_variants:` - get all possible variants of the config's keys sequences (`false` by default);
+  - `only_root:` - get only the root config keys (`false` by default);
 - `#root_keys` - returns a list of root config keys (an alias for `#keys(only_root: true)`);
 
 ```ruby
+# NOTE: suppose we have the following config
+
 class Config < Qonfig::DataSet
   setting :credentials do
     setting :social do
@@ -906,7 +908,7 @@ such code by methods or variables. In order to make developer's life easer `Qonf
 
 ---
 
-Suggest we have a config with deeply nested keys:
+Suppose we have a config with deeply nested keys:
 
 ```ruby
 # NOTE: (Qonfig::DataSet.build creates a class and instantly instantiates it)
