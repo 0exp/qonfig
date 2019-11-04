@@ -809,7 +809,8 @@ such code by method or variable. In order to make developer's wokr easer `Qonfig
 ### Import config settings
 
 - `Qonfig::Imports` - a special mixin that provides the convenient DSL to work with config import features (`.import_settings` method);
-- `import_settings` imports config settings as access methods (`attr_reader`s for your configs)
+- `.import_settings` - DSL method for importing configuration settings (from a config instance) as instance methods of a class;
+- (**IMPORTANT**) `import_settings` imports config settings as access methods to config's settings (creates `attr_reader`s for your config);
 - signature: `.import_settings(config_object, *setting_keys, mappings: {}, prefix: '', raw: false)`
   - `config_object` - an instance of `Qonfig::DataSet` whose config settings should be imported;
   - `*setting_keys` - an array of dot-notaed config's setting keys that should be imported
@@ -931,6 +932,7 @@ service.credentials # => { "account" => { "login" => "D@iVeR", "auth_token" => "
 ### Export config settings
 
 - all config objects can export their settings to an arbitrary object as singleton methods;
+- (**IMPORTANT**) `export_settings` exports config settings as access methods to config's settings (creates `attr_reader`s for your config);
 - signature: `#export(exportable_object, *setting_keys, mappings: {}, prefix: '', raw: false)
   - `exportable_object` - an arbitrary object for exporting;
   - `*setting_keys` - an array of dot-notaed config's setting keys that should be exported
@@ -960,7 +962,7 @@ service = ServiceObject.new
 
 service.config_account # => NoMethodError
 
-# NOTE: export settings
+# NOTE: export settings as access methdos
 config.export(service, 'web_api.credentials.account', prefix: 'config_')
 
 # NOTE: our settings :)
