@@ -183,4 +183,12 @@ module Qonfig::DSL
       file_path, caller_location, format: format, strict: strict, expose: expose
     )
   end
+
+  # @return [void]
+  #
+  # @api public
+  # @since 0.19.0
+  def freeze_state!
+    instance_commands << Qonfig::Commands::Instantiation::FreezeState.new
+  end
 end

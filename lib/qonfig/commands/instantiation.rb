@@ -4,4 +4,5 @@
 # @since 0.17.0
 module Qonfig::Commands::Instantiation
   require_relative 'instantiation/values_file'
+  require_relative 'instantiation/freeze_state'
 end
