@@ -405,9 +405,11 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   #
   # @api private
   # @since 0.2.0
+  # @version 0.19.0
   def build_settings
-    @settings = Qonfig::Settings::Builder.build(self)
+    @settings = Qonfig::Settings::Builder.build_definitions(self)
     validator.validate!
+    Qonfig::Settings::Builder.build_state(self)
   end
 
   # @return [void]
@@ -429,16 +431,6 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     yield(settings) if block_given?
   end
 
-  # @return [void]
-  #
-  # @api private
-  # @since 0.17.0
-  def call_instance_management_commands
-    self.class.instance_commands.each do |instance_command|
-      instance_command.call(self, settings)
-    end
-  end
-
   # @param settings_map [Hash]
   # @param configurations [Proc]
   # @return [void]
@@ -448,7 +440,6 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   def load!(settings_map = {}, &configurations)
     build_validator
     build_settings
-    call_instance_management_commands
     apply_settings(settings_map, &configurations)
   end
 
@@ -475,8 +466,8 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     ).call(self, settings)
   end
 
-  # @param instructions [Proc]
-  # @return [Object]
+  # @param instructions [Block]
+  # @return [Any]
   #
   # @api private
   # @since 0.2.0
@@ -484,8 +475,8 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     @__lock__.thread_safe_access(&instructions)
   end
 
-  # @param instructions [Proc]
-  # @return [Object]
+  # @param instructions [Block]
+  # @return [Any]
   #
   # @api private
   # @since 0.2.0
@@ -493,6 +484,11 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     @__lock__.thread_safe_definition(&instructions)
   end
 
+  # @param instructions [Block]
+  # @return [Any]
+  #
+  # @api priavte
+  # @since 0.17.0
   def with_arbitary_access(&instructions)
     @__lock__.with_arbitary_access(&instructions)
   end

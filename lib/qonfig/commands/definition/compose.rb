@@ -3,6 +3,9 @@
 # @api private
 # @since 0.1.0
 class Qonfig::Commands::Definition::Compose < Qonfig::Commands::Base
+  # @since 0.19.0
+  self.inheritable = true
+
   # @return [Qonfig::DataSet]
   #
   # @api private

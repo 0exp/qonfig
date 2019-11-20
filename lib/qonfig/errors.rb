@@ -54,12 +54,9 @@ module Qonfig
   # @since 0.2.0
   CoreMethodIntersectionError = Class.new(Error)
 
-  # @see Qonfig::Settings
-  # @see Qonfig::DataSet
-  #
   # @api public
-  # @since 0.1.0
-  FrozenSettingsError = begin # rubocop:disable Naming/ConstantName
+  # @since 0.19.0
+  FrozenError = begin # rubocop:disable Naming/ConstantName
     # :nocov:
     if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.5.0')
       Class.new(::FrozenError)
@@ -68,6 +65,14 @@ module Qonfig
     end
     # :nocov:
   end
+
+  # @see Qonfig::Settings
+  # @see Qonfig::DataSet
+  #
+  # @api public
+  # @since 0.1.0
+  # @version 0.19.0
+  FrozenSettingsError = Class.new(FrozenError)
 
   # @see Qonfig::Commands::Instantiation::ValuesFile
   #

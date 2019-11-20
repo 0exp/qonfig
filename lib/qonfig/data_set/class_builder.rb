@@ -23,5 +23,16 @@ module Qonfig::DataSet::ClassBuilder
         end
       end
     end
+
+    # @option base_klass [Class<Qonfig::DataSet>]
+    # @option child_klass [Class<Qonfig::DataSet>]
+    # @return [void]
+    #
+    # @api private
+    # @since 0.19.0
+    def inherit(base_klass:, child_klass:)
+      child_klass.definition_commands.concat(base_klass.definition_commands)
+      child_klass.instance_commands.concat(base_klass.instance_commands, &:inheritable?)
+    end
   end
 end

@@ -3,6 +3,9 @@
 # @api private
 # @since 0.14.0
 class Qonfig::Commands::Definition::ExposeSelf < Qonfig::Commands::Base
+  # @since 0.19.0
+  self.inheritable = true
+
   # @return [String, Symbol]
   #
   # @api private

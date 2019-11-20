@@ -9,6 +9,7 @@ module Qonfig::DSL
     #
     # @api private
     # @since 0.1.0
+    # @version 0.19.0
     def extended(child_klass)
       child_klass.instance_variable_set(:@definition_commands, Qonfig::CommandSet.new)
       child_klass.instance_variable_set(:@instance_commands, Qonfig::CommandSet.new)
@@ -17,9 +18,7 @@ module Qonfig::DSL
         def inherited(child_klass)
           child_klass.instance_variable_set(:@definition_commands, Qonfig::CommandSet.new)
           child_klass.instance_variable_set(:@instance_commands, Qonfig::CommandSet.new)
-
-          child_klass.definition_commands.concat(definition_commands)
-          child_klass.instance_commands.concat(instance_commands)
+          Qonfig::DataSet::ClassBuilder.inherit(base_klass: self, child_klass: child_klass)
           super
         end
       end)
@@ -182,5 +181,13 @@ module Qonfig::DSL
     instance_commands << Qonfig::Commands::Instantiation::ValuesFile.new(
       file_path, caller_location, format: format, strict: strict, expose: expose
     )
+  end
+
+  # @return [void]
+  #
+  # @api public
+  # @since 0.19.0
+  def freeze_state!
+    instance_commands << Qonfig::Commands::Instantiation::FreezeState.new
   end
 end

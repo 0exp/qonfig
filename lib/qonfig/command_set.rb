@@ -42,12 +42,22 @@ class Qonfig::CommandSet
   end
 
   # @param command_set [Qonfig::CommandSet]
+  # @param concat_condition [Block]
+  # @yield [command]
+  # @yieldparam command [Qonfig::Commands::Base]
   # @return [void]
   #
   # @api private
   # @since 0.1.0
-  def concat(command_set)
-    thread_safe { commands.concat(command_set.commands) }
+  # @version 0.19.0
+  def concat(command_set, &concant_condition)
+    thread_safe do
+      if block_given?
+        command_set.each { |command| (commands << command) if yield(command) }
+      else
+        command_set.each { |command| commands << command }
+      end
+    end
   end
 
   # @return [Qonfig::CommandSet]
@@ -67,7 +77,8 @@ class Qonfig::CommandSet
   #
   # @api private
   # @since 0.2.0
+  # @version 0.19.0
   def thread_safe(&block)
-    @access_lock.synchronize(&block)
+    @access_lock.owned? ? yield : @access_lock.synchronize(&block)
   end
 end

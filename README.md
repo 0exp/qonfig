@@ -47,7 +47,7 @@ require 'qonfig'
   - [List of config keys](#list-of-config-keys) (`#keys`, `#root_keys`)
   - [Config reloading](#config-reloading) (reload config definitions and option values)
   - [Clear options](#clear-options) (set to `nil`)
-  - [State freeze](#state-freeze)
+  - [Freeze](#freeze)
   - [Settings as Predicates](#settings-as-predicates)
   - [Setting key existence](#setting-key-existence) (`#key?`/`#option?`/`#setting?`)
   - [Run arbitrary code with temporary settings](#run-arbitrary-code-with-temporary-settings) (`#with(configs = {}, &arbitrary_code)`)
@@ -541,7 +541,7 @@ config.settings.web_api # => "api.google.com"
 - [List of config keys](#list-of-config-keys) (`#keys`, `#root_keys`)
 - [Config reloading](#config-reloading) (reload config definitions and option values)
 - [Clear options](#clear-options) (set to `nil`)
-- [State freeze](#state-freeze)
+- [Freeze](#freeze)
 - [Settings as Predicates](#settings-as-predicates)
 - [Setting key existence](#setting-key-existence) (`#key?`/`#option?`/`#setting?`)
 - [Run arbitrary code with temporary settings](#run-arbitrary-code-with-temporary-settings)
@@ -787,7 +787,9 @@ config.settings.web_api.endpoint # => nil
 
 ---
 
-### State freeze
+### Freeze
+
+#### Instance-level
 
 - method signature: `#freeze!`;
 
@@ -809,6 +811,31 @@ config.settings.db.adapter = 'mongoid' # => Qonfig::FrozenSettingsError
 
 config.reload! # => Qonfig::FrozenSettingsError
 config.clear! # => Qonfig::FrozenSettingsError
+```
+
+#### Definition-level
+
+- signature: `.freeze_state!` - all your config instances will be frozen;
+- `.freeze_state!` is not inherited (your child and composed config classes will not have this declaration);
+
+```ruby
+# --- base class ---
+class Config < Qonfig::DataSet
+  setting :test, true
+  freeze_state!
+end
+
+config = Config.new
+config.frozen? # => true
+config.settings.test = false # => Qonfig::FrozenSettingsError
+
+# --- child class ---
+class InheritedConfig < Config
+end
+
+inherited_config = InheritedConfig.new
+config.frozen? # => false
+config.settings.test = false # ok :)
 ```
 
 ---

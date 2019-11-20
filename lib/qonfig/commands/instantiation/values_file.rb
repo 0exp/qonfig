@@ -3,6 +3,9 @@
 # @api private
 # @since 0.17.0
 class Qonfig::Commands::Instantiation::ValuesFile < Qonfig::Commands::Base
+  # @since 0.19.0
+  self.inheritable = true
+
   # @return [Symbol]
   #
   # @api private

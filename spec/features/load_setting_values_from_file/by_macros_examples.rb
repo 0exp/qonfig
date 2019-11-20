@@ -17,6 +17,32 @@ shared_examples 'load setting values from file by macros' do |file_name:, file_w
     expect(config.settings.credentials.timeout).to eq(123)
   end
 
+  specify 'works with inheritance and composition' do
+    base_config_klass = Class.new(Qonfig::DataSet) do
+      values_file file_name, format: file_format
+
+      setting :enabled, true
+      setting :adapter, 'undefined'
+      setting(:credentials) { setting :user; setting :timeout }
+    end
+
+    child_config_klass = Class.new(base_config_klass) do
+      compose base_config_klass
+      setting(:nested) { compose base_config_klass }
+    end
+
+    config = child_config_klass.new
+
+    expect(config.settings.enabled).to eq(false)
+    expect(config.settings.adapter).to eq('sidekiq')
+    expect(config.settings.credentials.user).to eq('0exp')
+    expect(config.settings.credentials.timeout).to eq(123)
+    expect(config.settings.nested.enabled).to eq(false)
+    expect(config.settings.nested.adapter).to eq('sidekiq')
+    expect(config.settings.nested.credentials.user).to eq('0exp')
+    expect(config.settings.nested.credentials.timeout).to eq(123)
+  end
+
   specify "load values from #{file_format} file (non-strict, dynamic format, no env)" do
     config = Class.new(Qonfig::DataSet) do
       values_file file_name

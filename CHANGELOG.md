@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+### Added
+- `freeze_state!` DSL directive (all your configs becomes frozen after being instantiated immediately);
+- Global `Qonfig::FrozenError` error for `frozen`-based exceptions;
+
+### Changed
+- `Qonfig::FrozenSettingsError` now inherits `Qonfig::FrozenError` type;
+
 ## [0.18.1] - 2019-11-05
 ### Added
 - New `yield_all:` attribute for `#deep_each_setting` method (`#deep_each_setting(yield_all: false, &block)`))
