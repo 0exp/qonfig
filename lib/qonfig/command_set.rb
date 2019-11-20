@@ -49,6 +49,7 @@ class Qonfig::CommandSet
   #
   # @api private
   # @since 0.1.0
+  # @version 0.19.0
   def concat(command_set, &concant_condition)
     thread_safe do
       command_set.each do |command|

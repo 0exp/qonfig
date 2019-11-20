@@ -9,6 +9,7 @@ module Qonfig::DSL
     #
     # @api private
     # @since 0.1.0
+    # @version 0.19.0
     def extended(child_klass)
       child_klass.instance_variable_set(:@definition_commands, Qonfig::CommandSet.new)
       child_klass.instance_variable_set(:@instance_commands, Qonfig::CommandSet.new)

@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 - `freeze_state!` DSL directive (all your configs becomes frozen after being instantiated immediately);
+- Global `Qonfig::FrozenError` error for `frozen`-based exceptions;
+
+### Changed
+- `FrozenSettingsError` now inherits `Qonfig::FrozenError` type;
 
 ## [0.18.1] - 2019-11-05
 ### Added

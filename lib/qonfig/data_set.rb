@@ -405,6 +405,7 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   #
   # @api private
   # @since 0.2.0
+  # @version 0.19.0
   def build_settings
     @settings = Qonfig::Settings::Builder.build_definitions(self)
     validator.validate!
