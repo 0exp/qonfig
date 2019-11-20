@@ -71,7 +71,7 @@ module Qonfig
   #
   # @api public
   # @since 0.1.0
-  # @since 0.19.0
+  # @version 0.19.0
   FrozenSettingsError = Class.new(FrozenError)
 
   # @see Qonfig::Commands::Instantiation::ValuesFile

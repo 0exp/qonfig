@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file.
 - Global `Qonfig::FrozenError` error for `frozen`-based exceptions;
 
 ### Changed
-- `FrozenSettingsError` now inherits `Qonfig::FrozenError` type;
+- `Qonfig::FrozenSettingsError` now inherits `Qonfig::FrozenError` type;
 
 ## [0.18.1] - 2019-11-05
 ### Added

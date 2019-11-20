@@ -466,8 +466,8 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     ).call(self, settings)
   end
 
-  # @param instructions [Proc]
-  # @return [Object]
+  # @param instructions [Block]
+  # @return [Any]
   #
   # @api private
   # @since 0.2.0
@@ -475,8 +475,8 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     @__lock__.thread_safe_access(&instructions)
   end
 
-  # @param instructions [Proc]
-  # @return [Object]
+  # @param instructions [Block]
+  # @return [Any]
   #
   # @api private
   # @since 0.2.0
@@ -484,6 +484,11 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     @__lock__.thread_safe_definition(&instructions)
   end
 
+  # @param instructions [Block]
+  # @return [Any]
+  #
+  # @api priavte
+  # @since 0.17.0
   def with_arbitary_access(&instructions)
     @__lock__.with_arbitary_access(&instructions)
   end
