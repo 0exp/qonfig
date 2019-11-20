@@ -17,7 +17,7 @@ shared_examples 'load setting values from file by macros' do |file_name:, file_w
     expect(config.settings.credentials.timeout).to eq(123)
   end
 
-  specify "works with inheritance and composition" do
+  specify 'works with inheritance and composition' do
     base_config_klass = Class.new(Qonfig::DataSet) do
       values_file file_name, format: file_format
 

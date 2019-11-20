@@ -52,12 +52,10 @@ class Qonfig::CommandSet
   # @version 0.19.0
   def concat(command_set, &concant_condition)
     thread_safe do
-      command_set.each do |command|
-        if block_given?
-          (commands << command) if yield(command)
-        else
-          commands << command
-        end
+      if block_given?
+        command_set.each { |command| (commands << command) if yield(command) }
+      else
+        command_set.each { |command| commands << command }
       end
     end
   end
