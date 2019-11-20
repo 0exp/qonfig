@@ -11,7 +11,7 @@ module Qonfig::Settings::Builder
     # @since 0.19.0
     def build_definitions(data_set)
       Qonfig::Settings.new(build_mutation_callbacks(data_set)).tap do |settings|
-        data_set.class.definition_commands.each do |command|
+        data_set.class.definition_commands.dup.each do |command|
           command.call(data_set, settings)
         end
       end
@@ -23,7 +23,7 @@ module Qonfig::Settings::Builder
     # @api private
     # @since 0.19.0
     def build_state(data_set)
-      data_set.class.instance_commands.each do |command|
+      data_set.class.instance_commands.dup.each do |command|
         command.call(data_set, data_set.settings)
       end
     end

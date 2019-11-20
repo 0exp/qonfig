@@ -78,7 +78,8 @@ class Qonfig::CommandSet
   #
   # @api private
   # @since 0.2.0
+  # @version 0.19.0
   def thread_safe(&block)
-    @access_lock.synchronize(&block)
+    @access_lock.owned? ? yield : @access_lock.synchronize(&block)
   end
 end
