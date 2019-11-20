@@ -3,6 +3,9 @@
 # @api private
 # @since 0.7.0
 class Qonfig::Commands::Definition::ExposeYAML < Qonfig::Commands::Base
+  # @since 0.19.0
+  self.inheritable = true
+
   # @return [Hash]
   #
   # @api private

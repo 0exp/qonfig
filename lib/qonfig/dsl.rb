@@ -17,9 +17,7 @@ module Qonfig::DSL
         def inherited(child_klass)
           child_klass.instance_variable_set(:@definition_commands, Qonfig::CommandSet.new)
           child_klass.instance_variable_set(:@instance_commands, Qonfig::CommandSet.new)
-
-          child_klass.definition_commands.concat(definition_commands)
-          child_klass.instance_commands.concat(instance_commands)
+          Qonfig::DataSet::ClassBuilder.inherit(base_klass: self, child_klass: child_klass)
           super
         end
       end)

@@ -3,10 +3,13 @@
 # @api private
 # @since 0.1.0
 class Qonfig::Commands::Definition::AddNestedOption < Qonfig::Commands::Base
+  # @since 0.19.0
+  self.inheritable = true
+
   # @return [Symbol, String]
   #
   # @api private
-  # @since 0.1.0
+  # @since 0.1.0§
   attr_reader :key
 
   # @return [Class<Qonfig::DataSet>]
