@@ -815,18 +815,27 @@ config.clear! # => Qonfig::FrozenSettingsError
 
 #### Definition-level
 
-- `.freeze_state!` - all your config instances will be frozen;
+- signature: `.freeze_state!` - all your config instances will be frozen;
+- `.freeze_state!` is not inherited (your child and composed config classes will not have this declaration);
 
 ```ruby
+# --- base class ---
 class Config < Qonfig::DataSet
   setting :test, true
-
   freeze_state!
 end
 
 config = Config.new
-
 config.frozen? # => true
+config.settings.test = false # => Qonfig::FrozenSettingsError
+
+# --- child class ---
+class InheritedConfig < Config
+end
+
+inherited_config = InheritedConfig.new
+config.frozen? # => false
+config.settings.test = false # ok :)
 ```
 
 ---
