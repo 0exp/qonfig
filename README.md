@@ -1,7 +1,8 @@
 # Qonfig &middot; [![Gem Version](https://badge.fury.io/rb/qonfig.svg)](https://badge.fury.io/rb/qonfig) [![Build Status](https://travis-ci.org/0exp/qonfig.svg?branch=master)](https://travis-ci.org/0exp/qonfig) [![Coverage Status](https://coveralls.io/repos/github/0exp/qonfig/badge.svg?branch=master)](https://coveralls.io/github/0exp/qonfig?branch=master)
 
 Config. Defined as a class. Used as an instance. Support for inheritance and composition.
-Lazy instantiation. Thread-safe. Command-style DSL. Validation layer. Support for **YAML**, **TOML**, **JSON**, **\_\_END\_\_**, **ENV**.
+Lazy instantiation. Thread-safe. Command-style DSL. Validation layer. Support for **dot-notation**!
+Support for **YAML**, **TOML**, **JSON**, **\_\_END\_\_**, **ENV**.
 Extremely simple to define. Extremely simple to use. That's all? **NOT** :)
 
 ## Installation
@@ -138,6 +139,8 @@ config.settings.enable_graphql # => false
 
 #### access via index-method []
 
+- without dot-notation:
+
 ```ruby
 # get option value via index (with indifferent (string / symbol / mixed) access)
 config.settings[:project_id] # => nil
@@ -158,7 +161,19 @@ config[:project_id] # => nil
 config[:enable_graphql] # => false
 ```
 
+- with dot-notation:
+
+```ruby
+config.settings['vendor_api.host'] # => 'app.service.com'
+config.settings['vendor_api.user'] # => 'test_user'
+
+config.['vendor_api.host'] # => 'app.service.com'
+config.['vendor_api.user'] # => 'test_user'
+```
+
 #### .dig
+
+- without dot-notation:
 
 ```ruby
 # get option value in Hash#dig manner (and fail when the required key does not exist);
@@ -166,7 +181,16 @@ config.dig(:vendor_api, :host) # => 'app.service.com' # (key exists)
 config.dig(:vendor_api, :port) # => Qonfig::UnknownSettingError # (key does not exist)
 ```
 
+- with dot-notation:
+
+```ruby
+config.dig('vendor_api.host') # => 'app.service.com' # (key exists)
+config.dig('vendor_api.port') # => Qonfig::UnknownSettingError # (key does not exist)
+```
+
 #### .slice
+
+- without dot-notation:
 
 ```ruby
 # get a hash slice of setting options (and fail when the required key does not exist);
@@ -176,7 +200,17 @@ config.slice(:project_api) # => Qonfig::UnknownSettingError # (key does not exis
 config.slice(:vendor_api, :port) # => Qonfig::UnknownSettingError # (key does not exist)
 ```
 
+- with dot-notation:
+
+```ruby
+config.slice('vendor_api.user') # => { 'user' => 'test_user' }
+config.slice('vendor_api.port') # => Qonfig::UnknownSettingError # (key does not exist)
+```
+
+
 #### .slice_value
+
+- without dot-notaiton:
 
 ```ruby
 # get value from the slice of setting options using the given key set
@@ -188,7 +222,16 @@ config.slice_value(:project_api) # => Qonfig::UnknownSettingError # (key does no
 config.slice_value(:vendor_api, :port) # => Qonfig::UnknownSettingError # (key does not exist)
 ```
 
+- with dot-notation:
+
+```ruby
+config.slice_value('vendor_api.user') # => 'test_user'
+config.slice_value('vendor_api.port') # => Qonfig::UnknownSettingError # (key does not exist)
+```
+
 #### .subset
+
+- without dot-notation:
 
 ```ruby
 # - get a subset (a set of sets) of config settings represented as a hash;
@@ -198,6 +241,13 @@ config.subet(:vendor_api, :enable_graphql)
 # => { 'vendor_api' => { 'user' => ..., 'host' => ... }, 'enable_graphql' => false }
 
 config.subset(:project_id, [:vendor_api, :host], [:credentials, :user, :login])
+# => { 'project_id' => nil, 'host' => 'app.service.com', 'login' => 'D@iVeR' }
+```
+
+- with dot-notation:
+
+```ruby
+config.subset('project_id', 'vendor_api.host', 'credentials.user.login')
 # => { 'project_id' => nil, 'host' => 'app.service.com', 'login' => 'D@iVeR' }
 ```
 
