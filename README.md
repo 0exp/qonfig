@@ -47,7 +47,7 @@ require 'qonfig'
   - [List of config keys](#list-of-config-keys) (`#keys`, `#root_keys`)
   - [Config reloading](#config-reloading) (reload config definitions and option values)
   - [Clear options](#clear-options) (set to `nil`)
-  - [Freeze](#freeze)
+  - [Frozen state](#frozen-state) (`.freeze_state!`, `#freeze!`, `#frozen?`)
   - [Settings as Predicates](#settings-as-predicates)
   - [Setting key existence](#setting-key-existence) (`#key?`/`#option?`/`#setting?`)
   - [Run arbitrary code with temporary settings](#run-arbitrary-code-with-temporary-settings) (`#with(configs = {}, &arbitrary_code)`)
@@ -541,7 +541,7 @@ config.settings.web_api # => "api.google.com"
 - [List of config keys](#list-of-config-keys) (`#keys`, `#root_keys`)
 - [Config reloading](#config-reloading) (reload config definitions and option values)
 - [Clear options](#clear-options) (set to `nil`)
-- [Freeze](#freeze)
+- [Frozen state](#frozen-state) (`.freeze_state!`, `#freeze!`, `#frozen?`)
 - [Settings as Predicates](#settings-as-predicates)
 - [Setting key existence](#setting-key-existence) (`#key?`/`#option?`/`#setting?`)
 - [Run arbitrary code with temporary settings](#run-arbitrary-code-with-temporary-settings)
@@ -787,7 +787,7 @@ config.settings.web_api.endpoint # => nil
 
 ---
 
-### Freeze
+### Frozen state
 
 #### Instance-level
 
@@ -815,8 +815,9 @@ config.clear! # => Qonfig::FrozenSettingsError
 
 #### Definition-level
 
-- signature: `.freeze_state!` - all your config instances will be frozen;
-- `.freeze_state!` is not inherited (your child and composed config classes will not have this declaration);
+- DSL-method signature: `freeze_state!`
+- indicaes that all your config instances will be frozen;
+- `freeze_state!` DSL command is not inherited (your child and composed config classes will not have this declaration);
 
 ```ruby
 # --- base class ---
