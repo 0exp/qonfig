@@ -41,6 +41,12 @@ module Qonfig
 
   # @see Qonfig::Settings
   #
+  # @api private
+  # @since 0.19.0
+  StrangeThingsError = Class.new(Error)
+
+  # @see Qonfig::Settings
+  #
   # @api public
   # @since 0.2.0
   AmbiguousSettingValueError = Class.new(Error)

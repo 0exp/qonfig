@@ -22,6 +22,12 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   # @since 0.11.0
   BASIC_SETTING_VALUE_TRANSFORMER = (proc { |value| value }).freeze
 
+  # @return [String]
+  #
+  # @api private
+  # @since 0.19.0
+  DOT_NOTATION_SEPARATOR = '.'
+
   # @return [Hash]
   #
   # @api private
@@ -128,7 +134,13 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   # @api public
   # @since 0.1.0
   def [](key)
-    __lock__.thread_safe_access { __get_value__(key) }
+    __lock__.thread_safe_access do
+      begin
+        __get_value__(key)
+      rescue Qonfig::UnknownSettingError
+        __deep_access__(*__parse_dot_notated_key__(key))
+      end
+    end
   end
 
   # @param key [String, Symbol]
@@ -156,7 +168,17 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   # @api private
   # @since 0.2.0
   def __dig__(*keys)
-    __lock__.thread_safe_access { __deep_access__(*keys) }
+    __lock__.thread_safe_access do
+      begin
+        __deep_access__(*keys)
+      rescue Qonfig::UnknownSettingError
+        if keys.size == 1
+          __deep_access__(*__parse_dot_notated_key__(keys.first))
+        else
+          raise
+        end
+      end
+    end
   end
 
   # @param keys [Array<String, Symbol>]
@@ -342,7 +364,16 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   # @api private
   # @since 0.17.0
   def __is_key_exists__(*key_path)
-    __deep_access__(*key_path)
+    begin
+      __deep_access__(*key_path)
+    rescue Qonfig::UnknownSettingError
+      if key_path.size == 1
+        __deep_access__(*__parse_dot_notated_key__(key_path.first))
+      else
+        raise
+      end
+    end
+
     true
   rescue Qonfig::UnknownSettingError
     false
@@ -526,9 +557,21 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   # @since 0.9.0
   def __deep_slice__(*keys)
     {}.tap do |result|
-      __deep_access__(*keys).tap do |setting|
-        required_key = __indifferently_accessable_option_key__(keys.last)
-        result[required_key] = __is_a_setting__(setting) ? setting.__to_h__ : setting
+      begin
+        __deep_access__(*keys).tap do |setting|
+          required_key = __indifferently_accessable_option_key__(keys.last)
+          result[required_key] = __is_a_setting__(setting) ? setting.__to_h__ : setting
+        end
+      rescue Qonfig::UnknownSettingError
+        if keys.size == 1
+          key_set = __parse_dot_notated_key__(keys.first)
+          __deep_access__(*key_set).tap do |setting|
+            required_key = __indifferently_accessable_option_key__(key_set.last)
+            result[required_key] = __is_a_setting__(setting) ? setting.__to_h__ : setting
+          end
+        else
+          raise
+        end
       end
     end
   end
@@ -543,7 +586,22 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   # @since 0.1.0
   def __deep_slice_value__(*keys)
     required_key = __indifferently_accessable_option_key__(keys.last)
-    __deep_slice__(*keys)[required_key]
+    sliced_data = __deep_slice__(*keys)
+
+    case
+    when sliced_data.key?(required_key)
+      sliced_data[required_key]
+    when keys.size == 1
+      required_key = __parse_dot_notated_key__(required_key).last
+      sliced_data[required_key]
+    else # NOTE: possibly unreachable code
+      # :nocov:
+      raise(
+        Qonfig::StrangeThingsError,
+        "Strange things happpens with #{keys} keyset and value slicing"
+      )
+      # :nocov:
+    end
   end
 
   # @param keys [Array<String, Symbol, Array<String, Symbol>>]
@@ -660,6 +718,15 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   # @since 0.2.0
   def __prevent_core_method_intersection__(key)
     KeyGuard.new(key).prevent_core_method_intersection!
+  end
+
+  # @param key [String, Symbol]
+  # @return [Array<String>]
+  #
+  # @api private
+  # @since 0.19.0
+  def __parse_dot_notated_key__(key)
+    __indifferently_accessable_option_key__(key).split(DOT_NOTATION_SEPARATOR)
   end
 
   # @return [Array<String>]
