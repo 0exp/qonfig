@@ -816,7 +816,7 @@ config.clear! # => Qonfig::FrozenSettingsError
 #### Definition-level
 
 - DSL-method signature: `freeze_state!`
-- indicaes that all your config instances will be frozen;
+- indicaes that all your config instances should be frozen;
 - `freeze_state!` DSL command is not inherited (your child and composed config classes will not have this declaration);
 
 ```ruby
