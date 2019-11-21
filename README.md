@@ -167,8 +167,8 @@ config[:enable_graphql] # => false
 config.settings['vendor_api.host'] # => 'app.service.com'
 config.settings['vendor_api.user'] # => 'test_user'
 
-config.['vendor_api.host'] # => 'app.service.com'
-config.['vendor_api.user'] # => 'test_user'
+config['vendor_api.host'] # => 'app.service.com'
+config['vendor_api.user'] # => 'test_user'
 ```
 
 #### .dig
