@@ -654,8 +654,55 @@ describe 'Validation' do
       expect { config_klass.new.settings.age = 20.1 }.not_to raise_error
     end
 
-    specify '(#valid_with?): explicit key-value validation checker' do
-      config = Qonfig::DataSet.build do
+    describe 'valid_with?' do
+      specify '(#valid_with?): config object is valid or invalid with new potenital configs' do
+        config = Qonfig::DataSet.build do
+          setting :enabled, false
+          setting :count, 123
+          setting :amount, 23.55
+          setting :level, 100_500
+          setting :sound do
+            setting :genre, 'death-metal'
+          end
+
+          validate :enabled, :boolean
+          validate :count, :integer, strict: true
+
+          validate by: :check_level
+          validate 'sound.#' do |value|
+            value.is_a?(String)
+          end
+
+          def check_level
+            settings.level.is_a?(Numeric)
+          end
+        end
+
+        expect(config.valid_with?(
+          enabled: true,
+          count: 444,
+          amount: 66.21,
+          level: 123.55,
+          sound: { genre: 'melodic-death-metal' }
+        )).to eq(true)
+
+        expect(config.valid_with?(enabled: '123')).to eq(false)
+        expect(config.valid_with?(sound: { genre: false })).to eq(false)
+        expect(config.valid_with?(level: '2')).to eq(false)
+        expect(config.valid_with?(count: nil)).to eq(false)
+        expect(config.valid_with?(level: '7', count: nil, enabled: 123)).to eq(false)
+
+        # NOTE: check that original config does not mutated after validation checking
+        expect(config.settings.enabled).to eq(false)
+        expect(config.settings.count).to eq(123)
+        expect(config.settings.amount).to eq(23.55)
+        expect(config.settings.level).to eq(100_500)
+        expect(config.settings.sound.genre).to eq('death-metal')
+      end
+    end
+
+    specify '(.valid_with?) potential config instances will be valid or invalid with new configs' do
+      config_klass = Class.new(Qonfig::DataSet) do
         setting :enabled, false
         setting :count, 123
         setting :amount, 23.55
@@ -677,7 +724,7 @@ describe 'Validation' do
         end
       end
 
-      expect(config.valid_with?(
+      expect(config_klass.valid_with?(
         enabled: true,
         count: 444,
         amount: 66.21,
@@ -685,18 +732,11 @@ describe 'Validation' do
         sound: { genre: 'melodic-death-metal' }
       )).to eq(true)
 
-      expect(config.valid_with?(enabled: '123')).to eq(false)
-      expect(config.valid_with?(sound: { genre: false })).to eq(false)
-      expect(config.valid_with?(level: '2')).to eq(false)
-      expect(config.valid_with?(count: nil)).to eq(false)
-      expect(config.valid_with?(level: '7', count: nil, enabled: 123)).to eq(false)
-
-      # NOTE: check that original config does not mutated after validation checking
-      expect(config.settings.enabled).to eq(false)
-      expect(config.settings.count).to eq(123)
-      expect(config.settings.amount).to eq(23.55)
-      expect(config.settings.level).to eq(100_500)
-      expect(config.settings.sound.genre).to eq('death-metal')
+      expect(config_klass.valid_with?(enabled: '123')).to eq(false)
+      expect(config_klass.valid_with?(sound: { genre: false })).to eq(false)
+      expect(config_klass.valid_with?(level: '2')).to eq(false)
+      expect(config_klass.valid_with?(count: nil)).to eq(false)
+      expect(config_klass.valid_with?(level: '7', count: nil, enabled: 123)).to eq(false)
     end
   end
 end
