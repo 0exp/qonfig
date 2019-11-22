@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 - **FINALY**: support for dot-notation in `#key?`, `#option?`, `#setting?`, `#dig`, `#subset`, `#slice`, `#slice_value`, `[]`;
 - `freeze_state!` DSL directive (all your configs becomes frozen after being instantiated immediately);
 - Global `Qonfig::FrozenError` error for `frozen`-based exceptions;
+- `#valid_with?(configurations)` - check that your config object will be valid with new configurations;
 
 ### Changed
 - `Qonfig::FrozenSettingsError` now inherits `Qonfig::FrozenError` type;

@@ -308,14 +308,18 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   # @api public
   # @since 0.19.0
   def valid_with?(configurations = {})
-    thread_safe_access do
-      begin
-        with(configurations)
-        true
-      rescue Qonfig::ValidationError
-        false
-      end
-    end
+    # NOTE:
+    #  'dup.configure(configurations)' has better thread-safety than 'with(configurations)'
+    #  pros:
+    #    - no arbitrary lock is obtained;
+    #    - all threads can read and work :)
+    #  cons:
+    #    - useless ton of objects (new dataset, new settings, new locks, and etc);
+    #    - useless setting options assignment steps (self.dup + self.to_h + configure(to_h))
+    dup.configure(configurations)
+    true
+  rescue Qonfig::ValidationError
+    false
   end
 
   # @return [void]
