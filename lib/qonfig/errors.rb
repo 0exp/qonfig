@@ -11,7 +11,6 @@ module Qonfig
 
   # @see Qonfig::Validator::Builder::AttributeConsistency
   # @see Qonfig::Validator::Predefined::Registry
-  # @see
   #
   # @api public
   # @since 0.13.0
