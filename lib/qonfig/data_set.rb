@@ -302,6 +302,22 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     thread_safe_access { validator.valid? }
   end
 
+  # @param configurations [Hash<String,Symbol|Any>]
+  # @return [Boolean]
+  #
+  # @api public
+  # @since 0.19.0
+  def valid_with?(configurations = {})
+    thread_safe_access do
+      begin
+        with(configurations)
+        true
+      rescue Qonfig::ValidationError
+        false
+      end
+    end
+  end
+
   # @return [void]
   #
   # @api public
