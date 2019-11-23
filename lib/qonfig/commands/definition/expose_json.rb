@@ -2,7 +2,10 @@
 
 # @api private
 # @since 0.14.0
-class Qonfig::Commands::ExposeJSON < Qonfig::Commands::Base
+class Qonfig::Commands::Definition::ExposeJSON < Qonfig::Commands::Base
+  # @since 0.19.0
+  self.inheritable = true
+
   # @return [Hash]
   #
   # @api private

@@ -2,7 +2,10 @@
 
 # @api private
 # @since 0.2.0
-class Qonfig::Commands::LoadFromYAML < Qonfig::Commands::Base
+class Qonfig::Commands::Definition::LoadFromYAML < Qonfig::Commands::Base
+  # @since 0.19.0
+  self.inheritable = true
+
   # @return [String]
   #
   # @api private

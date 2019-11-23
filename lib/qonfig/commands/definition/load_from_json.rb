@@ -2,7 +2,10 @@
 
 # @api private
 # @since 0.5.0
-class Qonfig::Commands::LoadFromJSON < Qonfig::Commands::Base
+class Qonfig::Commands::Definition::LoadFromJSON < Qonfig::Commands::Base
+  # @since 0.19.0
+  self.inheritable = true
+
   # @return [String]
   #
   # @api private

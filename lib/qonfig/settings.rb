@@ -22,6 +22,12 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   # @since 0.11.0
   BASIC_SETTING_VALUE_TRANSFORMER = (proc { |value| value }).freeze
 
+  # @return [String]
+  #
+  # @api private
+  # @since 0.19.0
+  DOT_NOTATION_SEPARATOR = '.'
+
   # @return [Hash]
   #
   # @api private
@@ -59,6 +65,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
 
   # @param initial_setting_key [String, NilClass]
   # @param block [Proc]
+  # @option yield_all [Boolean]
   # @return [Enumerable]
   #
   # @yield [key, value]
@@ -67,9 +74,9 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   #
   # @api private
   # @since 0.13.0
-  def __deep_each_setting__(initial_setting_key = nil, &block)
+  def __deep_each_setting__(initial_setting_key = nil, yield_all: false, &block)
     __lock__.thread_safe_access do
-      __deep_each_key_value_pair__(initial_setting_key, &block)
+      __deep_each_key_value_pair__(initial_setting_key, yield_all: yield_all, &block)
     end
   end
 
@@ -127,7 +134,13 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   # @api public
   # @since 0.1.0
   def [](key)
-    __lock__.thread_safe_access { __get_value__(key) }
+    __lock__.thread_safe_access do
+      begin
+        __get_value__(key)
+      rescue Qonfig::UnknownSettingError
+        __deep_access__(*__parse_dot_notated_key__(key))
+      end
+    end
   end
 
   # @param key [String, Symbol]
@@ -155,7 +168,17 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   # @api private
   # @since 0.2.0
   def __dig__(*keys)
-    __lock__.thread_safe_access { __deep_access__(*keys) }
+    __lock__.thread_safe_access do
+      begin
+        __deep_access__(*keys)
+      rescue Qonfig::UnknownSettingError
+        if keys.size == 1
+          __deep_access__(*__parse_dot_notated_key__(keys.first))
+        else
+          raise
+        end
+      end
+    end
   end
 
   # @param keys [Array<String, Symbol>]
@@ -194,11 +217,11 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   # rubocop:disable Metrics/LineLength
   def __to_hash__(transform_key: BASIC_SETTING_KEY_TRANSFORMER, transform_value: BASIC_SETTING_VALUE_TRANSFORMER)
     unless transform_key.is_a?(Proc)
-      ::Kernel.raise(Qonfig::IncorrectKeyTransformerError, 'Key transformer should be a proc')
+      ::Kernel.raise(Qonfig::IncorrectKeyTransformerError, 'Key transformer should be a type of proc')
     end
 
     unless transform_value.is_a?(Proc)
-      ::Kernel.raise(Qonfig::IncorrectValueTransformerError, 'Value transformer should be a proc')
+      ::Kernel.raise(Qonfig::IncorrectValueTransformerError, 'Value transformer should be a type of proc')
     end
 
     __lock__.thread_safe_access do
@@ -207,6 +230,23 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   end
   # rubocop:enable Metrics/LineLength
   alias_method :__to_h__, :__to_hash__
+
+  # @option all_variants [Boolean]
+  # @return [Array<String>]
+  #
+  # @api private
+  # @since 0.18.0
+  def __keys__(all_variants: false)
+    __lock__.thread_safe_access { __setting_keys__(all_variants: all_variants) }
+  end
+
+  # @return [Array<String>]
+  #
+  # @api private
+  # @since 0.18.0
+  def __root_keys__
+    __lock__.thread_safe_access { __root_setting_keys__ }
+  end
 
   # @return [void]
   #
@@ -272,6 +312,15 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
     value.is_a?(Qonfig::Settings)
   end
 
+  # @param key_path [Array<Symbol, String>]
+  # @return [Boolean]
+  #
+  # @api private
+  # @since 0.17.0
+  def __has_key__(*key_path)
+    __lock__.thread_safe_access { __is_key_exists__(*key_path) }
+  end
+
   private
 
   # @return [Qonfig::Settings::Lock]
@@ -280,8 +329,58 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   # @since 0.2.0
   attr_reader :__lock__
 
+  # @option all_variants [Boolean]
+  # @return [Array<String>]
+  #
+  # @api private
+  # @since 0.18.0
+  def __setting_keys__(all_variants: false)
+    # NOTE: (if all_variants == true)
+    #   We have { a: { b: { c: { d : 1 } } } }
+    #   Its mean that we have these keys:
+    #     - 'a' # => returns { b: { c: { d: 1 } } }
+    #     - 'a.b' # => returns { c: { d: 1 } }
+    #     - 'a.b.c' # => returns { d: 1 }
+    #     - 'a.b.c.d' # => returns 1
+
+    Set.new.tap do |setting_keys|
+      __deep_each_key_value_pair__(yield_all: all_variants) do |setting_key, _setting_value|
+        setting_keys << setting_key
+      end
+    end.to_a
+  end
+
+  # @return [Array<String>]
+  #
+  # @api private
+  # @since 0.18.0
+  def __root_setting_keys__
+    __options__.keys
+  end
+
+  # @param key_path [Array<String, Symbol>]
+  # @return [Boolean]
+  #
+  # @api private
+  # @since 0.17.0
+  def __is_key_exists__(*key_path)
+    begin
+      __deep_access__(*key_path)
+    rescue Qonfig::UnknownSettingError
+      if key_path.size == 1
+        __deep_access__(*__parse_dot_notated_key__(key_path.first))
+      else
+        raise
+      end
+    end
+
+    true
+  rescue Qonfig::UnknownSettingError
+    false
+  end
+
   # @param block [Proc]
-  # @return [Enumerable]
+  # @return [Enumerator]
   #
   # @yield [setting_key, setting_value]
   # @yieldparam key [String]
@@ -295,7 +394,8 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
 
   # @param initial_setting_key [String, NilClass]
   # @param block [Proc]
-  # @return [Enumerable]
+  # @option yield_all [Boolean]
+  # @return [Enumerator]
   #
   # @yield [setting_key, setting_value]
   # @yieldparam setting_key [String]
@@ -303,14 +403,15 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   #
   # @api private
   # @since 0.13.0
-  def __deep_each_key_value_pair__(initial_setting_key = nil, &block)
+  def __deep_each_key_value_pair__(initial_setting_key = nil, yield_all: false, &block)
     enumerator = Enumerator.new do |yielder|
       __each_key_value_pair__ do |setting_key, setting_value|
         final_setting_key =
           initial_setting_key ? "#{initial_setting_key}.#{setting_key}" : setting_key
 
         if __is_a_setting__(setting_value)
-          setting_value.__deep_each_setting__(final_setting_key, &block)
+          yielder.yield(final_setting_key, setting_value) if yield_all
+          setting_value.__deep_each_setting__(final_setting_key, yield_all: yield_all, &block)
         else
           yielder.yield(final_setting_key, setting_value)
         end
@@ -456,9 +557,21 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   # @since 0.9.0
   def __deep_slice__(*keys)
     {}.tap do |result|
-      __deep_access__(*keys).tap do |setting|
-        required_key = __indifferently_accessable_option_key__(keys.last)
-        result[required_key] = __is_a_setting__(setting) ? setting.__to_h__ : setting
+      begin
+        __deep_access__(*keys).tap do |setting|
+          required_key = __indifferently_accessable_option_key__(keys.last)
+          result[required_key] = __is_a_setting__(setting) ? setting.__to_h__ : setting
+        end
+      rescue Qonfig::UnknownSettingError
+        if keys.size == 1
+          key_set = __parse_dot_notated_key__(keys.first)
+          __deep_access__(*key_set).tap do |setting|
+            required_key = __indifferently_accessable_option_key__(key_set.last)
+            result[required_key] = __is_a_setting__(setting) ? setting.__to_h__ : setting
+          end
+        else
+          raise
+        end
       end
     end
   end
@@ -473,7 +586,22 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   # @since 0.1.0
   def __deep_slice_value__(*keys)
     required_key = __indifferently_accessable_option_key__(keys.last)
-    __deep_slice__(*keys)[required_key]
+    sliced_data = __deep_slice__(*keys)
+
+    case
+    when sliced_data.key?(required_key)
+      sliced_data[required_key]
+    when keys.size == 1
+      required_key = __parse_dot_notated_key__(required_key).last
+      sliced_data[required_key]
+    else # NOTE: possibly unreachable code
+      # :nocov:
+      raise(
+        Qonfig::StrangeThingsError,
+        "Strange things happpens with #{keys} keyset and value slicing"
+      )
+      # :nocov:
+    end
   end
 
   # @param keys [Array<String, Symbol, Array<String, Symbol>>]
@@ -590,6 +718,15 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   # @since 0.2.0
   def __prevent_core_method_intersection__(key)
     KeyGuard.new(key).prevent_core_method_intersection!
+  end
+
+  # @param key [String, Symbol]
+  # @return [Array<String>]
+  #
+  # @api private
+  # @since 0.19.0
+  def __parse_dot_notated_key__(key)
+    __indifferently_accessable_option_key__(key).split(DOT_NOTATION_SEPARATOR)
   end
 
   # @return [Array<String>]

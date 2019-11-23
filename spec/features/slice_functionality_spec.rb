@@ -33,10 +33,10 @@ describe '(#slice/#slice_value)-functionality' do
     expect { config.slice(:db, :creds, :data, :test) }.to raise_error(Qonfig::UnknownSettingError)
 
     # slice with empty key list
-    # rubocop:disable Lint/UnneededSplatExpansion
+    # rubocop:disable Lint/RedundantSplatExpansion
     expect { config.slice(*[]) }.to raise_error(Qonfig::ArgumentError)
     expect { config.slice }.to raise_error(Qonfig::ArgumentError)
-    # rubocop:enable Lint/UnneededSplatExpansion
+    # rubocop:enable Lint/RedundantSplatExpansion
 
     # slice over unexistent option
     expect { config.slice(:db, :creds, :session) }.to raise_error(Qonfig::UnknownSettingError)
@@ -56,10 +56,10 @@ describe '(#slice/#slice_value)-functionality' do
     expect { config.slice_value(:db, :creds, :data, :test) }.to raise_error(Qonfig::UnknownSettingError)
 
     # slice with empty key list
-    # rubocop:disable Lint/UnneededSplatExpansion
+    # rubocop:disable Lint/RedundantSplatExpansion
     expect { config.slice_value(*[]) }.to raise_error(Qonfig::ArgumentError)
     expect { config.slice_value }.to raise_error(Qonfig::ArgumentError)
-    # rubocop:enable Lint/UnneededSplatExpansion
+    # rubocop:enable Lint/RedundantSplatExpansion
 
     # slice over unexistent option
     expect { config.slice_value(:db, :creds, :session) }.to raise_error(Qonfig::UnknownSettingError)

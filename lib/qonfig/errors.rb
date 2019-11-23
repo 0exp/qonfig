@@ -9,10 +9,18 @@ module Qonfig
   # @since 0.1.0
   ArgumentError = Class.new(ArgumentError)
 
+  # @see Qonfig::Validator::Builder::AttributeConsistency
+  # @see Qonfig::Validator::Predefined::Registry
+  #
   # @api public
   # @since 0.13.0
   ValidatorArgumentError = Class.new(ArgumentError)
 
+  # @see Qonfig::Validator
+  # @see Qonfig::Validator::MethodBased
+  # @see Qonfig::Validator::ProcBased
+  # @see Qonfig::Validator::Predefined::Common
+  #
   # @api public
   # @since 0.13.0
   ValidationError = Class.new(Error)
@@ -41,25 +49,28 @@ module Qonfig
 
   # @see Qonfig::Settings
   #
+  # @api private
+  # @since 0.19.0
+  StrangeThingsError = Class.new(Error)
+
+  # @see Qonfig::Settings
+  #
   # @api public
   # @since 0.2.0
   AmbiguousSettingValueError = Class.new(Error)
 
   # @see Qonfig::Settings
   # @see Qonfig::Settings::KeyGuard
-  # @see Qonfig::Commands::AddOption
-  # @see Qonfig::Commands::AddNestedOption
+  # @see Qonfig::Commands::Definition::AddOption
+  # @see Qonfig::Commands::Definition::AddNestedOption
   #
   # @api public
   # @since 0.2.0
   CoreMethodIntersectionError = Class.new(Error)
 
-  # @see Qonfig::Settings
-  # @see Qonfig::DataSet
-  #
   # @api public
-  # @since 0.1.0
-  FrozenSettingsError = begin # rubocop:disable Naming/ConstantName
+  # @since 0.19.0
+  FrozenError = begin # rubocop:disable Naming/ConstantName
     # :nocov:
     if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.5.0')
       Class.new(::FrozenError)
@@ -69,24 +80,38 @@ module Qonfig
     # :nocov:
   end
 
-  # @see Qonfig::Commands::LoadFromYAML
+  # @see Qonfig::Settings
+  # @see Qonfig::DataSet
+  #
+  # @api public
+  # @since 0.1.0
+  # @version 0.19.0
+  FrozenSettingsError = Class.new(FrozenError)
+
+  # @see Qonfig::Commands::Instantiation::ValuesFile
+  #
+  # @api public
+  # @since 0.17.0
+  IncompatibleDataStructureError = Class.new(Error)
+
+  # @see Qonfig::Commands::Definition::LoadFromYAML
   #
   # @api public
   # @since 0.2.0
-  IncompatibleYAMLStructureError = Class.new(Error)
+  IncompatibleYAMLStructureError = Class.new(IncompatibleDataStructureError)
 
-  # @see Qonfig::Commands::LoadFromJSON
+  # @see Qonfig::Commands::Definition::LoadFromJSON
   #
   # @api public
   # @since 0.5.0
-  IncompatibleJSONStructureError = Class.new(Error)
+  IncompatibleJSONStructureError = Class.new(IncompatibleDataStructureError)
 
-  # @see Qonfig::Commands::LoadFromSelf
-  # @see Qonfig::Commands::ExposeSelf
+  # @see Qonfig::Commands::Definition::LoadFromSelf
+  # @see Qonfig::Commands::Definition::ExposeSelf
   #
   # @api public
   # @since 0.15.0
-  IncompatibleEndDataStructureError = Class.new(Error)
+  IncompatibleEndDataStructureError = Class.new(IncompatibleDataStructureError)
 
   # @see Qonfig::Loaders::YAML
   #
@@ -94,11 +119,32 @@ module Qonfig
   # @since 0.2.0
   FileNotFoundError = Class.new(Errno::ENOENT)
 
-  # @see Qonfig::Commands::LoadFromSelf
+  # @see Qonfig::Commands::Definition::LoadFromSelf
+  # @see Qonfig::Loaders::EndData
   #
   # @api public
   # @since 0.2.0
   SelfDataNotFoundError = Class.new(Error)
+
+  # @see Qonfig::Loaders::JSON
+  # @see Qonfig::Loaders::Dynamic
+  #
+  # @api public
+  # @since 0.17.0
+  JSONLoaderParseError = Class.new(::JSON::ParserError)
+
+  # @see Qonfig::Loaders::YAML
+  # @see Qonfig::Loaders::Dynamic
+  #
+  # @api public
+  # @since 0.17.0
+  YAMLLoaderParseError = Class.new(::Psych::SyntaxError)
+
+  # @see Qonfig::Loaders::Dynamic
+  #
+  # @api public
+  # @since 0.17.0
+  DynamicLoaderParseError = Class.new(Error)
 
   # @see Qonfig::Plugins::Regsitry
   #
@@ -112,7 +158,7 @@ module Qonfig
   # @since 0.4.0
   UnregisteredPluginError = Class.new(Error)
 
-  # @see Qonfig::Commands::ExposeYAML
+  # @see Qonfig::Commands::Definition::ExposeYAML
   #
   # @api public
   # @since 0.7.0
@@ -129,4 +175,28 @@ module Qonfig
   # @api public
   # @since 0.12.0
   UnresolvedPluginDependencyError = Class.new(PluginError)
+
+  # @see Qonfig::Imports::Abstract
+  #
+  # @api public
+  # @since 0.18.0
+  IncompatibleImportedConfigError = Class.new(ArgumentError)
+
+  # @see Qonfig::Imports::DirectKey
+  #
+  # @api public
+  # @since 0.18.0
+  IncorrectImportKeyError = Class.new(ArgumentError)
+
+  # @see Qonfig::Imports::Abstract
+  #
+  # @api public
+  # @since 0.18.0
+  IncorrectImportPrefixError = Class.new(ArgumentError)
+
+  # @see Qonfig::Imports::Mappings
+  #
+  # @api public
+  # @since 0.18.0
+  IncorrectImportMappingsError = Class.new(ArgumentError)
 end

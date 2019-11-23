@@ -1,0 +1,17 @@
+defaults: &defaults
+  enabled: false
+  adapter: sidekiq
+  credentials:
+    user: 0exp
+    timeout: 123
+
+test:
+  <<: *defaults
+  credentials:
+    user: D@iVeR
+    timeout: 321
+
+production:
+  <<: *defaults
+  adapter: que
+  enabled: true

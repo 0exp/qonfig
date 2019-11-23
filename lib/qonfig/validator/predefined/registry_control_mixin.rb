@@ -32,12 +32,13 @@ module Qonfig::Validator::Predefined::RegistryControlMixin
 
   # @param name [String, Symbol]
   # @param setting_key_matcher [Qonfig::Setting::KeyMatcher]
+  # @param strict [Boolean]
   # @return [Qonfig::Validator::Predefined::Common]
   #
   # @api private
   # @since 0.13.0
-  def build(name, setting_key_matcher)
+  def build(name, setting_key_matcher, strict)
     validation = registry.resolve(name)
-    Qonfig::Validator::Predefined::Common.new(setting_key_matcher, validation)
+    Qonfig::Validator::Predefined::Common.new(setting_key_matcher, strict, validation)
   end
 end

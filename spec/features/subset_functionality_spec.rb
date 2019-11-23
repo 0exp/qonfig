@@ -33,10 +33,10 @@ describe '(#subset)-functionality' do
     expect { config.subset(%i[db creds data test]) }.to raise_error(Qonfig::UnknownSettingError)
 
     # subset invokation with empty key list
-    # rubocop:disable Lint/UnneededSplatExpansion
+    # rubocop:disable Lint/RedundantSplatExpansion
     expect(config.subset(*[])).to eq({})
     expect(config.subset).to eq({})
-    # rubocop:enable Lint/UnneededSplatExpansion
+    # rubocop:enable Lint/RedundantSplatExpansion
 
     # subset invokation over unexistent option
     expect { config.subset(%i[db creds session]) }.to raise_error(Qonfig::UnknownSettingError)

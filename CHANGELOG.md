@@ -1,6 +1,51 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+### Added
+- **FINALY**: support for dot-notation in `#key?`, `#option?`, `#setting?`, `#dig`, `#subset`, `#slice`, `#slice_value`, `[]`;
+- `freeze_state!` DSL directive (all your configs becomes frozen after being instantiated immediately);
+- Global `Qonfig::FrozenError` error for `frozen`-based exceptions;
+- explicit validation of potential setting values:
+  - `#valid_with?(configurations = {})` - check that current config instalce will be valid with passed configurations;
+  - `.valid_with?(configurations = {})` - check that potential config instancess will be valid with passed configurations;
+
+### Changed
+- `Qonfig::FrozenSettingsError` now inherits `Qonfig::FrozenError` type;
+
+## [0.18.1] - 2019-11-05
+### Added
+- New `yield_all:` attribute for `#deep_each_setting` method (`#deep_each_setting(yield_all: false, &block)`))
+  - `yield_all:` means "yield all config objects" (end values and root setting objects those have nested settings) (`false` by default)
+
+### Fixed
+- `#keys(all_variants: true)` returns incorrect set of keys when some of keys has name in dot-notated format;
+
+## [0.18.0] - 2019-11-04
+### Added
+- `#keys` - returns a list of all config keys in dot-notation format;
+- `#root_keys` - returns a list of root config keys;
+- Inroduce `Import API`:
+  - `.import_settings` - DSL method for importing configuration settings (from a config instance) as instance methods of a class;
+  - `#export_settings` - config's instance method that exports config settings to an arbitrary object as singelton methods;
+
+## [0.17.0] - 2019-10-30
+### Added
+- Introduce `strict` validations: `strict: false` option ignores `nil` values and used by default;
+- Setting's key existence check methods: `#key?(*key_path)`, `#setting?(*key_path)`, `#option?(*key_path)`;
+- `#with(temporary_configurations = {}, &arbitary_code)` - run arbitary code with temporary settings;
+- `TOML` plugin: support for TOML version 0.5.0;
+- Introduce instance-level file loading methods that specifies a file with setting values for your defined settings:
+  - `.values_file` - define a file that will be used during instantiation process;
+  - `#load_from_file`, `#load_from_self`, `#load_from_yaml`, `#load_from_json`, `#load_from_toml` (toml plugin) -
+    instance methods for loading setting values on your config instance directly from a file;
+
+### Changed
+- `Qonfig::DataSet.build` now supports a Qonfig::DataSet-class attribute that should be inherited (`self` is used by default):
+  - new signature: `Qonfig::DataSet.build(base_config_klass = self, &config_class_definitions)`;
+- Refacored DSL commands: introduce `Qonfig::Commands::Definition` commands and `Qonfig::Commands::Instantiation` commands;
+- Updated runtime (`toml-rb` `1` -> `2`) and development dependencies;
+
 ## [0.16.0] - 2019-09-13
 ### Added
 - `Qonfig::DataSet.build(&config_klass_definitions)` - build config instance immidietly without `Qonfig::DataSet`-class definition;

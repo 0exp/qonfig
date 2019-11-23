@@ -9,13 +9,21 @@ class Qonfig::Validator::Basic
   # @since 0.13.0
   attr_reader :setting_key_matcher
 
+  # @return [Boolean]
+  #
+  # @api private
+  # @since 0.17.0
+  attr_reader :strict
+
   # @param setting_key_matcher [Qonfig::Settings::KeyMatcher, NilClass]
+  # @param strict [Boolean]
   # @return [void]
   #
   # @api private
   # @since 0.13.0
-  def initialize(setting_key_matcher)
+  def initialize(setting_key_matcher, strict)
     @setting_key_matcher = setting_key_matcher
+    @strict = strict
   end
 
   # @param data_set [Qonfig::DataSet]

@@ -2,8 +2,11 @@
 
 # @api private
 # @since 0.2.0
-class Qonfig::Commands::LoadFromENV < Qonfig::Commands::Base
+class Qonfig::Commands::Definition::LoadFromENV < Qonfig::Commands::Base
   require_relative 'load_from_env/value_converter'
+
+  # @since 0.19.0
+  self.inheritable = true
 
   # @return [Boolean]
   #

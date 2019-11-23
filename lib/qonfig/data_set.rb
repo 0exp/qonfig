@@ -13,19 +13,36 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   extend Qonfig::Validator::DSL
 
   class << self
+    # @param base_dataset_klass [Class<Qonfig::DataSet>]
     # @param config_klass_definitions [Proc]
     # @return [Qonfig::DataSet]
     #
     # @api public
     # @since 0.16.0
-    def build(&config_klass_definitions)
-      Class.new(self, &config_klass_definitions).new
+    def build(base_dataset_klass = self, &config_klass_definitions)
+      unless base_dataset_klass <= Qonfig::DataSet
+        raise(Qonfig::ArgumentError, 'Base class should be a type of Qonfig::DataSet')
+      end
+
+      Class.new(base_dataset_klass, &config_klass_definitions).new
+    end
+
+    # @param configurations [Hash<Symbol|String,Any>]
+    # @return [Boolean]
+    #
+    # @api public
+    # @since 0.19.0
+    def valid_with?(configurations = {})
+      new(configurations)
+      true
+    rescue Qonfig::ValidationError
+      false
     end
   end
 
   # @return [Qonfig::Settings]
   #
-  # @api private
+  # @api public
   # @since 0.1.0
   attr_reader :settings
 
@@ -67,6 +84,65 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     thread_safe_definition do
       raise Qonfig::FrozenSettingsError, 'Frozen config can not be reloaded' if frozen?
       load!(settings_map, &configurations)
+    end
+  end
+
+  # @param file_path [String, Symbol]
+  # @option format [String, Symbol]
+  # @option strict [Boolean]
+  # @option expose [NilClass, String, Symbol] Environment key
+  # @return [void]
+  #
+  # @see Qonfig::DataSet#load_setting_values_from_file
+  #
+  # @api public
+  # @since 0.17.0
+  def load_from_file(file_path, format: :dynamic, strict: true, expose: nil)
+    thread_safe_access do
+      load_setting_values_from_file(file_path, format: format, strict: strict, expose: expose)
+    end
+  end
+
+  # @param file_path [String]
+  # @option strict [Boolean]
+  # @option expose [NilClass, String, Symbol] Environment key
+  # @return [void]
+  #
+  # @see Qonfig::DataSet#load_from_file
+  #
+  # @api public
+  # @since 0.17.0
+  def load_from_yaml(file_path, strict: true, expose: nil)
+    load_from_file(file_path, format: :yml, strict: strict, expose: expose)
+  end
+
+  # @param file_path [String]
+  # @option strict [Boolean]
+  # @option expose [NilClass, String, Symbol] Environment key
+  # @return [void]
+  #
+  # @see Qonfig::DataSet#load_from_file
+  #
+  # @api public
+  # @since 0.17.0
+  def load_from_json(file_path, strict: true, expose: nil)
+    load_from_file(file_path, format: :json, strict: strict, expose: expose)
+  end
+
+  # @option format [String, Symbol]
+  # @option strict [Boolean]
+  # @option expose [NilClass, String, Symbol]
+  # @return [void]
+  #
+  # @api public
+  # @since 0.17.0
+  def load_from_self(format: :dynamic, strict: true, expose: nil)
+    caller_location = caller(1, 1).first
+
+    thread_safe_access do
+      load_setting_values_from_file(
+        :self, format: format, strict: strict, expose: expose, caller_location: caller_location
+      )
     end
   end
 
@@ -184,6 +260,17 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     thread_safe_access { settings.__subset__(*keys) }
   end
 
+  # @param key_path [Array<String, Symbol>]
+  # @return [Boolean]
+  #
+  # @api public
+  # @since 0.17.0
+  def key?(*key_path)
+    thread_safe_access { settings.__has_key__(*key_path) }
+  end
+  alias_method :option?, :key?
+  alias_method :setting?, :key?
+
   # @return [void]
   #
   # @api public
@@ -206,6 +293,7 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   end
 
   # @param block [Proc]
+  # @option yield_all [Boolean]
   # @return [Enumerable]
   #
   # @yield [setting_key, setting_value]
@@ -214,8 +302,8 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   #
   # @api public
   # @since 0.13.0
-  def deep_each_setting(&block)
-    thread_safe_access { settings.__deep_each_setting__(&block) }
+  def deep_each_setting(yield_all: false, &block)
+    thread_safe_access { settings.__deep_each_setting__(yield_all: yield_all, &block) }
   end
 
   # @return [Boolean]
@@ -226,12 +314,115 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     thread_safe_access { validator.valid? }
   end
 
+  # @param configurations [Hash<String,Symbol|Any>]
+  # @return [Boolean]
+  #
+  # @api public
+  # @since 0.19.0
+  def valid_with?(configurations = {})
+    # NOTE:
+    #  'dup.configure(configurations)' has better thread-safety than 'with(configurations)'
+    #  pros:
+    #    - no arbitrary lock is obtained;
+    #    - all threads can read and work :)
+    #  cons:
+    #    - useless ton of objects (new dataset, new settings, new locks, and etc);
+    #    - useless setting options assignment steps (self.dup + self.to_h + configure(to_h))
+    dup.configure(configurations)
+    true
+  rescue Qonfig::ValidationError
+    false
+  end
+
   # @return [void]
   #
   # @api public
   # @since 0.13.0
   def validate!
     thread_safe_access { validator.validate! }
+  end
+
+  # @option all_variants [Boolean]
+  # @option only_root [Boolean]
+  # @return [Array<String>]
+  #
+  # @api public
+  # @since 0.18.0
+  def keys(all_variants: false, only_root: false)
+    thread_safe_access do
+      only_root ? settings.__root_keys__ : settings.__keys__(all_variants: all_variants)
+    end
+  end
+
+  # @return [Array<String>]
+  #
+  # @api public
+  # @since 0.18.0
+  def root_keys
+    thread_safe_access { settings.__root_keys__ }
+  end
+
+  # @param temporary_configurations [Hash<Symbol|String,Any>]
+  # @param arbitary_code [Block]
+  # @return [void]
+  #
+  # @api public
+  # @since 0.17.0
+  def with(temporary_configurations = {}, &arbitary_code)
+    with_arbitary_access do
+      begin
+        original_settings = @settings
+
+        temporary_settings = self.class.build.dup.tap do |copied_config|
+          copied_config.configure(temporary_configurations)
+        end.settings
+
+        @settings = temporary_settings
+        yield if block_given?
+      ensure
+        @settings = original_settings
+      end
+    end
+  end
+
+  # @return [Qonfig::DataSet]
+  #
+  # @api public
+  # @since 0.17.0
+  def dup
+    thread_safe_definition do
+      self.class.build.tap do |duplicate|
+        duplicate.configure(to_h)
+      end
+    end
+  end
+
+  # @param exportable_object [Object]
+  # @param exported_setting_keys [Array<String,Symbol>]
+  # @option mappings [Hash<String|Symbol,String|Symbol>]
+  # @option raw [Boolean]
+  # @option prefix [String, Symbol]
+  # @return [void]
+  #
+  # @api public
+  # @since 0.18.0
+  def export_settings(
+    exportable_object,
+    *exported_setting_keys,
+    mappings: Qonfig::Imports::Abstract::EMPTY_MAPPINGS,
+    raw: false,
+    prefix: Qonfig::Imports::Abstract::EMPTY_PREFIX
+  )
+    thread_safe_access do
+      Qonfig::Imports::Export.export!(
+        exportable_object,
+        self,
+        *exported_setting_keys,
+        prefix: prefix,
+        raw: raw,
+        mappings: mappings
+      )
+    end
   end
 
   private
@@ -246,9 +437,11 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   #
   # @api private
   # @since 0.2.0
+  # @version 0.19.0
   def build_settings
-    @settings = Qonfig::Settings::Builder.build(self)
+    @settings = Qonfig::Settings::Builder.build_definitions(self)
     validator.validate!
+    Qonfig::Settings::Builder.build_state(self)
   end
 
   # @return [void]
@@ -282,8 +475,31 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     apply_settings(settings_map, &configurations)
   end
 
-  # @param instructions [Proc]
-  # @return [Object]
+  # @param file_path [String, Symbol]
+  # @option format [String, Symbol]
+  # @option strict [Boolean]
+  # @option expose [NilClass, String, Symbol]
+  # @option callcer_location [NilClass, String]
+  # @return [void]
+  #
+  # @see Qonfig::Commands::Instantiation::ValuesFile
+  #
+  # @api private
+  # @since 0.17.0
+  def load_setting_values_from_file(
+    file_path,
+    format: :dynamic,
+    strict: true,
+    expose: nil,
+    caller_location: nil
+  )
+    Qonfig::Commands::Instantiation::ValuesFile.new(
+      file_path, caller_location, format: format, strict: strict, expose: expose
+    ).call(self, settings)
+  end
+
+  # @param instructions [Block]
+  # @return [Any]
   #
   # @api private
   # @since 0.2.0
@@ -291,12 +507,21 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     @__lock__.thread_safe_access(&instructions)
   end
 
-  # @param instructions [Proc]
-  # @return [Object]
+  # @param instructions [Block]
+  # @return [Any]
   #
   # @api private
   # @since 0.2.0
   def thread_safe_definition(&instructions)
     @__lock__.thread_safe_definition(&instructions)
+  end
+
+  # @param instructions [Block]
+  # @return [Any]
+  #
+  # @api priavte
+  # @since 0.17.0
+  def with_arbitary_access(&instructions)
+    @__lock__.with_arbitary_access(&instructions)
   end
 end
