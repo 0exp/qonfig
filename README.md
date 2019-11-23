@@ -61,7 +61,7 @@ require 'qonfig'
   - [Proc-based validation](#proc-based-validation)
   - [Method-based validation](#method-based-validation)
   - [Predefined validations](#predefined-validations)
-  - [Checking of the potential setting values](#checking-of-the-potential-setting-values)
+  - [Validation of potential setting values](#validation-of-potential-setting-values)
 - [Work with files](#work-with-files)
   - **Setting keys definition**
     - [Load from YAML file](#load-from-yaml-file)
@@ -1191,7 +1191,7 @@ service.config_account # => { "login" => "D@iVeR", "auth_token" => "IAdkoa0@()12
 - [Proc-based validation](#proc-based-validation)
 - [Method-based validation](#method-based-validation)
 - [Predefined validations](#predefined-validations)
-- [Checking of the potential setting values](#checking-of-the-potential-setting-values)
+- [Validation of potential setting values](#validation-of-potential-setting-values)
 
 ---
 
@@ -1213,11 +1213,12 @@ If you want to check the config object completely you can define a custom valida
   - `strict: true` does not ignores validations for settings with `nil`;
   - `strict: false` is used by default;
 - provides special [key search pattern](#key-search-pattern) for matching setting key names;
+- can validate potential setting values at instance level and class level;
 - uses the [key search pattern](#key-search-pattern) for definging what the setting key should be validated;
 - you can define your own custom validation logic and validate dataset instance completely;
 - validation logic should return **truthy** or **falsy** value;
-- supprots two validation techniques (**proc-based** ([doc](#proc-based-validation)) and **dataset-method-based** ([doc](#method-based-validation))):
-  - **proc-based** (`setting validation`) ([doc](#proc-based-validation))
+- supprots two validation techniques (**proc-based** ([documentation](#proc-based-validation)) and **dataset-method-based** ([documentation](#method-based-validation))):
+  - **proc-based** (`setting validation`) ([documentation](#proc-based-validation))
     ```ruby
       validate('db.user', strict: true) do |value|
         value.is_a?(String)
@@ -1229,7 +1230,7 @@ If you want to check the config object completely you can define a custom valida
         settings.user == User[1]
       end
     ```
-  - **dataset-method-based** (`setting validation`) ([doc](#method-based-validation))
+  - **dataset-method-based** (`setting validation`) ([documentation](#method-based-validation))
     ```ruby
       validate 'db.user', by: :check_user, strict: true
 
@@ -1237,7 +1238,7 @@ If you want to check the config object completely you can define a custom valida
         value.is_a?(String)
       end
     ```
-  - **dataset-method-based** (`dataset validation`) ([doc](#method-based-validation))
+  - **dataset-method-based** (`dataset validation`) ([documentation](#method-based-validation))
     ```ruby
       validate by: :check_config, strict: false
 
@@ -1245,24 +1246,9 @@ If you want to check the config object completely you can define a custom valida
         settings.user == User[1]
       end
     ```
-- provides a **set of standard validations** ([doc](#predefined-validations)):
+- provides a **set of standard validations** ([documentation](#predefined-validations)):
   - DSL: `validate 'key.pattern', :predefned_validator`;
   - supports `strict` behavior;
-  - realized validators:
-    - `integer`
-    - `float`
-    - `numeric`
-    - `big_decimal`
-    - `boolean`
-    - `string`
-    - `symbol`
-    - `text` (string or symbol)
-    - `array`
-    - `hash`
-    - `proc`
-    - `class`
-    - `module`
-    - `not_nil`
 
 ---
 
@@ -1477,7 +1463,7 @@ end # NOTE: all right :)
 config.settings.ignorance = nil # => Qonfig::ValidationError (cant be nil)
 ```
 
-### Checking of the potential setting values
+### Validation of potential setting values
 
 - (**instance-level**) `#valid_with?(configurations = {})` - check that current config instalce will be valid with passed configurations;
 - (**class-level**) `.valid_with?(configurations = {})` - check that potential config instancess will be valid with passed configurations;
