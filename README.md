@@ -61,6 +61,7 @@ require 'qonfig'
   - [Proc-based validation](#proc-based-validation)
   - [Method-based validation](#method-based-validation)
   - [Predefined validations](#predefined-validations)
+  - [Validation of potential setting values](#validation-of-potential-setting-values)
 - [Work with files](#work-with-files)
   - **Setting keys definition**
     - [Load from YAML file](#load-from-yaml-file)
@@ -1190,6 +1191,7 @@ service.config_account # => { "login" => "D@iVeR", "auth_token" => "IAdkoa0@()12
 - [Proc-based validation](#proc-based-validation)
 - [Method-based validation](#method-based-validation)
 - [Predefined validations](#predefined-validations)
+- [Validation of potential setting values](#validation-of-potential-setting-values)
 
 ---
 
@@ -1211,11 +1213,12 @@ If you want to check the config object completely you can define a custom valida
   - `strict: true` does not ignores validations for settings with `nil`;
   - `strict: false` is used by default;
 - provides special [key search pattern](#key-search-pattern) for matching setting key names;
+- you can validate potential setting values without any assignment ([documentation](#validation-of-potential-setting-values))
 - uses the [key search pattern](#key-search-pattern) for definging what the setting key should be validated;
 - you can define your own custom validation logic and validate dataset instance completely;
 - validation logic should return **truthy** or **falsy** value;
-- supprots two validation techniques (**proc-based** ([doc](#proc-based-validation)) and **dataset-method-based** ([doc](#method-based-validation))):
-  - **proc-based** (`setting validation`) ([doc](#proc-based-validation))
+- supprots two validation techniques (**proc-based** ([documentation](#proc-based-validation)) and **dataset-method-based** ([documentation](#method-based-validation))):
+  - **proc-based** (`setting validation`) ([documentation](#proc-based-validation))
     ```ruby
       validate('db.user', strict: true) do |value|
         value.is_a?(String)
@@ -1227,7 +1230,7 @@ If you want to check the config object completely you can define a custom valida
         settings.user == User[1]
       end
     ```
-  - **dataset-method-based** (`setting validation`) ([doc](#method-based-validation))
+  - **dataset-method-based** (`setting validation`) ([documentation](#method-based-validation))
     ```ruby
       validate 'db.user', by: :check_user, strict: true
 
@@ -1235,7 +1238,7 @@ If you want to check the config object completely you can define a custom valida
         value.is_a?(String)
       end
     ```
-  - **dataset-method-based** (`dataset validation`) ([doc](#method-based-validation))
+  - **dataset-method-based** (`dataset validation`) ([documentation](#method-based-validation))
     ```ruby
       validate by: :check_config, strict: false
 
@@ -1243,24 +1246,9 @@ If you want to check the config object completely you can define a custom valida
         settings.user == User[1]
       end
     ```
-- provides a **set of standard validations** ([doc](#predefined-validations)):
+- provides a **set of standard validations** ([documentation](#predefined-validations)):
   - DSL: `validate 'key.pattern', :predefned_validator`;
   - supports `strict` behavior;
-  - realized validators:
-    - `integer`
-    - `float`
-    - `numeric`
-    - `big_decimal`
-    - `boolean`
-    - `string`
-    - `symbol`
-    - `text` (string or symbol)
-    - `array`
-    - `hash`
-    - `proc`
-    - `class`
-    - `module`
-    - `not_nil`
 
 ---
 
@@ -1473,6 +1461,50 @@ config = Config.new do |conf|
 end # NOTE: all right :)
 
 config.settings.ignorance = nil # => Qonfig::ValidationError (cant be nil)
+```
+
+### Validation of potential setting values
+
+- (**instance-level**) `#valid_with?(configurations = {})` - check that current config instalce will be valid with passed configurations;
+- (**class-level**) `.valid_with?(configurations = {})` - check that potential config instancess will be valid with passed configurations;
+- makes no assignments;
+
+#### #valid_with? (instance-level)
+
+```ruby
+class Config < Qonfig::DataSet
+  setting :enabled, false
+  setting :queue do
+    setting :adapter, 'sidekiq'
+  end
+
+  validate :enabled, :boolean
+  validate 'queue.adapter', :string
+end
+
+config = Config.new
+
+config.valid_with?(enabled: true, queue: { adapter: 'que' }) # => true
+config.valid_with?(enabled: 123) # => false (should be a type of boolean)
+config.valid_with?(enabled: true, queue: { adapter: Sidekiq }) # => false (queue.adapter should be a type of string)
+```
+
+#### .valid_with? (class-level)
+
+```ruby
+class Config < Qonfig::DataSet
+  setting :enabled, false
+  setting :queue do
+    setting :adapter, 'sidekiq'
+  end
+
+  validate :enabled, :boolean
+  validate 'queue.adapter', :string
+end
+
+Config.valid_with?(enabled: true, queue: { adapter: 'que' }) # => true
+Config.valid_with?(enabled: 123) # => false (should be a type of boolean)
+Config.valid_with?(enabled: true, queue: { adapter: Sidekiq }) # => false (queue.adapter should be a type of string)
 ```
 
 ---
