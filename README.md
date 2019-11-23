@@ -1469,7 +1469,7 @@ config.settings.ignorance = nil # => Qonfig::ValidationError (cant be nil)
 - (**class-level**) `.valid_with?(configurations = {})` - check that potential config instancess will be valid with passed configurations;
 - makes no assignments;
 
-#### Instance-level (#valid_with?)
+#### #valid_with? (instance-level)
 
 ```ruby
 class Config < Qonfig::DataSet
@@ -1489,7 +1489,7 @@ config.valid_with?(enabled: 123) # => false (should be a type of boolean)
 config.valid_with?(enabled: true, queue: { adapter: Sidekiq }) # => false (queue.adapter should be a type of string)
 ```
 
-#### Class-level (.valid_with?)
+#### .valid_with? (class-level)
 
 ```ruby
 class Config < Qonfig::DataSet
