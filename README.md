@@ -2675,7 +2675,6 @@ Qonfig.plugin(:toml)
   - Rails reload plugin;
 - **Minor**:
   - custom global (and class-level) validators (with a special Validator Definition DSL);
-  - support for "dot notation" in `#key?`, `#option?`, `#setting?`, `#dig`, `#subset`, `#slice`, `#slice_value`;
   - pretty print :)));
 
 ## Contributing
