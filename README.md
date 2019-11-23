@@ -61,6 +61,7 @@ require 'qonfig'
   - [Proc-based validation](#proc-based-validation)
   - [Method-based validation](#method-based-validation)
   - [Predefined validations](#predefined-validations)
+  - [Checking of the potential setting values](#checking-of-the-potential-setting-values)
 - [Work with files](#work-with-files)
   - **Setting keys definition**
     - [Load from YAML file](#load-from-yaml-file)
@@ -1190,6 +1191,7 @@ service.config_account # => { "login" => "D@iVeR", "auth_token" => "IAdkoa0@()12
 - [Proc-based validation](#proc-based-validation)
 - [Method-based validation](#method-based-validation)
 - [Predefined validations](#predefined-validations)
+- [Checking of the potential setting values](#checking-of-the-potential-setting-values)
 
 ---
 
@@ -1473,6 +1475,49 @@ config = Config.new do |conf|
 end # NOTE: all right :)
 
 config.settings.ignorance = nil # => Qonfig::ValidationError (cant be nil)
+```
+
+### Checking of the potential setting values
+
+- (**instance-level**) `#valid_with?(configurations = {})` - check that current config instalce will be valid with passed configurations;
+- (**class-level**) `.valid_with?(configurations = {})` - check that potential config instancess will be valid with passed configurations;
+
+#### Instance-level (#valid_with?)
+
+```ruby
+class Config < Qonfig::DataSet
+  setting :enabled, false
+  setting :queue do
+    setting :adapter, 'sidekiq'
+  end
+
+  validate :enabled, :boolean
+  validate 'queue.adapter', :string
+end
+
+config = Config.new
+
+config.valid_with?(enabled: true, queue: { adapter: 'que' }) # => true
+config.valid_with?(enabled: 123) # => false (should be a type of boolean)
+config.valid_with?(enabled: true, queue: { adapter: Sidekiq }) # => false (queue.adapter should be a type of string)
+```
+
+#### Class-level (.valid_with?)
+
+```ruby
+class Config < Qonfig::DataSet
+  setting :enabled, false
+  setting :queue do
+    setting :adapter, 'sidekiq'
+  end
+
+  validate :enabled, :boolean
+  validate 'queue.adapter', :string
+end
+
+Config.valid_with?(enabled: true, queue: { adapter: 'que' }) # => true
+Config.valid_with?(enabled: 123) # => false (should be a type of boolean)
+Config.valid_with?(enabled: true, queue: { adapter: Sidekiq }) # => false (queue.adapter should be a type of string)
 ```
 
 ---

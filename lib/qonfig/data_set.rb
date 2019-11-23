@@ -28,13 +28,12 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     end
 
     # @param configurations [Hash<Symbol|String,Any>]
-    # @param configuration [Block]
     # @return [Boolean]
     #
     # @api public
     # @since 0.19.0
-    def valid_with?(configurations = {}, &configuration)
-      new(configurations, &configuration)
+    def valid_with?(configurations = {})
+      new(configurations)
       true
     rescue Qonfig::ValidationError
       false
@@ -316,12 +315,11 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   end
 
   # @param configurations [Hash<String,Symbol|Any>]
-  # @param configuration [Block]
   # @return [Boolean]
   #
   # @api public
   # @since 0.19.0
-  def valid_with?(configurations = {}, &configuration)
+  def valid_with?(configurations = {})
     # NOTE:
     #  'dup.configure(configurations)' has better thread-safety than 'with(configurations)'
     #  pros:
@@ -330,7 +328,7 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     #  cons:
     #    - useless ton of objects (new dataset, new settings, new locks, and etc);
     #    - useless setting options assignment steps (self.dup + self.to_h + configure(to_h))
-    dup.configure(configurations, &configuration)
+    dup.configure(configurations)
     true
   rescue Qonfig::ValidationError
     false
