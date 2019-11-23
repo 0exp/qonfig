@@ -1213,7 +1213,7 @@ If you want to check the config object completely you can define a custom valida
   - `strict: true` does not ignores validations for settings with `nil`;
   - `strict: false` is used by default;
 - provides special [key search pattern](#key-search-pattern) for matching setting key names;
-- can validate potential setting values at instance level and class level;
+- you can validate potential setting values without any assignment ([documentation](#validation-of-potential-setting-values))
 - uses the [key search pattern](#key-search-pattern) for definging what the setting key should be validated;
 - you can define your own custom validation logic and validate dataset instance completely;
 - validation logic should return **truthy** or **falsy** value;
