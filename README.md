@@ -1481,6 +1481,7 @@ config.settings.ignorance = nil # => Qonfig::ValidationError (cant be nil)
 
 - (**instance-level**) `#valid_with?(configurations = {})` - check that current config instalce will be valid with passed configurations;
 - (**class-level**) `.valid_with?(configurations = {})` - check that potential config instancess will be valid with passed configurations;
+- makes no assignments;
 
 #### Instance-level (#valid_with?)
 
