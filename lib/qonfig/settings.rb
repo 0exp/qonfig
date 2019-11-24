@@ -736,7 +736,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   CORE_METHODS = Array(
     instance_methods(false) |
     private_instance_methods(false) |
-    %i[super define_singleton_method self]
+    %i[super define_singleton_method self is_a?]
   ).map(&:to_s).freeze
 end
 # rubocop:enable Metrics/ClassLength, Layout/ClassStructure
