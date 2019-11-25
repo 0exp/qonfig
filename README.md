@@ -1464,6 +1464,8 @@ end # NOTE: all right :)
 config.settings.ignorance = nil # => Qonfig::ValidationError (cant be nil)
 ```
 
+---
+
 ### Validation of potential setting values
 
 - (**instance-level**) `#valid_with?(configurations = {})` - check that current config instalce will be valid with passed configurations;
