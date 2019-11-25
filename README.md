@@ -82,7 +82,7 @@ require 'qonfig'
     - [Save to YAML file](#save-to-yaml-file) (`#save_to_yaml`)
 - [Plugins](#plugins)
   - [toml](#plugins-toml) (support for `TOML` format)
-  - [pretty_print](#plugins-pretty-print) (beautified console output)
+  - [pretty_print](#plugins-pretty_print) (beautified/prettified console output)
 - [Roadmap](#roadmap)
 ---
 
@@ -2640,7 +2640,8 @@ Qonfig.plugin(:plugin_name) # or Qonfig.plugin('plugin_name')
 
 Provided plugins:
 
-- [toml](#plugins-toml) (provides `load_from_toml`, `save_to_toml`, `expose_toml`)
+- [toml](#plugins-toml) (provides `load_from_toml`, `save_to_toml`, `expose_toml`);
+- [pretty_print](#plugins-pretty_print) (beautified/prettified console output);
 
 ---
 
@@ -2662,16 +2663,18 @@ require 'toml-rb'
 # 2) enable plugin
 Qonfig.plugin(:toml)
 
-# 3) use :)
+# 3) use toml :)
 ```
+
+---
 
 ### Plugins: pretty_print
 
 - `Qonfig.plugin(:pretty_print)`
-- provdes the beautified console output;
+- gives you really comfortable and beautiful console output;
 - represents all setting keys in dot-notation format;
 
-#### Example
+#### Example:
 
 ```ruby
 class Config < Qonfig::DataSet
@@ -2693,8 +2696,6 @@ config = Config.new
 - before:
 
 ```shell
-[1] pry(main)> pp config
-
 => #<Config:0x00007f9b6c01dab0
  @__lock__=
   #<Qonfig::DataSet::Lock:0x00007f9b6c01da60
@@ -2721,9 +2722,6 @@ config = Config.new
 - after:
 
 ```shell
-[2] pry(main)> Qonfig.enable(:pretty_print)
-[3] pry(main)> pp config
-
 => #<Config:0x00007f9b6c01dab0
  api.domain: "google.ru",
  api.creds.account: "D@iVeR",
