@@ -82,6 +82,7 @@ require 'qonfig'
     - [Save to YAML file](#save-to-yaml-file) (`#save_to_yaml`)
 - [Plugins](#plugins)
   - [toml](#plugins-toml) (support for `TOML` format)
+  - [pretty_print](#plugins-pretty_print) (beautified/prettified console output)
 - [Roadmap](#roadmap)
 ---
 
@@ -2639,7 +2640,8 @@ Qonfig.plugin(:plugin_name) # or Qonfig.plugin('plugin_name')
 
 Provided plugins:
 
-- [toml](#plugins-toml) (provides `load_from_toml`, `save_to_toml`, `expose_toml`)
+- [toml](#plugins-toml) (provides `load_from_toml`, `save_to_toml`, `expose_toml`);
+- [pretty_print](#plugins-pretty_print) (beautified/prettified console output);
 
 ---
 
@@ -2661,8 +2663,77 @@ require 'toml-rb'
 # 2) enable plugin
 Qonfig.plugin(:toml)
 
-# 3) use :)
+# 3) use toml :)
 ```
+
+---
+
+### Plugins: pretty_print
+
+- `Qonfig.plugin(:pretty_print)`
+- gives you really comfortable and beautiful console output;
+- represents all setting keys in dot-notation format;
+
+#### Example:
+
+```ruby
+class Config < Qonfig::DataSet
+  setting :api do
+    setting :domain, 'google.ru'
+    setting :creds do
+      setting :account, 'D@iVeR'
+      setting :password, 'test123'
+    end
+  end
+
+  setting :log_requests, true
+  setting :use_proxy, true
+end
+
+config = Config.new
+```
+
+- before:
+
+```shell
+=> #<Config:0x00007f9b6c01dab0
+ @__lock__=
+  #<Qonfig::DataSet::Lock:0x00007f9b6c01da60
+   @access_lock=#<Thread::Mutex:0x00007f9b6c01da38>,
+   @arbitary_lock=#<Thread::Mutex:0x00007f9b6c01d9e8>,
+   @definition_lock=#<Thread::Mutex:0x00007f9b6c01da10>>,
+ @settings=
+  #<Qonfig::Settings:0x00007f9b6c01d858
+   @__lock__=
+    #<Qonfig::Settings::Lock:0x00007f9b6c01d808
+     @access_lock=#<Thread::Mutex:0x00007f9b6c01d7b8>,
+     @definition_lock=#<Thread::Mutex:0x00007f9b6c01d7e0>,
+     @merge_lock=#<Thread::Mutex:0x00007f9b6c01d790>>,
+   @__mutation_callbacks__=
+    #<Qonfig::Settings::Callbacks:0x00007f9b6c01d8d0
+     @callbacks=[#<Proc:0x00007f9b6c01d8f8@/Users/daiver/Projects/qonfig/lib/qonfig/settings/builder.rb:39>],
+     @lock=#<Thread::Mutex:0x00007f9b6c01d880>>,
+   @__options__=
+    {"api"=>
+      #<Qonfig::Settings:0x00007f9b6c01d498
+# ... and etc
+```
+
+- after:
+
+```shell
+=> #<Config:0x00007f9b6c01dab0
+ api.domain: "google.ru",
+ api.creds.account: "D@iVeR",
+ api.creds.password: "test123",
+ log_requests: true,
+ use_proxy: true>
+
+# -- or --
+
+=> #<Config:0x00007f9b6c01dab0 api.domain: "google.ru", api.creds.account: "D@iVeR", api.creds.password: "test123", log_requests: true, use_proxy: true>
+```
+
 ---
 
 ## Roadmap
@@ -2675,7 +2746,6 @@ Qonfig.plugin(:toml)
   - Rails reload plugin;
 - **Minor**:
   - custom global (and class-level) validators (with a special Validator Definition DSL);
-  - pretty print :)));
 
 ## Contributing
 

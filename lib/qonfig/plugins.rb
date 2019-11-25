@@ -7,6 +7,7 @@ module Qonfig::Plugins
   require_relative 'plugins/access_mixin'
   require_relative 'plugins/abstract'
   require_relative 'plugins/toml'
+  require_relative 'plugins/pretty_print'
 
   # @since 0.4.0
   @plugin_registry = Registry.new

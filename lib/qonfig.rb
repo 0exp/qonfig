@@ -24,4 +24,6 @@ module Qonfig
 
   # @since 0.12.0
   register_plugin('toml', Qonfig::Plugins::TOML)
+  # @since 0.19.0
+  register_plugin('pretty_print', Qonfig::Plugins::PrettyPrint)
 end

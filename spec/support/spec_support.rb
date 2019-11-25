@@ -24,4 +24,13 @@ module SpecSupport
   def test_plugins?
     !!ENV['TEST_PLUGINS']
   end
+
+  # @param object [Any]
+  # @return [String]
+  def from_object_id_space_to_value_space(object)
+    # NOTE: see Object#object_id source code for comments
+    value_space = format('%x', (object.object_id << 1)) # rubocop:disable Style/FormatStringToken
+    alignment = '0' * (16 - value_space.size)
+    "#{alignment}#{value_space}"
+  end
 end
