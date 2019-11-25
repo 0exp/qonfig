@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - explicit validation of potential setting values:
   - `#valid_with?(configurations = {})` - check that current config instalce will be valid with passed configurations;
   - `.valid_with?(configurations = {})` - check that potential config instancess will be valid with passed configurations;
+- Pretty print plugin (`Qonfig.plugin(:pretty_print)`);
 
 ### Changed
 - `Qonfig::FrozenSettingsError` now inherits `Qonfig::FrozenError` type;
