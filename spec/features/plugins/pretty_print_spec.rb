@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe 'Plugins(:pretty_print): Pretty print :)' do
+describe 'Plugins(:pretty_print): Pretty print :)', :plugin do
   before { Qonfig.plugin(:pretty_print) }
 
   before do
