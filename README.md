@@ -939,11 +939,16 @@ config.settings.database.engine.driver? # => true (true => true)
 
 ### Setting key existence
 
-- `#key?(*key_path)` / `#option?(*key_path)` / `#setting?(*key_path)`
-  - `*key_path` - an array of symbols and strings that represents a path to the concrete setting key;
-  - (for example, `config.key?(:credentials, :user)` tries to check that `config.settings.credentials.user` is exist);
-  - returns `true` if the concrete key is exist;
-  - returns `false` if the concrete key does not exist;
+- supports **dynamic array-like format** and **canonical dot-notation format**;
+- returns `true` if the concrete key is exist;
+- returns `false` if the concrete key does not exist;
+- **dynamic array-like format**:
+  - `#key?(*key_path)` / `#option?(*key_path)` / `#setting?(*key_path)`
+    - `*key_path` - an array of symbols and strings that represents a path to the concrete setting key;
+    - (for example, `config.key?(:credentials, :user)` tries to check that `config.settings.credentials.user` is exist);
+- **dot-notation format**:
+  - `#key?(key)` / `#option?(key)`, / `#setting?(key)`
+  - (for example: `config.key?('credentials.user') tries to check that `config.settings.crednetials.user` is exist);
 
 ```ruby
 class Config < Qonfig::DataSet
@@ -955,8 +960,13 @@ end
 
 config = Config.new
 
+# --- array-like format ---
 config.key?('credentials', 'user') # => true
 config.key?('credentials', 'token') # => false (key does not exist)
+
+# --- dot-notation format ---
+config.key?('credentials.user') # => true
+config.key?('credentials.token') # => false (key does not exist)
 
 config.key?('credentials') # => true
 config.key?('que_adapter') # => false (key does not exist)
@@ -964,6 +974,7 @@ config.key?('que_adapter') # => false (key does not exist)
 # aliases
 config.setting?('credentials') # => true
 config.option?(:credentials, :password) # => true
+config.option?('credentials.password') # => true
 ```
 
 ---
