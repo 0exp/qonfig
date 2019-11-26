@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+### Changed
+- Support for Ruby 2.3 has ended.
+
 ## [0.19.0] - 2019-11-26
 ### Added
 - **FINALY**: support for dot-notation in `#key?`, `#option?`, `#setting?`, `#dig`, `#subset`, `#slice`, `#slice_value`, `[]`;

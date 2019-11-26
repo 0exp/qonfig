@@ -2,9 +2,6 @@ language: ruby
 matrix:
   fast_finish: true
   include:
-  - rvm: 2.3.8
-    gemfile: gemfiles/with_external_deps.gemfile
-    env: TEST_PLUGINS=true
   - rvm: 2.4.9
     gemfile: gemfiles/with_external_deps.gemfile
     env: TEST_PLUGINS=true
@@ -20,8 +17,6 @@ matrix:
   - rvm: jruby-head
     gemfile: gemfiles/with_external_deps.gemfile
     env: TEST_PLUGINS=true
-  - rvm: 2.3.8
-    gemfile: gemfiles/without_external_deps.gemfile
   - rvm: 2.4.9
     gemfile: gemfiles/without_external_deps.gemfile
   - rvm: 2.5.7
