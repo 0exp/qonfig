@@ -943,11 +943,12 @@ config.settings.database.engine.driver? # => true (true => true)
 - returns `true` if the concrete key is exist;
 - returns `false` if the concrete key does not exist;
 - **dynamic array-like format**:
-  - `#key?(*key_path)` / `#option?(*key_path)` / `#setting?(*key_path)`
+  - `#key?(*key_path)` / `#option?(*key_path)` / `#setting?(*key_path)`;
   - `*key_path` - an array of symbols and strings that represents a path to the concrete setting key;
   - (for example, `config.key?(:credentials, :user)` tries to check that `config.settings.credentials.user` is exist);
 - **dot-notation format**:
-  - `#key?(key)` / `#option?(key)`, / `#setting?(key)`
+  - `#key?(key)` / `#option?(key)`, / `#setting?(key)`;
+  - `key` - string in dot-notated format
   - (for example: `config.key?('credentials.user') tries to check that `config.settings.crednetials.user` is exist);
 
 ```ruby
