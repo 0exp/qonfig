@@ -3,6 +3,9 @@
 # @api private
 # @since 0.4.0
 class Qonfig::Plugins::Registry
+  # @since 0.19.0
+  include Enumerable
+
   # @return [void]
   #
   # @api private
@@ -40,6 +43,15 @@ class Qonfig::Plugins::Registry
     thread_safe { plugin_names }
   end
 
+  # @param block [Block]
+  # @return [Enumerable]
+  #
+  # @api private
+  # @since 0.19.0
+  def each(&block)
+    thread_safe { iterate(&block) }
+  end
+
   private
 
   # @return [Hash]
@@ -68,6 +80,15 @@ class Qonfig::Plugins::Registry
   # @since 0.4.0
   def plugin_names
     plugin_set.keys
+  end
+
+  # @param block [Block]
+  # @return [Enumerable]
+  #
+  # @api private
+  # @since 0.19.0
+  def iterate(&block)
+    block_given? ? plugin_set.each_pair(&block) : plugin_set.each_pair
   end
 
   # @param plugin_name [String]

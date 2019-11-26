@@ -7,8 +7,8 @@ class Qonfig::Plugins::TOML < Qonfig::Plugins::Abstract
     # @return [void]
     #
     # @api private
-    # @since 0.12.0
-    def load!
+    # @since 0.19.0
+    def install!
       raise(
         Qonfig::UnresolvedPluginDependencyError,
         '::TomlRB does not exist or "toml-rb" gem is not loaded'
