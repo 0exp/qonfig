@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.19.0] - 2019-11-26
 ### Added
 - **FINALY**: support for dot-notation in `#key?`, `#option?`, `#setting?`, `#dig`, `#subset`, `#slice`, `#slice_value`, `[]`;
 - `freeze_state!` DSL directive (all your configs becomes frozen after being instantiated immediately);
