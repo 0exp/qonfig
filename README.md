@@ -2632,18 +2632,22 @@ dynamic: 10
 
 ### Plugins
 
+- show names of registered plugins:
+
 ```ruby
-# --- show names of registered plugins ---
-Qonfig.plugins # => array of strings
+Qonfig.plugins # => ["pretty_print", "toml", ..., ...]
+```
 
-# --- show loaded plugins ---
-Qonfig.loaded_plugins # => []
+- load specific plugin:
 
-# --- load specific plugin ---
-Qonfig.plugin(:plugin_name) # or Qonfig.plugin('plugin_name')
+```ruby
+Qonfig.plugin(:pretty_print) # or Qonfig.plugin('pretty_print')
+```
 
-# --- show loaded plugins ---
-Qonfig.loaded_plugins # => ["plugin_names"]
+- show loaded plugins:
+
+```ruby
+Qonfig.loaded_plugins # => ["pretty_print"]
 ```
 
 Provided plugins:
