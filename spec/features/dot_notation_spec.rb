@@ -2,7 +2,7 @@
 
 describe 'Dot-notation' do
   let(:config) do
-    config = Qonfig::DataSet.build do
+    Qonfig::DataSet.build do
       setting :kek do
         setting :pek do
           setting :cheburek, 'test'
@@ -55,7 +55,7 @@ describe 'Dot-notation' do
       },
       'frek' => {
         'jek' => { 'bek' => 123_456 }
-      },
+      }
     )
 
     expect do
