@@ -947,9 +947,9 @@ config.settings.database.engine.driver? # => true (true => true)
   - `*key_path` - an array of symbols and strings that represents a path to the concrete setting key;
   - (for example, `config.key?(:credentials, :user)` tries to check that `config.settings.credentials.user` is exist);
 - **dot-notation format**:
-  - `#key?(key)` / `#option?(key)`, / `#setting?(key)`;
+  - `#key?(key)` / `#option?(key)` / `#setting?(key)`;
   - `key` - string in dot-notated format
-  - (for example: `config.key?('credentials.user') tries to check that `config.settings.crednetials.user` is exist);
+  - (for example: `config.key?('credentials.user')` tries to check that `config.settings.crednetials.user` is exist);
 
 ```ruby
 class Config < Qonfig::DataSet
