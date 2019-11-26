@@ -8,7 +8,7 @@ class Qonfig::Plugins::PrettyPrint < Qonfig::Plugins::Abstract
     #
     # @api private
     # @since 0.19.0
-    def load!
+    def install!
       require_relative 'pretty_print/mixin'
       require_relative 'pretty_print/data_set'
     end

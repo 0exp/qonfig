@@ -13,6 +13,8 @@ module Qonfig::Plugins::AccessMixin
   def plugin(plugin_name)
     Qonfig::Plugins.load(plugin_name)
   end
+  alias_method :enable, :plugin
+  alias_method :load, :plugin
 
   # @return [Array<String>]
   #
@@ -22,6 +24,14 @@ module Qonfig::Plugins::AccessMixin
   # @since 0.4.0
   def plugins
     Qonfig::Plugins.names
+  end
+
+  # @return [Array<String>]
+  #
+  # @api private
+  # @since 0.19.0
+  def loaded_plugins
+    Qonfig::Plugins.loaded_plugins
   end
 
   # @param plugin_name [String, Symbol]
