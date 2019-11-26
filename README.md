@@ -2643,7 +2643,7 @@ dynamic: 10
 Qonfig.plugins # => ["pretty_print", "toml", ..., ...]
 ```
 
-- enable specific plugin:
+- load specific plugin:
 
 ```ruby
 Qonfig.plugin(:pretty_print) # or Qonfig.plugin('pretty_print')
@@ -2653,10 +2653,12 @@ Qonfig.enable(:pretty_print) # or Qonfig.enable('pretty_print')
 Qonfig.load(:pretty_print) # or Qonfig.load('pretty_print')
 ```
 
-- show enabled plugins:
+- show load plugins:
 
 ```ruby
 Qonfig.loaded_plugins # => ["pretty_print"]
+# -- or --
+Qonfig.enabled_plugins # => ["pretty_print"]
 ```
 
 ---

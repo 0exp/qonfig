@@ -34,6 +34,9 @@ describe 'Plugins' do
     # new plugins is not included in #loaded_plugins list
     expect(Qonfig.loaded_plugins).not_to include('internal_test_plugin')
     expect(Qonfig.loaded_plugins).not_to include('external_test_plugin')
+    expect(Qonfig.enabled_plugins).not_to include('internal_test_plugin')
+    expect(Qonfig.enabled_plugins).not_to include('external_test_plugin')
+    expect(Qonfig.loaded_plugins).to eq(Qonfig.enabled_plugins)
 
     # plugin can be loaded
     expect(InternalTestPluginInterceptor).to receive(:invoke).exactly(4).times
@@ -43,15 +46,21 @@ describe 'Plugins' do
     Qonfig.plugin('internal_test_plugin')
     expect(Qonfig.loaded_plugins).to include('internal_test_plugin')
     expect(Qonfig.loaded_plugins).not_to include('external_test_plugin')
+    expect(Qonfig.enabled_plugins).to include('internal_test_plugin')
+    expect(Qonfig.enabled_plugins).not_to include('external_test_plugin')
+    expect(Qonfig.loaded_plugins).to eq(Qonfig.enabled_plugins)
 
     # plugin can be loaded
     expect(ExternalTestPluginInterceptor).to receive(:call).exactly(4).times
     Qonfig::Plugins.load(:external_test_plugin)
     Qonfig::Plugins.load('external_test_plugin')
-    Qonfig.plugin(:external_test_plugin)
-    Qonfig.plugin('external_test_plugin')
+    Qonfig.enable(:external_test_plugin)
+    Qonfig.enable('external_test_plugin')
     expect(Qonfig.loaded_plugins).to include('external_test_plugin')
     expect(Qonfig.loaded_plugins).to include('internal_test_plugin')
+    expect(Qonfig.enabled_plugins).to include('external_test_plugin')
+    expect(Qonfig.enabled_plugins).to include('internal_test_plugin')
+    expect(Qonfig.loaded_plugins).to eq(Qonfig.enabled_plugins)
 
     # fails when there is an attempt to register a plugin with already used name
     expect do

@@ -33,6 +33,7 @@ module Qonfig::Plugins::AccessMixin
   def loaded_plugins
     Qonfig::Plugins.loaded_plugins
   end
+  alias_method :enabled_plugins, :loaded_plugins
 
   # @param plugin_name [String, Symbol]
   # @param plugin_klass [Class<Qonfig::Plugins::Abstract>]
