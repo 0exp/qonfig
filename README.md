@@ -2635,6 +2635,8 @@ dynamic: 10
 - [toml](#plugins-toml) (provides `load_from_toml`, `save_to_toml`, `expose_toml`);
 - [pretty_print](#plugins-pretty_print) (beautified/prettified console output);
 
+---
+
 #### Usage
 
 - show available plugins:
