@@ -2632,13 +2632,18 @@ dynamic: 10
 
 ### Plugins
 
-- show the list of registerd plugins:
+- [toml](#plugins-toml) (provides `load_from_toml`, `save_to_toml`, `expose_toml`);
+- [pretty_print](#plugins-pretty_print) (beautified/prettified console output);
+
+#### Usage
+
+- show available plugins:
 
 ```ruby
 Qonfig.plugins # => ["pretty_print", "toml", ..., ...]
 ```
 
-- load specific plugin:
+- enable specific plugin:
 
 ```ruby
 Qonfig.plugin(:pretty_print) # or Qonfig.plugin('pretty_print')
@@ -2648,16 +2653,11 @@ Qonfig.enable(:pretty_print) # or Qonfig.enable('pretty_print')
 Qonfig.load(:pretty_print) # or Qonfig.load('pretty_print')
 ```
 
-- show loaded plugins:
+- show enabled plugins:
 
 ```ruby
 Qonfig.loaded_plugins # => ["pretty_print"]
 ```
-
-#### Provided plugins:
-
-- [toml](#plugins-toml) (provides `load_from_toml`, `save_to_toml`, `expose_toml`);
-- [pretty_print](#plugins-pretty_print) (beautified/prettified console output);
 
 ---
 
