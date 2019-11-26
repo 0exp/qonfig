@@ -2636,8 +2636,14 @@ dynamic: 10
 # --- show names of registered plugins ---
 Qonfig.plugins # => array of strings
 
+# --- show loaded plugins ---
+Qonfig.loaded_plugins # => []
+
 # --- load specific plugin ---
 Qonfig.plugin(:plugin_name) # or Qonfig.plugin('plugin_name')
+
+# --- show loaded plugins ---
+Qonfig.loaded_plugins # => ["plugin_names"]
 ```
 
 Provided plugins:
