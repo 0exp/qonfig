@@ -1,6 +1,7 @@
 inherit_gem:
   armitage-rubocop:
     - lib/rubocop.general.yml
+    - lib/rubocop.rake.yml
     - lib/rubocop.rspec.yml
 
 AllCops:
