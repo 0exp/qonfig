@@ -2655,7 +2655,7 @@ Qonfig.enable(:pretty_print) # or Qonfig.enable('pretty_print')
 Qonfig.load(:pretty_print) # or Qonfig.load('pretty_print')
 ```
 
-- show load plugins:
+- show loaded plugins:
 
 ```ruby
 Qonfig.loaded_plugins # => ["pretty_print"]
