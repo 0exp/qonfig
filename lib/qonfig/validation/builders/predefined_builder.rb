@@ -2,7 +2,7 @@
 
 # @api private
 # @since 0.20.0
-class Qonfig::Validation::Building::PredefinedBuilder
+class Qonfig::Validation::Builders::PredefinedBuilder
   class << self
     # @param name [String, Symbol]
     # @param validation_logic [Proc]
@@ -55,7 +55,7 @@ class Qonfig::Validation::Building::PredefinedBuilder
     raise(
       Qonfig::ValidatorArgumentError,
       'Empty validation logic (block is not given)'
-    ) if validation_logic.is_a?(nil) || !validation_logic.is_a?(Proc)
+    ) if validation_logic.nil? || !validation_logic.is_a?(Proc)
   end
 
   # @return [Class<Qonfig::Validation::Validators::Custom>]
