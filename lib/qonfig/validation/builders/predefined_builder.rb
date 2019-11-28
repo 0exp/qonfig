@@ -7,7 +7,7 @@ class Qonfig::Validation::Builders::PredefinedBuilder
     # @param name [String, Symbol]
     # @param validation_logic [Proc]
     # @param predefined_registry [Qonfig::Validation::Collections::PredefinedRegistry]
-    # @return [Class<Qonfig::Validation::Validators::Custom>]
+    # @return [void]
     #
     # @api private
     # @since 0.20.0
@@ -29,7 +29,7 @@ class Qonfig::Validation::Builders::PredefinedBuilder
     @predefined_registry = predefined_registry
   end
 
-  # @return [Class<Qonfig::Validation::Validators::Custom>]
+  # @return [void]
   #
   # @api private
   # @since 0.20.0
@@ -58,7 +58,7 @@ class Qonfig::Validation::Builders::PredefinedBuilder
     ) if validation_logic.nil? || !validation_logic.is_a?(Proc)
   end
 
-  # @return [Class<Qonfig::Validation::Validators::Custom>]
+  # @return [void]
   #
   # @api private
   # @since 0.20.0

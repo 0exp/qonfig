@@ -22,7 +22,7 @@ module Qonfig
   # @since 0.4.0
   extend Plugins::AccessMixin
 
-  # @api private
+  # @api public
   # @since 0.20.0
   extend Validation::PredefinitionMixin
 
@@ -60,4 +60,3 @@ module Qonfig
   # @since 0.19.0
   register_plugin('pretty_print', Qonfig::Plugins::PrettyPrint)
 end
-

@@ -3,14 +3,17 @@
 # @api private
 # @since 0.1.0
 # @version 0.20.0
-module Qonfig::DSL
+module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
   class << self
     # @param child_klass [Qonfig::DataSet]
     # @return [void]
     #
+    # @see Qonfig::DataSet::ClassBuilder
+    #
     # @api private
     # @since 0.1.0
     # @version 0.20.0
+    # rubocop:disable Metrics/LineLength, Metrics/AbcSize
     def extended(child_klass)
       child_klass.instance_variable_set(:@definition_commands, Qonfig::CommandSet.new)
       child_klass.instance_variable_set(:@instance_commands, Qonfig::CommandSet.new)
@@ -28,6 +31,7 @@ module Qonfig::DSL
         end
       end)
     end
+    # rubocop:enable Metrics/LineLength, Metrics/AbcSize
   end
 
   # @return [Qonfig::CommandSet]
@@ -69,7 +73,9 @@ module Qonfig::DSL
   # @param custom_validation [Proc]
   # @return [void]
   #
-  # @api private
+  # @see Qonfig::Validation::Builders::InstanceBuilder
+  #
+  # @api public
   # @since 0.20.0
   def validate(
     setting_key_pattern = nil,
@@ -92,7 +98,9 @@ module Qonfig::DSL
   # @param validation_logic [Block]
   # @return [void]
   #
-  # @api private
+  # @see Qonfig::Validation::Builders::PredefinedBuilder
+  #
+  # @api public
   # @since 0.20.0
   def define_validator(name, &validation_logic)
     Qonfig::Validation::Builders::PredefinedBuilder.build(

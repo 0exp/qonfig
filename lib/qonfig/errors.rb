@@ -9,17 +9,16 @@ module Qonfig
   # @since 0.1.0
   ArgumentError = Class.new(ArgumentError)
 
-  # @see Qonfig::Validator
-  # @see Qonfig::Validator::MethodBased
-  # @see Qonfig::Validator::ProcBased
-  # @see Qonfig::Validator::Predefined::Common
+  # @see Qonfig::Validation::Validators::MethodBased
+  # @see Qonfig::Validation::Validators::ProcBased
+  # @see Qonfig::Validation::Validators::Predefined
   #
   # @api public
   # @since 0.13.0
   ValidationError = Class.new(Error)
 
-  # @see Qonfig::Validator::Builder::AttributeConsistency
-  # @see Qonfig::Validator::Predefined::Registry
+  # @see Qonfig::Validation::Builders::InstanceAttributeConsistency
+  # @see Qonfig::Validation::Builders::PredefinedBuilder
   #
   # @api public
   # @since 0.13.0

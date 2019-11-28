@@ -63,7 +63,7 @@ class Qonfig::Validation::Builders::InstanceBuilder
     end
   end
 
-  # @param data_set_klass [Qonfig::DataSet]
+  # @param data_set_klass [Class<Qonfig::DataSet>]
   # @param setting_key_pattern [String, Symbol, NilClass]
   # @param predefined_validator_name [String, Symbol, NilClass]
   # @param runtime_validation_method [String, Symbol, NilClass]
@@ -102,7 +102,7 @@ class Qonfig::Validation::Builders::InstanceBuilder
 
   private
 
-  # @return [Qonfig::DataSet]
+  # @return [Class<Qonfig::DataSet>]
   #
   # @api private
   # @since 0.20.0
@@ -154,7 +154,9 @@ class Qonfig::Validation::Builders::InstanceBuilder
     )
   end
 
-  # @return [Qonfig::Validation::Validators::Base]
+  # @return [Qonfig::Validation::Validators::MethodBased]
+  # @return [Qonfig::Validation::Validators::ProcBased]
+  # @return [Qonfig::Validation::Validators::Predefined]
   #
   # @api private
   # @since 0.20.0
@@ -196,14 +198,17 @@ class Qonfig::Validation::Builders::InstanceBuilder
 
   # @return [Qonfig::Validation::Validators::Predefined]
   #
+  # @see Qonfig::Validation::Collections::PredefinedRegistry
+  #
   # @api private
   # @since 0.20.0
   def build_predefined_validator
-    predefined_validation_logic = begin
-      data_set_klass.predefined_validators.resolve(predefined_validator_name)
-    rescue Qonfig::ValidatorNotFoundError
-      Qonfig::DataSet.predefined_validators.resolve(predefined_validator_name)
-    end
+    predefined_validation_logic =
+      begin
+        data_set_klass.predefined_validators.resolve(predefined_validator_name)
+      rescue Qonfig::ValidatorNotFoundError
+        Qonfig::DataSet.predefined_validators.resolve(predefined_validator_name)
+      end
 
     Qonfig::Validation::Validators::Predefined.new(
       build_setting_key_matcher, strict, predefined_validation_logic

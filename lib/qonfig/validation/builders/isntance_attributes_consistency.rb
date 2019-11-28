@@ -2,6 +2,7 @@
 
 # @api private
 # @since 0.20.0
+# rubocop:disable Metrics/ClassLength
 class Qonfig::Validation::Builders::InstanceAttributesConsistency
   class << self
     # @param setting_key_pattern [String, Symbol, NilClass]

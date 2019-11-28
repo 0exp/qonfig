@@ -15,7 +15,7 @@ class Qonfig::Validation::Collections::PredefinedRegistry
     @lock = Mutex.new
   end
 
-  # @param predefined_registry  [Qonfig::Validation::Collections::PredefinedRegistry]
+  # @param predefined_registry [Qonfig::Validation::Collections::PredefinedRegistry]
   # @return [void]
   #
   # @api private
