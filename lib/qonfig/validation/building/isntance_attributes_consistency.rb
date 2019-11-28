@@ -2,5 +2,5 @@
 
 # @api private
 # @since 0.20.0
-class Qonfig::Validation::Composite
+class Qonfig::Validation::Building::InstanceAttributesConsistency
 end

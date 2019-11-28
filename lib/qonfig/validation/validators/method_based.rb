@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 # @api private
-# @since 0.19.0
+# @since 0.20.0
 class Qonfig::Validation::Validators::MethodBased < Qonfig::Validation::Validators::Basic
   # @return [Symbol, String]
   #
   # @api private
-  # @since 0.19.0
+  # @since 0.20.0
   attr_reader :runtime_validation_method
 
   # @param setting_key_matcher [Qonfig::Settings::KeyMatcher, NilClass]
@@ -15,7 +15,7 @@ class Qonfig::Validation::Validators::MethodBased < Qonfig::Validation::Validato
   # @return [void]
   #
   # @api private
-  # @since 0.19.0
+  # @since 0.20.0
   def initialize(setting_key_matcher, strict, runtime_validation_method)
     super(setting_key_matcher, strict)
     @runtime_validation_method = runtime_validation_method
@@ -25,7 +25,7 @@ class Qonfig::Validation::Validators::MethodBased < Qonfig::Validation::Validato
   # @return [Boolean]
   #
   # @api private
-  # @since 0.19.0
+  # @since 0.20.0
   def validate_concrete(data_set)
     data_set.settings.__deep_each_setting__ do |setting_key, setting_value|
       next unless setting_key_matcher.match?(setting_key)
@@ -42,7 +42,7 @@ class Qonfig::Validation::Validators::MethodBased < Qonfig::Validation::Validato
   # @return [Boolean]
   #
   # @api private
-  # @since 0.19.0
+  # @since 0.20.0
   def validate_full(data_set)
     unless data_set.__send__(runtime_validation_method)
       raise(Qonfig::ValidationError, 'Invalid config object')
