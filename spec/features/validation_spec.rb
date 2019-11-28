@@ -739,4 +739,11 @@ describe 'Validation' do
       expect(config_klass.valid_with?(level: '7', count: nil, enabled: 123)).to eq(false)
     end
   end
+
+  describe 'custom validators' do
+    specify 'fails when validation logic is not provided'
+    specify 'inheritance works as expeced'
+    specify 'usage of global predefined validators'
+    specify 'predefined validators can be redefined in subclasses'
+  end
 end
