@@ -15,6 +15,17 @@ describe 'Export settings as instance-level access methods' do
     end
   end
 
+  specify 'default values => do nothing' do
+    my_simple_object = Object.new
+    config.export_settings(my_simple_object) # do nothing :D
+
+    expect(my_simple_object).not_to respond_to(:credentials)
+    expect(my_simple_object).not_to respond_to(:login)
+    expect(my_simple_object).not_to respond_to(:queue)
+    expect(my_simple_object).not_to respond_to(:adaper)
+    expect(my_simple_object).not_to respond_to(:threads)
+  end
+
   specify '<non-raw export> (concrete keys as values and keys with nestings as a hash)' do
     my_simple_object = Object.new
 

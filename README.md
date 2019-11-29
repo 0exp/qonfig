@@ -1,8 +1,7 @@
 # Qonfig &middot; [![Gem Version](https://badge.fury.io/rb/qonfig.svg)](https://badge.fury.io/rb/qonfig) [![Build Status](https://travis-ci.org/0exp/qonfig.svg?branch=master)](https://travis-ci.org/0exp/qonfig) [![Coverage Status](https://coveralls.io/repos/github/0exp/qonfig/badge.svg?branch=master)](https://coveralls.io/github/0exp/qonfig?branch=master)
 
 Config. Defined as a class. Used as an instance. Support for inheritance and composition.
-Lazy instantiation. Thread-safe. Command-style DSL. Validation layer. **DOT-NOTATION**!
-Support for **YAML**, **TOML**, **JSON**, **\_\_END\_\_**, **ENV**.
+Lazy instantiation. Thread-safe. Command-style DSL. Validation layer. **DOT-NOTATION**! And pretty-print :) Support for **YAML**, **TOML**, **JSON**, **\_\_END\_\_**, **ENV**.
 Extremely simple to define. Extremely simple to use. That's all? **NOT** :)
 
 ## Installation
@@ -1160,7 +1159,7 @@ service.credentials # => { "account" => { "login" => "D@iVeR", "auth_token" => "
 
 - all config objects can export their settings to an arbitrary object as singleton methods;
 - (**IMPORTANT**) `export_settings` exports config settings as access methods to config's settings (creates `attr_reader`s for your config);
-- signature: `#export(exportable_object, *setting_keys, mappings: {}, prefix: '', raw: false)`:
+- signature: `#export_settings(exportable_object, *setting_keys, mappings: {}, prefix: '', raw: false)`:
   - `exportable_object` - an arbitrary object for exporting;
   - `*setting_keys` - an array of dot-notaed config's setting keys that should be exported
     (dot-notaed key is a key that describes each part of nested setting key as a string separated by `dot`-symbol);
@@ -1190,7 +1189,7 @@ service = ServiceObject.new
 service.config_account # => NoMethodError
 
 # NOTE: export settings as access methods to config's settings
-config.export(service, 'web_api.credentials.account', prefix: 'config_')
+config.export_settings(service, 'web_api.credentials.account', prefix: 'config_')
 
 service.config_account # => { "login" => "D@iVeR", "auth_token" => "IAdkoa0@()1239uA" }
 ```
