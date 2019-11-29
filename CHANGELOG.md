@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Support for Ruby 2.3 has ended.
 
+### Fixed
+- Invalid default values for `#export_settings` method attributes (invalid `mappings:` value);
+
 ## [0.19.0] - 2019-11-26
 ### Added
 - **FINALY**: support for dot-notation in `#key?`, `#option?`, `#setting?`, `#dig`, `#subset`, `#slice`, `#slice_value`, `[]`;

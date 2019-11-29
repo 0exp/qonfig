@@ -409,7 +409,7 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   def export_settings(
     exportable_object,
     *exported_setting_keys,
-    mappings: Qonfig::Imports::Abstract::EMPTY_MAPPINGS,
+    mappings: Qonfig::Imports::Mappings::EMPTY_MAPPINGS,
     raw: false,
     prefix: Qonfig::Imports::Abstract::EMPTY_PREFIX
   )
