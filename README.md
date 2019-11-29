@@ -2840,7 +2840,6 @@ config = Config.new
   - support for persistent data storages (we want to store configs in multiple databases and files);
   - Rails reload plugin;
 - **Minor**:
-  - custom global (and class-level) validators (with a special Validator Definition DSL);
 
 ## Contributing
 
