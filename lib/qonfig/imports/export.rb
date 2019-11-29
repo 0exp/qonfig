@@ -18,7 +18,7 @@ module Qonfig::Imports::Export
       exportable_object,
       exported_config,
       *exported_setting_keys,
-      mappings: Qonfig::Imports::Abstract::EMPTY_MAPPINGS,
+      mappings: Qonfig::Imports::Mappings::EMPTY_MAPPINGS,
       raw: false,
       prefix: Qonfig::Imports::Abstract::EMPTY_PREFIX
     )
