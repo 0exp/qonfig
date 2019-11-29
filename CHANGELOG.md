@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.19.1] - 2019-11-29
 ### Changed
 - Support for Ruby 2.3 has ended.
 
