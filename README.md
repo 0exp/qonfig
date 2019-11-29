@@ -1514,7 +1514,7 @@ class Config < Qonfig::DataSet
 end
 ```
 
-#### Re-definition of existin validators in child classes
+#### Re-definition of existing validators in child classes
 
 ```ruby
 class Config < Qonfig::DataSet
