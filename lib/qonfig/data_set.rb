@@ -7,10 +7,8 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   require_relative 'data_set/lock'
 
   # @since 0.1.0
+  # @version 0.20.0
   extend Qonfig::DSL
-
-  # @since 0.13.0
-  extend Qonfig::Validator::DSL
 
   class << self
     # @param base_dataset_klass [Class<Qonfig::DataSet>]
@@ -427,10 +425,11 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
 
   private
 
-  # @return [Qonfig::Validator]
+  # @return [Qonfig::Validation::Validators::Composite]
   #
   # @api private
   # @since 0.13.0
+  # @version 0.20.0
   attr_reader :validator
 
   # @return [void]
@@ -448,8 +447,9 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   #
   # @api private
   # @since 0.13.0
+  # @version 0.20.0
   def build_validator
-    @validator = Qonfig::Validator.new(self)
+    @validator = Qonfig::Validation::Validators::Composite.new(self)
   end
 
   # @param settings_map [Hash]

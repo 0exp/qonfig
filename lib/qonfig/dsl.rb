@@ -2,27 +2,36 @@
 
 # @api private
 # @since 0.1.0
-module Qonfig::DSL
+# @version 0.20.0
+module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
   class << self
     # @param child_klass [Qonfig::DataSet]
     # @return [void]
     #
+    # @see Qonfig::DataSet::ClassBuilder
+    #
     # @api private
     # @since 0.1.0
-    # @version 0.19.0
+    # @version 0.20.0
+    # rubocop:disable Metrics/LineLength, Metrics/AbcSize
     def extended(child_klass)
       child_klass.instance_variable_set(:@definition_commands, Qonfig::CommandSet.new)
       child_klass.instance_variable_set(:@instance_commands, Qonfig::CommandSet.new)
+      child_klass.instance_variable_set(:@predefined_validators, Qonfig::Validation::Collections::PredefinedRegistry.new)
+      child_klass.instance_variable_set(:@validators, Qonfig::Validation::Collections::InstanceCollection.new)
 
       child_klass.singleton_class.prepend(Module.new do
         def inherited(child_klass)
           child_klass.instance_variable_set(:@definition_commands, Qonfig::CommandSet.new)
           child_klass.instance_variable_set(:@instance_commands, Qonfig::CommandSet.new)
+          child_klass.instance_variable_set(:@predefined_validators, Qonfig::Validation::Collections::PredefinedRegistry.new)
+          child_klass.instance_variable_set(:@validators, Qonfig::Validation::Collections::InstanceCollection.new)
           Qonfig::DataSet::ClassBuilder.inherit(base_klass: self, child_klass: child_klass)
           super
         end
       end)
     end
+    # rubocop:enable Metrics/LineLength, Metrics/AbcSize
   end
 
   # @return [Qonfig::CommandSet]
@@ -39,6 +48,64 @@ module Qonfig::DSL
   # @since 0.17.0
   def instance_commands
     @instance_commands
+  end
+
+  # @return [Qonfig::Validation::Collections::PredefinedRegistry]
+  #
+  # @api private
+  # @since 0.20.0
+  def predefined_validators
+    @predefined_validators
+  end
+
+  # @return [Qonfig::Validation::Collections::InstanceCollection]
+  #
+  # @api private
+  # @since 0.20.0
+  def validators
+    @validators
+  end
+
+  # @param setting_key_pattern [String, Symbol, NilClass]
+  # @param predefined [String, Symbol]
+  # @option by [String, Symbol, NilClass]
+  # @option stict [Boolean]
+  # @param custom_validation [Proc]
+  # @return [void]
+  #
+  # @see Qonfig::Validation::Building::InstanceBuilder
+  #
+  # @api public
+  # @since 0.20.0
+  def validate(
+    setting_key_pattern = nil,
+    predefined = nil,
+    strict: false,
+    by: nil,
+    &custom_validation
+  )
+    validators << Qonfig::Validation::Building::InstanceBuilder.build(
+      self,
+      setting_key_pattern: setting_key_pattern,
+      predefined_validator: predefined,
+      runtime_validation_method: by,
+      strict: strict,
+      validation_logic: custom_validation
+    )
+  end
+
+  # @param name [String, Symbol]
+  # @param validation_logic [Block]
+  # @return [void]
+  #
+  # @see Qonfig::Validation::Building::PredefinedBuilder
+  #
+  # @api public
+  # @since 0.20.0
+  def define_validator(name, &validation_logic)
+    Qonfig::Validation::Building::PredefinedBuilder.build(
+      name, validation_logic, predefined_validators
+    )
   end
 
   # @param key [Symbol, String]

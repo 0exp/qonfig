@@ -739,4 +739,129 @@ describe 'Validation' do
       expect(config_klass.valid_with?(level: '7', count: nil, enabled: 123)).to eq(false)
     end
   end
+
+  describe 'custom validators' do
+    specify 'you can define your own global validators and concrete-class-related validators' do
+      # custom global validator
+      Qonfig::DataSet.define_validator(:globality) do |value|
+        value == 'global'
+      end
+
+      config_klass = Class.new(Qonfig::DataSet) do
+        # custom class-related validator
+        define_validator(:int_or_sym) do |value|
+          value.is_a?(Integer) || value.is_a?(Symbol)
+        end
+
+        # custom class-related validator
+        define_validator(:queue_adapter) do |value|
+          value == :que || value == :sidekiq # rubocop:disable Style/MultipleComparison
+        end
+
+        setting :some_value, 123
+        setting :adapter, :sidekiq
+        setting :global, 'global'
+
+        validate :some_value, :int_or_sym # class-related validator
+        validate :adapter, :queue_adapter # class-related validator
+        validate :global, :globality, strict: true # global validator + srict cheker
+      end
+
+      expect { config_klass.new }.not_to raise_error
+
+      # invalid :global setting values
+      expect { config_klass.new(global: 123) }.to raise_error(Qonfig::ValidationError)
+      expect { config_klass.new(global: nil) }.to raise_error(Qonfig::ValidationError)
+      # invalid :some_value setting value
+      expect { config_klass.new(some_value: 123.456) }.to raise_error(Qonfig::ValidationError)
+      # invalid :adaper setting value
+      expect { config_klass.new(adapter: :sneakers) }.to raise_error(Qonfig::ValidationError)
+    end
+
+    specify 'fails when validation logic is not provided at definition step' do
+      config_klass = Class.new(Qonfig::DataSet)
+
+      expect do
+        config_klass.define_validator(:simple_validator)
+      end.to raise_error(Qonfig::ValidatorArgumentError)
+
+      expect do
+        config_klass.define_validator(:simple_validator) {}
+      end.not_to raise_error
+    end
+
+    specify 'inheritance works as expeced' do
+      Qonfig::DataSet.define_validator(:global_inheritable) do |value|
+        value == 0
+      end
+
+      first_klass = Class.new(Qonfig::DataSet) do
+        define_validator(:first_validator) { |value| value == 1 }
+        setting :a
+      end
+
+      second_klass = Class.new(first_klass) do
+        define_validator(:second_validator) { |value| value == 2 }
+        setting :b
+      end
+
+      third_klass = Class.new(second_klass) do
+        define_validator(:third_validator) { |value| value == 3 }
+        setting :c
+        setting :d
+
+        validate :a, :first_validator
+        validate :b, :second_validator
+        validate :c, :third_validator
+        validate :d, :global_inheritable
+      end
+
+      expect { third_klass.new(a: 1, b: 2, c: 3, d: 0) }.not_to raise_error
+      expect { third_klass.new }.not_to raise_error
+
+      expect { third_klass.new(a: '1') }.to raise_error(Qonfig::ValidationError)
+      expect { third_klass.new(b: '2') }.to raise_error(Qonfig::ValidationError)
+      expect { third_klass.new(c: '3') }.to raise_error(Qonfig::ValidationError)
+      expect { third_klass.new(d: '0') }.to raise_error(Qonfig::ValidationError)
+    end
+
+    specify 'predefined validators can be redefined' do
+      # custom global predefined validator
+      Qonfig::DataSet.define_validator(:global_predefined) do |value|
+        value == :predefined
+      end
+
+      config_klass_with_redefinition = Class.new(Qonfig::DataSet) do
+        define_validator(:global_predefined) do |value|
+          value == :class_level_predefined
+        end
+
+        setting :some_option
+        validate :some_option, :global_predefined
+      end
+
+      config_klass_without_redefinition = Class.new(Qonfig::DataSet) do
+        setting :some_option
+        validate :some_option, :global_predefined
+      end
+
+      # NOTE: config with redefined validator
+      expect do
+        # check that redefined validator is used
+        config_klass_with_redefinition.new(some_option: :class_level_predefined)
+      end.not_to raise_error
+      expect do
+        # check that global validator is not reached
+        config_klass_with_redefinition.new(some_option: :predefined)
+      end.to raise_error(Qonfig::ValidationError)
+
+      # NOTE: config without redefined validator
+      expect do
+        config_klass_without_redefinition.new(some_option: :class_level_predefined)
+      end.to raise_error(Qonfig::ValidationError)
+      expect do
+        config_klass_without_redefinition.new(some_option: :predefined)
+      end.not_to raise_error
+    end
+  end
 end

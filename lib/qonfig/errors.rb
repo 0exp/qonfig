@@ -9,21 +9,26 @@ module Qonfig
   # @since 0.1.0
   ArgumentError = Class.new(ArgumentError)
 
-  # @see Qonfig::Validator::Builder::AttributeConsistency
-  # @see Qonfig::Validator::Predefined::Registry
+  # @see Qonfig::Validation::Validators::MethodBased
+  # @see Qonfig::Validation::Validators::ProcBased
+  # @see Qonfig::Validation::Validators::Predefined
+  #
+  # @api public
+  # @since 0.13.0
+  ValidationError = Class.new(Error)
+
+  # @see Qonfig::Validation::Building::InstanceBuilder::AttributeConsistency
+  # @see Qonfig::Validation::Building::PredefinedBuilder
   #
   # @api public
   # @since 0.13.0
   ValidatorArgumentError = Class.new(ArgumentError)
 
-  # @see Qonfig::Validator
-  # @see Qonfig::Validator::MethodBased
-  # @see Qonfig::Validator::ProcBased
-  # @see Qonfig::Validator::Predefined::Common
+  # @see Qonfig::Validation::Collections::PredefinedRegistry
   #
   # @api public
-  # @since 0.13.0
-  ValidationError = Class.new(Error)
+  # @since 0.20.0
+  ValidatorNotFoundError = Class.new(ValidatorArgumentError)
 
   # @api public
   # @since 0.12.0

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 # @api private
-# @since 0.13.0
+# @since 0.20.0
 # rubocop:disable Metrics/ClassLength
-class Qonfig::Validator::Builder::AttributeConsistency
+class Qonfig::Validation::Building::InstanceBuilder::AttributesConsistency
   class << self
     # @param setting_key_pattern [String, Symbol, NilClass]
     # @param predefined_validator [String, Symbol, NilClass]
@@ -13,7 +13,7 @@ class Qonfig::Validator::Builder::AttributeConsistency
     # @return [void]
     #
     # @api private
-    # @since 0.13.0
+    # @since 0.20.0
     def check!(
       setting_key_pattern,
       predefined_validator,
@@ -38,7 +38,7 @@ class Qonfig::Validator::Builder::AttributeConsistency
   # @return [void]
   #
   # @api private
-  # @since 0.13.0
+  # @since 0.20.0
   def initialize(
     setting_key_pattern,
     predefined_validator,
@@ -58,7 +58,7 @@ class Qonfig::Validator::Builder::AttributeConsistency
   # @raise [Qonfig::ValidatorArgumentError]
   #
   # @api private
-  # @since 0.13.0
+  # @since 0.20.0
   def check!
     consistent_strict_behaviour!
     consistent_method_choice!
@@ -73,19 +73,19 @@ class Qonfig::Validator::Builder::AttributeConsistency
   # @return [String, Symbol, NilClass]
   #
   # @api private
-  # @since 0.13.0
+  # @since 0.20.0
   attr_reader :setting_key_pattern
 
   # @return [String, Symbol, NilClass]
   #
   # @api private
-  # @since 0.13.0
+  # @since 0.20.0
   attr_reader :predefined_validator
 
   # @return [String, Symbol, NilClass]
   #
   # @api private
-  # @since 0.13.0
+  # @since 0.20.0
   attr_reader :runtime_validation_method
 
   # @return [Boolean]
@@ -97,7 +97,7 @@ class Qonfig::Validator::Builder::AttributeConsistency
   # @return [Proc, NilClass]
   #
   # @api private
-  # @since 0.13.0
+  # @since 0.20.0
   attr_reader :validation_logic
 
   # @return [void]
@@ -105,7 +105,7 @@ class Qonfig::Validator::Builder::AttributeConsistency
   # @raise [Qonfig::ValidatorArgumentError]
   #
   # @api private
-  # @since 0.13.0
+  # @since 0.20.0
   def consistent_method_choice!
     unless runtime_validation_method || validation_logic || predefined_validator
       raise(
@@ -143,7 +143,7 @@ class Qonfig::Validator::Builder::AttributeConsistency
   # @raise [Qonfig::ValidatorArgumentError]
   #
   # @api private
-  # @since 0.13.0
+  # @since 0.20.0
   def consistent_predefined_validator!
     return if predefined_validator.nil?
     return if predefined_validator.is_a?(Symbol)
@@ -160,7 +160,7 @@ class Qonfig::Validator::Builder::AttributeConsistency
   # @raise [Qonfig::ValidatorArgumentError]
   #
   # @api private
-  # @since 0.13.0
+  # @since 0.20.0
   def cosnistent_runtime_validation_method!
     return if runtime_validation_method.nil?
     return if runtime_validation_method.is_a?(Symbol)
@@ -177,7 +177,7 @@ class Qonfig::Validator::Builder::AttributeConsistency
   # @raise [Qonfig::ValidatorArgumentError]
   #
   # @api private
-  # @since 0.13.0
+  # @since 0.20.0
   def consistent_validation_logic!
     return if validation_logic.nil?
     return if validation_logic.is_a?(Proc)
@@ -195,7 +195,7 @@ class Qonfig::Validator::Builder::AttributeConsistency
   # @raise [Qonfig::ValidatorArgumentError]
   #
   # @api private
-  # @since 0.13.0
+  # @since 0.20.0
   def consistent_setting_key_pattern!
     return if setting_key_pattern.nil?
     return if setting_key_pattern.is_a?(Symbol)

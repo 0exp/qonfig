@@ -1,21 +1,13 @@
 # frozen_string_literal: true
 
 # @api private
-# @since 0.13.0
-class Qonfig::Validator
-  require_relative 'validator/basic'
-  require_relative 'validator/method_based'
-  require_relative 'validator/proc_based'
-  require_relative 'validator/builder'
-  require_relative 'validator/collection'
-  require_relative 'validator/predefined'
-  require_relative 'validator/dsl'
-
+# @since 0.20.0
+class Qonfig::Validation::Validators::Composite
   # @param data_set [Qonfig::DataSet]
   # @return [void]
   #
   # @api private
-  # @since 0.13.0
+  # @since 0.20.0
   def initialize(data_set)
     @data_set = data_set
     @validators = data_set.class.validators.dup
@@ -24,7 +16,7 @@ class Qonfig::Validator
   # @return [void]
   #
   # @api private
-  # @since 0.13.0
+  # @since 0.20.0
   def validate!
     validators.each do |validator|
       validator.validate(data_set)
@@ -34,7 +26,7 @@ class Qonfig::Validator
   # @return [Boolean]
   #
   # @api private
-  # @since 0.13.0
+  # @since 0.20.0
   def valid?
     validate!
     true
@@ -47,12 +39,12 @@ class Qonfig::Validator
   # @return [Qonfig::DataSet]
   #
   # @api private
-  # @since 0.13.0
+  # @since 0.20.0
   attr_reader :data_set
 
-  # @return [Qonfig::Validator::Collection]
+  # @return [Qonfig::Validation::Collections::InstanceCollection]
   #
   # @api private
-  # @since 0.13.0
+  # @since 0.20.0
   attr_reader :validators
 end

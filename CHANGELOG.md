@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+### Added
+- Extended **Validation API**: you can define your own predefined validators via `.define_validator(name, &validation)` directive;
+
 ## [0.19.1] - 2019-11-29
 ### Changed
 - Support for Ruby 2.3 has ended.
