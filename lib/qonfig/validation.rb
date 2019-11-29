@@ -5,6 +5,6 @@
 module Qonfig::Validation
   require_relative 'validation/validators'
   require_relative 'validation/collections'
-  require_relative 'validation/builders'
+  require_relative 'validation/building'
   require_relative 'validation/predefinition_mixin'
 end

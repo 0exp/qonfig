@@ -17,8 +17,8 @@ module Qonfig
   # @since 0.13.0
   ValidationError = Class.new(Error)
 
-  # @see Qonfig::Validation::Builders::InstanceAttributeConsistency
-  # @see Qonfig::Validation::Builders::PredefinedBuilder
+  # @see Qonfig::Validation::Building::InstanceBuilder::AttributeConsistency
+  # @see Qonfig::Validation::Building::PredefinedBuilder
   #
   # @api public
   # @since 0.13.0

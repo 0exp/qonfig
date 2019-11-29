@@ -2,7 +2,7 @@
 
 # @api private
 # @since 0.20.0
-class Qonfig::Validation::Builders::PredefinedBuilder
+class Qonfig::Validation::Building::PredefinedBuilder
   class << self
     # @param name [String, Symbol]
     # @param validation_logic [Proc]

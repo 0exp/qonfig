@@ -2,7 +2,9 @@
 
 # @api private
 # @since 0.20.0
-class Qonfig::Validation::Builders::InstanceBuilder
+class Qonfig::Validation::Building::InstanceBuilder
+  require_relative 'instance_builder/attribute_consistency'
+
   # @return [NilClass]
   #
   # @api private
@@ -145,7 +147,7 @@ class Qonfig::Validation::Builders::InstanceBuilder
   # @api private
   # @since 0.20.0
   def validate_attributes!
-    Qonfig::Validation::Builders::InstanceAttributesConsistency.check!(
+    AttributesConsistency.check!(
       setting_key_pattern,
       predefined_validator_name,
       runtime_validation_method,

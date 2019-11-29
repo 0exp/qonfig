@@ -73,7 +73,7 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
   # @param custom_validation [Proc]
   # @return [void]
   #
-  # @see Qonfig::Validation::Builders::InstanceBuilder
+  # @see Qonfig::Validation::Building::InstanceBuilder
   #
   # @api public
   # @since 0.20.0
@@ -84,7 +84,7 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
     by: nil,
     &custom_validation
   )
-    validators << Qonfig::Validation::Builders::InstanceBuilder.build(
+    validators << Qonfig::Validation::Building::InstanceBuilder.build(
       self,
       setting_key_pattern: setting_key_pattern,
       predefined_validator: predefined,
@@ -98,12 +98,12 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
   # @param validation_logic [Block]
   # @return [void]
   #
-  # @see Qonfig::Validation::Builders::PredefinedBuilder
+  # @see Qonfig::Validation::Building::PredefinedBuilder
   #
   # @api public
   # @since 0.20.0
   def define_validator(name, &validation_logic)
-    Qonfig::Validation::Builders::PredefinedBuilder.build(
+    Qonfig::Validation::Building::PredefinedBuilder.build(
       name, validation_logic, predefined_validators
     )
   end

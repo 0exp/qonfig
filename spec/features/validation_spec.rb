@@ -755,7 +755,7 @@ describe 'Validation' do
 
         # custom class-related validator
         define_validator(:queue_adapter) do |value|
-          value == :que || value == :sidekiq
+          value == :que || value == :sidekiq # rubocop:disable Style/MultipleComparison
         end
 
         setting :some_value, 123
