@@ -61,6 +61,7 @@ require 'qonfig'
   - [Method-based validation](#method-based-validation)
   - [Predefined validations](#predefined-validations)
   - [Validation of potential setting values](#validation-of-potential-setting-values)
+  - [Custom predefined validators](#custom-predefined-validators)
 - [Work with files](#work-with-files)
   - **Setting keys definition**
     - [Load from YAML file](#load-from-yaml-file)
@@ -1204,6 +1205,7 @@ service.config_account # => { "login" => "D@iVeR", "auth_token" => "IAdkoa0@()12
 - [Method-based validation](#method-based-validation)
 - [Predefined validations](#predefined-validations)
 - [Validation of potential setting values](#validation-of-potential-setting-values)
+- [Custom predefined validators](#custom-predefined-validators)
 
 ---
 
@@ -1224,7 +1226,7 @@ If you want to check the config object completely you can define a custom valida
   - `strict: false` ignores validations for settings with `nil` (allows `nil` value);
   - `strict: true` does not ignores validations for settings with `nil`;
   - `strict: false` is used by default;
-- provides special [key search pattern](#key-search-pattern) for matching setting key names;
+- provides a special [key search pattern](#key-search-pattern) for matching setting key names;
 - you can validate potential setting values without any assignment ([documentation](#validation-of-potential-setting-values))
 - uses the [key search pattern](#key-search-pattern) for definging what the setting key should be validated;
 - you can define your own custom validation logic and validate dataset instance completely;
@@ -1261,6 +1263,7 @@ If you want to check the config object completely you can define a custom valida
 - provides a **set of standard validations** ([documentation](#predefined-validations)):
   - DSL: `validate 'key.pattern', :predefned_validator`;
   - supports `strict` behavior;
+- you can define your own predefined validators (class-related and global-related) ([documentation](#custom-predefined-validators));
 
 ---
 
@@ -1473,6 +1476,67 @@ config = Config.new do |conf|
 end # NOTE: all right :)
 
 config.settings.ignorance = nil # => Qonfig::ValidationError (cant be nil)
+```
+
+---
+
+### Custom predefined validators
+
+- DSL: `.define_validator(name, &validation) { |value| ... }` - create your own predefined validator;
+- **class-level**: define validators related only to the concrete config class;
+- **global-level**: define validators related to all config classes (by `Qonfig::DataSet.define_validator(...) { ... }`;)
+- you can re-define any global and inherited validator (at class level);
+- you can re-define any already registered global validator on `Qonfig::DataSet` (at global-level);
+
+#### Define your own class-level validator
+
+```ruby
+class Config < Qonfig::DataSet
+  # NOTE: definition
+  define_validator(:user_type) { |value| value.is_a?(User) }
+
+  setting :admin # some key
+
+  validate :admin, :user_type # NOTE: useage
+end
+```
+
+#### Define new global validator
+
+```ruby
+Qonfig::DataSet.define_validator(:secured_value) do |value|
+  value == '***'
+end
+
+class Config < Qonfig::DataSet
+  setting :password
+  validate :password, :secured_value
+end
+```
+
+#### Re-define existing validators in child classes
+
+```ruby
+class Config < Qonfig::DataSet
+  # NOTE: redefine existing :text validator only in Config class
+  define_validator(:text) { |value| value.is_a?(String) }
+
+  # NOTE: some custom validator that can be redefined in child classes
+  define_validator(:user) { |value| value.is_a?(User) }
+end
+
+class SubConfig < Qonfig
+  define_validator(:user) { |value| value.is_a?(AdminUser) } # NOTE: redefine inherited :user validator
+end
+```
+
+#### Re-define existing global validators
+
+```ruby
+# NOTE: redefine already existing :numeric validator
+Qonfig::DataSet.define_validator(:numeric) do |value|
+  value.is_a?(Numeric) || (value.is_a?(String) && value.match?(/\A\d+\.*\d+\z/))
+end
 ```
 
 ---
