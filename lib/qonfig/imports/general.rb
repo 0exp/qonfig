@@ -18,8 +18,8 @@ class Qonfig::Imports::General
       seeded_klass,
       imported_config,
       *imported_keys,
-      mappings: EMPTY_MAPPINGS,
-      prefix: EMPTY_PREFIX,
+      mappings: Qonfig::Imports::Mappings::EMPTY_MAPPINGS,
+      prefix: Qonfig::Imports::Abstract::EMPTY_PREFIX,
       raw: false
     )
       new(
@@ -47,8 +47,8 @@ class Qonfig::Imports::General
     seeded_klass,
     imported_config,
     *imported_keys,
-    mappings: EMPTY_MAPPINGS,
-    prefix: EMPTY_PREFIX,
+    mappings: Qonfig::Imports::Mappings::EMPTY_MAPPINGS,
+    prefix: Qonfig::Imports::Abstract::EMPTY_PREFIX,
     raw: false
   )
     @seeded_klass = seeded_klass
