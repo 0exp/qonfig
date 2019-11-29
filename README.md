@@ -60,8 +60,8 @@ require 'qonfig'
   - [Proc-based validation](#proc-based-validation)
   - [Method-based validation](#method-based-validation)
   - [Predefined validations](#predefined-validations)
-  - [Validation of potential setting values](#validation-of-potential-setting-values)
   - [Custom predefined validators](#custom-predefined-validators)
+  - [Validation of potential setting values](#validation-of-potential-setting-values)
 - [Work with files](#work-with-files)
   - **Setting keys definition**
     - [Load from YAML file](#load-from-yaml-file)
@@ -1204,8 +1204,8 @@ service.config_account # => { "login" => "D@iVeR", "auth_token" => "IAdkoa0@()12
 - [Proc-based validation](#proc-based-validation)
 - [Method-based validation](#method-based-validation)
 - [Predefined validations](#predefined-validations)
-- [Validation of potential setting values](#validation-of-potential-setting-values)
 - [Custom predefined validators](#custom-predefined-validators)
+- [Validation of potential setting values](#validation-of-potential-setting-values)
 
 ---
 
