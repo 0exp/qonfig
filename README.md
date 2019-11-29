@@ -1484,7 +1484,7 @@ config.settings.ignorance = nil # => Qonfig::ValidationError (cant be nil)
 
 - DSL: `.define_validator(name, &validation) { |value| ... }` - create your own predefined validator;
 - **class-level**: define validators related only to the concrete config class;
-- **global-level**: define validators related to all config classes (by `Qonfig::DataSet.define_validator(...) { ... }`;)
+- **global-level**: define validators related to all config classes (`Qonfig::DataSet.define_validator`);
 - you can re-define any global and inherited validator (at class level);
 - you can re-define any already registered global validator on `Qonfig::DataSet` (at global-level);
 
@@ -1501,7 +1501,7 @@ class Config < Qonfig::DataSet
 end
 ```
 
-#### Define new global validator
+#### Defin new global validator
 
 ```ruby
 Qonfig::DataSet.define_validator(:secured_value) do |value|
@@ -1514,7 +1514,7 @@ class Config < Qonfig::DataSet
 end
 ```
 
-#### Re-define existing validators in child classes
+#### Re-definition of existin validators in child classes
 
 ```ruby
 class Config < Qonfig::DataSet
@@ -1530,7 +1530,7 @@ class SubConfig < Qonfig
 end
 ```
 
-#### Re-define existing global validators
+#### Re-definition of existing global validators
 
 ```ruby
 # NOTE: redefine already existing :numeric validator
