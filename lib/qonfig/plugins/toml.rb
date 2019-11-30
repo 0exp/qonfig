@@ -20,8 +20,8 @@ class Qonfig::Plugins::TOML < Qonfig::Plugins::Abstract
       require_relative 'toml/loaders/toml'
       require_relative 'toml/loaders/dynamic'
       require_relative 'toml/uploaders/toml'
-      require_relative 'toml/commands/load_from_toml'
-      require_relative 'toml/commands/expose_toml'
+      require_relative 'toml/commands/definition/load_from_toml'
+      require_relative 'toml/commands/definition/expose_toml'
       require_relative 'toml/data_set'
       require_relative 'toml/dsl'
     end

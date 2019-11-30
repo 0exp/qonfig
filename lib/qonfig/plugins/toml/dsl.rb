@@ -7,10 +7,13 @@ module Qonfig::DSL
   # @option strict [Boolean]
   # @return [void]
   #
+  # @see Qonfig::Commands::Definition::LoadFromTOML
+  #
   # @api public
   # @since 0.12.0
+  # @version 0.20.0
   def load_from_toml(file_path, strict: true)
-    definition_commands << Qonfig::Commands::LoadFromTOML.new(
+    definition_commands << Qonfig::Commands::Definition::LoadFromTOML.new(
       file_path, strict: strict
     )
   end
@@ -21,10 +24,13 @@ module Qonfig::DSL
   # @option env [Symbol, String]
   # @return [void]
   #
+  # @see Qonfig::Commands::Definition::ExposeTOML
+  #
   # @api public
   # @since 0.12.0
+  # @version 0.20.0
   def expose_toml(file_path, strict: true, via:, env:)
-    definition_commands << Qonfig::Commands::ExposeTOML.new(
+    definition_commands << Qonfig::Commands::Definition::ExposeTOML.new(
       file_path, strict: strict, via: via, env: env
     )
   end

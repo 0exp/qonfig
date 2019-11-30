@@ -2,7 +2,11 @@
 
 # @api private
 # @since 0.12.0
-class Qonfig::Commands::LoadFromTOML < Qonfig::Commands::Base
+# @version 0.20.0
+class Qonfig::Commands::Definition::LoadFromTOML < Qonfig::Commands::Base
+  # @since 0.20.0
+  self.inheritable = true
+
   # @return [String]
   #
   # @api private
