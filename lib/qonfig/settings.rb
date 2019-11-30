@@ -95,9 +95,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
       __prevent_core_method_intersection__(key)
 
       case
-      when with_redefinition
-        __options__[key] = value
-      when !__options__.key?(key)
+      when with_redefinition || !__options__.key?(key)
         __options__[key] = value
       when __is_a_setting__(__options__[key]) && __is_a_setting__(value)
         __options__[key].__append_settings__(value)
