@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.20.0] - 2019-12-01
 ### Added
 - Extended **Validation API**: you can define your own predefined validators via `.define_validator(name, &validation)` directive;
 - `re_setting` - a special DSL command method that fully redefines existing settings (redefines existing settings instead of reopening them);
