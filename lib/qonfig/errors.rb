@@ -68,6 +68,7 @@ module Qonfig
   # @see Qonfig::Settings::KeyGuard
   # @see Qonfig::Commands::Definition::AddOption
   # @see Qonfig::Commands::Definition::AddNestedOption
+  # @see Qonfig::Commands::Definition::ReDefineOption
   #
   # @api public
   # @since 0.2.0

@@ -2,7 +2,11 @@
 
 # @api private
 # @since 0.12.0
-class Qonfig::Commands::ExposeTOML < Qonfig::Commands::Base
+# @version 0.20.0
+class Qonfig::Commands::Definition::ExposeTOML < Qonfig::Commands::Base
+  # @since 0.20.0
+  self.inheritable = true
+
   # @return [Hash]
   #
   # @api private
