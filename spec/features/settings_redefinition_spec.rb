@@ -18,6 +18,9 @@ describe 'Settings redefinition' do
       end
     end
 
+    redefinable_config = BaseRedefinableConfig.new
+    expect(redefinable_config[:nested]).to eq(100_500)
+
     child_redefinition_config = ChildRedefinitionConfig.new
     expect(child_redefinition_config[:nested]).to eq(:some_value)
 
