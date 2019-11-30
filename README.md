@@ -1037,6 +1037,19 @@ Sometimes the nesting of configs in your project is quite high, and it makes you
 such code by methods or variables. In order to make developer's life easer `Qonfig` provides a special Import API simplifies the config importing
 (gives you `.import_settings` DSL) and gives an ability to instant config setting export from a config object (gives you `#export_settings` config's method).
 
+You can use RabbitMQ-like pattern matching in setting key names:
+  - if the setting key name at the current nesting level does not matter - use `*`;
+  - if both the setting key name and nesting level does not matter - use `#`
+  - examples:
+    - `db.settings.user` - matches to `db.settings.user` setting;
+    - `db.settings.*` - matches to all setting keys inside `db.settings` group of settings;
+    - `db.*.user` - matches to all `user` setting keys at the first level of `db` group of settings;
+    - `#.user` - matches to all `user` setting keys;
+    - `service.#.password` - matches to all `password` setting keys at all levels of `service` group of settings;
+    - `#` - matches to ALL setting keys;
+    - `*` - matches to all setting keys at the root level;
+    - and etc;
+
 ---
 
 ### Import config settings
@@ -1068,6 +1081,8 @@ AppConfig = Qonfig::DataSet.build do
       end
     end
   end
+
+  setting :graphql_api, false
 end
 ```
 
@@ -1166,6 +1181,47 @@ service = ServiceObject.new
 service.credentials # => { "account" => { "login" => "D@iVeR", "auth_token" => "IAdkoa0@()1239uA"} }
 ```
 
+#### Immport with pattern-matching
+
+- import root keys only: `import_settings(config_object, '*')`;
+- import all keys: `import_settings(config_object, '#')`;
+- import the subset of keys: `import_settings(config_object, 'group.*.group.#')` (pattern-mathcing usage);
+
+```ruby
+class ServiceObject
+  include Qonfig::Imports
+
+  # import all settings from web_api.credentials subset
+  import_settings(AppConfig, 'web_api.credentials.#')
+  # generated instance methods:
+  #   => service.account
+  #   => service.login
+  #   => service.auth_token
+
+  # import only the root keys from web_api.credentials.account subset
+  import_settings(AppConfig, 'web_api.credentials.account.*')
+  # generated instance methods:
+  #   => service.login
+  #   => service.auth_token
+
+  # import only the root keys
+  import_settings(AppConfig, '*')
+  # generated instance methods:
+  #   => service.web_api
+  #   => service.graphql_api
+
+  # import ALL keys
+  import_Settings(AppConfig, '#')
+  # generated instance methods:
+  #   => service.web_api
+  #   => service.credentials
+  #   => service.account
+  #   => service.login
+  #   => service.auth_token
+  #   => service.graphql_api
+end
+```
+
 ---
 
 ### Export config settings
@@ -1192,6 +1248,8 @@ class Config < Qonfig::DataSet
       end
     end
   end
+
+  setting :graphql_api, false
 end
 
 class ServiceObject; end
@@ -1205,6 +1263,12 @@ service.config_account # => NoMethodError
 config.export_settings(service, 'web_api.credentials.account', prefix: 'config_')
 
 service.config_account # => { "login" => "D@iVeR", "auth_token" => "IAdkoa0@()1239uA" }
+
+# NOTE: export settings with pattern matching
+config.export_settings(service, '*') # export root settings
+
+service.web_api # => { 'credentials' => { 'account' => { ... } }, 'graphql_api' => false }
+service.graphql_api # => false
 ```
 
 ---
