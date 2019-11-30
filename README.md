@@ -101,7 +101,7 @@ require 'qonfig'
 
 - `setting(name, value)` - define setting with corresponding name and value;
 - `setting(name) { ... }` - define nested settings OR reopen existing nested setting and define some new nested settings;
-- `re_setting(name, value)`. `re_setting(name) { ... }` - re-define existing setting in `setting` method manner;
+- `re_setting(name, value)`. `re_setting(name) { ... }` - re-define existing setting in `setting` method manner (or define new setting if the original setting does not exist);
 
 ```ruby
 # --- definition ---
