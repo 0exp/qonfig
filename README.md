@@ -1573,7 +1573,8 @@ class Config < Qonfig::DataSet
 
   setting :admin # some key
 
-  validate :admin, :user_type # NOTE: useage
+  # NOTE: usage
+  validate :admin, :user_type
 end
 ```
 
