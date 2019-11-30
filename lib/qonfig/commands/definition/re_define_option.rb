@@ -2,7 +2,7 @@
 
 # @api private
 # @since 0.20.0
-class Qonfig::Commands::Definition::RedefineOption < Qonfig::Commands::Base
+class Qonfig::Commands::Definition::ReDefineOption < Qonfig::Commands::Base
   # @since 0.20.0
   self.inheritable = true
 

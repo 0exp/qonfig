@@ -113,8 +113,8 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
   # @param nested_settings [Proc]
   # @return [void]
   #
-  # @see Qonfig::Commands::AddNestedOption
-  # @see Qonfig::Commands::AddOption
+  # @see Qonfig::Commands::Definition::AddNestedOption
+  # @see Qonfig::Commands::Definition::AddOption
   #
   # @api public
   # @since 0.1.0
@@ -131,10 +131,12 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
   # @param nested_settings [Proc]
   # @return [void]
   #
+  # @see Qonfig::Comamnds::Definition::ReDefineOption
+  #
   # @api public
   # @since 0.20.0
   def re_setting(key, initial_value = nil, &nested_settings)
-    definition_commands << Qonfig::Commands::Definition::RedefineOption.new(
+    definition_commands << Qonfig::Commands::Definition::ReDefineOption.new(
       key, initial_value, nested_settings
     )
   end
@@ -142,7 +144,7 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
   # @param data_set_klass [Class<Qonfig::DataSet>]
   # @return [void]
   #
-  # @see Qonfig::Comamnds::Compose
+  # @see Qonfig::Comamnds::Definition::Compose
   #
   # @api private
   # @sine 0.1.0
@@ -154,7 +156,7 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
   # @option strict [Boolean]
   # @return [void]
   #
-  # @see Qonfig::Commands::LoadFromYAML
+  # @see Qonfig::Commands::Definition::LoadFromYAML
   #
   # @api public
   # @since 0.2.0
@@ -166,7 +168,7 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
 
   # @return [void]
   #
-  # @see Qonfig::Commands::LoadFromSelf
+  # @see Qonfig::Commands::Definition::LoadFromSelf
   #
   # @api public
   # @since 0.2.0
@@ -182,7 +184,7 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
   # @option prefix [NilClass, String, Regexp]
   # @return [void]
   #
-  # @see Qonfig::Commands::LoadFromENV
+  # @see Qonfig::Commands::Definition::LoadFromENV
   #
   # @api public
   # @since 0.2.0
@@ -198,6 +200,8 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
   # @option strict [Boolean]
   # @return [void]
   #
+  # @see Qonfig::Commands::Definition::LoadFromJSON
+  #
   # @api public
   # @since 0.5.0
   def load_from_json(file_path, strict: true)
@@ -209,6 +213,8 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
   # @option via [Symbol]
   # @option env [Symbol, String]
   # @return [void]
+  #
+  # @see Qonfig::Commands::Definition::ExposeYAML
   #
   # @api public
   # @since 0.7.0
@@ -224,6 +230,8 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
   # @option env [Symbol, String]
   # @return [void]
   #
+  # @see Qonfig::Commands::Definition::ExposeJSON
+  #
   # @api public
   # @since 0.14.0
   def expose_json(file_path, strict: true, via:, env:)
@@ -235,7 +243,7 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
   # @option env [Symbol, String]
   # @return [void]
   #
-  # @see Qonfig::Commands::LoadFromSelf
+  # @see Qonfig::Commands::Definition::ExposeSelf
   #
   # @api public
   # @since 0.14.0
@@ -253,6 +261,8 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
   # @option expose [NilClass, String, Symbol] Environment key
   # @return [void]
   #
+  # @see Qonfig::Commands::Instantiation::ValuesFile
+  #
   # @api public
   # @since 0.17.0
   def values_file(file_path, format: :dynamic, strict: false, expose: nil)
@@ -264,6 +274,8 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
   end
 
   # @return [void]
+  #
+  # @see Qonfig::Commands::Instantiation::FreezeState
   #
   # @api public
   # @since 0.19.0
