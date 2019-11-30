@@ -102,6 +102,8 @@ require 'qonfig'
 - `setting(name, value)` - define setting with corresponding name and value;
 - `setting(name) { ... }` - define nested settings OR reopen existing nested setting and define some new nested settings;
 - `re_setting(name, value)`, `re_setting(name) { ... }` - re-define existing setting (or define new if the original does not exist);
+- accessing: [access via method](#access-via-method), [access via index-method \[\]](#access-via-index-method-),
+  [.dig](#dig), [.slice](#slice), [.slice_value](#slice_value), [.subset](#subset);
 
 ```ruby
 # --- definition ---
