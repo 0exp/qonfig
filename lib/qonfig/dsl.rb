@@ -126,6 +126,19 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
     end
   end
 
+  # @param key [Symbol, String]
+  # @param initial_value [Object]
+  # @param nested_settings [Proc]
+  # @return [void]
+  #
+  # @api public
+  # @since 0.20.0
+  def re_setting(key, initial_value = nil, &nested_settings)
+    definition_commands << Qonfig::Commands::Definition::RedefineOption.new(
+      key, initial_value, nested_settings
+    )
+  end
+
   # @param data_set_klass [Class<Qonfig::DataSet>]
   # @return [void]
   #

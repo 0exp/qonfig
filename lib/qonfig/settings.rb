@@ -82,17 +82,21 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
 
   # @param key [Symbol, String]
   # @param value [Object]
+  # @option with_redefinition [Boolean]
   # @return [void]
   #
   # @api private
   # @since 0.1.0
-  def __define_setting__(key, value) # rubocop:disable Metrics/AbcSize
+  # @version 0.20.0
+  def __define_setting__(key, value, with_redefinition: false) # rubocop:disable Metrics/AbcSize
     __lock__.thread_safe_definition do
       key = __indifferently_accessable_option_key__(key)
 
       __prevent_core_method_intersection__(key)
 
       case
+      when with_redefinition
+        __options__[key] = value
       when !__options__.key?(key)
         __options__[key] = value
       when __is_a_setting__(__options__[key]) && __is_a_setting__(value)

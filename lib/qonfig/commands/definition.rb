@@ -5,6 +5,7 @@
 module Qonfig::Commands::Definition
   require_relative 'definition/add_option'
   require_relative 'definition/add_nested_option'
+  require_relative 'definition/redefine_option'
   require_relative 'definition/compose'
   require_relative 'definition/load_from_yaml'
   require_relative 'definition/load_from_json'
