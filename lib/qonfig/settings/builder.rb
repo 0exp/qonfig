@@ -5,6 +5,23 @@
 module Qonfig::Settings::Builder
   class << self
     # @param data_set [Qonfig::DataSet]
+    # @param assignements [Block]
+    # @yield [settings, validator]
+    # @yieldparam settings [Qonfig::DataSet::Settings]
+    # @yieldparam validator [Qonfig::Validation::Validators::Composite]
+    # @return [void]
+    #
+    # @api private
+    # @since 0.21.0
+    def build(data_set, &assignements)
+      validator = build_validator(data_set)
+      settings = build_definitions(data_set)
+      yield(settings, validator)
+      validator.validate!
+      build_state(data_set)
+    end
+
+    # @param data_set [Qonfig::DataSet]
     # @return [Qonfig::Settings]
     #
     # @api private
@@ -31,15 +48,22 @@ module Qonfig::Settings::Builder
     private
 
     # @param data_set [Qonfig::DataSet]
+    # @return [Qonfig::Validation::Validators::Composite]
+    #
+    # @api private
+    # @since 0.21.0
+    def build_validator(data_set)
+      Qonfig::Validation::Validators::Composite.new(data_set)
+    end
+
+    # @param data_set [Qonfig::DataSet]
     # @return [Qonfig::Settings::Callbacks]
     #
     # @api private
     # @since 0.13.0
     def build_mutation_callbacks(data_set)
-      validation_callback = proc { data_set.validate! }
-
       Qonfig::Settings::Callbacks.new.tap do |callbacks|
-        callbacks.add(validation_callback)
+        callbacks.add(Qonfig::Settings::Callbacks::Validation.new(data_set))
       end
     end
   end

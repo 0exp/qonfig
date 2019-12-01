@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+### Changed
+- Minor `Qonfig::DataSet` and `Qonfig::Settings::Builder` refactorings;
+
 ## [0.20.0] - 2019-12-01
 ### Added
 - Extended **Validation API**: you can define your own predefined validators via `.define_validator(name, &validation)` directive;

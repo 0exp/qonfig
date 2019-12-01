@@ -432,26 +432,6 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   # @version 0.20.0
   attr_reader :validator
 
-  # @return [void]
-  #
-  # @api private
-  # @since 0.2.0
-  # @version 0.19.0
-  def build_settings
-    @settings = Qonfig::Settings::Builder.build_definitions(self)
-    validator.validate!
-    Qonfig::Settings::Builder.build_state(self)
-  end
-
-  # @return [void]
-  #
-  # @api private
-  # @since 0.13.0
-  # @version 0.20.0
-  def build_validator
-    @validator = Qonfig::Validation::Validators::Composite.new(self)
-  end
-
   # @param settings_map [Hash]
   # @param configurations [Proc]
   # @return [void]
@@ -469,9 +449,12 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   #
   # @api private
   # @since 0.2.0
+  # @version 0.21.0
   def load!(settings_map = {}, &configurations)
-    build_validator
-    build_settings
+    Qonfig::Settings::Builder.build(self) do |settings, validator|
+      @settings = settings
+      @validator = validator
+    end
     apply_settings(settings_map, &configurations)
   end
 

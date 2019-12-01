@@ -3,6 +3,8 @@
 # @api private
 # @since 0.13.0
 class Qonfig::Settings::Callbacks
+  require_relative 'callbacks/validation'
+
   # @api private
   # @since 0.13.0
   include Enumerable
