@@ -57,7 +57,7 @@ require 'qonfig'
     - [Import with custom method names (mappings)](#import-with-custom-method-names-mappings)
     - [Prexify method name](#prexify-method-name)
     - [Import nested settings as raw Qonfig::Settings objects](#import-nested-settings-as-raw-qonfigsettings-objects)
-    - [Immport with pattern-matching](#immport-with-pattern-matching)
+    - [Import with pattern-matching](#import-with-pattern-matching)
   - [Export config settings](#export-config-settings) (`as singleton methods`)
 - [Validation](#validation)
   - [Introduction](#introduction)
@@ -1097,7 +1097,7 @@ Let's see what we can to do :)
 - [Import with custom method names (mappings)](#import-with-custom-method-names-mappings)
 - [Prexify method name](#prexify-method-name)
 - [Import nested settings as raw Qonfig::Settings objects](#import-nested-settings-as-raw-qonfigsettings-objects)
-- [Immport with pattern-matching](#immport-with-pattern-matching)
+- [Import with pattern-matching](#import-with-pattern-matching)
 
 #### Import a set of setting keys (simple dot-noated key list)
 
@@ -1192,7 +1192,7 @@ service = ServiceObject.new
 service.credentials # => { "account" => { "login" => "D@iVeR", "auth_token" => "IAdkoa0@()1239uA"} }
 ```
 
-#### Immport with pattern-matching
+#### Import with pattern-matching
 
 - import root keys only: `import_settings(config_object, '*')`;
 - import all keys: `import_settings(config_object, '#')`;
