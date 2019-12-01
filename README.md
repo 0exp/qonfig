@@ -53,6 +53,11 @@ require 'qonfig'
   - [Run arbitrary code with temporary settings](#run-arbitrary-code-with-temporary-settings) (`#with(configs = {}, &arbitrary_code)`)
 - [Import settings / Export settings](#import-settings--export-settings)
   - [Import config settings](#import-config-settings) (`as instance methods`)
+    - [Import a set of setting keys (simple dot-noated key list)](#import-a-set-of-setting-keys-simple-dot-noated-key-list)
+    - [Import with custom method names (mappings)](#import-with-custom-method-names-mappings)
+    - [Prexify method name](#prexify-method-name)
+    - [Import nested settings as raw Qonfig::Settings objects](#import-nested-settings-as-raw-qonfigsettings-objects)
+    - [Immport with pattern-matching](#immport-with-pattern-matching)
   - [Export config settings](#export-config-settings) (`as singleton methods`)
 - [Validation](#validation)
   - [Introduction](#introduction)
@@ -1088,6 +1093,12 @@ end
 
 Let's see what we can to do :)
 
+- [Import a set of setting keys (simple dot-noated key list)](#import-a-set-of-setting-keys-simple-dot-noated-key-list)
+- [Import with custom method names (mappings)](#import-with-custom-method-names-mappings)
+- [Prexify method name](#prexify-method-name)
+- [Import nested settings as raw Qonfig::Settings objects](#import-nested-settings-as-raw-qonfigsettings-objects)
+- [Immport with pattern-matching](#immport-with-pattern-matching)
+
 #### Import a set of setting keys (simple dot-noated key list)
 
 - last part of dot-notated key will become a name of the setting access instance method;
@@ -1226,6 +1237,7 @@ end
 
 ### Export config settings
 
+- works in `.import_settings` manner [doc](#import-config-settings) (see examples and documentation above `:)`)
 - all config objects can export their settings to an arbitrary object as singleton methods;
 - (**IMPORTANT**) `export_settings` exports config settings as access methods to config's settings (creates `attr_reader`s for your config);
 - signature: `#export_settings(exportable_object, *setting_keys, mappings: {}, prefix: '', raw: false)`:
@@ -1236,7 +1248,6 @@ end
   - `mappings:` - a map of keys that describes custom method names for each exported setting;
   - `prefix:` - prexifies setting access method name with custom prefix;
   - `raw:` - use nested settings as objects or hashify them (`false` by default (means "hashify nested settings"));
-- works in `.import_settings` manner [doc](#import-config-settings) (see examples and documentation above `:)`)
 
 ```ruby
 class Config < Qonfig::DataSet
@@ -1257,13 +1268,17 @@ class ServiceObject; end
 config = Config.new
 service = ServiceObject.new
 
-service.config_account # => NoMethodError
+service.config_account # => NoMethodErro
+```
 
+```ruby
 # NOTE: export settings as access methods to config's settings
 config.export_settings(service, 'web_api.credentials.account', prefix: 'config_')
 
 service.config_account # => { "login" => "D@iVeR", "auth_token" => "IAdkoa0@()1239uA" }
+```
 
+```ruby
 # NOTE: export settings with pattern matching
 config.export_settings(service, '*') # export root settings
 
@@ -1578,7 +1593,7 @@ class Config < Qonfig::DataSet
 end
 ```
 
-#### Defin new global validator
+#### Define new global validator
 
 ```ruby
 Qonfig::DataSet.define_validator(:secured_value) do |value|
