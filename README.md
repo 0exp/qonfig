@@ -1268,7 +1268,7 @@ class ServiceObject; end
 config = Config.new
 service = ServiceObject.new
 
-service.config_account # => NoMethodErro
+service.config_account # => NoMethodError
 ```
 
 ```ruby
