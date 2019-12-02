@@ -12,9 +12,11 @@ describe 'Compact config' do
           setting :data, test: false
         end
       end
+
+      setting :logger, nil
+      setting :graphql_endpoint, 'https://localhost:1234/graphql'
     end
 
-    compact_config = CompactCheckConfig.new.compacted
-    binding.pry
+    c = CompactCheckConfig.new.compacted
   end
 end

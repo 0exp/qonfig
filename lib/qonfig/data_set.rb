@@ -222,6 +222,20 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     thread_safe_access { settings[key] }
   end
 
+  # @param key [String, Symbol]
+  # @param value [Any]
+  # @return [void]
+  #
+  # @raise [Qonfig::UnknownSettingError]
+  # @raise [Qonfig::FrozenSettingsError]
+  # @raise [Qonfig::AmbiguousSettingValueError]
+  #
+  # @api public
+  # @since 0.21.0
+  def []=(key, value)
+    thread_safe_access { settings[key] = value }
+  end
+
   # @param keys [Array<String, Symbol>]
   # @return [Object]
   #
