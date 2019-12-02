@@ -15,7 +15,6 @@ describe 'Compact config' do
     end
 
     compact_config = CompactCheckConfig.new.compacted
-
     binding.pry
   end
 end

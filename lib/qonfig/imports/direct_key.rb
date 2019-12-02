@@ -68,13 +68,13 @@ class Qonfig::Imports::DirectKey < Qonfig::Imports::Abstract
               imported_config.dig(*setting_key_path_sequence)
             end
           end
-
-          eval(<<~ACCESSOR_DEFINITION) if accessor # TODO: __FILE__, __LINE__ + 1
-            define_method(#{access_method_name}=) do |value|
-              imported_config.settings.#{setting_key_path_sequence} = value
-            end
-          ACCESSOR_DEFINITION
         end
+
+        settings_interface.module_eval(<<~ACCESSOR_DEFINITION, __FILE__, __LINE__ + 1) if accessor
+          define_method(:#{access_method_name}=) do |value|
+            imported_config.settings.#{setting_key_path_sequence.join('.')} = value
+          end
+        ACCESSOR_DEFINITION
         # rubocop:enable Metrics/LineLength
       end
     end
