@@ -400,6 +400,7 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   # @option mappings [Hash<String|Symbol,String|Symbol>]
   # @option raw [Boolean]
   # @option prefix [String, Symbol]
+  # @option accessor [Boolean]
   # @return [void]
   #
   # @api public
@@ -408,8 +409,9 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     exportable_object,
     *exported_setting_keys,
     mappings: Qonfig::Imports::Mappings::EMPTY_MAPPINGS,
-    raw: false,
-    prefix: Qonfig::Imports::Abstract::EMPTY_PREFIX
+    raw: Qonfig::Imports::Abstract::DEFAULT_RAW_BEHAVIOR,
+    prefix: Qonfig::Imports::Abstract::EMPTY_PREFIX,
+    accessor: Qonfig::Imports::Abstract::AS_ACCESSOR
   )
     thread_safe_access do
       Qonfig::Imports::Export.export!(
@@ -418,9 +420,18 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
         *exported_setting_keys,
         prefix: prefix,
         raw: raw,
-        mappings: mappings
+        mappings: mappings,
+        accessor: accessor
       )
     end
+  end
+
+  # @return [Qonfig::Compact]
+  #
+  # @api public
+  # @since 0.21.0
+  def compacted
+    Qonfig::Compact.new(self)
   end
 
   private

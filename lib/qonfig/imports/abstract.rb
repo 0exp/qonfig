@@ -15,19 +15,34 @@ class Qonfig::Imports::Abstract
   # @since 0.18.0
   DEFAULT_RAW_BEHAVIOR = false
 
+  # @return [Boolean]
+  #
+  # @api private
+  # @since 0.21.0
+  AS_ACCESSOR = false
+
   # @param seeded_klass [Class]
   # @param imported_config [Qonfig::DataSet]
   # @option prefix [String, Symbol]
   # @option raw [Boolean]
+  # @option accessor [Boolean]
   # @return [void]
   #
   # @api private
   # @since 0.18.0
-  def initialize(seeded_klass, imported_config, prefix: EMPTY_PREFIX, raw: DEFAULT_RAW_BEHAVIOR)
+  # @version 0.21.0
+  def initialize(
+    seeded_klass,
+    imported_config,
+    prefix: EMPTY_PREFIX,
+    raw: DEFAULT_RAW_BEHAVIOR,
+    accessor: AS_ACCESSOR
+  )
     @seeded_klass = seeded_klass
     @imported_config = imported_config
     @prefix = prefix
     @raw = !!raw
+    @accessor = !!accessor
   end
 
   # @param settings_interface [Module]
@@ -66,6 +81,12 @@ class Qonfig::Imports::Abstract
   # @api private
   # @since 0.18.0
   attr_reader :imported_config
+
+  # @return [Boolean]
+  #
+  # @api private
+  # @since 0.21.0
+  attr_reader :accessor
 
   # @param imported_config [Qonfig::DataSet]
   # @param prefix [String, Symbol]

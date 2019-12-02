@@ -22,16 +22,19 @@ module Qonfig::Imports::DSL
     # @option prefix [String, Symbol]
     # @option raw [Boolean]
     # @option mappings [Hash<String|Symbol,String|Symbol>]
+    # @option accessor [Boolean]
     # @return [void]
     #
     # @api public
     # @since 0.18.0
+    # @version 0.21.0
     def import_settings(
       imported_config,
       *imported_setting_keys,
       prefix: Qonfig::Imports::Abstract::EMPTY_PREFIX,
       raw: Qonfig::Imports::Abstract::DEFAULT_RAW_BEHAVIOR,
-      mappings: Qonfig::Imports::Mappings::EMPTY_MAPPINGS
+      mappings: Qonfig::Imports::Mappings::EMPTY_MAPPINGS,
+      accessor: Qonfig::Imports::Abstract::AS_ACCESSOR
     )
       Qonfig::Imports::General.import!(
         self,
@@ -39,7 +42,8 @@ module Qonfig::Imports::DSL
         *imported_setting_keys,
         prefix: prefix,
         raw: raw,
-        mappings: mappings
+        mappings: mappings,
+        accessor: accessor
       )
     end
   end

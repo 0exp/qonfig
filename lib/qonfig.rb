@@ -4,6 +4,8 @@ require 'yaml'
 require 'json'
 require 'erb'
 
+# @api public
+# @since 0.1.0
 module Qonfig
   require_relative 'qonfig/errors'
   require_relative 'qonfig/loaders'
@@ -17,6 +19,7 @@ module Qonfig
   require_relative 'qonfig/configurable'
   require_relative 'qonfig/imports'
   require_relative 'qonfig/plugins'
+  require_relative 'qonfig/compact'
 
   # @api public
   # @since 0.4.0

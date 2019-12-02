@@ -10,17 +10,20 @@ class Qonfig::Imports::General
     # @option mappings [Hash<String|Symbol,String|Symbol>]
     # @option prefix [String, Symbol]
     # @option raw [Boolean]
+    # @option accessor [Boolean]
     # @return void]
     #
     # @api private
     # @since 0.18.0
+    # @version 0.21.0
     def import!(
       seeded_klass,
       imported_config,
       *imported_keys,
       mappings: Qonfig::Imports::Mappings::EMPTY_MAPPINGS,
       prefix: Qonfig::Imports::Abstract::EMPTY_PREFIX,
-      raw: false
+      raw: Qonfig::Imports::Abstract::DEFAULT_RAW_BEHAVIOR,
+      accessor: Qonfig::Imports::Abstract::AS_ACCESSOR
     )
       new(
         seeded_klass,
@@ -28,7 +31,8 @@ class Qonfig::Imports::General
         *imported_keys,
         mappings: mappings,
         prefix: prefix,
-        raw: raw
+        raw: raw,
+        accessor: accessor,
       ).import!
     end
   end
@@ -39,24 +43,39 @@ class Qonfig::Imports::General
   # @option mappings [Hash<String|Symbol,String|Symbol>]
   # @option prefix [String, Symbol]
   # @option raw [Boolean]
+  # @option accessor [Boolean]
   # @return void]
   #
   # @api private
   # @since 0.18.0
+  # @version 0.21.0
   def initialize(
     seeded_klass,
     imported_config,
     *imported_keys,
     mappings: Qonfig::Imports::Mappings::EMPTY_MAPPINGS,
     prefix: Qonfig::Imports::Abstract::EMPTY_PREFIX,
-    raw: false
+    raw: Qonfig::Imports::Abstract::DEFAULT_RAW_BEHAVIOR,
+    accessor: Qonfig::Imports::Abstract::AS_ACCESSOR
   )
     @seeded_klass = seeded_klass
+
     @direct_key_importer = build_direct_key_importer(
-      seeded_klass, imported_config, *imported_keys, prefix: prefix, raw: raw
+      seeded_klass,
+      imported_config,
+      *imported_keys,
+      prefix: prefix,
+      raw: raw,
+      accessor: accessor
     )
+
     @mappings_importer = build_mappings_importer(
-      seeded_klass, imported_config, mappings: mappings, prefix: prefix, raw: raw
+      seeded_klass,
+      imported_config,
+      mappings: mappings,
+      prefix: prefix,
+      raw: raw,
+      accessor: accessor
     )
   end
 
@@ -96,17 +115,27 @@ class Qonfig::Imports::General
   # @param imported_keys [Array<String,Symbol>]
   # @option prefix [String, Symbol]
   # @option raw [Boolean]
+  # @option accessor [Boolean]
   # @return [Qonfig::Imports::DirectKey]
   #
   # @api private
   # @since 0.18.0
-  def build_direct_key_importer(seeded_klass, imported_config, *imported_keys, prefix:, raw:)
+  # @version 0.21.0
+  def build_direct_key_importer(
+    seeded_klass,
+    imported_config,
+    *imported_keys,
+    prefix:,
+    raw:,
+    accessor:
+  )
     Qonfig::Imports::DirectKey.new(
       seeded_klass,
       imported_config,
       *imported_keys,
       prefix: prefix,
-      raw: raw
+      raw: raw,
+      accessor: accessor
     )
   end
 
@@ -115,17 +144,27 @@ class Qonfig::Imports::General
   # @option mappings [Hash<Symbol|String,Symbol|String>]
   # @option prefix [String, Symbol]
   # @option raw [Boolean]
+  # @option accessor [Boolean]
   # @return [Qonfig::Imports::Mappings]
   #
   # @api private
   # @since 0.18.0
-  def build_mappings_importer(seeded_klass, imported_config, mappings:, prefix:, raw:)
+  # @version 0.21.0
+  def build_mappings_importer(
+    seeded_klass,
+    imported_config,
+    mappings:,
+    prefix:,
+    raw:,
+    accessor:
+  )
     Qonfig::Imports::Mappings.new(
       seeded_klass,
       imported_config,
       mappings: mappings,
       prefix: prefix,
-      raw: raw
+      raw: raw,
+      accessor: accessor
     )
   end
 end

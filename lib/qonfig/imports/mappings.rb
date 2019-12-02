@@ -14,19 +14,22 @@ class Qonfig::Imports::Mappings < Qonfig::Imports::Abstract
   # @option prefix [String, Symbol]
   # @option raw [Boolean]
   # @option mappings [Hash<Symbol|String,Symbol|String>]
+  # @option accessor [Boolean]
   # @return [void]
   #
   # @api private
   # @since 0.18.0
+  # @version 0.21.0
   def initialize(
     seeded_klass,
     imported_config,
     mappings: EMPTY_MAPPINGS,
     prefix: EMPTY_PREFIX,
-    raw: DEFAULT_RAW_BEHAVIOR
+    raw: DEFAULT_RAW_BEHAVIOR,
+    accessor: AS_ACCESSOR
   )
     prevent_incompatible_import_params!(imported_config, prefix, mappings)
-    super(seeded_klass, imported_config, prefix: prefix, raw: raw)
+    super(seeded_klass, imported_config, prefix: prefix, raw: raw, accessor: accessor)
     @mappings = mappings
     @key_matchers = build_setting_key_matchers(mappings)
   end
@@ -36,6 +39,8 @@ class Qonfig::Imports::Mappings < Qonfig::Imports::Abstract
   #
   # @api private
   # @since 0.18.0
+  # @version 0.21.0
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/BlockLength
   def import!(settings_interface = Module.new) # rubocop:disable Metrics/AbcSize
     key_matchers.each_pair do |(mapped_method_name, key_matcher)|
       raise(
@@ -51,7 +56,8 @@ class Qonfig::Imports::Mappings < Qonfig::Imports::Abstract
         setting_key_path_sequence = setting_key.split('.')
         mapped_method_name = "#{prefix}#{mapped_method_name}" unless prefix.empty?
 
-        settings_interface.module_exec(raw, imported_config) do |raw, imported_config|
+        # rubocop:disable Metrics/LineLength
+        settings_interface.module_exec(raw, imported_config, accessor) do |raw, imported_config, accessor|
           unless raw
             # NOTE: get setting value via slice_value
             define_method(mapped_method_name) do
@@ -63,10 +69,18 @@ class Qonfig::Imports::Mappings < Qonfig::Imports::Abstract
               imported_config.dig(*setting_key_path_sequence)
             end
           end
+
+          eval(<<~ACCESSOR_DEFINITION) if accessor # TODO: __FILE__, __LINE__ + 1
+            define_method(#{mapped_method_name}=) do |value|
+              imported_config.settings.#{setting_key_path_sequence} = value
+            end
+          ACCESSOR_DEFINITION
         end
+        # rubocop:enable Metrics/LineLength
       end
     end
   end
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/BlockLength
 
   private
 

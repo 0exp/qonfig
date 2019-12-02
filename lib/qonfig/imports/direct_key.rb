@@ -8,19 +8,22 @@ class Qonfig::Imports::DirectKey < Qonfig::Imports::Abstract
   # @param keys [Array<String,Symbol>]
   # @option prefix [String, Symbol]
   # @option raw [Boolean]
+  # @option accessor [Boolean]
   # @return [void]
   #
   # @api private
-  # @since 0.18.8
+  # @since 0.18.0
+  # @version 0.21.0
   def initialize(
     seeded_klass,
     imported_config,
     *keys,
     prefix: EMPTY_PREFIX,
-    raw: DEFAULT_RAW_BEHAVIOR
+    raw: DEFAULT_RAW_BEHAVIOR,
+    accessor: AS_ACCESSOR
   )
     prevent_incompatible_import_params!(imported_config, prefix, keys)
-    super(seeded_klass, imported_config, prefix: prefix, raw: raw)
+    super(seeded_klass, imported_config, prefix: prefix, raw: raw, accessor: accessor)
     @keys = keys
     @key_matchers = build_setting_key_matchers(keys)
   end
@@ -30,7 +33,9 @@ class Qonfig::Imports::DirectKey < Qonfig::Imports::Abstract
   #
   # @api private
   # @since 0.18.0
-  def import!(settings_interface = Module.new) # rubocop:disable Metrics/AbcSize
+  # @version 0.21.0
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/BlockLength
+  def import!(settings_interface = Module.new)
     key_matchers.each do |key_matcher|
       raise(
         Qonfig::UnknownSettingError,
@@ -46,11 +51,16 @@ class Qonfig::Imports::DirectKey < Qonfig::Imports::Abstract
         access_method_name = setting_key_path_sequence.last
         access_method_name = "#{prefix}#{access_method_name}" unless prefix.empty?
 
-        settings_interface.module_exec(raw, imported_config) do |raw, imported_config|
+        # rubocop:disable Metrics/LineLength
+        settings_interface.module_exec(raw, imported_config, accessor) do |raw, imported_config, accessor|
           unless raw
             # NOTE: get setting value via slice_value
             define_method(access_method_name) do
               imported_config.slice_value(*setting_key_path_sequence)
+            end
+
+            define_method("#{access_method_name}=") do |value|
+              imported_config
             end
           else
             # NOTE: get setting object (concrete value or Qonfig::Settings object)
@@ -58,10 +68,18 @@ class Qonfig::Imports::DirectKey < Qonfig::Imports::Abstract
               imported_config.dig(*setting_key_path_sequence)
             end
           end
+
+          eval(<<~ACCESSOR_DEFINITION) if accessor # TODO: __FILE__, __LINE__ + 1
+            define_method(#{access_method_name}=) do |value|
+              imported_config.settings.#{setting_key_path_sequence} = value
+            end
+          ACCESSOR_DEFINITION
         end
+        # rubocop:enable Metrics/LineLength
       end
     end
   end
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/BlockLength
 
   private
 
