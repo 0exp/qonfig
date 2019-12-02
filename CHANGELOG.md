@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Added
+- Brand new type of config objects: `Qonfig::Compact`:
+  - represents the compacted config object with "key-value" read-/write-based interface;
+  - setting keys are represented as instace methods of `Qonfig::Compact` type;
+  - no any other useful functionality - just setting readers and setting writers;
+- Added missing `#[]=(key, value)` accessor-method for `Qonfig::DataSet` objects;
+- `pretty_print` plugin: added missing beautification logic for `Qonfig::Settings` objects;
+
 ### Changed
 - Minor `Qonfig::DataSet` and `Qonfig::Settings::Builder` refactorings;
 
