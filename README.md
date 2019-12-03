@@ -68,7 +68,8 @@ require 'qonfig'
   - [Custom predefined validators](#custom-predefined-validators)
   - [Validation of potential setting values](#validation-of-potential-setting-values)
 - [Work with files](#work-with-files)
-  - **Setting keys definition** (dynamic definition of setting keys by reading them from a file)
+  - **Setting keys definition**
+    - `(DSL methods for dynamic setting keys definition by reading them from a file)`
     - [Load from YAML file](#load-from-yaml-file)
     - [Expose YAML](#expose-yaml) (`Rails`-like environment-based YAML configs)
     - [Load from JSON file](#load-from-json-file)
@@ -76,7 +77,8 @@ require 'qonfig'
     - [Load from ENV](#load-from-env)
     - [Load from \_\_END\_\_](#load-from-__end__) (aka `.load_from_self`)
     - [Expose \_\_END\_\_](#expose-__end__) (aka `.expose_self`)
-  - **Setting values** (load setting values from a file to existing config object with already defined setting keys)
+  - **Setting values**
+    - `(instance methods for loading setting values from a file to existing config object with already defined setting keys)`
     - [Default setting values file](#default-setting-values-file)
     - [Load setting values from YAML file](#load-setting-values-from-yaml-file-by-instance)
     - [Load setting values from JSON file](#load-setting-values-from-json-file-by-instance)
