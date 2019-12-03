@@ -1,11 +1,6 @@
 # frozen_string_literal: true
 
-describe 'Plugins(toml): expose TOML file', :plugin do
-  before do
-    require 'toml-rb'
-    Qonfig.plugin(:toml)
-  end
-
+describe 'Plugins(toml): expose TOML file', plugin: :toml do
   specify 'defines config object by toml instructions and specific environment settings' do
     class ExposeTOMLConfig < Qonfig::DataSet
       toml_file_path = SpecSupport.fixture_path('plugins', 'toml', 'expose_toml', 'project.toml')

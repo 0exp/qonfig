@@ -19,7 +19,7 @@ module Qonfig
   require_relative 'qonfig/configurable'
   require_relative 'qonfig/imports'
   require_relative 'qonfig/plugins'
-  require_relative 'qonfig/compact'
+  require_relative 'qonfig/compacted'
 
   # @api public
   # @since 0.4.0

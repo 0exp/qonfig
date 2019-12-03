@@ -1,11 +1,6 @@
 # frozen_string_literal: true
 
-describe 'Plugins(toml): .values_file / #load_from_self (__END__ data with env)', :plugin do
-  before do
-    require 'toml-rb'
-    Qonfig.plugin(:toml)
-  end
-
+describe 'Plugins(toml): .values_file / #load_from_self (__END__ data with env)', plugin: :toml do
   describe 'DSL macros' do
     context '__END__ data has corresponding env key' do
       let(:config_klass) do

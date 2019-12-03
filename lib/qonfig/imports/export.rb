@@ -25,8 +25,16 @@ module Qonfig::Imports::Export
       prefix: Qonfig::Imports::Abstract::EMPTY_PREFIX,
       accessor: Qonfig::Imports::Abstract::AS_ACCESSOR
     )
-      unless exportable_object.is_a?(Module)
-        exportable_object = exportable_object.singleton_class
+      exportable_is_a_module = exportable_object.is_a?(Module) rescue false
+      # NOTE: (rescue false (rescue NoMethodError for #is_a?))
+      #   it means that #is_a? is not defined for exportable_object.
+      #   it happens only with BasicObject instances.
+
+      unless exportable_is_a_module
+        # NOTE:
+        #   << is a universal way for extrating the singleton class of an object
+        #   cuz BasicObject has no #singelton_class method;
+        exportable_object = (class << exportable_object; self; end)
       end
 
       Qonfig::Imports::General.import!(

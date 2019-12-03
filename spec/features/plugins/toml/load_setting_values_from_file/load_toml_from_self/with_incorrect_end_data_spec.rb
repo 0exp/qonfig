@@ -1,11 +1,7 @@
 # frozen_string_literal: true
 
-describe 'Plugins(toml): .values_file / #load_from_self (with incorrect __END__ data)', :plugin do
-  before do
-    require 'toml-rb'
-    Qonfig.plugin(:toml)
-  end
-
+# rubocop:disable Metrics/LineLength
+describe 'Plugins(toml): .values_file / #load_from_self (with incorrect __END__ data)', plugin: :toml do
   describe 'DSL macros' do
     let(:config_klass) do
       Class.new(Qonfig::DataSet) do
@@ -30,6 +26,7 @@ describe 'Plugins(toml): .values_file / #load_from_self (with incorrect __END__ 
     end
   end
 end
+# rubocop:enable Metrics/LineLength
 
 __END__
 

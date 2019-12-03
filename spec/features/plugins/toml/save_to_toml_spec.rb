@@ -1,11 +1,6 @@
 # frozen_string_literal: true
 
-describe 'Plugins(toml): Save to .toml (TOML)', :plugin do
-  before do
-    require 'toml-rb'
-    Qonfig.plugin(:toml)
-  end
-
+describe 'Plugins(toml): Save to .toml (TOML)', plugin: :toml do
   describe 'saving' do
     let(:config_file_name) { "#{SecureRandom.uuid}.yml" }
     let(:config_file_path) { SpecSupport.artifact_path(config_file_name) }

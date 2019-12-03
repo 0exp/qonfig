@@ -1,11 +1,6 @@
 # frozen_string_literal: true
 
-describe 'Plugins(toml): #load_from_self => format: :toml', :plugin do
-  before do
-    require 'toml-rb'
-    Qonfig.plugin(:toml)
-  end
-
+describe 'Plugins(toml): #load_from_self => format: :toml', plugin: :toml do
   specify ':toml-format support' do
     class TomlEndDataConfig < Qonfig::DataSet
       load_from_self format: :toml

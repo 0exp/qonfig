@@ -2,6 +2,16 @@
 
 RSpec.configure do |config|
   config.around(:example, :plugin) do |example|
-    example.call if SpecSupport.test_plugins?
+    if SpecSupport.test_plugins?
+      case example.metadata[:plugin]
+      when :toml
+        require 'toml-rb'
+        Qonfig.plugin(:toml)
+      when :pretty_print
+        Qonfig.plugin(:pretty_print)
+      end
+
+      example.call
+    end
   end
 end

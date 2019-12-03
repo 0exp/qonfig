@@ -1,11 +1,6 @@
 # frozen_string_literal: true
 
-describe 'Plugins(toml): .values_file / #load_from_self (with __END__ data)', :plugin do
-  before do
-    require 'toml-rb'
-    Qonfig.plugin(:toml)
-  end
-
+describe 'Plugins(toml): .values_file / #load_from_self (with __END__ data)', plugin: :toml do
   describe 'DSL macros' do
     let(:config_klass) do
       Class.new(Qonfig::DataSet) do

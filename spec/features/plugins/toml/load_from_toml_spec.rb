@@ -1,11 +1,6 @@
 # frozen_string_literal: true
 
-describe 'Plugins(toml): Load from .toml (TOML)', :plugin do
-  before do
-    require 'toml-rb'
-    Qonfig.plugin(:toml)
-  end
-
+describe 'Plugins(toml): Load from .toml (TOML)', plugin: :toml do
   specify 'defines config object by toml instructions' do
     class TomlConfig < Qonfig::DataSet
       load_from_toml SpecSupport.fixture_path('plugins', 'toml', 'toml_sample_with_all_types.toml')

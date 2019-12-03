@@ -13,6 +13,7 @@ class Qonfig::Plugins::PrettyPrint < Qonfig::Plugins::Abstract
       require_relative 'pretty_print/mixin'
       require_relative 'pretty_print/data_set'
       require_relative 'pretty_print/settings'
+      require_relative 'pretty_print/compacted'
     end
   end
 end

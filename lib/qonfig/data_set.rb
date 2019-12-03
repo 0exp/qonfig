@@ -445,7 +445,7 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   # @api public
   # @since 0.21.0
   def compacted
-    Qonfig::Compact.new(self)
+    Qonfig::Compacted.new(self)
   end
 
   private

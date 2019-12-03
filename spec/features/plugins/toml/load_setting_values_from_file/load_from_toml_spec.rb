@@ -3,12 +3,7 @@
 require_relative '../../../load_setting_values_from_file/by_macros_examples'
 require_relative '../../../load_setting_values_from_file/by_instance_method_examples'
 
-describe 'Plugins(toml): Load setting values from file', :plugin do
-  before do
-    require 'toml-rb'
-    Qonfig.plugin(:toml)
-  end
-
+describe 'Plugins(toml): Load setting values from file', plugin: :toml do
   describe 'DSL macros (Qonfig::DataSet.values_file)' do
     it_behaves_like(
       'load setting values from file by macros',

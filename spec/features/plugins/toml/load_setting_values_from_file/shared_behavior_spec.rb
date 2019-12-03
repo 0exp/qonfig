@@ -1,11 +1,6 @@
 # frozen_string_literal: true
 
-describe 'Plugin(:toml) .values_file / #load_from_file (shared behavior)', :plugin do
-  before do
-    require 'toml-rb'
-    Qonfig.plugin(:toml)
-  end
-
+describe 'Plugin(:toml) .values_file / #load_from_file (shared behavior)', plugin: :toml do
   describe 'unsupported format failures' do
     describe 'DSL macros' do
       specify 'fails on unsupported format' do
