@@ -1224,7 +1224,7 @@ class ServiceObject
   #   => service.graphql_api
 
   # import ALL keys
-  import_Settings(AppConfig, '#')
+  import_settings(AppConfig, '#')
   # generated instance methods:
   #   => service.web_api
   #   => service.credentials
