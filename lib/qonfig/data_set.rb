@@ -89,62 +89,75 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   # @option format [String, Symbol]
   # @option strict [Boolean]
   # @option expose [NilClass, String, Symbol] Environment key
+  # @param configurations [Block]
   # @return [void]
   #
   # @see Qonfig::DataSet#load_setting_values_from_file
   #
   # @api public
   # @since 0.17.0
-  def load_from_file(file_path, format: :dynamic, strict: true, expose: nil)
+  def load_from_file(file_path, format: :dynamic, strict: true, expose: nil, &configurations)
     thread_safe_access do
-      load_setting_values_from_file(file_path, format: format, strict: strict, expose: expose)
+      load_setting_values_from_file(
+        file_path, format: format, strict: strict, expose: expose, &configurations
+      )
     end
   end
 
   # @param file_path [String]
   # @option strict [Boolean]
   # @option expose [NilClass, String, Symbol] Environment key
+  # @param configurations [Block]
   # @return [void]
   #
   # @see Qonfig::DataSet#load_from_file
   #
   # @api public
   # @since 0.17.0
-  def load_from_yaml(file_path, strict: true, expose: nil)
-    load_from_file(file_path, format: :yml, strict: strict, expose: expose)
+  def load_from_yaml(file_path, strict: true, expose: nil, &configurations)
+    load_from_file(file_path, format: :yml, strict: strict, expose: expose, &configurations)
   end
 
   # @param file_path [String]
   # @option strict [Boolean]
   # @option expose [NilClass, String, Symbol] Environment key
+  # @param configurations [Block]
   # @return [void]
   #
   # @see Qonfig::DataSet#load_from_file
   #
   # @api public
   # @since 0.17.0
-  def load_from_json(file_path, strict: true, expose: nil)
-    load_from_file(file_path, format: :json, strict: strict, expose: expose)
+  def load_from_json(file_path, strict: true, expose: nil, &configurations)
+    load_from_file(file_path, format: :json, strict: strict, expose: expose, &configurations)
   end
 
   # @option format [String, Symbol]
   # @option strict [Boolean]
   # @option expose [NilClass, String, Symbol]
+  # @param configurations [Block]
   # @return [void]
   #
   # @api public
   # @since 0.17.0
-  def load_from_self(format: :dynamic, strict: true, expose: nil)
+  def load_from_self(format: :dynamic, strict: true, expose: nil, &configurations)
     caller_location = caller(1, 1).first
 
     thread_safe_access do
       load_setting_values_from_file(
-        :self, format: format, strict: strict, expose: expose, caller_location: caller_location
+        :self,
+        format: format,
+        strict: strict,
+        expose: expose,
+        caller_location: caller_location,
+        &configurations
       )
     end
   end
 
   # @param settings_map [Hash]
+  # @yield [cofnig]
+  # @yieldparam config [Qonfig::Settings]
   # @return [void]
   #
   # @api public
@@ -488,6 +501,7 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   # @option strict [Boolean]
   # @option expose [NilClass, String, Symbol]
   # @option callcer_location [NilClass, String]
+  # @param configurations [Block]
   # @return [void]
   #
   # @see Qonfig::Commands::Instantiation::ValuesFile
@@ -499,11 +513,13 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     format: :dynamic,
     strict: true,
     expose: nil,
-    caller_location: nil
+    caller_location: nil,
+    &configurations
   )
     Qonfig::Commands::Instantiation::ValuesFile.new(
       file_path, caller_location, format: format, strict: strict, expose: expose
     ).call(self, settings)
+    apply_settings(&configurations)
   end
 
   # @param instructions [Block]
