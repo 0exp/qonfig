@@ -19,7 +19,7 @@ describe 'Compacted config' do
     # NOTE: check readers
     expect(compacted_config.db.creds.user).to eq('D@iVeR')
     expect(compacted_config.db.creds.password).to eq('test123')
-    expect(compacted_config.db.creds.data).to eq({ test: false})
+    expect(compacted_config.db.creds.data).to eq(test: false)
     expect(compacted_config.logger).to eq(nil)
     expect(compacted_config.graphql_endpoint).to eq('https://localhost:1234/graphql')
 
@@ -36,7 +36,7 @@ describe 'Compacted config' do
     # corresponding values was correctly assigned
     expect(compacted_config.db.creds.user).to eq('0exp')
     expect(compacted_config.db.creds.password).to eq('123test')
-    expect(compacted_config.db.creds.data).to eq({ no: :errors })
+    expect(compacted_config.db.creds.data).to eq(no: :errors)
     expect(compacted_config.logger).to eq(:logger)
     expect(compacted_config.graphql_endpoint).to eq('https://localhost:4321/graphql')
   end

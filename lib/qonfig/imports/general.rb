@@ -32,7 +32,7 @@ class Qonfig::Imports::General
         mappings: mappings,
         prefix: prefix,
         raw: raw,
-        accessor: accessor,
+        accessor: accessor
       ).import!
     end
   end
