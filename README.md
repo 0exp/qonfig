@@ -2836,9 +2836,10 @@ Qonfig.enabled_plugins # => ["pretty_print"]
 
 ### Plugins: toml
 
+- `Qonfig.plugin(:toml)`
 - adds support for `toml` format ([specification](https://github.com/toml-lang/toml));
-- depends on `toml-rb` gem ([link](https://github.com/emancu/toml-rb));
-- supports TOML `0.5.0` format (dependency lock);
+- depends on `toml-rb` gem ([link](https://github.com/emancu/toml-rb)) (tested on `>= 2.0`);
+- supports TOML `0.5.0` format (dependency lock) (`toml-rb >= 2.0`);
 - provides `.load_from_toml` (works in `.load_from_yaml` manner ([doc](#load-from-yaml-file)));
 - provides `.expose_toml` (works in `.expose_yaml` manner ([doc](#expose-yaml)));
 - provides `#save_to_toml` (works in `#save_to_yaml` manner ([doc](#save-to-yaml-file))) (`toml-rb` has no native options);
