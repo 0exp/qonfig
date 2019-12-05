@@ -9,7 +9,8 @@ All notable changes to this project will be documented in this file.
   - no any other useful functionality - just setting readers and setting writers;
   - can be instantiated by existing config object `Qonfig::DataSet#compacted` or by idrect instatiation `Qonfig::Compacted.new(config)`;
 - Added missing `#[]=(key, value)` accessor-method for `Qonfig::DataSet` objects;
-- Added support for instant block-style configuration in `#load_from_xxx` file-loading methods;
+- Added support for `do |config|` configuration block in `#load_from_self` / `#load_from_yaml` / `#load_from_json` / `#load_from_toml`
+  values-loading methods;
 - **Plugins** `pretty_print`:
   - added missing beautification logic for `Qonfig::Settings` objects;
   - added support for `Qonfig::Compacted` beautification;

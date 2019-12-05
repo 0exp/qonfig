@@ -2353,10 +2353,11 @@ config = Config.new # => Qonfig::FileNotFoundError
 ### Load setting values from YAML file (by instance)
 
 - prvoides an ability to load predefined setting values from a yaml file;
-- `#load_from_yaml(file_path, strict: true, expose: nil)`
+- `#load_from_yaml(file_path, strict: true, expose: nil, &configurations)`
   - `file_path` - full file path or `:self` (`:self` means "load setting values from __END__ data");
   - `:strict` - rerquires that file (or __END__-data) should exist (`true` by default);
   - `:expose` - what the environment-based subset of keys should be used (`nil` means "do not use any subset of keys") (`nil` by default);
+  - `&configurations` - `do |config|` ability :)
 
 #### Default behavior
 
@@ -2451,10 +2452,11 @@ config.settings.creds.auth_token # => "kek.pek" (from config.yml)
 ### Load setting values from JSON file (by instance)
 
 - prvoides an ability to load predefined setting values from a json file;
-- `#load_from_yaml(file_path, strict: true, expose: nil)`
+- `#load_from_json(file_path, strict: true, expose: nil, &configurations)`
   - `file_path` - full file path or `:self` (`:self` means "load setting values from __END__ data");
   - `:strict` - rerquires that file (or __END__-data) should exist (`true` by default);
   - `:expose` - what the environment-based subset of keys should be used (`nil` means "do not use any subset of keys") (`nil` by default);
+  - `&configurations` - `do |config|` ability :)
 
 #### Default behavior
 
@@ -2559,11 +2561,12 @@ config.settings.creds.auth_token # => "kek.pek" (from config.json)
 ### Load setting values from \_\_END\_\_ (by instance)
 
 - prvoides an ability to load predefined setting values from `__END__` file section;
-- `#load_from_self(strict: true, expose: nil)`
+- `#load_from_self(strict: true, expose: nil, &configurations)`
   - `:format` - defines the format of file (`:dynamic` means "try to automatically infer the file format") (`:dynamic` by default);
     - supports `:yaml`, `:json`, `:toml` (via `Qonfig.plugin(:toml)`), `:dynamic` (automatic format detection);
   - `:strict` - requires that __END__-data should exist (`true` by default);
   - `:expose` - what the environment-based subset of keys should be used (`nil` means "do not use any subset of keys") (`nil` by default);
+  - `&configurations` - `do |config|` ability :)
 
 #### Default behavior
 
@@ -2647,12 +2650,13 @@ __END__
 
 - prvoides an ability to load predefined setting values from a file;
 - works in instance-based `#load_from_yaml` / `#load_from_json` / `#load_from_self` manner;
-- signature: `#load_from_file(file_path, format: :dynamic, strict: true, expose: nil)`:
+- signature: `#load_from_file(file_path, format: :dynamic, strict: true, expose: nil, &configurations)`:
   - `file_path` - full file path or `:self` (`:self` means "load setting values from __END__ data");
   - `:format` - defines the format of file (`:dynamic` means "try to automatically infer the file format") (`:dynamic` by default);
     - supports `:yaml`, `:json`, `:toml` (via `Qonfig.plugin(:toml)`), `:dynamic` (automatic format detection);
   - `:strict` - rerquires that file (or __END__-data) should exist (`true` by default);
   - `:expose` - what the environment-based subset of keys should be used (`nil` means "do not use any subset of keys") (`nil` by default);
+  - `&configurations` - `do |config|` ability :)
 - see examples for instance-based `#load_from_yaml` ([doc](#load-setting-values-from-yaml-by-instance)) / `#load_from_json` ([doc](#load-setting-values-from-json-by-instance)) / `#load_from_self` ([doc](#load-setting-values-from-__end__-by-instance));
 
 ---

@@ -96,6 +96,7 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   #
   # @api public
   # @since 0.17.0
+  # @version 0.21.0
   def load_from_file(file_path, format: :dynamic, strict: true, expose: nil, &configurations)
     thread_safe_access do
       load_setting_values_from_file(
@@ -114,6 +115,7 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   #
   # @api public
   # @since 0.17.0
+  # @version 0.21.0
   def load_from_yaml(file_path, strict: true, expose: nil, &configurations)
     load_from_file(file_path, format: :yml, strict: strict, expose: expose, &configurations)
   end
@@ -128,6 +130,7 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   #
   # @api public
   # @since 0.17.0
+  # @version 0.21.0
   def load_from_json(file_path, strict: true, expose: nil, &configurations)
     load_from_file(file_path, format: :json, strict: strict, expose: expose, &configurations)
   end
@@ -140,6 +143,7 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   #
   # @api public
   # @since 0.17.0
+  # @version 0.21.0
   def load_from_self(format: :dynamic, strict: true, expose: nil, &configurations)
     caller_location = caller(1, 1).first
 
