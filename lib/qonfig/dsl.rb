@@ -166,13 +166,15 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
     )
   end
 
+  # @option format [Symbol, String]
   # @return [void]
   #
   # @see Qonfig::Commands::Definition::LoadFromSelf
   #
   # @api public
   # @since 0.2.0
-  def load_from_self(format: :yaml)
+  # @version 0.21.0
+  def load_from_self(format: :dynamic)
     caller_location = caller(1, 1).first
 
     definition_commands << Qonfig::Commands::Definition::LoadFromSelf.new(
@@ -241,13 +243,15 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
   end
 
   # @option env [Symbol, String]
+  # @option format [Symbol, String]
   # @return [void]
   #
   # @see Qonfig::Commands::Definition::ExposeSelf
   #
   # @api public
   # @since 0.14.0
-  def expose_self(env:, format: :yaml)
+  # @version 0.21.0
+  def expose_self(env:, format: :dynamic)
     caller_location = caller(1, 1).first
 
     definition_commands << Qonfig::Commands::Definition::ExposeSelf.new(
