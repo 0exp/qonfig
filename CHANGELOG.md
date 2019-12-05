@@ -15,8 +15,9 @@ All notable changes to this project will be documented in this file.
   - added support for `Qonfig::Compacted` beautification;
 
 ### Changed
-- Minor `Qonfig::DataSet` and `Qonfig::Settings::Builder` refactorings;
 - `.load_from_self`: default format was changed from `:yaml` to `:dynamic`;
+- `.expose_self`: default format was changed from `:yaml` to `:dynamic`;
+- Minor `Qonfig::DataSet` and `Qonfig::Settings::Builder` refactorings;
 
 ## [0.20.0] - 2019-12-01
 ### Added

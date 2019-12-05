@@ -2183,7 +2183,8 @@ connection_timeout:
 - works in `expose_json` and `expose_yaml` manner, but with `__END__` instruction of the current file;
 - `env:` - your environment name (must be a type of `String`, `Symbol` or `Numeric`);
 - `:format` - specify the format of data placed under the `__END__` instruction:
-  - `format: :yaml` - **YAML** format (by default);
+  - `format: :dynamic` (default) - automatic format resolvation;
+  - `format: :yaml` - **YAML** format;
   - `format: :json` - **JSON** format;
   - `format: :toml` - **TOML** format (via `toml`-plugin);
 
