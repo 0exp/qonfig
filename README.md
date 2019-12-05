@@ -2450,7 +2450,7 @@ config.settings.creds.auth_token # => "kek.pek" (from config.yml)
 ### Load setting values from JSON file (by instance)
 
 - prvoides an ability to load predefined setting values from a json file;
-- `#load_from_yaml(file_path, strict: true, expose: nil, &configuration)`
+- `#load_from_json(file_path, strict: true, expose: nil, &configuration)`
   - `file_path` - full file path or `:self` (`:self` means "load setting values from __END__ data");
   - `:strict` - rerquires that file (or __END__-data) should exist (`true` by default);
   - `:expose` - what the environment-based subset of keys should be used (`nil` means "do not use any subset of keys") (`nil` by default);
