@@ -32,6 +32,43 @@ shared_examples 'load setting values from file by instance methods' do |file_nam
     expect(config.settings.credentials.timeout).to eq(123)
   end
 
+  specify 'provides "do |config|" ability' do
+    config = Class.new(Qonfig::DataSet) do
+      setting :enabled, nil
+      setting :adapter, 'no-adapter'
+      setting(:credentials) { setting :user; setting :timeout }
+    end.new
+
+    config.public_send(load_by, file_name) do |config|
+      config.enabled = true
+      config.credentials.user = 'do_config'
+      config.credentials.timeout = 0
+    end
+
+    expect(config.settings.enabled).to eq(true) # from do-config
+    expect(config.settings.adapter).to eq('sidekiq')
+    expect(config.settings.credentials.user).to eq('do_config') # from do-config
+    expect(config.settings.credentials.timeout).to eq(0) # from do-config
+
+    config.public_send(load_by, file_with_env_name, expose: :test) do |config|
+      config.credentials.user = 'super_expose_test'
+    end
+
+    expect(config.settings.enabled).to eq(false)
+    expect(config.settings.adapter).to eq('sidekiq')
+    expect(config.settings.credentials.user).to eq('super_expose_test') # from do-config
+    expect(config.settings.credentials.timeout).to eq(321)
+
+    config.public_send(load_by, file_with_env_name, expose: :production) do |config|
+      config.adapter = 'overwatch'
+    end
+
+    expect(config.settings.enabled).to eq(true)
+    expect(config.settings.adapter).to eq('overwatch') # from do-config
+    expect(config.settings.credentials.user).to eq('0exp')
+    expect(config.settings.credentials.timeout).to eq(123)
+  end
+
   specify 'can expose environment-based settings defined by key' do
     config = Class.new(Qonfig::DataSet) do
       setting :enabled, true

@@ -1,1 +1,0 @@
-- specs for configuration block in Qonfig::DataSeet#load_from_xxx
