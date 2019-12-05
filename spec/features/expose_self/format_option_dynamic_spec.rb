@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-describe '#expose_self => format: :yaml' do
-  specify ':yaml-format support' do
+describe '#expose_self => format: :dynamic' do
+  specify ':dynamic-format - automatically resolves the data format' do
     class ExposeEndDataFormatDynamicallyConfig < Qonfig::DataSet
       setting(:staging_env) { expose_self env: :staging }
       setting(:prod_env) { expose_self env: :production }
