@@ -27,6 +27,7 @@ class Qonfig::DataSet
   #
   # @api public
   # @since 0.17.0
+  # @version 0.21.0
   def load_from_toml(file_path, strict: true, expose: nil, &configuration)
     load_from_file(file_path, format: :toml, strict: strict, expose: expose, &configuration)
   end
