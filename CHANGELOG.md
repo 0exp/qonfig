@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Minor `Qonfig::DataSet` and `Qonfig::Settings::Builder` refactorings;
+- `.load_from_self`: default format was changed from `:yaml` to `:dynamic`;
 
 ## [0.20.0] - 2019-12-01
 ### Added

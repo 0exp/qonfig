@@ -2135,13 +2135,14 @@ config.settings['RUN_CI'] # => '1'
 
 - aka `load_from_self`
 - `:format` - specify the format of data placed under the `__END__` instruction:
-  - `format: :yaml` - **YAML** format (by default);
+  - `format: :dynamic` (default) - automatic format resolvation;
+  - `format: :yaml` - **YAML** format;
   - `format: :json` - **JSON** format;
   - `format: :toml` - **TOML** format (via `toml`-plugin);
 
 ```ruby
 class Config < Qonfig::DataSet
-  load_from_self # on the root (format: :yaml is used by default)
+  load_from_self # on the root (:dynamic format is used by default)
 
   setting :nested do
     load_from_self, format: :yaml # with explicitly identified YAML format

@@ -172,7 +172,7 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
   #
   # @api public
   # @since 0.2.0
-  def load_from_self(format: :yaml) # TODO: resolve format dynamically (:dynamic instead of :yaml)
+  def load_from_self(format: :dynamic)
     caller_location = caller(1, 1).first
 
     definition_commands << Qonfig::Commands::Definition::LoadFromSelf.new(
