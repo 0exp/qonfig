@@ -141,7 +141,7 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   # @api public
   # @since 0.17.0
   def load_from_self(format: :dynamic, strict: true, expose: nil, &configurations)
-    caller_location = caller(1, 1).first
+    caller_location = ::Kernel.caller(1, 1).first
 
     thread_safe_access do
       load_setting_values_from_file(
@@ -453,7 +453,7 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     end
   end
 
-  # @return [Qonfig::Compact]
+  # @return [Qonfig::Compacted]
   #
   # @api public
   # @since 0.21.0
