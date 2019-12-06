@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file.
   - represents the compacted config object with "key-value" read-/write-based interface only;
   - setting keys are represented as direct instace methods (`#settings` invokation does not need);
   - no any other useful functionality - just setting readers and setting writers;
-  - can be instantiated by existing config object `Qonfig::DataSet#compacted` or by idrect instatiation `Qonfig::Compacted.new(config)`;
+  - can be instantiated by existing config object `Qonfig::DataSet#compacted` or by direct instatiation `Qonfig::Compacted.new(config)`;
 - Added `Qonfig::DataSet.build_compacted` method: works in `Qonfig::DataSet.build` manner but returns compacted config object (`Qonfig::Compacted`);
 - Added missing `#[]=(key, value)` accessor-method for `Qonfig::DataSet` objects;
 - Added support for `do |config|` configuration block in `#load_from_self` / `#load_from_yaml` / `#load_from_json` / `#load_from_toml`
