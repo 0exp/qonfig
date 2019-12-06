@@ -63,4 +63,30 @@ describe 'Export settings as instance-level access methods' do
     expect(my_simple_object.kek_credentials.password).to eq('test123')
     expect(my_simple_object.kek_adapter).to eq(:sidekiq)
   end
+
+  specify '(PRIVATE API) attr_writers (config muatators)' do
+    my_simple_object = Object.new
+
+    config.export_settings(
+      my_simple_object,
+      'credentials.login', 'credentials',
+      mappings: { driver: 'queue.adapter' },
+      accessor: true
+    )
+
+    # NOTE: you can mutate config settings via exported attr_writers
+    my_simple_object.login = 'D@iVeR'
+    my_simple_object.driver = :delayed_job
+
+    # NOTE: check taht original config was changed
+    expect(config.settings.credentials.login).to eq('D@iVeR')
+    expect(config.settings.queue.adapter).to eq(:delayed_job)
+
+    # NOTE: check that reder returns new value
+    expect(my_simple_object.login).to eq('D@iVeR')
+    expect(my_simple_object.driver).to eq(:delayed_job)
+
+    # NOTE: some mutators can be ambiguous - be careful :thinking:
+    expect { my_simple_object.credentials = 123 }.to raise_error(Qonfig::AmbiguousSettingValueError)
+  end
 end

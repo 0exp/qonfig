@@ -52,16 +52,12 @@ class Qonfig::Imports::DirectKey < Qonfig::Imports::Abstract
         access_method_name = "#{prefix}#{access_method_name}" unless prefix.empty?
 
         settings_interface.module_exec(
-          raw, imported_config, accessor
-        ) do |raw, imported_config, accessor|
+          raw, imported_config, accessor, setting_key
+        ) do |raw, imported_config, accessor, setting_key|
           unless raw
             # NOTE: get setting value via slice_value
             define_method(access_method_name) do
               imported_config.slice_value(*setting_key_path_sequence)
-            end
-
-            define_method("#{access_method_name}=") do |value|
-              imported_config
             end
           else
             # NOTE: get setting object (concrete value or Qonfig::Settings object)
