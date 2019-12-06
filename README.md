@@ -1064,6 +1064,8 @@ You can use RabbitMQ-like pattern matching in setting key names:
 - `Qonfig::Imports` - a special mixin that provides the convenient DSL to work with config import features (`.import_settings` method);
 - `.import_settings` - DSL method for importing configuration settings (from a config instance) as instance methods of a class;
 - (**IMPORTANT**) `import_settings` imports config settings as access methods to config's settings (creates `attr_reader`s for your config);
+- you can generate `attr_accessor`s by specifying `accessor: true` option
+  (be careful: you can get `AmbiguousSettingValueError` when you try to assign a value to config option which have nested settings);
 - signature: `.import_settings(config_object, *setting_keys, mappings: {}, prefix: '', raw: false)`
   - `config_object` - an instance of `Qonfig::DataSet` whose config settings should be imported;
   - `*setting_keys` - an array of dot-notaed config's setting keys that should be imported
@@ -1072,7 +1074,7 @@ You can use RabbitMQ-like pattern matching in setting key names:
   - `mappings:` - a map of keys that describes custom method names for each imported setting;
   - `prefix:` - prexifies setting access method name with custom prefix;
   - `raw:` - use nested settings as objects or hashify them (`false` by default (means "hashify nested settings"));
-
+  - `accessor:` - generate `attr_accessor` for imported config settigns (`false` by default (means "generate `attr_reader`s only"));
 ---
 
 Suppose we have a config with deeply nested keys:
@@ -1242,6 +1244,8 @@ end
 - works in `.import_settings` manner [doc](#import-config-settings) (see examples and documentation above `:)`)
 - all config objects can export their settings to an arbitrary object as singleton methods;
 - (**IMPORTANT**) `export_settings` exports config settings as access methods to config's settings (creates `attr_reader`s for your config);
+- you can generate `attr_accessor`s by specifying `accessor: true` option
+  (be careful: you can get `AmbiguousSettingValueError` when you try to assign a value to config option which have nested settings);
 - signature: `#export_settings(exportable_object, *setting_keys, mappings: {}, prefix: '', raw: false)`:
   - `exportable_object` - an arbitrary object for exporting;
   - `*setting_keys` - an array of dot-notaed config's setting keys that should be exported
@@ -1250,6 +1254,7 @@ end
   - `mappings:` - a map of keys that describes custom method names for each exported setting;
   - `prefix:` - prexifies setting access method name with custom prefix;
   - `raw:` - use nested settings as objects or hashify them (`false` by default (means "hashify nested settings"));
+ - `accessor:` - generate `attr_accessor` for imported config settigns (`false` by default (means "generate `attr_reader`s only"));
 
 ```ruby
 class Config < Qonfig::DataSet
