@@ -25,6 +25,16 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
       Class.new(base_dataset_klass, &config_klass_definitions).new
     end
 
+    # @param base_dataset_klass [Class<Qonfig::DataSet>]
+    # @param config_klass_definitions [Proc]
+    # @return [Qonfig::Compacted]
+    #
+    # @api public
+    # @since 0.21.0
+    def build_compacted(base_dataset_klass = self, &config_klass_definitions)
+      build(base_dataset_klass, &config_klass_definitions).compacted
+    end
+
     # @param configurations [Hash<Symbol|String,Any>]
     # @return [Boolean]
     #

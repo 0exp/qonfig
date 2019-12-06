@@ -40,4 +40,8 @@ describe 'Compacted config' do
     expect(compacted_config.logger).to eq(:logger)
     expect(compacted_config.graphql_endpoint).to eq('https://localhost:4321/graphql')
   end
+
+  describe 'Qonfig::DataSet extended functionality' do
+    specify '.build_compacted - builds compacted config object without class definition'
+  end
 end
