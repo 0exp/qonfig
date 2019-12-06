@@ -1226,7 +1226,7 @@ class ServiceObject
   #   => service.graphql_api
 
   # import ALL keys
-  import_Settings(AppConfig, '#')
+  import_settings(AppConfig, '#')
   # generated instance methods:
   #   => service.web_api
   #   => service.credentials
@@ -2140,13 +2140,14 @@ config.settings['RUN_CI'] # => '1'
 
 - aka `load_from_self`
 - `:format` - specify the format of data placed under the `__END__` instruction:
-  - `format: :yaml` - **YAML** format (by default);
+  - `format: :dynamic` (default) - automatic format resolvation;
+  - `format: :yaml` - **YAML** format;
   - `format: :json` - **JSON** format;
   - `format: :toml` - **TOML** format (via `toml`-plugin);
 
 ```ruby
 class Config < Qonfig::DataSet
-  load_from_self # on the root (format: :yaml is used by default)
+  load_from_self # on the root (:dynamic format is used by default)
 
   setting :nested do
     load_from_self, format: :yaml # with explicitly identified YAML format
@@ -2187,7 +2188,8 @@ connection_timeout:
 - works in `expose_json` and `expose_yaml` manner, but with `__END__` instruction of the current file;
 - `env:` - your environment name (must be a type of `String`, `Symbol` or `Numeric`);
 - `:format` - specify the format of data placed under the `__END__` instruction:
-  - `format: :yaml` - **YAML** format (by default);
+  - `format: :dynamic` (default) - automatic format resolvation;
+  - `format: :yaml` - **YAML** format;
   - `format: :json` - **JSON** format;
   - `format: :toml` - **TOML** format (via `toml`-plugin);
 
@@ -2356,10 +2358,11 @@ config = Config.new # => Qonfig::FileNotFoundError
 ### Load setting values from YAML file (by instance)
 
 - prvoides an ability to load predefined setting values from a yaml file;
-- `#load_from_yaml(file_path, strict: true, expose: nil)`
+- `#load_from_yaml(file_path, strict: true, expose: nil, &configurations)`
   - `file_path` - full file path or `:self` (`:self` means "load setting values from __END__ data");
   - `:strict` - rerquires that file (or __END__-data) should exist (`true` by default);
   - `:expose` - what the environment-based subset of keys should be used (`nil` means "do not use any subset of keys") (`nil` by default);
+  - `&configurations` - `do |config|` ability :)
 
 #### Default behavior
 
@@ -2454,10 +2457,11 @@ config.settings.creds.auth_token # => "kek.pek" (from config.yml)
 ### Load setting values from JSON file (by instance)
 
 - prvoides an ability to load predefined setting values from a json file;
-- `#load_from_yaml(file_path, strict: true, expose: nil)`
+- `#load_from_json(file_path, strict: true, expose: nil, &configurations)`
   - `file_path` - full file path or `:self` (`:self` means "load setting values from __END__ data");
   - `:strict` - rerquires that file (or __END__-data) should exist (`true` by default);
   - `:expose` - what the environment-based subset of keys should be used (`nil` means "do not use any subset of keys") (`nil` by default);
+  - `&configurations` - `do |config|` ability :)
 
 #### Default behavior
 
@@ -2562,11 +2566,12 @@ config.settings.creds.auth_token # => "kek.pek" (from config.json)
 ### Load setting values from \_\_END\_\_ (by instance)
 
 - prvoides an ability to load predefined setting values from `__END__` file section;
-- `#load_from_self(strict: true, expose: nil)`
+- `#load_from_self(strict: true, expose: nil, &configurations)`
   - `:format` - defines the format of file (`:dynamic` means "try to automatically infer the file format") (`:dynamic` by default);
     - supports `:yaml`, `:json`, `:toml` (via `Qonfig.plugin(:toml)`), `:dynamic` (automatic format detection);
   - `:strict` - requires that __END__-data should exist (`true` by default);
   - `:expose` - what the environment-based subset of keys should be used (`nil` means "do not use any subset of keys") (`nil` by default);
+  - `&configurations` - `do |config|` ability :)
 
 #### Default behavior
 
@@ -2650,12 +2655,13 @@ __END__
 
 - prvoides an ability to load predefined setting values from a file;
 - works in instance-based `#load_from_yaml` / `#load_from_json` / `#load_from_self` manner;
-- signature: `#load_from_file(file_path, format: :dynamic, strict: true, expose: nil)`:
+- signature: `#load_from_file(file_path, format: :dynamic, strict: true, expose: nil, &configurations)`:
   - `file_path` - full file path or `:self` (`:self` means "load setting values from __END__ data");
   - `:format` - defines the format of file (`:dynamic` means "try to automatically infer the file format") (`:dynamic` by default);
     - supports `:yaml`, `:json`, `:toml` (via `Qonfig.plugin(:toml)`), `:dynamic` (automatic format detection);
   - `:strict` - rerquires that file (or __END__-data) should exist (`true` by default);
   - `:expose` - what the environment-based subset of keys should be used (`nil` means "do not use any subset of keys") (`nil` by default);
+  - `&configurations` - `do |config|` ability :)
 - see examples for instance-based `#load_from_yaml` ([doc](#load-setting-values-from-yaml-by-instance)) / `#load_from_json` ([doc](#load-setting-values-from-json-by-instance)) / `#load_from_self` ([doc](#load-setting-values-from-__end__-by-instance));
 
 ---
@@ -2841,9 +2847,10 @@ Qonfig.enabled_plugins # => ["pretty_print"]
 
 ### Plugins: toml
 
+- `Qonfig.plugin(:toml)`
 - adds support for `toml` format ([specification](https://github.com/toml-lang/toml));
-- depends on `toml-rb` gem ([link](https://github.com/emancu/toml-rb));
-- supports TOML `0.5.0` format (dependency lock);
+- depends on `toml-rb` gem ([link](https://github.com/emancu/toml-rb)) (tested on `>= 2.0`);
+- supports TOML `0.5.0` format (dependency lock) (`toml-rb >= 2.0`);
 - provides `.load_from_toml` (works in `.load_from_yaml` manner ([doc](#load-from-yaml-file)));
 - provides `.expose_toml` (works in `.expose_yaml` manner ([doc](#expose-yaml)));
 - provides `#save_to_toml` (works in `#save_to_yaml` manner ([doc](#save-to-yaml-file))) (`toml-rb` has no native options);

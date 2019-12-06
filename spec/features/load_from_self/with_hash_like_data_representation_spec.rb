@@ -3,7 +3,7 @@
 describe 'Load from self (hash-like __END__ data representation)' do
   specify 'defines config object by self-contained __END__ yaml data' do
     class SelfDefinedConfig < Qonfig::DataSet
-      load_from_self
+      load_from_self # yaml format will be automatically resolved
 
       setting :with_nesting do
         load_from_self
