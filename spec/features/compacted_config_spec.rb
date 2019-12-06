@@ -56,8 +56,12 @@ describe 'Compacted config' do
 
       # NOTE: check writers
       # ambigous write is impossible
-      expect { compacted_config.db = :test }.to raise_error(Qonfig::AmbiguousSettingValueError)
-      expect { compacted_config.db.creds = :test }.to raise_error(Qonfig::AmbiguousSettingValueError)
+      expect do
+        compacted_config.db = :test
+      end.to raise_error(Qonfig::AmbiguousSettingValueError)
+      expect do
+        compacted_config.db.creds = :test
+      end.to raise_error(Qonfig::AmbiguousSettingValueError)
       # regular write is possible :)
       compacted_config.db.creds.user = 'D@iVeR'
       compacted_config.logger = :logger

@@ -62,7 +62,8 @@ describe 'Import settings as access methods to a class' do
     class AttrAccessorImportCheckApp
       include Qonfig::Imports
 
-      import_settings(AppConfig,
+      import_settings(
+        AppConfig,
         'credentials.login',
         mappings: { job_opts: 'job_que.options' },
         accessor: true
