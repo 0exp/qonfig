@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-# @api private
+# @api public
 # @since 0.21.0
 class Qonfig::Compacted < BasicObject
   # @param data_set [Qonfig::DataSet]
   # @return [void]
   #
-  # @api private
+  # @api public
   # @since 0.21.0
   def initialize(data_set)
     @____data_set____ = data_set
