@@ -175,7 +175,7 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
   # @since 0.2.0
   # @version 0.21.0
   def load_from_self(format: :dynamic)
-    caller_location = caller(1, 1).first
+    caller_location = ::Kernel.caller(1, 1).first
 
     definition_commands << Qonfig::Commands::Definition::LoadFromSelf.new(
       caller_location, format: format
@@ -252,7 +252,7 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
   # @since 0.14.0
   # @version 0.21.0
   def expose_self(env:, format: :dynamic)
-    caller_location = caller(1, 1).first
+    caller_location = ::Kernel.caller(1, 1).first
 
     definition_commands << Qonfig::Commands::Definition::ExposeSelf.new(
       caller_location, env: env, format: format
@@ -270,7 +270,7 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
   # @api public
   # @since 0.17.0
   def values_file(file_path, format: :dynamic, strict: false, expose: nil)
-    caller_location = caller(1, 1).first
+    caller_location = ::Kernel.caller(1, 1).first
 
     instance_commands << Qonfig::Commands::Instantiation::ValuesFile.new(
       file_path, caller_location, format: format, strict: strict, expose: expose
