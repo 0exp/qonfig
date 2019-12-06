@@ -24,7 +24,7 @@ describe 'Compacted config' do
     expect(compacted_config.graphql_endpoint).to eq('https://localhost:1234/graphql')
 
     # NOTE: check writers
-    # ambigous write is inmpossible
+    # ambigous write is impossible
     expect { compacted_config.db = :test }.to raise_error(Qonfig::AmbiguousSettingValueError)
     expect { compacted_config.db.creds = :test }.to raise_error(Qonfig::AmbiguousSettingValueError)
     # regular write is possible :)
@@ -42,6 +42,30 @@ describe 'Compacted config' do
   end
 
   describe 'Qonfig::DataSet extended functionality' do
-    specify '.build_compacted - builds compacted config object without class definition'
+    specify '.build_compacted - builds compacted config object without class definition' do
+      compacted_config = Qonfig::DataSet.build_compacted do
+        setting(:db) { setting(:creds) { setting :user, '0exp' } }
+        setting :logger, :no_logger
+        setting :graphql_endpoint, '/graph_dracula'
+      end
+
+      # NOTE: check readers
+      expect(compacted_config.db.creds.user).to eq('0exp')
+      expect(compacted_config.logger).to eq(:no_logger)
+      expect(compacted_config.graphql_endpoint).to eq('/graph_dracula')
+
+      # NOTE: check writers
+      # ambigous write is impossible
+      expect { compacted_config.db = :test }.to raise_error(Qonfig::AmbiguousSettingValueError)
+      expect { compacted_config.db.creds = :test }.to raise_error(Qonfig::AmbiguousSettingValueError)
+      # regular write is possible :)
+      compacted_config.db.creds.user = 'D@iVeR'
+      compacted_config.logger = :logger
+      compacted_config.graphql_endpoint = 'https://localhost:4321/graphql'
+      # corresponding values was correctly assigned
+      expect(compacted_config.db.creds.user).to eq('D@iVeR')
+      expect(compacted_config.logger).to eq(:logger)
+      expect(compacted_config.graphql_endpoint).to eq('https://localhost:4321/graphql')
+    end
   end
 end
