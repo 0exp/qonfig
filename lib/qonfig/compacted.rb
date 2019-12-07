@@ -13,7 +13,7 @@ class Qonfig::Compacted < BasicObject
   #
   # @api public
   # @since 0.21.0
-  def initialize(init_from = Qonfig::Compacted::Constructor::NO_NITIAL_DATA_SET)
+  def initialize(init_from = ::Qonfig::Compacted::Constructor::NO_NITIAL_DATA_SET)
     ::Qonfig::Compacted::Constructor.construct(self, init_from)
   end
 end
