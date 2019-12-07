@@ -3,13 +3,17 @@
 # @api public
 # @since 0.21.0
 class Qonfig::Compacted < BasicObject
-  # @param data_set [Qonfig::DataSet]
+  require_relative 'compacted/constructor'
+
+  # @since 0.21.0
+  extend ::Qonfig::DSL
+
+  # @param init_from [NilClass, Qonfig::DataSet]
   # @return [void]
   #
   # @api public
   # @since 0.21.0
-  def initialize(data_set)
-    @____data_set____ = data_set
-    @____data_set____.export_settings(self, '*', accessor: true, raw: true)
+  def initialize(init_from = Qonfig::Compacted::Constructor::NO_NITIAL_DATA_SET)
+    ::Qonfig::Compacted::Constructor.construct(self, init_from)
   end
 end
