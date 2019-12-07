@@ -79,6 +79,55 @@ describe 'Compacted config' do
     expect { Qonfig::Compacted.new(Object.new) }.to raise_error(Qonfig::ArgumentError)
   end
 
+  specify 'inheritance works as expected' do
+    class BaseCompactedConfig < Qonfig::Compacted
+      setting :test, true
+      setting :db do
+        setting :creds do
+          setting :user, '0exp'
+          setting :password, 'test123'
+        end
+      end
+
+      validate :test, :boolean
+      validate 'db.creds.*', :string
+    end
+
+    class ChildCompactedConfig < BaseCompactedConfig
+      setting :db do
+        setting :creds do
+          setting :token, 'kekpek'
+        end
+      end
+    end
+
+    child_compacted_config = ChildCompactedConfig.new
+
+    # NOTE: check readers
+    expect(child_compacted_config.test).to eq(true)
+    expect(child_compacted_config.db.creds.user).to eq('0exp')
+    expect(child_compacted_config.db.creds.password).to eq('test123')
+    expect(child_compacted_config.db.creds.token).to eq('kekpek')
+
+    # NOTE: check writers
+    child_compacted_config.test = false
+    child_compacted_config.db.creds.user = 'D@iVeR'
+    child_compacted_config.db.creds.password = 'atata123'
+    child_compacted_config.db.creds.token = 'trututu'
+
+    # NOTE: check new values
+    expect(child_compacted_config.test).to eq(false)
+    expect(child_compacted_config.db.creds.user).to eq('D@iVeR')
+    expect(child_compacted_config.db.creds.password).to eq('atata123')
+    expect(child_compacted_config.db.creds.token).to eq('trututu')
+
+    # NOTE: check validators
+    expect { child_compacted_config.test = 123 }.to raise_error(Qonfig::ValidationError)
+    expect { child_compacted_config.db.creds.user = 123 }.to raise_error(Qonfig::ValidationError)
+    expect { child_compacted_config.db.creds.password = 123 }.to raise_error(Qonfig::ValidationError)
+    expect { child_compacted_config.db.creds.token = 123 }.to raise_error(Qonfig::ValidationError)
+  end
+
   specify 'Qonfig::DataSet#compacted build compacted config from itself' do
     class CompactCheckConfig < Qonfig::DataSet
       setting :db do
