@@ -1,7 +1,85 @@
 # frozen_string_literal: true
 
 describe 'Compacted config' do
-  specify 'has all settings keys as readers and writers at the root of object' do
+  specify 'constructor without dataset builds compacted config from config\'s class commands' do
+    class CompactedCommandsCheck < Qonfig::Compacted
+      setting :test, true
+      setting :db do
+        setting :creds do
+          setting :user, '0exp'
+          setting :password, 'test123'
+        end
+      end
+
+      validate :test, :boolean
+      validate 'db.creds.*', :string
+    end
+
+    compacted_config = CompactedCommandsCheck.new
+
+    # NOTE: check readers
+    expect(compacted_config.test).to eq(true)
+    expect(compacted_config.db.creds.user).to eq('0exp')
+    expect(compacted_config.db.creds.password).to eq('test123')
+
+    # NOTE: check writers
+    compacted_config.test = false
+    compacted_config.db.creds.user = 'D@iVeR'
+    compacted_config.db.creds.password = 'atata123'
+
+    # NOTE: check new values
+    expect(compacted_config.test).to eq(false)
+    expect(compacted_config.db.creds.user).to eq('D@iVeR')
+    expect(compacted_config.db.creds.password).to eq('atata123')
+
+    # NOTE: check validators
+    expect { compacted_config.test = 123 }.to raise_error(Qonfig::ValidationError)
+    expect { compacted_config.db.creds.user = 123 }.to raise_error(Qonfig::ValidationError)
+    expect { compacted_config.db.creds.password = 123 }.to raise_error(Qonfig::ValidationError)
+  end
+
+  specify 'constructor with passed dataset builds compacted config from passed dataset' do
+    data_set_based_config = Class.new(Qonfig::DataSet).build do
+      setting :test, true
+      setting :db do
+        setting :creds do
+          setting :user, '0exp'
+          setting :password, 'test123'
+        end
+      end
+
+      validate :test, :boolean
+      validate 'db.creds.*', :string
+    end
+
+    compacted_config = Qonfig::Compacted.new(data_set_based_config)
+
+    # NOTE: check readers
+    expect(compacted_config.test).to eq(true)
+    expect(compacted_config.db.creds.user).to eq('0exp')
+    expect(compacted_config.db.creds.password).to eq('test123')
+
+    # NOTE: check writers
+    compacted_config.test = false
+    compacted_config.db.creds.user = 'D@iVeR'
+    compacted_config.db.creds.password = 'atata123'
+
+    # NOTE: check new values
+    expect(compacted_config.test).to eq(false)
+    expect(compacted_config.db.creds.user).to eq('D@iVeR')
+    expect(compacted_config.db.creds.password).to eq('atata123')
+
+    # NOTE: check validators
+    expect { compacted_config.test = 123 }.to raise_error(Qonfig::ValidationError)
+    expect { compacted_config.db.creds.user = 123 }.to raise_error(Qonfig::ValidationError)
+    expect { compacted_config.db.creds.password = 123 }.to raise_error(Qonfig::ValidationError)
+  end
+
+  specify 'fails on incorrect datasets passed to constructor' do
+    expect { Qonfig::Compacted.new(Object.new) }.to raise_error(Qonfig::ArgumentError)
+  end
+
+  specify 'Qonfig::DataSet#compacted build compacted config from itself' do
     class CompactCheckConfig < Qonfig::DataSet
       setting :db do
         setting :creds do
@@ -25,8 +103,12 @@ describe 'Compacted config' do
 
     # NOTE: check writers
     # ambigous write is impossible
-    expect { compacted_config.db = :test }.to raise_error(Qonfig::AmbiguousSettingValueError)
-    expect { compacted_config.db.creds = :test }.to raise_error(Qonfig::AmbiguousSettingValueError)
+    expect do
+      compacted_config.db = :test
+    end.to raise_error(Qonfig::AmbiguousSettingValueError)
+    expect do
+      compacted_config.db.creds = :test
+    end.to raise_error(Qonfig::AmbiguousSettingValueError)
     # regular write is possible :)
     compacted_config.db.creds.user = '0exp'
     compacted_config.db.creds.password = '123test'
@@ -41,38 +123,33 @@ describe 'Compacted config' do
     expect(compacted_config.graphql_endpoint).to eq('https://localhost:4321/graphql')
   end
 
-  describe 'instantiation' do
-    specify 'constructor without dataset builds compacted config from config\'s class commands'
-    specify 'constructor with dataset builds compacted config from passed dataset'
-
-    specify 'Qonfig::DataSet.build_compacted - builds compacted config object do' do
-      compacted_config = Qonfig::DataSet.build_compacted do
-        setting(:db) { setting(:creds) { setting :user, '0exp' } }
-        setting :logger, :no_logger
-        setting :graphql_endpoint, '/graph_dracula'
-      end
-
-      # NOTE: check readers
-      expect(compacted_config.db.creds.user).to eq('0exp')
-      expect(compacted_config.logger).to eq(:no_logger)
-      expect(compacted_config.graphql_endpoint).to eq('/graph_dracula')
-
-      # NOTE: check writers
-      # ambigous write is impossible
-      expect do
-        compacted_config.db = :test
-      end.to raise_error(Qonfig::AmbiguousSettingValueError)
-      expect do
-        compacted_config.db.creds = :test
-      end.to raise_error(Qonfig::AmbiguousSettingValueError)
-      # regular write is possible :)
-      compacted_config.db.creds.user = 'D@iVeR'
-      compacted_config.logger = :logger
-      compacted_config.graphql_endpoint = 'https://localhost:4321/graphql'
-      # corresponding values was correctly assigned
-      expect(compacted_config.db.creds.user).to eq('D@iVeR')
-      expect(compacted_config.logger).to eq(:logger)
-      expect(compacted_config.graphql_endpoint).to eq('https://localhost:4321/graphql')
+  specify 'Qonfig::DataSet.build_compacted - builds compacted config object' do
+    compacted_config = Qonfig::DataSet.build_compacted do
+      setting(:db) { setting(:creds) { setting :user, '0exp' } }
+      setting :logger, :no_logger
+      setting :graphql_endpoint, '/graph_dracula'
     end
+
+    # NOTE: check readers
+    expect(compacted_config.db.creds.user).to eq('0exp')
+    expect(compacted_config.logger).to eq(:no_logger)
+    expect(compacted_config.graphql_endpoint).to eq('/graph_dracula')
+
+    # NOTE: check writers
+    # ambigous write is impossible
+    expect do
+      compacted_config.db = :test
+    end.to raise_error(Qonfig::AmbiguousSettingValueError)
+    expect do
+      compacted_config.db.creds = :test
+    end.to raise_error(Qonfig::AmbiguousSettingValueError)
+    # regular write is possible :)
+    compacted_config.db.creds.user = 'D@iVeR'
+    compacted_config.logger = :logger
+    compacted_config.graphql_endpoint = 'https://localhost:4321/graphql'
+    # corresponding values was correctly assigned
+    expect(compacted_config.db.creds.user).to eq('D@iVeR')
+    expect(compacted_config.logger).to eq(:logger)
+    expect(compacted_config.graphql_endpoint).to eq('https://localhost:4321/graphql')
   end
 end
