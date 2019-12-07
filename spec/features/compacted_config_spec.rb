@@ -41,8 +41,11 @@ describe 'Compacted config' do
     expect(compacted_config.graphql_endpoint).to eq('https://localhost:4321/graphql')
   end
 
-  describe 'Qonfig::DataSet extended functionality' do
-    specify '.build_compacted - builds compacted config object without class definition' do
+  describe 'instantiation' do
+    specify 'constructor without dataset builds compacted config from config\'s class commands'
+    specify 'constructor with dataset builds compacted config from passed dataset'
+
+    specify 'Qonfig::DataSet.build_compacted - builds compacted config object do' do
       compacted_config = Qonfig::DataSet.build_compacted do
         setting(:db) { setting(:creds) { setting :user, '0exp' } }
         setting :logger, :no_logger
