@@ -21,11 +21,16 @@ describe 'Compacted config' do
     expect(compacted_config.test).to eq(true)
     expect(compacted_config.db.creds.user).to eq('0exp')
     expect(compacted_config.db.creds.password).to eq('test123')
+    # and dot-notation:
+    expect(compacted_config[:test]).to eq(true)
+    expect(compacted_config['db.creds.user']).to eq('0exp')
+    expect(compacted_config['db.creds.password']).to eq('test123')
 
     # NOTE: check writers
     compacted_config.test = false
     compacted_config.db.creds.user = 'D@iVeR'
-    compacted_config.db.creds.password = 'atata123'
+    # and dot-notation:
+    compacted_config['db.creds.password'] = 'atata123'
 
     # NOTE: check new values
     expect(compacted_config.test).to eq(false)
@@ -35,7 +40,7 @@ describe 'Compacted config' do
     # NOTE: check validators
     expect { compacted_config.test = 123 }.to raise_error(Qonfig::ValidationError)
     expect { compacted_config.db.creds.user = 123 }.to raise_error(Qonfig::ValidationError)
-    expect { compacted_config.db.creds.password = 123 }.to raise_error(Qonfig::ValidationError)
+    expect { compacted_config['db.creds.password'] = 123 }.to raise_error(Qonfig::ValidationError)
   end
 
   specify 'constructor with passed dataset builds compacted config from passed dataset' do
@@ -58,11 +63,16 @@ describe 'Compacted config' do
     expect(compacted_config.test).to eq(true)
     expect(compacted_config.db.creds.user).to eq('0exp')
     expect(compacted_config.db.creds.password).to eq('test123')
+    # and dot-notation:
+    expect(compacted_config[:test]).to eq(true)
+    expect(compacted_config['db.creds.user']).to eq('0exp')
+    expect(compacted_config['db.creds.password']).to eq('test123')
 
     # NOTE: check writers
     compacted_config.test = false
     compacted_config.db.creds.user = 'D@iVeR'
-    compacted_config.db.creds.password = 'atata123'
+    # and dot-notation:
+    compacted_config['db.creds.password'] = 'atata123'
 
     # NOTE: check new values
     expect(compacted_config.test).to eq(false)
@@ -72,7 +82,7 @@ describe 'Compacted config' do
     # NOTE: check validators
     expect { compacted_config.test = 123 }.to raise_error(Qonfig::ValidationError)
     expect { compacted_config.db.creds.user = 123 }.to raise_error(Qonfig::ValidationError)
-    expect { compacted_config.db.creds.password = 123 }.to raise_error(Qonfig::ValidationError)
+    expect { compacted_config['db.creds.password'] = 123 }.to raise_error(Qonfig::ValidationError)
   end
 
   specify 'fails on incorrect datasets passed to constructor' do
@@ -108,6 +118,11 @@ describe 'Compacted config' do
     expect(child_compacted_config.db.creds.user).to eq('0exp')
     expect(child_compacted_config.db.creds.password).to eq('test123')
     expect(child_compacted_config.db.creds.token).to eq('kekpek')
+    # and dot-notation:
+    expect(child_compacted_config[:test]).to eq(true)
+    expect(child_compacted_config['db.creds.user']).to eq('0exp')
+    expect(child_compacted_config['db.creds.password']).to eq('test123')
+    expect(child_compacted_config['db.creds.token']).to eq('kekpek')
 
     # NOTE: check writers
     child_compacted_config.test = false
@@ -124,7 +139,7 @@ describe 'Compacted config' do
     # NOTE: check validators
     expect { child_compacted_config.test = 123 }.to raise_error(Qonfig::ValidationError)
     expect { child_compacted_config.db.creds.user = 123 }.to raise_error(Qonfig::ValidationError)
-    expect { child_compacted_config.db.creds.password = 123 }.to raise_error(Qonfig::ValidationError)
+    expect { child_compacted_config['db.creds.password'] = 123 }.to raise_error(Qonfig::ValidationError)
     expect { child_compacted_config.db.creds.token = 123 }.to raise_error(Qonfig::ValidationError)
   end
 

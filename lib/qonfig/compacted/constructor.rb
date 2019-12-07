@@ -54,7 +54,7 @@ module Qonfig::Compacted::Constructor
       Qonfig::DSL::Inheritance.inherit(base: compacted_config_klass, child: target_data_set_klass)
       target_data_set = target_data_set_klass.new
 
-      construct_instance_from_data_set(compacted_config_klass, target_data_set)
+      construct_instance_from_data_set(compacted_config, target_data_set)
     end
 
     # @param compacted_config [Qonfig::Compacted]
