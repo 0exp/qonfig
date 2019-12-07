@@ -5,7 +5,7 @@
 # @version 0.20.0
 module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
   class << self
-    # @param child_klass [Qonfig::DataSet]
+    # @param child_klass [Class<Qonfig::DataSet>]
     # @return [void]
     #
     # @see Qonfig::DataSet::ClassBuilder
@@ -26,7 +26,11 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
           child_klass.instance_variable_set(:@instance_commands, Qonfig::CommandSet.new)
           child_klass.instance_variable_set(:@predefined_validators, Qonfig::Validation::Collections::PredefinedRegistry.new)
           child_klass.instance_variable_set(:@validators, Qonfig::Validation::Collections::InstanceCollection.new)
-          Qonfig::DataSet::ClassBuilder.inherit(base_klass: self, child_klass: child_klass)
+
+          child_klass.definition_commands.concat(definition_commands)
+          child_klass.instance_commands.concat(instance_commands, &:inheritable?)
+          child_klass.predefined_validators.merge(predefined_validators)
+          child_klass.validators.concat(validators)
           super
         end
       end)
