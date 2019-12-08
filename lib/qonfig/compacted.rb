@@ -8,15 +8,23 @@ class Qonfig::Compacted < BasicObject
   # @since 0.21.0
   extend ::Qonfig::DSL
 
-  # @param init_from [NilClass, Qonfig::DataSet]
+  # @param settings_map [Hash]
+  # @option init_from [NilClass, Qonfig::DataSet]
+  # @param configuration [Block]
   # @return [void]
   #
   # @see Qonfig::Compacted::Constructor.construct
   #
   # @api public
   # @since 0.21.0
-  def initialize(init_from = ::Qonfig::Compacted::Constructor::NO_NITIAL_DATA_SET)
-    ::Qonfig::Compacted::Constructor.construct(self, init_from)
+  def initialize(
+    settings_map = {},
+    init_from: ::Qonfig::Compacted::Constructor::NO_NITIAL_DATA_SET,
+    &configuration
+  )
+    ::Qonfig::Compacted::Constructor.construct(
+      self, init_from, settings_map: settings_map, &configuration
+    )
   end
 
   # @param key [String, Symbol]

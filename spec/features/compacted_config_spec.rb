@@ -57,7 +57,7 @@ describe 'Compacted config' do
       validate 'db.creds.*', :string
     end
 
-    compacted_config = Qonfig::Compacted.new(data_set_based_config)
+    compacted_config = Qonfig::Compacted.new(init_from: data_set_based_config)
 
     # NOTE: check readers
     expect(compacted_config.test).to eq(true)
@@ -86,7 +86,7 @@ describe 'Compacted config' do
   end
 
   specify 'fails on incorrect datasets passed to constructor' do
-    expect { Qonfig::Compacted.new(Object.new) }.to raise_error(Qonfig::ArgumentError)
+    expect { Qonfig::Compacted.new(init_from: Object.new) }.to raise_error(Qonfig::ArgumentError)
   end
 
   specify 'inheritance works as expected' do
