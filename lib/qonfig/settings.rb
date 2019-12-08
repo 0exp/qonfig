@@ -508,7 +508,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
 
     begin
       setting_value = __get_value__(key_set.first)
-      required_key = key_set[1..].join(DOT_NOTATION_SEPARATOR)
+      required_key = key_set[1..-1].join(DOT_NOTATION_SEPARATOR)
       setting_value[required_key] = value # NOTE: pseudo-recoursive assignment
     rescue Qonfig::UnknownSettingError
       raise(initial_error)
