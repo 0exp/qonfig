@@ -9,9 +9,9 @@ All notable changes to this project will be documented in this file.
   - no any other useful functionality - just setting readers and setting writers;
   - full support of `Qonfig::DataSet` DSL commands (`setting`, `validate`, `add_validator`, `load_from_x`/`expose_x` and etc);
   - can be instantiated by:
-    - by existing config object `Qonfig::DataSet#compacted`
-    - by direct instatiation `Qonfig::Compacted.new(init_from: config, settings = {}, &configuration)`;
-    - by implicit instance building without explicit class definition `Qonfig::Compacted.build(&dsl_commands)`;
+    - by existing config object: `Qonfig::DataSet#compacted` or `Qonfig::Compacted.build_from(config, &configuration)`
+    - by direct instantiation: `Qonfig::Compacted.new(settings_values = {}, &configuration)`;
+    - by implicit instance building without explicit class definition `Qonfig::Compacted.build(&dsl_commands) # => instance of Qonfig::Compacted`;
 - Added `Qonfig::DataSet.build_compacted` method: works in `Qonfig::DataSet.build` manner but returns compacted config object (`Qonfig::Compacted`);
 - Added missing `#[]=(key, value)` accessor-method for `Qonfig::DataSet` objects;
 - Added support for `do |config|` configuration block in `#load_from_self` / `#load_from_yaml` / `#load_from_json` / `#load_from_toml`
@@ -25,6 +25,9 @@ All notable changes to this project will be documented in this file.
 - `.load_from_self`: default format was changed from `:yaml` to `:dynamic`;
 - `.expose_self`: default format was changed from `:yaml` to `:dynamic`;
 - Minor `Qonfig::DataSet` and `Qonfig::Settings::Builder` refactorings;
+
+### Fixed
+- Configs without any setting key can not be imported and exported by generic key patterns (`*` and `#`);
 
 ## [0.20.0] - 2019-12-01
 ### Added

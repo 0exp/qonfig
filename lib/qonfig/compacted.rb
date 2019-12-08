@@ -17,11 +17,23 @@ class Qonfig::Compacted < BasicObject
     # @since 0.21.0
     def build(base_config_klass = self, &config_klass_definitions)
       raise(
-        Qonfig::ArgumentError,
-        'Base class should be a type of Qonfig::DataSet or Qonfig::Compacted'
-      ) unless base_config_klass <= Qonfig::Compacted
+        ::Qonfig::ArgumentError,
+        'Base class should be a type of Qonfig::Compacted'
+      ) unless base_config_klass <= ::Qonfig::Compacted
 
       Class.new(base_config_klass, &config_klass_definitions).new
+    end
+
+    # @param data_set [Qonfig::DataSet]
+    # @param configurations [Block]
+    # @return [Qonfig::Compacted]
+    #
+    # @api public
+    # @since 0.21.0
+    def build_from(data_set = ::Qonfig::Compacted::Constructor::NO_NITIAL_DATA_SET, &configurations)
+      compacted_config = allocate # NOTE: #tap does not exist on BasicObject :(
+      ::Qonfig::Compacted::Constructor.construct(compacted_config, data_set, &configurations)
+      compacted_config
     end
 
     # @param settings_map [Hash<Symbol|String,Any>]
@@ -31,12 +43,8 @@ class Qonfig::Compacted < BasicObject
     #
     # @api public
     # @since 0.21.0
-    def valid_with?(
-      settings_map = {},
-      init_from: ::Qonfig::Compacted::Constructor::NO_NITIAL_DATA_SET,
-      &configurations
-    )
-      new(settings_map, init_from: init_from, &configurations)
+    def valid_with?(settings_map = {}, &configurations)
+      new(settings_map, &configurations)
       true
     rescue ::Qonfig::ValidationError
       false
@@ -50,21 +58,19 @@ class Qonfig::Compacted < BasicObject
   attr_reader :____data_set____
 
   # @param settings_map [Hash]
-  # @option init_from [NilClass, Qonfig::DataSet]
   # @param configuration [Block]
   # @return [void]
   #
-  # @see Qonfig::Compacted::Constructor.construct
+  # @see Qonfig::Compacted::Constructor
   #
   # @api public
   # @since 0.21.0
-  def initialize(
-    settings_map = {},
-    init_from: ::Qonfig::Compacted::Constructor::NO_NITIAL_DATA_SET,
-    &configuration
-  )
+  def initialize(settings_map = {}, &configuration)
     ::Qonfig::Compacted::Constructor.construct(
-      self, init_from, settings_map: settings_map, &configuration
+      self,
+      ::Qonfig::Compacted::Constructor::NO_NITIAL_DATA_SET,
+      settings_map: settings_map,
+      &configuration
     )
   end
 

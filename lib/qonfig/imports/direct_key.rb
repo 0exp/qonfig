@@ -42,7 +42,7 @@ class Qonfig::Imports::DirectKey < Qonfig::Imports::Abstract
         "Setting with <#{key_matcher.scope_pattern}> key does not exist!"
       ) unless (imported_config.keys(all_variants: true).any? do |setting_key|
         key_matcher.match?(setting_key)
-      end)
+      end || key_matcher.generic?)
 
       imported_config.keys(all_variants: true).each do |setting_key|
         next unless key_matcher.match?(setting_key)

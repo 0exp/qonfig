@@ -12,18 +12,15 @@ module Qonfig::Compacted::Constructor
   class << self
     # @param compacted_config [Qonfig::Compacted]
     # @param initial_data_set [NilClass, Qonfig::DataSet]
+    #   Notice: cant define NO_NITIAL_DATA_SET (`nil`) as default value cuz Ruby will autoamtically
+    #   transform any Qonfig::DataSet to Hash (thx for kwargs, Ruby >:()
     # @option settings_map [Hash]
     # @param configuration [Block]
     # @return [void]
     #
     # @api private
     # @since 0.21.0
-    def construct(
-      compacted_config,
-      initial_data_set = NO_NITIAL_DATA_SET,
-      settings_map: {},
-      &configuration
-    )
+    def construct(compacted_config, initial_data_set, settings_map: {}, &configuration)
       prevent_incompatible_attributes!(compacted_config, initial_data_set)
 
       if initial_data_set

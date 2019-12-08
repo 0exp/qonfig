@@ -61,6 +61,14 @@ class Qonfig::Settings::KeyMatcher
     @pattern_matcher    = build_pattern_matcher(scope_pattern)
   end
 
+  # @return [Boolean]
+  #
+  # @api private
+  # @since 0.21.0
+  def generic?
+    scope_pattern == GENERIC_PART_PATTERN || scope_pattern == INFINITE_PART_PATTERN
+  end
+
   # @param setting_key_pattern [String]
   # @return [Boolean]
   #
