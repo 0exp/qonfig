@@ -35,13 +35,15 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
       build(base_dataset_klass, &config_klass_definitions).compacted
     end
 
-    # @param configurations [Hash<Symbol|String,Any>]
+    # @param settings_map [Hash<Symbol|String,Any>]
+    # @param configurations [Block]
     # @return [Boolean]
     #
     # @api public
     # @since 0.19.0
-    def valid_with?(configurations = {})
-      new(configurations)
+    # @version 0.21.0
+    def valid_with?(settings_map = {}, &configurations) # TODO: написать, что тепеь подддерживает блок
+      new(settings_map, &configurations)
       true
     rescue Qonfig::ValidationError
       false

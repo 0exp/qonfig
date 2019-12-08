@@ -4,13 +4,14 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 - Brand new type of config objects `Qonfig::Compacted`:
-  - represents the compacted config object with "key-value" read-/write-based interface only;
+  - represents the compacted config object with read-/write-based interface only;
   - setting keys are represented as direct instace methods (`#settings` invokation does not need);
   - no any other useful functionality - just setting readers and setting writers;
+  - full support of `Qonfig::DataSet` DSL commands (`setting`, `validate`, `add_validator`, `load_from_x`/`expose_x` and etc);
   - can be instantiated by:
-    - existing config object `Qonfig::DataSet#compacted`
-    - by direct instatiation `Qonfig::Compacted.new(config)`;
-    - by self-hosted DSL commands (`Qonfig::Compacted`'s DSL is the same as `Qonfig::DataSet`'s DSL)
+    - by existing config object `Qonfig::DataSet#compacted`
+    - by direct instatiation `Qonfig::Compacted.new(init_from: config, settings = {}, &configuration)`;
+    - by implicit instance building without explicit class definition `Qonfig::Compacted.build(&dsl_commands)`;
 - Added `Qonfig::DataSet.build_compacted` method: works in `Qonfig::DataSet.build` manner but returns compacted config object (`Qonfig::Compacted`);
 - Added missing `#[]=(key, value)` accessor-method for `Qonfig::DataSet` objects;
 - Added support for `do |config|` configuration block in `#load_from_self` / `#load_from_yaml` / `#load_from_json` / `#load_from_toml`
@@ -18,6 +19,7 @@ All notable changes to this project will be documented in this file.
 - **Plugins** `pretty_print`:
   - added missing beautification logic for `Qonfig::Settings` objects;
   - added support for `Qonfig::Compacted` beautification;
+- `#valid_with?` now supports configuration block (`do |config|`);
 
 ### Changed
 - `.load_from_self`: default format was changed from `:yaml` to `:dynamic`;
