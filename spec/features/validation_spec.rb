@@ -701,6 +701,55 @@ describe 'Validation' do
       end
     end
 
+    specify '(.valid_with?/#valid_with?) support for do-config notation :)' do
+      config_klass = Class.new(Qonfig::DataSet) do
+        setting :enabled, false
+        setting(:db) { setting :user, 'D@iVeR' }
+        validate :enabled, :boolean, strict: true
+        validate 'db.#', :text, strict: true
+      end
+
+      config = config_klass.new
+
+      # class-level checker
+      expect(
+        (config_klass.valid_with?(enabled: true) do |config|
+          config.db.user = '0exp'
+        end)
+      ).to eq(true)
+      expect(
+        (config_klass.valid_with?(enabled: false) do |config|
+          config.db.user = 123
+        end)
+      ).to eq(false)
+      expect(
+        (config_klass.valid_with?(enabled: nil) do |config|
+          config.db.user = 'test'
+        end)
+      ).to eq(false)
+
+      # instance-level checker
+      expect(
+        (config.valid_with?(enabled: true) do |config|
+          config.db.user = '0exp'
+        end)
+      ).to eq(true)
+      expect(
+        (config.valid_with?(enabled: false) do |config|
+          config.db.user = 123
+        end)
+      ).to eq(false)
+      expect(
+        (config.valid_with?(enabled: nil) do |config|
+          config.db.user = 'test'
+        end)
+      ).to eq(false)
+
+      # original instance is not changed
+      expect(config.settings.enabled).to eq(false)
+      expect(config.settings.db.user).to eq('D@iVeR')
+    end
+
     specify '(.valid_with?) potential config instances will be valid or invalid with new configs' do
       config_klass = Class.new(Qonfig::DataSet) do
         setting :enabled, false
