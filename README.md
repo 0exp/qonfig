@@ -1642,8 +1642,8 @@ end
 
 ### Validation of potential setting values
 
-- (**instance-level**) `#valid_with?(configurations = {})` - check that current config instalce will be valid with passed configurations;
-- (**class-level**) `.valid_with?(configurations = {})` - check that potential config instancess will be valid with passed configurations;
+- (**instance-level**) `#valid_with?(setting_values = {}, &configuration)` - check that current config instalce will be valid with passed configurations;
+- (**class-level**) `.valid_with?(setting_values = {}, &configuration)` - check that potential config instancess will be valid with passed configurations;
 - makes no assignments;
 
 #### #valid_with? (instance-level)
@@ -1664,6 +1664,12 @@ config = Config.new
 config.valid_with?(enabled: true, queue: { adapter: 'que' }) # => true
 config.valid_with?(enabled: 123) # => false (should be a type of boolean)
 config.valid_with?(enabled: true, queue: { adapter: Sidekiq }) # => false (queue.adapter should be a type of string)
+
+# do-config notation is supported too
+config.valid_with?(enabled: true) do |conf|
+  conf.queue.adapter = :sidekiq
+end
+# => false (queue.adapter should be a type of string)
 ```
 
 #### .valid_with? (class-level)
@@ -1682,6 +1688,12 @@ end
 Config.valid_with?(enabled: true, queue: { adapter: 'que' }) # => true
 Config.valid_with?(enabled: 123) # => false (should be a type of boolean)
 Config.valid_with?(enabled: true, queue: { adapter: Sidekiq }) # => false (queue.adapter should be a type of string)
+
+# do-config notation is supported too
+Config.valid_with?(enabled: true) do |config|
+  config.queue.adapter = :sidekiq
+end
+# => false (queue.adapter should be a type of string)
 ```
 
 ---

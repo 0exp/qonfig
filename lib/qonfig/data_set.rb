@@ -42,7 +42,7 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     # @api public
     # @since 0.19.0
     # @version 0.21.0
-    def valid_with?(settings_map = {}, &configurations) # TODO: написать, что тепеь подддерживает блок
+    def valid_with?(settings_map = {}, &configurations)
       new(settings_map, &configurations)
       true
     rescue Qonfig::ValidationError
