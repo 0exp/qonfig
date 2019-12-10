@@ -87,10 +87,6 @@ class Qonfig::Compacted < BasicObject
   # @param value [Any]
   # @return [void]
   #
-  # @raise [Qonfig::UnknownSettingError]
-  # @raise [Qonfig::FrozenSettingsError]
-  # @raise [Qonfig::AmbiguousSettingValueError]
-  #
   # @api public
   # @since 0.21.0
   def []=(key, value)
