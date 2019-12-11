@@ -4,9 +4,9 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 - Brand new type of config objects `Qonfig::Compacted`:
-  - represents the compacted config object with read-/write-based interface only;
+  - represents the compacted config object with setting readers and setting writers only;
   - setting keys are represented as direct instace methods (`#settings` invokation does not need);
-  - no any other useful functionality - just setting readers and setting writers;
+  - no any other useful functionality - just setting readers, setting writers and predicates;
   - full support of `Qonfig::DataSet` DSL commands (`setting`, `validate`, `add_validator`, `load_from_x`/`expose_x` and etc);
   - can be instantiated by:
     - by existing config object: `Qonfig::DataSet#compacted` or `Qonfig::Compacted.build_from(config, &configuration)`
@@ -20,6 +20,7 @@ All notable changes to this project will be documented in this file.
   - added missing beautification logic for `Qonfig::Settings` objects;
   - added support for `Qonfig::Compacted` beautification;
 - `#valid_with?` now supports configuration block (`do |config|`);
+- `Import API`: support for predicate methods;
 
 ### Changed
 - `.load_from_self`: default format was changed from `:yaml` to `:dynamic`;
