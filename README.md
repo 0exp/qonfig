@@ -44,15 +44,15 @@ require 'qonfig'
   - [Instantiation without class definition](#instantiation-without-class-definition) (`Qonfig::DataSet.build(&definitions)`)
 - [Compacted config](#compacted-config)
   - [Definition and instantiation](#definition-and-instantiation)
-    - [raw definition and instantiation](#raw-definition-and-instantiation)
+    - [by raw initialization](#by-raw-initialization)
     - [by existing Qonfig::DataSet class](#by-existing-qonfigdataset-class)
-    - [by Qonfig::DataSet instance](#by-qonfigdataset-instance-qonfigdatasetcompacted-or-qonfigcompactedbuild_fromconfig)
-    - [instantiation without class definition](#without-explicit-class-definition)
+    - [by existing Qonfig::DataSet instance](#by-existing-qonfigdataset-class)
+    - [instantiation without class definition](#instantiation-without-class-definition-1)
     - [validation API](#validation-api-see-the-full-documentation)
   - [Setting readers and writers](#setting-readers-and-writers)
     - [reading](#reading-by-setting-name-and-index-method-with-dot-notation-support-and-indifferent-access)
     - [writing](#writing-by-setting-name-and-index-method-with-dot-notation-support-and-indifferent-access)
-    - [precitaes](#predicates-documentation)
+    - [precitaes](#predicates-see-full-documentation)
 - [Interaction](#interaction)
   - [Iteration over setting keys](#iteration-over-setting-keys) (`#each_setting`, `#deep_each_setting`)
   - [List of config keys](#list-of-config-keys) (`#keys`, `#root_keys`)
@@ -628,7 +628,7 @@ config.settings.web_api # => "api.google.com"
 - [Setting readers and writers](#setting-readers-and-writers)
   - [reading](#reading-by-setting-name-and-index-method-with-dot-notation-support-and-indifferent-access)
   - [writing](#writing-by-setting-name-and-index-method-with-dot-notation-support-and-indifferent-access)
-  - [precitaes](#predicates-documentation)
+  - [precitaes](#predicates-see-full-documentation)
 
 ---
 
