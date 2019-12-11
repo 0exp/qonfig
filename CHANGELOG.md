@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 - Brand new type of config objects `Qonfig::Compacted`:
   - represents the compacted config object with setting readers and setting writers only;
   - setting keys are represented as direct instace methods (`#settings` invokation does not need);
-  - no any other useful functionality - just setting readers, setting writers and predicates;
+  - no any other useful instance-based functionality;
   - full support of `Qonfig::DataSet` DSL commands (`setting`, `validate`, `add_validator`, `load_from_x`/`expose_x` and etc);
   - can be instantiated by:
     - by existing config object: `Qonfig::DataSet#compacted` or `Qonfig::Compacted.build_from(config, &configuration)`
