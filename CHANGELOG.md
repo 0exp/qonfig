@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [0.21.0] - 2019-12-12
 ### Added
 - Brand new type of config objects `Qonfig::Compacted`:
   - represents the compacted config object with setting readers and setting writers only;
