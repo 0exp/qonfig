@@ -66,6 +66,11 @@ class Qonfig::Imports::DirectKey < Qonfig::Imports::Abstract
             end
           end
 
+          define_method("#{access_method_name}?") do
+            # NOTE: based on Qonfig::Settings#__define_option_predicate__ realization
+            !!imported_config[setting_key]
+          end
+
           if accessor
             define_method("#{access_method_name}=") do |value|
               imported_config[setting_key] = value
