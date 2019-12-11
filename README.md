@@ -42,7 +42,7 @@ require 'qonfig'
   - [Hash representation](#hash-representation)
   - [Smart Mixin](#smart-mixin) (`Qonfig::Configurable`)
   - [Instantiation without class definition](#instantiation-without-class-definition) (`Qonfig::DataSet.build(&definitions)`)
-- [Compact configs](#compact-configs)
+- [Compacted config](#compacted-config)
   - [Definition and instantiation](#definition-and-instantiation)
     - [raw definition and instantiation](#raw-definition-and-instantiation)
     - [by existing Qonfig::DataSet class](#by-existing-qonfigdataset-class)
@@ -617,7 +617,7 @@ config.settings.web_api # => "api.google.com"
 
 ---
 
-## Compact configs
+## Compacted config
 
 - [Definition and instantiation](#definition-and-instantiation)
   - [by raw initialization](#by-raw-initialization)
@@ -636,13 +636,13 @@ config.settings.web_api # => "api.google.com"
 - setting keys are represented as direct instace methods (`#settings` invokation does not need);
 - no any other useful instance-based functionality - just setting readers, setting writers and setting predicates:
 - support or index-method (`[]`,`[]=`) with dot-notaiton format and indifferent type of key names (strings and symbols);
-- full support of `Qonfig::DataSet` DSL definition commands:
-  - `setting`, `re_setting` [doc]()
-  - `validate`, `add_validator` [full api doc](#validation)
-  - `load_from_self` [doc](), `load_from_yaml` [doc](), `load_from_json` [doc](), `load_from_toml` [doc]();
-  - `expose_self` [doc](), `expose_yaml` [doc](), `expose_json` [doc](), `expose_toml` [doc]()
-  - `values_file` [doc]()
-- supports `.valid_with?` [documentation]();
+- full support of `Qonfig::DataSet` DSL commands:
+  - `setting`, `re_setting` [doc](#definition-and-access)
+  - `validate`, `add_validator` [doc](#validation)
+  - `load_from_self` [doc](#load-from-__end__), `load_from_yaml` [doc](#load-from-yaml-file), `load_from_json` [doc](#load-from-json-file), `load_from_toml` [doc](#plugins-toml);
+  - `expose_self` [doc](#expose-__end__), `expose_yaml` [doc](#expose-yaml), `expose_json` [doc](#expose-json), `expose_toml` [doc](#plugins-toml)
+  - `values_file` [doc](#default-setting-values-file)
+- support for potential validation `.valid_with?` [documentation](#validation-of-potential-setting-values);
 - can be instantiated by:
   - by existing config object: `Qonfig::DataSet#compacted` or `Qonfig::Compacted.build_from(config, &configuration)`
   - from existing `Qonfig::DataSet` class: ``Qonfig::DataSet.build_compacted`;
@@ -803,7 +803,9 @@ config['queue.engine'] = :sidekiq
 config[:queue][:workers_count] = 5
 ```
 
-#### predicates [documentation](#settings-as-predicates):
+#### predicates:
+
+- [documentation](#settings-as-predicates)
 
 ```ruby
 class Config < Qonfig::Compcated
