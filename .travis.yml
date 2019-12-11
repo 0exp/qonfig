@@ -17,6 +17,9 @@ matrix:
   - rvm: jruby-head
     gemfile: gemfiles/with_external_deps.gemfile
     env: TEST_PLUGINS=true
+  - rvm: truffleruby
+    gemfile: gemfiles/with_external_deps.gemfile
+    env: TEST_PLUGINS=true
   - rvm: 2.4.9
     gemfile: gemfiles/without_external_deps.gemfile
   - rvm: 2.5.7
@@ -27,9 +30,12 @@ matrix:
     gemfile: gemfiles/without_external_deps.gemfile
   - rvm: jruby-head
     gemfile: gemfiles/without_external_deps.gemfile
+  - rvm: truffleruby
+    gemfile: gemfiles/without_external_deps.gemfile
   allow_failures:
   - rvm: ruby-head
   - rvm: jruby-head
+  - rvm: truffleruby
 sudo: false
 cache: bundler
 before_install: gem install bundler
