@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe 'Settings redefinition' do
-  specify '.re_setting DSL command' do
+  specify '.re_setting DSL command redefines previously defined setting keys' do
     class BaseRedefinableConfig < Qonfig::DataSet
       setting :nested do
         setting :some_key, 100_500

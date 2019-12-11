@@ -4,21 +4,31 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 - Brand new type of config objects `Qonfig::Compacted`:
-  - represents the compacted config object with "key-value" read-/write-based interface only;
-  - setting keys are represented as direct instace methods (`#settings` invokation does not needed);
-  - no any other useful functionality - just setting readers and setting writers;
-  - can be instantiated by existing config object `Qonfig::DataSet#compacted` or by idrect instatiation `Qonfig::Compacted.new(config)`;
+  - represents the compacted config object with setting readers and setting writers only;
+  - setting keys are represented as direct instace methods (`#settings` invokation does not need);
+  - no any other useful instance-based functionality;
+  - full support of `Qonfig::DataSet` DSL commands (`setting`, `validate`, `add_validator`, `load_from_x`/`expose_x` and etc);
+  - can be instantiated by:
+    - by existing config object: `Qonfig::DataSet#compacted` or `Qonfig::Compacted.build_from(config, &configuration)`
+    - by direct instantiation: `Qonfig::Compacted.new(settings_values = {}, &configuration)`;
+    - by implicit instance building without explicit class definition `Qonfig::Compacted.build(&dsl_commands) # => instance of Qonfig::Compacted`;
+- Added `Qonfig::DataSet.build_compacted` method: works in `Qonfig::DataSet.build` manner but returns compacted config object (`Qonfig::Compacted`);
 - Added missing `#[]=(key, value)` accessor-method for `Qonfig::DataSet` objects;
 - Added support for `do |config|` configuration block in `#load_from_self` / `#load_from_yaml` / `#load_from_json` / `#load_from_toml`
   values-loading methods;
 - **Plugins** `pretty_print`:
   - added missing beautification logic for `Qonfig::Settings` objects;
   - added support for `Qonfig::Compacted` beautification;
+- `#valid_with?` now supports configuration block (`do |config|`);
+- `Import API`: support for predicate methods;
 
 ### Changed
 - `.load_from_self`: default format was changed from `:yaml` to `:dynamic`;
 - `.expose_self`: default format was changed from `:yaml` to `:dynamic`;
 - Minor `Qonfig::DataSet` and `Qonfig::Settings::Builder` refactorings;
+
+### Fixed
+- Configs without any setting key can not be imported and exported by generic key patterns (`*` and `#`);
 
 ## [0.20.0] - 2019-12-01
 ### Added

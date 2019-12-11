@@ -217,11 +217,35 @@ describe 'Config definition and representation' do
     expect { config.settings.mutations[:global] }.to raise_error(Qonfig::UnknownSettingError)
     expect { config.settings.mutations[:global] = 1 }.to raise_error(Qonfig::UnknownSettingError)
 
+    # access via []-method with indifferent access and dot-notation
+    expect(config[:serializers]['json']).to eq(:native)
+    expect(config['serializers'][:xml]).to eq(:native)
+    expect(config[:mutations][:action][:query]).to eq('delete')
+    expect(config['steps']).to eq(0)
+    expect(config['serializers.json']).to eq(:native)
+    expect(config['serializers.xml']).to eq(:native)
+    expect(config['mutations.action.query']).to eq('delete')
+
+    # configuration via []=-method with/and/without dot-notation
+    config['serializers.json'] = :non_native
+    config['serializers.xml'] = :non_native
+    expect(config['serializers.json']).to eq(:non_native)
+    expect(config['serializers.xml']).to eq(:non_native)
+
+    # mutation of non-existent keys via []=-method fails with error
+    expect { config['serializers.toml'] = :native }.to raise_error(Qonfig::UnknownSettingError)
+    expect { config['mutations.operation'] = :upgrade }.to raise_error(Qonfig::UnknownSettingError)
+
+    # ambigous mutation via []=-method fails with corresponding error
+    expect do
+      config['mutations.action'] = :select
+    end.to raise_error(Qonfig::AmbiguousSettingValueError)
+
     # hash representation
     expect(config.to_h).to match(
       'serializers' => {
-        'json' => :native,
-        'xml' => :native
+        'json' => :non_native,
+        'xml' => :non_native
       },
       'defaults' => nil,
       'shared' => {

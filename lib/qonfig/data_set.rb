@@ -25,13 +25,25 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
       Class.new(base_dataset_klass, &config_klass_definitions).new
     end
 
-    # @param configurations [Hash<Symbol|String,Any>]
+    # @param base_dataset_klass [Class<Qonfig::DataSet>]
+    # @param config_klass_definitions [Proc]
+    # @return [Qonfig::Compacted]
+    #
+    # @api public
+    # @since 0.21.0
+    def build_compacted(base_dataset_klass = self, &config_klass_definitions)
+      build(base_dataset_klass, &config_klass_definitions).compacted
+    end
+
+    # @param settings_map [Hash<Symbol|String,Any>]
+    # @param configurations [Block]
     # @return [Boolean]
     #
     # @api public
     # @since 0.19.0
-    def valid_with?(configurations = {})
-      new(configurations)
+    # @version 0.21.0
+    def valid_with?(settings_map = {}, &configurations)
+      new(settings_map, &configurations)
       true
     rescue Qonfig::ValidationError
       false
@@ -145,7 +157,7 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   # @since 0.17.0
   # @version 0.21.0
   def load_from_self(format: :dynamic, strict: true, expose: nil, &configurations)
-    caller_location = caller(1, 1).first
+    caller_location = ::Kernel.caller(1, 1).first
 
     thread_safe_access do
       load_setting_values_from_file(
@@ -343,21 +355,22 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     thread_safe_access { validator.valid? }
   end
 
-  # @param configurations [Hash<String,Symbol|Any>]
+  # @param settings_map [Hash<String,Symbol|Any>]
   # @return [Boolean]
   #
   # @api public
   # @since 0.19.0
-  def valid_with?(configurations = {})
+  # @version 0.21.0
+  def valid_with?(settings_map = {}, &configurations)
     # NOTE:
-    #  'dup.configure(configurations)' has better thread-safety than 'with(configurations)'
+    #  'dup.configure(settings_map)' has better thread-safety than 'with(settings_map)'
     #  pros:
     #    - no arbitrary lock is obtained;
     #    - all threads can read and work :)
     #  cons:
     #    - useless ton of objects (new dataset, new settings, new locks, and etc);
     #    - useless setting options assignment steps (self.dup + self.to_h + configure(to_h))
-    dup.configure(configurations)
+    dup.configure(settings_map, &configurations)
     true
   rescue Qonfig::ValidationError
     false
@@ -457,12 +470,12 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     end
   end
 
-  # @return [Qonfig::Compact]
+  # @return [Qonfig::Compacted]
   #
   # @api public
   # @since 0.21.0
   def compacted
-    Qonfig::Compacted.new(self)
+    Qonfig::Compacted.build_from(self)
   end
 
   private

@@ -48,7 +48,7 @@ class Qonfig::Imports::Mappings < Qonfig::Imports::Abstract
         "Setting with <#{key_matcher.scope_pattern}> key does not exist!"
       ) unless (imported_config.keys(all_variants: true).any? do |setting_key|
         key_matcher.match?(setting_key)
-      end)
+      end || key_matcher.generic?)
 
       imported_config.keys(all_variants: true).each do |setting_key|
         next unless key_matcher.match?(setting_key)
@@ -69,6 +69,11 @@ class Qonfig::Imports::Mappings < Qonfig::Imports::Abstract
             define_method(mapped_method_name) do
               imported_config.dig(*setting_key_path_sequence)
             end
+          end
+
+          define_method("#{mapped_method_name}?") do
+            # NOTE: based on Qonfig::Settings#__define_option_predicate__ realization
+            !!imported_config[setting_key]
           end
 
           if accessor

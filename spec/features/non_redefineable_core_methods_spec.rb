@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe 'Core methods redefinition' do
+describe 'Non-redefineable core methods' do
   specify 'fails when setting key intersects with any internal Qonfig::Settings core method' do
     core_methods = (
       Qonfig::Settings.instance_methods(false) |

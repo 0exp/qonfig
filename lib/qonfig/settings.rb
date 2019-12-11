@@ -151,8 +151,9 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   #
   # @api public
   # @since 0.1.0
+  # @version 0.21.0
   def []=(key, value)
-    __lock__.thread_safe_access { __set_value__(key, value) }
+    __lock__.thread_safe_access { __assign_value__(key, value) }
   end
 
   # @param settings_map [Hash]
@@ -488,6 +489,32 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
 
     __options__[key]
   end
+
+  # @param key [String, Symbol]
+  # @param value [Any]
+  # @return [void]
+  #
+  # @api private
+  # @since 0.21.0
+  # rubocop:disable Naming/RescuedExceptionsVariableName
+  def __assign_value__(key, value)
+    key = __indifferently_accessable_option_key__(key)
+    __set_value__(key, value)
+  rescue Qonfig::UnknownSettingError => initial_error
+    key_set = __parse_dot_notated_key__(key)
+
+    # NOTE: key is not dot-notaed and original key does not exist
+    raise(initial_error) if key_set.size == 1
+
+    begin
+      setting_value = __get_value__(key_set.first)
+      required_key = key_set[1..-1].join(DOT_NOTATION_SEPARATOR)
+      setting_value[required_key] = value # NOTE: pseudo-recoursive assignment
+    rescue Qonfig::UnknownSettingError
+      raise(initial_error)
+    end
+  end
+  # rubocop:enable Naming/RescuedExceptionsVariableName
 
   # @param key [String, Symbol]
   # @param value [Object]

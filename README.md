@@ -42,6 +42,17 @@ require 'qonfig'
   - [Hash representation](#hash-representation)
   - [Smart Mixin](#smart-mixin) (`Qonfig::Configurable`)
   - [Instantiation without class definition](#instantiation-without-class-definition) (`Qonfig::DataSet.build(&definitions)`)
+- [Compacted config](#compacted-config)
+  - [Definition and instantiation](#definition-and-instantiation)
+    - [by raw initialization](#by-raw-initialization)
+    - [by existing Qonfig::DataSet class](#by-existing-qonfigdataset-class)
+    - [by existing Qonfig::DataSet instance](#by-existing-qonfigdataset-instance)
+    - [instantiation without class definition](#instantiation-without-class-definition-1)
+    - [validation API](#validation-api-see-full-documentation)
+  - [Setting readers and writers](#setting-readers-and-writers)
+    - [reading](#reading-by-setting-name-and-index-method-with-dot-notation-support-and-indifferent-access)
+    - [writing](#writing-by-setting-name-and-index-method-with-dot-notation-support-and-indifferent-access)
+    - [precitaes](#predicates-see-full-documentation)
 - [Interaction](#interaction)
   - [Iteration over setting keys](#iteration-over-setting-keys) (`#each_setting`, `#deep_each_setting`)
   - [List of config keys](#list-of-config-keys) (`#keys`, `#root_keys`)
@@ -58,6 +69,7 @@ require 'qonfig'
     - [Prexify method name](#prexify-method-name)
     - [Import nested settings as raw Qonfig::Settings objects](#import-nested-settings-as-raw-qonfigsettings-objects)
     - [Import with pattern-matching](#import-with-pattern-matching)
+    - [Support for predicate-like methods](#support-for-predicate-like-methods)
   - [Export config settings](#export-config-settings) (`as singleton methods`)
 - [Validation](#validation)
   - [Introduction](#introduction)
@@ -606,6 +618,218 @@ config.settings.web_api # => "api.google.com"
 
 ---
 
+## Compacted config
+
+- [Definition and instantiation](#definition-and-instantiation)
+  - [by raw initialization](#by-raw-initialization)
+  - [by existing Qonfig::DataSet class](#by-existing-qonfigdataset-class)
+  - [by existing Qonfig::DataSet instance](#by-existing-qonfigdataset-instance)
+  - [instantiation without class definition](#instantiation-without-class-definition-1)
+  - [validation API](#validation-api-see-full-documentation)
+- [Setting readers and writers](#setting-readers-and-writers)
+  - [reading](#reading-by-setting-name-and-index-method-with-dot-notation-support-and-indifferent-access)
+  - [writing](#writing-by-setting-name-and-index-method-with-dot-notation-support-and-indifferent-access)
+  - [precitaes](#predicates-see-full-documentation)
+
+---
+
+- `Qonfig::Compacted`: represents the compacted config object with setting readers and setting writers;
+- setting keys are represented as direct instace methods (`#settings` invokation does not need);
+- no any other useful instance-based functionality - just setting readers, setting writers and setting predicates:
+- support for index-like access methods (`[]`,`[]=`);
+- full support of `Qonfig::DataSet` definition DSL commands:
+  - `setting`, `re_setting` [doc](#definition-and-access)
+  - `validate`, `add_validator` [doc](#validation)
+  - `load_from_self` [doc](#load-from-__end__), `load_from_yaml` [doc](#load-from-yaml-file), `load_from_json` [doc](#load-from-json-file), `load_from_toml` [doc](#plugins-toml);
+  - `expose_self` [doc](#expose-__end__), `expose_yaml` [doc](#expose-yaml), `expose_json` [doc](#expose-json), `expose_toml` [doc](#plugins-toml)
+  - `values_file` [doc](#default-setting-values-file)
+- support for validation of potential setting values `.valid_with?` [documentation](#validation-of-potential-setting-values);
+- can be instantiated by:
+  - by existing config object: `Qonfig::DataSet#compacted` or `Qonfig::Compacted.build_from(config, &configuration)`;
+  - from existing `Qonfig::DataSet` class: ``Qonfig::DataSet.build_compacted`;
+  - by direct instantiation: `Qonfig::Compacted.new(settings_values = {}, &configuration)`;
+  - by implicit instance building without explicit class definition `Qonfig::Compacted.build(&dsl_commands) # => instance of Qonfig::Compacted`;
+- you can define your own instance methods too;
+
+---
+
+### Definition and instantiation
+
+#### by raw initialization
+
+```ruby
+class Config < Qonfig::Compacted
+  setting :api, 'google.com'
+  setting :enabled, true
+  setting :queue do
+    setting :engine, :sidekiq
+  end
+end
+
+config = Config.new(api: 'yandex.ru') do |conf|
+  conf.enabled = false
+end
+
+config.api # => 'yandex.ru'
+config.enabled # => false
+config.queue.engine # => :sidekiq
+```
+
+#### by existing Qonfig::DataSet class
+
+```ruby
+class Config < Qonfig::DataSet
+  setting :api, 'google.com'
+  setting :enabled, true
+end
+
+config = Config.build_compacted # builds Qonfig::Compacted instance
+
+config.api # => 'google.com'
+config.enabled # => true
+```
+
+#### by existing Qonfig::DataSet instance
+
+- `Qonfig::DataSet#compacted`
+- (or) `Qonfig::Compacted.build_from(config)`
+
+```ruby
+class Config < Qonfig::DataSet
+  setting :api, 'google.com'
+  setting :enabled, true
+end
+
+config = Config.new
+
+compacted_config = config.compacted
+# --- or ---
+compacted_config = Qonfig::Compacted.build_from(config)
+
+compacted_config.api # => 'google.com'
+compacted_config.enabled # => true
+```
+
+#### instantiation without class definition
+
+```ruby
+config = Qonfig::Compacted.build do
+  setting :api, 'google.ru'
+  setting :enabled, true
+end
+
+config.api # => 'google.ru'
+config.enabled # => true
+```
+
+#### validation API (see [full documentation](#validation)):
+
+```ruby
+# custom validators
+Qonfig::Compacted.define_validator(:version_check) do |value|
+  value.is_a?(Integer) && value < 100
+end
+
+class Config < Qonfig::Compacted
+  setting :api, 'google.ru'
+  setting :enabled, true
+  setting :version, 2
+  setting :queue { setting :engine, :sidekiq }
+
+  # full support of original validation api
+  validate :api, :string, strict: true
+  validate :enabled, :boolean, strict: true
+  validate :version, :version_check # custom validator
+  validate 'queue.#', :symbol
+end
+
+# potential values validation
+Config.valid_with?(api: :yandex) # => false
+Config.valid_with?(enabled: nil) # => false
+Config.valid_with?(version: nil) # => false
+Config.valid_with?(api: 'yandex.ru', enabled: false, version: 3) # => true
+
+config = Config.new
+
+# instance validation
+config.api = :yandex # => Qonfig::ValidationError (should be a type of string)
+config.version = nil # => Qonfig::ValidationError (can not be nil)
+config.queue.engine = 'sneakers' # => Qonfig::ValidationError (should be a type of symbol)
+```
+
+---
+
+### Setting readers and writers
+
+```ruby
+class Config < Qonfig::Compcated
+  setting :api, 'google.ru'
+  setting :enabled, true
+  setting :queue do
+    setting :engine, :sidekiq
+    setting :workers_count, 10
+  end
+end
+
+config = Config.new
+```
+
+#### reading (by setting name and index method with dot-notation support and indifferent access)
+
+```ruby
+# by setting name
+config.api # => 'google.ru'
+config.enabled # => true
+config.queue.engine # => :sidekiq
+config.queue.workers_count # => 10
+
+# by index method with dot-notation support and indiffernt access
+config[:api] # => 'google.ru'
+config['enabled'] # => true
+config[:queue][:engine] # => :sidekiq
+config['queue.workers_count'] # => 10
+```
+
+#### writing (by setting name and index method with dot-notation support and indifferent access)
+
+```ruby
+# by setting name
+config.api = 'yandex.ru'
+config.queue.engine = :sidekiq
+# and etc
+
+# by index method with dot-notaiton support and indifferent access
+config['api'] = 'yandex.ru'
+config['queue.engine'] = :sidekiq
+config[:queue][:workers_count] = 5
+```
+
+#### predicates ([see full documentation](#settings-as-predicates))
+
+```ruby
+class Config < Qonfig::Compcated
+  setting :enabled, true
+  setting :api, 'yandex.ru'
+  setting :queue do
+    setting :engine, :sidekiq
+  end
+end
+
+config = Config.new
+
+config.enabled? # => true
+config.enabled = nil
+config.enabled? # => false
+
+config.queue.engine? # => true
+config.queue.engine =  nil
+config.queue.engine? # => false
+
+config.queue? # => true
+```
+
+---
+
 ## Interaction
 
 - [Iteration over setting keys](#iteration-over-setting-keys) (`#each_setting`, `#deep_each_setting`)
@@ -1064,6 +1288,9 @@ You can use RabbitMQ-like pattern matching in setting key names:
 - `Qonfig::Imports` - a special mixin that provides the convenient DSL to work with config import features (`.import_settings` method);
 - `.import_settings` - DSL method for importing configuration settings (from a config instance) as instance methods of a class;
 - (**IMPORTANT**) `import_settings` imports config settings as access methods to config's settings (creates `attr_reader`s for your config);
+- generated methods can be used as predicates (with trailing `?` symbol);
+- you can generate `attr_accessor`s by specifying `accessor: true` option
+  (be careful: you can get `Qonfig::AmbiguousSettingValueError` when you try to assign a value to config option which have nested settings);
 - signature: `.import_settings(config_object, *setting_keys, mappings: {}, prefix: '', raw: false)`
   - `config_object` - an instance of `Qonfig::DataSet` whose config settings should be imported;
   - `*setting_keys` - an array of dot-notaed config's setting keys that should be imported
@@ -1072,7 +1299,7 @@ You can use RabbitMQ-like pattern matching in setting key names:
   - `mappings:` - a map of keys that describes custom method names for each imported setting;
   - `prefix:` - prexifies setting access method name with custom prefix;
   - `raw:` - use nested settings as objects or hashify them (`false` by default (means "hashify nested settings"));
-
+  - `accessor:` - generate `attr_accessor` for imported config settigns (`false` by default (means "generate `attr_reader`s only"));
 ---
 
 Suppose we have a config with deeply nested keys:
@@ -1100,6 +1327,7 @@ Let's see what we can to do :)
 - [Prexify method name](#prexify-method-name)
 - [Import nested settings as raw Qonfig::Settings objects](#import-nested-settings-as-raw-qonfigsettings-objects)
 - [Import with pattern-matching](#import-with-pattern-matching)
+- [Support for predicate-like methods](#support-for-predicate-like-methods)
 
 #### Import a set of setting keys (simple dot-noated key list)
 
@@ -1158,8 +1386,28 @@ end
 
 service = ServiceObject.new
 
-service.config_credentials # => { login" => "D@iVeR", "auth_token" => "IAdkoa0@()1239uA" }
+service.config_account # => { login" => "D@iVeR", "auth_token" => "IAdkoa0@()1239uA" }
 service.config_secret_token # => "IAdkoa0@()1239uA"
+```
+
+#### Support for predicate-like methods
+
+- generated methods can be used as predicates (with trailing `?` symbol);
+
+```ruby
+class ServiceObject
+  include Qonfig::Imports
+
+  import_settings(AppConfig,
+    'web_api.credentials.account',
+    mappings: { secret_token: 'web_api.credentials.account.auth_token' },
+  )
+end
+
+service = ServiceObject.new
+
+service.account? # => true
+service.secret_token? # => true
 ```
 
 #### Import nested settings as raw Qonfig::Settings objects
@@ -1242,6 +1490,9 @@ end
 - works in `.import_settings` manner [doc](#import-config-settings) (see examples and documentation above `:)`)
 - all config objects can export their settings to an arbitrary object as singleton methods;
 - (**IMPORTANT**) `export_settings` exports config settings as access methods to config's settings (creates `attr_reader`s for your config);
+- generated methods can be used as predicates (with trailing `?` symbol);
+- you can generate `attr_accessor`s by specifying `accessor: true` option
+  (be careful: you can get `Qonfig::AmbiguousSettingValueError` when you try to assign a value to config option which have nested settings);
 - signature: `#export_settings(exportable_object, *setting_keys, mappings: {}, prefix: '', raw: false)`:
   - `exportable_object` - an arbitrary object for exporting;
   - `*setting_keys` - an array of dot-notaed config's setting keys that should be exported
@@ -1250,6 +1501,7 @@ end
   - `mappings:` - a map of keys that describes custom method names for each exported setting;
   - `prefix:` - prexifies setting access method name with custom prefix;
   - `raw:` - use nested settings as objects or hashify them (`false` by default (means "hashify nested settings"));
+ - `accessor:` - generate `attr_accessor` for imported config settigns (`false` by default (means "generate `attr_reader`s only"));
 
 ```ruby
 class Config < Qonfig::DataSet
@@ -1286,6 +1538,14 @@ config.export_settings(service, '*') # export root settings
 
 service.web_api # => { 'credentials' => { 'account' => { ... } }, 'graphql_api' => false }
 service.graphql_api # => false
+```
+
+```ruby
+# NOTE: predicates
+config.export_settings(service, '*')
+
+config.web_api? # => true
+config.graphql_api? # => false
 ```
 
 ---
@@ -1637,8 +1897,8 @@ end
 
 ### Validation of potential setting values
 
-- (**instance-level**) `#valid_with?(configurations = {})` - check that current config instalce will be valid with passed configurations;
-- (**class-level**) `.valid_with?(configurations = {})` - check that potential config instancess will be valid with passed configurations;
+- (**instance-level**) `#valid_with?(setting_values = {}, &configuration)` - check that current config instalce will be valid with passed configurations;
+- (**class-level**) `.valid_with?(setting_values = {}, &configuration)` - check that potential config instancess will be valid with passed configurations;
 - makes no assignments;
 
 #### #valid_with? (instance-level)
@@ -1659,6 +1919,12 @@ config = Config.new
 config.valid_with?(enabled: true, queue: { adapter: 'que' }) # => true
 config.valid_with?(enabled: 123) # => false (should be a type of boolean)
 config.valid_with?(enabled: true, queue: { adapter: Sidekiq }) # => false (queue.adapter should be a type of string)
+
+# do-config notation is supported too
+config.valid_with?(enabled: true) do |conf|
+  conf.queue.adapter = :sidekiq
+end
+# => false (queue.adapter should be a type of string)
 ```
 
 #### .valid_with? (class-level)
@@ -1677,6 +1943,12 @@ end
 Config.valid_with?(enabled: true, queue: { adapter: 'que' }) # => true
 Config.valid_with?(enabled: 123) # => false (should be a type of boolean)
 Config.valid_with?(enabled: true, queue: { adapter: Sidekiq }) # => false (queue.adapter should be a type of string)
+
+# do-config notation is supported too
+Config.valid_with?(enabled: true) do |config|
+  config.queue.adapter = :sidekiq
+end
+# => false (queue.adapter should be a type of string)
 ```
 
 ---
