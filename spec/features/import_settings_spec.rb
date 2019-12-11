@@ -21,6 +21,22 @@ describe 'Import settings as access methods to a class' do
 
   before { stub_const('AppConfig', config) }
 
+  specify 'empty import does nothing' do
+    expect do
+      Class.new do
+        include Qonfig::Imports
+        import_settings(AppConfig, '#')
+      end
+    end.not_to raise_error
+
+    expect do
+      Class.new do
+        include Qonfig::Imports
+        import_settings(AppConfig, '*')
+      end
+    end.not_to raise_error
+  end
+
   specify 'each required setting is imported as an instance method with access to sliced value' do
     class SimpleImportCheckApp
       include Qonfig::Imports
@@ -58,7 +74,47 @@ describe 'Import settings as access methods to a class' do
     expect(app_with_configs.options).to match('server' => 'localhost', 'auto_run' => false)
   end
 
-  specify '(PRIVATE API) attr_writers (config muatators)' do
+  specify 'support for predicates' do
+    class ImportPredicatesCheck
+      include Qonfig::Imports
+
+      # NOTE: without prefix
+      import_settings(AppConfig, 'credentials.*', accessor: true)
+
+      # NOTE: with prefix
+      import_settings(AppConfig, 'job_que.options.*', prefix: 'config_', accessor: true)
+
+      # NOTE: and mappings
+      import_settings(AppConfig, mappings: { queue_engine: 'job_que.adapter' }, accessor: true)
+    end
+
+    app_with_predicates = ImportPredicatesCheck.new
+
+    expect(app_with_predicates.admin?).to eq(true)
+    expect(app_with_predicates.login?).to eq(true)
+    expect(app_with_predicates.password?).to eq(true)
+    expect(app_with_predicates.config_server?).to eq(true)
+    expect(app_with_predicates.config_auto_run?).to eq(true)
+    expect(app_with_predicates.queue_engine?).to eq(true)
+
+    app_with_predicates.config_server = nil
+    app_with_predicates.admin = false
+    app_with_predicates.queue_engine = nil
+
+    expect(app_with_predicates.config_server?).to eq(false)
+    expect(app_with_predicates.admin?).to eq(false)
+    expect(app_with_predicates.queue_engine?).to eq(false)
+
+    app_with_predicates.config_server = 'yandex'
+    app_with_predicates.admin = true
+    app_with_predicates.queue_engine = :delayed_job
+
+    expect(app_with_predicates.config_server?).to eq(true)
+    expect(app_with_predicates.admin?).to eq(true)
+    expect(app_with_predicates.queue_engine?).to eq(true)
+  end
+
+  specify 'attr_writers (config muatators)' do
     class AttrAccessorImportCheckApp
       include Qonfig::Imports
 

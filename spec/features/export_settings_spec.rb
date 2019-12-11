@@ -15,6 +15,15 @@ describe 'Export settings as instance-level access methods' do
     end
   end
 
+  let(:empty_config) { Qonfig::DataSet.build }
+
+  specify 'empty export does nothing' do
+    my_simple_object = Object.new
+
+    expect { empty_config.export_settings(my_simple_object, '*') }.not_to raise_error
+    expect { empty_config.export_settings(my_simple_object, '#') }.not_to raise_error
+  end
+
   specify 'default values => do nothing' do
     my_simple_object = Object.new
     config.export_settings(my_simple_object) # do nothing :D
@@ -44,6 +53,43 @@ describe 'Export settings as instance-level access methods' do
     expect(my_simple_object.config_adapter).to eq(:sidekiq)
   end
 
+  specify 'support for predicates' do
+    my_simple_object = Object.new
+
+    # NOTE: without prefix
+    config.export_settings(my_simple_object, 'credentials.*', accessor: true)
+
+    # NOTE: with prefix
+    config.export_settings(my_simple_object, 'queue.*', prefix: 'config_', accessor: true)
+
+    # NOTE: and mappings
+    config.export_settings(
+      my_simple_object,
+      mappings: { creds_pass: 'credentials.password' },
+      accessor: true
+    )
+
+    expect(my_simple_object.login?).to eq(true)
+    expect(my_simple_object.password?).to eq(true)
+    expect(my_simple_object.config_adapter?).to eq(true)
+    expect(my_simple_object.config_threads?).to eq(true)
+    expect(my_simple_object.creds_pass?).to eq(true)
+
+    my_simple_object.config_adapter = nil
+    my_simple_object.password = false
+
+    expect(my_simple_object.config_adapter?).to eq(false)
+    expect(my_simple_object.password?).to eq(false)
+    expect(my_simple_object.creds_pass?).to eq(false)
+
+    my_simple_object.config_adapter = :delayed_job
+    my_simple_object.creds_pass = 'test'
+
+    expect(my_simple_object.config_adapter?).to eq(true)
+    expect(my_simple_object.password?).to eq(true)
+    expect(my_simple_object.creds_pass?).to eq(true)
+  end
+
   specify '<raw export> (concrete keys as values and keys with nestings as Qonfig::Settings)' do
     my_simple_object = Object.new
 
@@ -64,7 +110,7 @@ describe 'Export settings as instance-level access methods' do
     expect(my_simple_object.kek_adapter).to eq(:sidekiq)
   end
 
-  specify '(PRIVATE API) attr_writers (config muatators)' do
+  specify 'attr_writers (config muatators)' do
     my_simple_object = Object.new
 
     config.export_settings(

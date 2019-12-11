@@ -713,35 +713,35 @@ describe 'Validation' do
 
       # class-level checker
       expect(
-        (config_klass.valid_with?(enabled: true) do |config|
-          config.db.user = '0exp'
+        (config_klass.valid_with?(enabled: true) do |conf|
+          conf.db.user = '0exp'
         end)
       ).to eq(true)
       expect(
-        (config_klass.valid_with?(enabled: false) do |config|
-          config.db.user = 123
+        (config_klass.valid_with?(enabled: false) do |conf|
+          conf.db.user = 123
         end)
       ).to eq(false)
       expect(
-        (config_klass.valid_with?(enabled: nil) do |config|
-          config.db.user = 'test'
+        (config_klass.valid_with?(enabled: nil) do |conf|
+          conf.db.user = 'test'
         end)
       ).to eq(false)
 
       # instance-level checker
       expect(
-        (config.valid_with?(enabled: true) do |config|
-          config.db.user = '0exp'
+        (config.valid_with?(enabled: true) do |conf|
+          conf.db.user = '0exp'
         end)
       ).to eq(true)
       expect(
-        (config.valid_with?(enabled: false) do |config|
-          config.db.user = 123
+        (config.valid_with?(enabled: false) do |conf|
+          conf.db.user = 123
         end)
       ).to eq(false)
       expect(
-        (config.valid_with?(enabled: nil) do |config|
-          config.db.user = 'test'
+        (config.valid_with?(enabled: nil) do |conf|
+          conf.db.user = 'test'
         end)
       ).to eq(false)
 
