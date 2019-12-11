@@ -21,7 +21,7 @@ class Qonfig::Loaders::Basic
       nil # NOTE: consciously return nil (for clarity)
     end
 
-    # @param file_path [String]
+    # @param file_path [String, Pathname]
     # @option fail_on_unexist [Boolean]
     # @return [Object]
     #
