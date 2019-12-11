@@ -30,7 +30,7 @@ class Qonfig::Compacted < BasicObject
     #
     # @api public
     # @since 0.21.0
-    def build_from(data_set = ::Qonfig::Compacted::Constructor::NO_NITIAL_DATA_SET, &configurations)
+    def build_from(data_set = ::Qonfig::Compacted::Constructor::NO_INITIAL_DATA_SET, &configurations)
       compacted_config = allocate # NOTE: #tap does not exist on BasicObject :(
       ::Qonfig::Compacted::Constructor.construct(compacted_config, data_set, &configurations)
       compacted_config
@@ -57,7 +57,7 @@ class Qonfig::Compacted < BasicObject
   # @since 0.21.0
   attr_reader :____data_set____
 
-  # @param settings_map [Hash]
+  # @param settings_map [Hash<Symbol|String,Any>]
   # @param configuration [Block]
   # @return [void]
   #
@@ -68,14 +68,14 @@ class Qonfig::Compacted < BasicObject
   def initialize(settings_map = {}, &configuration)
     ::Qonfig::Compacted::Constructor.construct(
       self,
-      ::Qonfig::Compacted::Constructor::NO_NITIAL_DATA_SET,
+      ::Qonfig::Compacted::Constructor::NO_INITIAL_DATA_SET,
       settings_map: settings_map,
       &configuration
     )
   end
 
   # @param key [String, Symbol]
-  # @return [Object]
+  # @return [Any]
   #
   # @api public
   # @since 0.21.0

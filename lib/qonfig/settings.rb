@@ -491,7 +491,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   end
 
   # @param key [String, Symbol]
-  # @param value [Object]
+  # @param value [Any]
   # @return [void]
   #
   # @api private

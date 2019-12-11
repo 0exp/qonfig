@@ -7,14 +7,14 @@ module Qonfig::Compacted::Constructor
   #
   # @api private
   # @since 0.21.0
-  NO_NITIAL_DATA_SET = nil
+  NO_INITIAL_DATA_SET = nil
 
   class << self
     # @param compacted_config [Qonfig::Compacted]
     # @param initial_data_set [NilClass, Qonfig::DataSet]
-    #   Notice: cant define NO_NITIAL_DATA_SET (`nil`) as default value cuz Ruby will autoamtically
+    #   Notice: cant define NO_INITIAL_DATA_SET (`nil`) as default value cuz Ruby will autoamtically
     #   transform any Qonfig::DataSet to Hash (thx for kwargs, Ruby >:()
-    # @option settings_map [Hash]
+    # @option settings_map [Hash<String,Symbol|Any>]
     # @param configuration [Block]
     # @return [void]
     #
@@ -43,7 +43,7 @@ module Qonfig::Compacted::Constructor
 
     # @param compacted_config [Qonfig::Compacted]
     # @param initial_data_set [Qonfig::DataSet]
-    # @param settings_map [Hash]
+    # @param settings_map [Hash<String,Symbol|Any>]
     # @param configuration [Block]
     # @return [void]
     #
@@ -63,7 +63,7 @@ module Qonfig::Compacted::Constructor
     end
 
     # @param compacted_config [Qonfig::Compacted]
-    # @param settings_map [Hash]
+    # @param settings_map [Hash<String,Symbol|Any>]
     # @param configuration [Block]
     # @return [void]
     #
