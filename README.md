@@ -90,7 +90,7 @@ require 'qonfig'
     - [Load from \_\_END\_\_](#load-from-__end__) (aka `.load_from_self`)
     - [Expose \_\_END\_\_](#expose-__end__) (aka `.expose_self`)
   - **Setting values**
-    - `(instance methods for loading setting values from a file to existing config object with already defined setting keys)`
+    - `(instance methods for loading the setting values from a file to existing config object with already defined setting keys)`
     - [Default setting values file](#default-setting-values-file)
     - [Load setting values from YAML file](#load-setting-values-from-yaml-file-by-instance)
     - [Load setting values from JSON file](#load-setting-values-from-json-file-by-instance)
