@@ -30,7 +30,10 @@ class Qonfig::Compacted < BasicObject
     #
     # @api public
     # @since 0.21.0
-    def build_from(data_set = ::Qonfig::Compacted::Constructor::NO_INITIAL_DATA_SET, &configurations)
+    def build_from(
+      data_set = ::Qonfig::Compacted::Constructor::NO_INITIAL_DATA_SET,
+      &configurations
+    )
       compacted_config = allocate # NOTE: #tap does not exist on BasicObject :(
       ::Qonfig::Compacted::Constructor.construct(compacted_config, data_set, &configurations)
       compacted_config
