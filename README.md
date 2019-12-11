@@ -69,6 +69,7 @@ require 'qonfig'
     - [Prexify method name](#prexify-method-name)
     - [Import nested settings as raw Qonfig::Settings objects](#import-nested-settings-as-raw-qonfigsettings-objects)
     - [Import with pattern-matching](#import-with-pattern-matching)
+    - [Support for predicate-like methods](#support-for-predicate-like-methods)
   - [Export config settings](#export-config-settings) (`as singleton methods`)
 - [Validation](#validation)
   - [Introduction](#introduction)
@@ -644,7 +645,7 @@ config.settings.web_api # => "api.google.com"
   - `values_file` [doc](#default-setting-values-file)
 - support for validation of potential setting values `.valid_with?` [documentation](#validation-of-potential-setting-values);
 - can be instantiated by:
-  - by existing config object: `Qonfig::DataSet#compacted` or `Qonfig::Compacted.build_from(config, &configuration)`
+  - by existing config object: `Qonfig::DataSet#compacted` or `Qonfig::Compacted.build_from(config, &configuration)`;
   - from existing `Qonfig::DataSet` class: ``Qonfig::DataSet.build_compacted`;
   - by direct instantiation: `Qonfig::Compacted.new(settings_values = {}, &configuration)`;
   - by implicit instance building without explicit class definition `Qonfig::Compacted.build(&dsl_commands) # => instance of Qonfig::Compacted`;
@@ -1289,7 +1290,7 @@ You can use RabbitMQ-like pattern matching in setting key names:
 - (**IMPORTANT**) `import_settings` imports config settings as access methods to config's settings (creates `attr_reader`s for your config);
 - generated methods can be used as predicates (with trailing `?` symbol);
 - you can generate `attr_accessor`s by specifying `accessor: true` option
-  (be careful: you can get `AmbiguousSettingValueError` when you try to assign a value to config option which have nested settings);
+  (be careful: you can get `Qonfig::AmbiguousSettingValueError` when you try to assign a value to config option which have nested settings);
 - signature: `.import_settings(config_object, *setting_keys, mappings: {}, prefix: '', raw: false)`
   - `config_object` - an instance of `Qonfig::DataSet` whose config settings should be imported;
   - `*setting_keys` - an array of dot-notaed config's setting keys that should be imported
@@ -1326,6 +1327,7 @@ Let's see what we can to do :)
 - [Prexify method name](#prexify-method-name)
 - [Import nested settings as raw Qonfig::Settings objects](#import-nested-settings-as-raw-qonfigsettings-objects)
 - [Import with pattern-matching](#import-with-pattern-matching)
+- [Support for predicate-like methods](#support-for-predicate-like-methods)
 
 #### Import a set of setting keys (simple dot-noated key list)
 
@@ -1490,7 +1492,7 @@ end
 - (**IMPORTANT**) `export_settings` exports config settings as access methods to config's settings (creates `attr_reader`s for your config);
 - generated methods can be used as predicates (with trailing `?` symbol);
 - you can generate `attr_accessor`s by specifying `accessor: true` option
-  (be careful: you can get `AmbiguousSettingValueError` when you try to assign a value to config option which have nested settings);
+  (be careful: you can get `Qonfig::AmbiguousSettingValueError` when you try to assign a value to config option which have nested settings);
 - signature: `#export_settings(exportable_object, *setting_keys, mappings: {}, prefix: '', raw: false)`:
   - `exportable_object` - an arbitrary object for exporting;
   - `*setting_keys` - an array of dot-notaed config's setting keys that should be exported
