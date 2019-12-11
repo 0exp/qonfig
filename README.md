@@ -622,8 +622,8 @@ config.settings.web_api # => "api.google.com"
 - [Definition and instantiation](#definition-and-instantiation)
   - [by raw initialization](#by-raw-initialization)
   - [by existing Qonfig::DataSet class](#by-existing-qonfigdataset-class)
-  - [by Qonfig::DataSet instance](#by-qonfigdataset-instance-qonfigdatasetcompacted-or-qonfigcompactedbuild_fromconfig)
-  - [instantiation without class definition](#without-explicit-class-definition)
+  - [by existing Qonfig::DataSet instance](#by-existing-qonfigdataset-class)
+  - [instantiation without class definition](#instantiation-without-class-definition-1)
   - [validation API](#validation-api-see-the-full-documentation)
 - [Setting readers and writers](#setting-readers-and-writers)
   - [reading](#reading-by-setting-name-and-index-method-with-dot-notation-support-and-indifferent-access)
@@ -636,7 +636,7 @@ config.settings.web_api # => "api.google.com"
 - setting keys are represented as direct instace methods (`#settings` invokation does not need);
 - no any other useful instance-based functionality - just setting readers, setting writers and setting predicates:
 - support or index-method (`[]`,`[]=`) with dot-notaiton format and indifferent type of key names (strings and symbols);
-- full support of `Qonfig::DataSet` DSL commands:
+- full support of `Qonfig::DataSet` definition DSL commands:
   - `setting`, `re_setting` [doc](#definition-and-access)
   - `validate`, `add_validator` [doc](#validation)
   - `load_from_self` [doc](#load-from-__end__), `load_from_yaml` [doc](#load-from-yaml-file), `load_from_json` [doc](#load-from-json-file), `load_from_toml` [doc](#plugins-toml);
@@ -688,7 +688,7 @@ config.api # => 'google.com'
 config.enabled # => true
 ```
 
-#### by Qonfig::DataSet instance
+#### by existing Qonfig::DataSet instance
 
 - `Qonfig::DataSet#compacted`
 - (or) `Qonfig::Compacted.build_from(config)`
@@ -721,7 +721,7 @@ config.api # => 'google.ru'
 config.enabled # => true
 ```
 
-#### validation API (see [the full documentation](#validation)):
+#### validation API (see [full documentation](#validation)):
 
 ```ruby
 # custom validators
@@ -773,7 +773,7 @@ end
 config = Config.new
 ```
 
-#### reading (by setting name and index method with dot-notation support and indifferent access):
+#### reading (by setting name and index method with dot-notation support and indifferent access)
 
 ```ruby
 # by setting name
@@ -789,7 +789,7 @@ config[:queue][:engine] # => :sidekiq
 config['queue.workers_count'] # => 10
 ```
 
-#### writing (by setting name and index method with dot-notation support and indifferent access):
+#### writing (by setting name and index method with dot-notation support and indifferent access)
 
 ```ruby
 # by setting name
@@ -803,9 +803,7 @@ config['queue.engine'] = :sidekiq
 config[:queue][:workers_count] = 5
 ```
 
-#### predicates:
-
-- [documentation](#settings-as-predicates)
+#### predicates ([see full documentation](#settings-as-predicates))
 
 ```ruby
 class Config < Qonfig::Compcated
