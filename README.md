@@ -620,7 +620,7 @@ config.settings.web_api # => "api.google.com"
 ## Compact configs
 
 - [Definition and instantiation](#definition-and-instantiation)
-  - [raw definition and instantiation](#raw-definition-and-instantiation)
+  - [by raw initialization](#by-raw-initialization)
   - [by existing Qonfig::DataSet class](#by-existing-qonfigdataset-class)
   - [by Qonfig::DataSet instance](#by-qonfigdataset-instance-qonfigdatasetcompacted-or-qonfigcompactedbuild_fromconfig)
   - [instantiation without class definition](#without-explicit-class-definition)
@@ -654,7 +654,7 @@ config.settings.web_api # => "api.google.com"
 
 ### Definition and instantiation
 
-#### raw definition and instantiation:
+#### by raw initialization
 
 ```ruby
 class Config < Qonfig::Compacted
