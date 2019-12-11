@@ -43,7 +43,7 @@ require 'qonfig'
   - [Smart Mixin](#smart-mixin) (`Qonfig::Configurable`)
   - [Instantiation without class definition](#instantiation-without-class-definition) (`Qonfig::DataSet.build(&definitions)`)
 - [Compact configs](#compact-configs)
-  - [Definition and instantiation](#definition-1)
+  - [Definition and instantiation](#definition-and-instantiation)
     - [raw definition and instantiation](#raw-definition-and-instantiation)
     - [by existing Qonfig::DataSet class](#by-existing-qonfigdataset-class)
     - [by Qonfig::DataSet instance](#by-qonfigdataset-instance-qonfigdatasetcompacted-or-qonfigcompactedbuild_fromconfig)
