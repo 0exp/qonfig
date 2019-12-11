@@ -43,8 +43,16 @@ require 'qonfig'
   - [Smart Mixin](#smart-mixin) (`Qonfig::Configurable`)
   - [Instantiation without class definition](#instantiation-without-class-definition) (`Qonfig::DataSet.build(&definitions)`)
 - [Compact configs](#compact-configs)
-  -
-  -
+  - [Definition and instantiation](#definition-1)
+    - [raw definition and instantiation](#raw-definition-and-instantiation)
+    - [by existing Qonfig::DataSet class](#by-existing-qonfigdataset-class)
+    - [by Qonfig::DataSet instance](#by-qonfigdataset-instance-qonfigdatasetcompacted-or-qonfigcompactedbuild_fromconfig)
+    - [instantiation without class definition](#without-explicit-class-definition)
+    - [validation API](#validation-api-see-the-full-documentation)
+  - [Setting readers and writers](#setting-readers-and-writers)
+    - [reading](#reading-by-setting-name-and-index-method-with-dot-notation-support-and-indifferent-access)
+    - [writing](#writing-by-setting-name-and-index-method-with-dot-notation-support-and-indifferent-access)
+    - [precitaes](#predicates-documentation)
 - [Interaction](#interaction)
   - [Iteration over setting keys](#iteration-over-setting-keys) (`#each_setting`, `#deep_each_setting`)
   - [List of config keys](#list-of-config-keys) (`#keys`, `#root_keys`)
@@ -611,14 +619,26 @@ config.settings.web_api # => "api.google.com"
 
 ## Compact configs
 
+- [Definition and instantiation](#definition-and-instantiation)
+  - [raw definition and instantiation](#raw-definition-and-instantiation)
+  - [by existing Qonfig::DataSet class](#by-existing-qonfigdataset-class)
+  - [by Qonfig::DataSet instance](#by-qonfigdataset-instance-qonfigdatasetcompacted-or-qonfigcompactedbuild_fromconfig)
+  - [instantiation without class definition](#without-explicit-class-definition)
+  - [validation API](#validation-api-see-the-full-documentation)
+- [Setting readers and writers](#setting-readers-and-writers)
+  - [reading](#reading-by-setting-name-and-index-method-with-dot-notation-support-and-indifferent-access)
+  - [writing](#writing-by-setting-name-and-index-method-with-dot-notation-support-and-indifferent-access)
+  - [precitaes](#predicates-documentation)
+
+---
+
 - `Qonfig::Compacted`: represents the compacted config object with setting readers and setting writers;
 - setting keys are represented as direct instace methods (`#settings` invokation does not need);
 - no any other useful instance-based functionality - just setting readers, setting writers and setting predicates:
-  - setting key names as readers, writers and predicates;
-  - support or index method with dot-notaiton support and indifferent access;
+- support or index-method (`[]`,`[]=`) with dot-notaiton format and indifferent type of key names (strings and symbols);
 - full support of `Qonfig::DataSet` DSL definition commands:
   - `setting`, `re_setting` [doc]()
-  - `validate`, `add_validator` [validation api doc]()
+  - `validate`, `add_validator` [full api doc](#validation)
   - `load_from_self` [doc](), `load_from_yaml` [doc](), `load_from_json` [doc](), `load_from_toml` [doc]();
   - `expose_self` [doc](), `expose_yaml` [doc](), `expose_json` [doc](), `expose_toml` [doc]()
   - `values_file` [doc]()
@@ -630,7 +650,9 @@ config.settings.web_api # => "api.google.com"
   - by implicit instance building without explicit class definition `Qonfig::Compacted.build(&dsl_commands) # => instance of Qonfig::Compacted`;
 - you can define your custom instance methods too;
 
-### Definition
+---
+
+### Definition and instantiation
 
 #### raw definition and instantiation:
 
@@ -652,7 +674,7 @@ config.enabled # => false
 config.queue.engine # => :sidekiq
 ```
 
-#### by existing `Qonfig::DataSet` class:
+#### by existing Qonfig::DataSet class
 
 ```ruby
 class Config < Qonfig::DataSet
@@ -666,7 +688,10 @@ config.api # => 'google.com'
 config.enabled # => true
 ```
 
-#### by `Qonfig::DataSet` instance (`Qonfig::DataSet#compacted` or `Qonfig::Compacted.build_from(config)`):
+#### by Qonfig::DataSet instance
+
+- `Qonfig::DataSet#compacted`
+- (or) `Qonfig::Compacted.build_from(config)`
 
 ```ruby
 class Config < Qonfig::DataSet
@@ -684,7 +709,7 @@ compacted_config.api # => 'google.com'
 compacted_config.enabled # => true
 ```
 
-#### without explicit class definition
+#### instantiation without class definition
 
 ```ruby
 config = Qonfig::Compacted.build do
@@ -696,7 +721,7 @@ config.api # => 'google.ru'
 config.enabled # => true
 ```
 
-#### validation API (see [the full documentation]()):
+#### validation API (see [the full documentation](#validation)):
 
 ```ruby
 # custom validators
@@ -730,6 +755,8 @@ config.api = :yandex # => Qonfig::ValidationError (should be a type of string)
 config.version = nil # => Qonfig::ValidationError (can not be nil)
 config.queue.engine = 'sneakers' # => Qonfig::ValidationError (should be a type of symbol)
 ```
+
+---
 
 ### Setting readers and writers
 
@@ -776,7 +803,7 @@ config['queue.engine'] = :sidekiq
 config[:queue][:workers_count] = 5
 ```
 
-#### settings as predicates [documentation](#settings-as-predicates):
+#### predicates [documentation](#settings-as-predicates):
 
 ```ruby
 class Config < Qonfig::Compcated
