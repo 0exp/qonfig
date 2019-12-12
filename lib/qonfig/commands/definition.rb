@@ -14,4 +14,6 @@ module Qonfig::Commands::Definition
   require_relative 'definition/expose_yaml'
   require_relative 'definition/expose_json'
   require_relative 'definition/expose_self'
+  require_relative 'definition/expose_file'
+  require_relative 'definition/load_from_file'
 end
