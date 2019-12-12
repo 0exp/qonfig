@@ -6,7 +6,7 @@ class Qonfig::Commands::Definition::LoadFromYAML < Qonfig::Commands::Base
   # @since 0.19.0
   self.inheritable = true
 
-  # @return [String]
+  # @return [String, Pathname]
   #
   # @api private
   # @since 0.2.0
@@ -18,7 +18,7 @@ class Qonfig::Commands::Definition::LoadFromYAML < Qonfig::Commands::Base
   # @since 0.2.0
   attr_reader :strict
 
-  # @param file_path [String]
+  # @param file_path [String, Pathname]
   # @option strict [Boolean]
   #
   # @api private

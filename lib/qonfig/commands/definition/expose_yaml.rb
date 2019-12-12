@@ -18,7 +18,7 @@ class Qonfig::Commands::Definition::ExposeYAML < Qonfig::Commands::Base
   # @since 0.7.0
   EMPTY_YAML_DATA = {}.freeze
 
-  # @return [String]
+  # @return [String, Pathname]
   #
   # @api private
   # @since 0.7.0
@@ -42,7 +42,7 @@ class Qonfig::Commands::Definition::ExposeYAML < Qonfig::Commands::Base
   # @since 0.7.0
   attr_reader :env
 
-  # @param file_path [String]
+  # @param file_path [String, Pathname]
   # @option strict [Boolean]
   # @option via [Symbol]
   # @option env [String, Symbol]

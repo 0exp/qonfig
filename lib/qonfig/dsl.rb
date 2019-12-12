@@ -154,7 +154,7 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
     definition_commands << Qonfig::Commands::Definition::Compose.new(data_set_klass)
   end
 
-  # @param file_path [String]
+  # @param file_path [String, Pathname]
   # @option strict [Boolean]
   # @return [void]
   #
@@ -200,7 +200,7 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
     )
   end
 
-  # @param file_path [String]
+  # @param file_path [String, Pathname]
   # @option strict [Boolean]
   # @return [void]
   #
@@ -212,7 +212,7 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
     definition_commands << Qonfig::Commands::Definition::LoadFromJSON.new(file_path, strict: strict)
   end
 
-  # @param file_path [String]
+  # @param file_path [String, Pathname]
   # @option strict [Boolean]
   # @option via [Symbol]
   # @option env [Symbol, String]
@@ -228,7 +228,7 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
     )
   end
 
-  # @param file_path [String]
+  # @param file_path [String, Pathname]
   # @option strict [Boolean]
   # @option via [Symbol]
   # @option env [Symbol, String]
@@ -261,7 +261,7 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
     )
   end
 
-  # @param file_path [String]
+  # @param file_path [String, Pathname]
   # @option format [String, Symbol]
   # @option strict [Boolean]
   # @option expose [NilClass, String, Symbol] Environment key

@@ -18,7 +18,7 @@ class Qonfig::Commands::Definition::ExposeJSON < Qonfig::Commands::Base
   # @since 0.14.0
   EMPTY_JSON_DATA = {}.freeze
 
-  # @return [String]
+  # @return [String, Pathname]
   #
   # @api private
   # @since 0.14.0
@@ -42,7 +42,7 @@ class Qonfig::Commands::Definition::ExposeJSON < Qonfig::Commands::Base
   # @since 0.14.0
   attr_reader :env
 
-  # @param file_path [String]
+  # @param file_path [String, Pathname]
   # @option strict [Boolean]
   # @option via [Symbol]
   # @option env [String, Symbol]
