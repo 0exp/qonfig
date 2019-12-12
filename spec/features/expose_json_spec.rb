@@ -101,6 +101,23 @@ describe 'Expose JSON file' do
     expect(settings.env_based.stage_env.credentials).to eq({})
   end
 
+  specify 'support for Pathname in file path' do
+    class PathnameExposeJSONCheck < Qonfig::DataSet
+      expose_json(
+        Pathname.new(SpecSupport.fixture_path('expose_json', 'project.json')),
+        via: :env_key, env: :development
+      )
+    end
+
+    config = PathnameExposeJSONCheck.new
+
+    expect(config.settings.api_mode_enabled).to eq(true)
+    expect(config.settings.logging).to eq(false)
+    expect(config.settings.db_driver).to eq('sequel')
+    expect(config.settings.throttle_requests).to eq(false)
+    expect(config.settings.credentials).to eq({})
+  end
+
   describe 'failures and inconsistent situations' do
     describe 'definition level errors' do
       specify 'fails when :env attribute has non-string / non-symbol / non-numeric value' do

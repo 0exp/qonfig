@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.23.0] - 2019-12-12
+### Added
+- Support for `Pathname` file path in `.load_from_json`, `.load_from_yaml`, `.load_from_toml`, `.expose_yaml`, `.expose_json`, `.expose_toml`;
+
 ## [0.22.0] - 2019-12-12
 ### Added
 - Support for `Pathname` file path in `.values_file`, `#load_from_file`, `#load_from_yaml`, `#load_from_json` and `#load_from_toml`;
@@ -11,7 +15,7 @@ All notable changes to this project will be documented in this file.
   - represents the compacted config object with setting readers and setting writers only;
   - setting keys are represented as direct instace methods (`#settings` invokation does not need);
   - no any other useful instance-based functionality;
-  - full support of `Qonfig::DataSet` DSL commands (`setting`, `validate`, `add_validator`, `load_from_x`/`expose_x` and etc);
+  - full support of `Qonfig::DataSet` DSL commands (`.setting`, `.validate`, `.add_validator`, `.load_from_x`/`.expose_x` and etc);
   - can be instantiated by:
     - by existing config object: `Qonfig::DataSet#compacted` or `Qonfig::Compacted.build_from(config, &configuration)`
     - by direct instantiation: `Qonfig::Compacted.new(settings_values = {}, &configuration)`;

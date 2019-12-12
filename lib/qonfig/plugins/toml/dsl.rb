@@ -3,7 +3,7 @@
 # @api private
 # @since 0.12.0
 module Qonfig::DSL
-  # @param file_path [String]
+  # @param file_path [String, Pathname]
   # @option strict [Boolean]
   # @return [void]
   #
@@ -18,7 +18,7 @@ module Qonfig::DSL
     )
   end
 
-  # @param file_path [String]
+  # @param file_path [String, Pathname]
   # @option strict [Boolean]
   # @option via [Symbol]
   # @option env [Symbol, String]

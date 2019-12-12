@@ -62,6 +62,18 @@ describe 'Load from YAML' do
     expect { IncompatibleYAMLConfig.new }.to raise_error(Qonfig::IncompatibleYAMLStructureError)
   end
 
+  specify 'support for Pathname in file path' do
+    class PathnameYAMLLoadCheck < Qonfig::DataSet
+      load_from_yaml Pathname.new(SpecSupport.fixture_path('travis_settings.yml'))
+    end
+
+    config = PathnameYAMLLoadCheck.new
+
+    expect(config.settings.sudo).to eq(false)
+    expect(config.settings.language).to eq('ruby')
+    expect(config.settings.rvm).to contain_exactly('2.5.1', 'ruby-head', 'jruby-head')
+  end
+
   describe ':strict mode option (when file does not exist)' do
     context 'when :strict => true (by default)' do
       specify 'fails with corresponding error' do

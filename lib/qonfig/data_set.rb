@@ -203,7 +203,7 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   end
   alias_method :to_hash, :to_h
 
-  # @option path [String]
+  # @option path [String, Pathname]
   # @option options [Hash<Symbol|String,Any>] Native (ruby-stdlib) ::JSON#generate attributes
   # @param value_processor [Block]
   # @return [void]
@@ -217,7 +217,7 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   end
   alias_method :dump_to_json, :save_to_json
 
-  # @option path [String]
+  # @option path [String, Pathname]
   # @option symbolize_keys [Boolean]
   # @option options [Hash<Symbol|String,Any>] Native (ruby-stdlib) ::YAML#dump attributes
   # @param value_processor [Block]

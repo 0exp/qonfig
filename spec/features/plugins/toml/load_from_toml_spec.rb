@@ -60,6 +60,19 @@ describe 'Plugins(toml): Load from .toml (TOML)', plugin: :toml do
     end
   end
 
+  specify 'support for Pathanme in filepath' do
+    class PathanmeTomlLoadCheckConfig < Qonfig::DataSet
+      load_from_toml Pathname.new(SpecSupport.fixture_path('plugins', 'toml', 'mini_file.toml'))
+    end
+
+    config = PathanmeTomlLoadCheckConfig.new
+
+    expect(config.settings.enabled).to eq(false)
+    expect(config.settings.adapter).to eq('sidekiq')
+    expect(config.settings.credentials.user).to eq('0exp')
+    expect(config.settings.credentials.timeout).to eq(123)
+  end
+
   describe ':strict mode option (when file does not exist)' do
     context 'when :strict => true (by fefault)' do
       specify 'fails with corresponding error' do

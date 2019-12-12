@@ -23,9 +23,9 @@ class Qonfig::Uploaders::File < Qonfig::Uploaders::Base
 
   class << self
     # @param settings [Qonfig::Settings]
-    # @param options [Hash<Symbol|String,Any>]
     # @param value_processor [Block]
-    # @option path [String]
+    # @option path [String, Pathname]
+    # @option options [Hash<Symbol|String,Any>]
     # @return [void]
     #
     # @api private

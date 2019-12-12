@@ -63,6 +63,23 @@ describe 'Save to .yml (YAML)' do
       end
     end
 
+    specify 'support for Pathname in file path' do
+      config.save_to_yaml(path: Pathname.new(config_file_path), symbolize_keys: false) do |value|
+        value.is_a?(Proc) ? value.call : value
+      end
+
+      file_data = File.read(config_file_path)
+
+      expect(file_data).to eq(<<~YAML.strip << "\n")
+        ---
+        sentry:
+          user: D@iVeR
+          callback: loaded
+        server_port: 123
+        enabled: true
+      YAML
+    end
+
     specify 'rewrites existing file' do
       config_a = Class.new(Qonfig::DataSet) do
         setting :kek, 'kek'

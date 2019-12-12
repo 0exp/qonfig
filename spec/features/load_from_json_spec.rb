@@ -40,6 +40,20 @@ describe 'Load from JSON' do
     expect { IncompatibleJSONConfig.new }.to raise_error(Qonfig::IncompatibleJSONStructureError)
   end
 
+  specify 'support for Pathname in file path' do
+    class PathanmeJSONLoadCheckConfig < Qonfig::DataSet
+      load_from_json Pathname.new(SpecSupport.fixture_path('json_object_sample.json'))
+    end
+
+    config = PathanmeJSONLoadCheckConfig.new
+
+    expect(config.settings.user).to eq('D@iVeR')
+    expect(config.settings.maxAuthCount).to eq(55)
+    expect(config.settings.rubySettings.allowedVersions).to eq(['2.3', '2.4.2', '1.9.8'])
+    expect(config.settings.rubySettings.gitLink).to eq(nil)
+    expect(config.settings.rubySettings.withAdditionals).to eq(false)
+  end
+
   describe ':strict mode option (when file doesnt exist)' do
     context 'when :strict => true (by default)' do
       specify 'fails with corresponding error' do

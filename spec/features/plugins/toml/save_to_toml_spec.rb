@@ -114,6 +114,26 @@ describe 'Plugins(toml): Save to .toml (TOML)', plugin: :toml do
           e = false
         TOML
       end
+
+      specify 'support for Pathname in filepath' do
+        config.save_to_toml(path: Pathname.new(config_file_path))
+
+        file_data = File.read(config_file_path)
+
+        expect(file_data).to eq(<<~TOML.strip << "\n")
+          collection = [["1", "2"], [3, 4], [true, false], []]
+          false_boolean = false
+          float_value = 123.456
+          time = 2031-05-27T07:32:00Z
+          true_boolean = true
+          [empty_object]
+          [filled_object]
+          a = 1
+          c = true
+          d = "1"
+          e = false
+        TOML
+      end
     end
 
     context 'config with unsupported toml types' do

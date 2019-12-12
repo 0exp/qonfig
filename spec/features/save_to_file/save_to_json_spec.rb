@@ -38,6 +38,25 @@ describe 'Save to .json (JSON)' do
       JSON
     end
 
+    specify 'support for Pathname in file path' do
+      config.save_to_json(path: Pathname.new(config_file_path)) do |value|
+        value.is_a?(Proc) ? value.call : value
+      end
+
+      file_data = File.read(config_file_path)
+
+      expect(file_data).to eq(<<~JSON.strip)
+        {
+         "sentry": {
+          "user": "D@iVeR",
+          "callback": "loaded"
+         },
+         "server_port": 123,
+         "enabled": true
+        }
+      JSON
+    end
+
     specify 'rewrites existing file' do
       config_a = Class.new(Qonfig::DataSet) do
         setting :kek, 'kek'

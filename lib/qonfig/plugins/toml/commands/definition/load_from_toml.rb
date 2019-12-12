@@ -7,7 +7,7 @@ class Qonfig::Commands::Definition::LoadFromTOML < Qonfig::Commands::Base
   # @since 0.20.0
   self.inheritable = true
 
-  # @return [String]
+  # @return [String, Pathname]
   #
   # @api private
   # @since 0.12.0

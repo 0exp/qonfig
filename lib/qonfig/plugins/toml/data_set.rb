@@ -3,7 +3,7 @@
 # @api public
 # @since 0.12.0
 class Qonfig::DataSet
-  # @option path [String]
+  # @option path [String, Pathname]
   # @option options [Hash<Symbol,Any>] Nothing, just for compatability and consistency
   # @param value_processor [Block]
   # @return [void]
@@ -17,7 +17,7 @@ class Qonfig::DataSet
   end
   alias_method :dump_to_toml, :save_to_toml
 
-  # @param file_path [String]
+  # @param file_path [String, Pathmame]
   # @option strict [Boolean]
   # @option expose [NilClass, String, Symbol] Environment key
   # @param configuration [Block]

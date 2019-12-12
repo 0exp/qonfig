@@ -19,7 +19,7 @@ class Qonfig::Commands::Definition::ExposeTOML < Qonfig::Commands::Base
   # @since 0.12.0
   EMPTY_TOML_DATA = {}.freeze
 
-  # @return [String]
+  # @return [String, Pathname]
   #
   # @api private
   # @since 0.12.0
