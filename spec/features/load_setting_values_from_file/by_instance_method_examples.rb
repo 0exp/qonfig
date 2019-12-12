@@ -32,6 +32,21 @@ shared_examples 'load setting values from file by instance methods' do |file_nam
     expect(config.settings.credentials.timeout).to eq(123)
   end
 
+  specify 'support for Pathname in file path' do
+    config = Class.new(Qonfig::DataSet) do
+      setting :enabled, true
+      setting :adapter, 'undefined'
+      setting(:credentials) { setting :user; setting :timeout }
+    end.new
+
+    config.public_send(load_by, Pathname.new(file_name))
+
+    expect(config.settings.enabled).to eq(false)
+    expect(config.settings.adapter).to eq('sidekiq')
+    expect(config.settings.credentials.user).to eq('0exp')
+    expect(config.settings.credentials.timeout).to eq(123)
+  end
+
   specify 'provides "do |config|" ability' do
     config = Class.new(Qonfig::DataSet) do
       setting :enabled, nil
@@ -39,10 +54,10 @@ shared_examples 'load setting values from file by instance methods' do |file_nam
       setting(:credentials) { setting :user; setting :timeout }
     end.new
 
-    config.public_send(load_by, file_name) do |config|
-      config.enabled = true
-      config.credentials.user = 'do_config'
-      config.credentials.timeout = 0
+    config.public_send(load_by, file_name) do |conf|
+      conf.enabled = true
+      conf.credentials.user = 'do_config'
+      conf.credentials.timeout = 0
     end
 
     expect(config.settings.enabled).to eq(true) # from do-config
@@ -50,8 +65,8 @@ shared_examples 'load setting values from file by instance methods' do |file_nam
     expect(config.settings.credentials.user).to eq('do_config') # from do-config
     expect(config.settings.credentials.timeout).to eq(0) # from do-config
 
-    config.public_send(load_by, file_with_env_name, expose: :test) do |config|
-      config.credentials.user = 'super_expose_test'
+    config.public_send(load_by, file_with_env_name, expose: :test) do |conf|
+      conf.credentials.user = 'super_expose_test'
     end
 
     expect(config.settings.enabled).to eq(false)
@@ -59,8 +74,8 @@ shared_examples 'load setting values from file by instance methods' do |file_nam
     expect(config.settings.credentials.user).to eq('super_expose_test') # from do-config
     expect(config.settings.credentials.timeout).to eq(321)
 
-    config.public_send(load_by, file_with_env_name, expose: :production) do |config|
-      config.adapter = 'overwatch'
+    config.public_send(load_by, file_with_env_name, expose: :production) do |conf|
+      conf.adapter = 'overwatch'
     end
 
     expect(config.settings.enabled).to eq(true)

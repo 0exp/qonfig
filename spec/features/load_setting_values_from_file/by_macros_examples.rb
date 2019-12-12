@@ -17,6 +17,21 @@ shared_examples 'load setting values from file by macros' do |file_name:, file_w
     expect(config.settings.credentials.timeout).to eq(123)
   end
 
+  specify 'support for Pathname in file path' do
+    config = Class.new(Qonfig::DataSet) do
+      values_file Pathname.new(file_name), format: file_format
+
+      setting :enabled, true
+      setting :adapter, 'undefined'
+      setting(:credentials) { setting :user; setting :timeout }
+    end.new
+
+    expect(config.settings.enabled).to eq(false)
+    expect(config.settings.adapter).to eq('sidekiq')
+    expect(config.settings.credentials.user).to eq('0exp')
+    expect(config.settings.credentials.timeout).to eq(123)
+  end
+
   specify 'works with inheritance and composition' do
     base_config_klass = Class.new(Qonfig::DataSet) do
       values_file file_name, format: file_format

@@ -30,10 +30,11 @@ class Qonfig::Commands::Instantiation::ValuesFile < Qonfig::Commands::Base
   # @since 0.17.0
   DEFAULT_FORMAT = :dynamic
 
-  # @return [String, Symbol]
+  # @return [String, Symbol, Pathname]
   #
   # @api private
   # @since 0.17.0
+  # @version 0.22.0
   attr_reader :file_path
 
   # @return [String]
@@ -60,7 +61,7 @@ class Qonfig::Commands::Instantiation::ValuesFile < Qonfig::Commands::Base
   # @since 0.17.0
   attr_reader :expose
 
-  # @param file_path [String, Symbol]
+  # @param file_path [String, Symbol, Pathname]
   # @param caller_location [String]
   # @option format [String, Symbol]
   # @option strict [Boolean]
@@ -69,6 +70,7 @@ class Qonfig::Commands::Instantiation::ValuesFile < Qonfig::Commands::Base
   #
   # @api private
   # @since 0.17.0
+  # @version 0.22.0
   def initialize(
     file_path,
     caller_location,
@@ -140,7 +142,7 @@ class Qonfig::Commands::Instantiation::ValuesFile < Qonfig::Commands::Base
     raise(error) if strict
   end
 
-  # @param file_path [String, Symbol]
+  # @param file_path [String, Symbol, Pathname]
   # @param format [String, Symbol]
   # @param strict [Boolean]
   # @param expose [NilClass, String, Symbol]
@@ -151,8 +153,14 @@ class Qonfig::Commands::Instantiation::ValuesFile < Qonfig::Commands::Base
   #
   # @api private
   # @since 0.17.0
+  # @version 0.22.0
+  # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   def prevent_incompatible_attributes!(file_path, format, strict, expose)
-    unless file_path.is_a?(String) || file_path == SELF_LOCATED_FILE_DEFINITION
+    unless (
+      file_path.is_a?(String) ||
+      file_path.is_a?(Pathname) ||
+      file_path == SELF_LOCATED_FILE_DEFINITION
+    )
       raise Qonfig::ArgumentError, 'Incorrect file path'
     end
 
@@ -171,4 +179,5 @@ class Qonfig::Commands::Instantiation::ValuesFile < Qonfig::Commands::Base
       raise Qonfig::ArgumentError, ':strict should be a type of boolean'
     end
   end
+  # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 end

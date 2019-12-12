@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.22.0] - 2019-12-12
+### Added
+- Support for `Pathname` file path in `.values_file`, `#load_from_file`, `#load_from_yaml`, `#load_from_json` and `#load_from_toml`;
+
 ## [0.21.0] - 2019-12-12
 ### Added
 - Brand new type of config objects `Qonfig::Compacted`:

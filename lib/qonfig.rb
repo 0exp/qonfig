@@ -3,6 +3,7 @@
 require 'yaml'
 require 'json'
 require 'erb'
+require 'pathname'
 
 # @api public
 # @since 0.1.0
