@@ -633,9 +633,8 @@ config.settings.web_api # => "api.google.com"
 
 ---
 
-- `Qonfig::Compacted`: represents the compacted config object with setting readers and setting writers;
+- `Qonfig::Compacted`: represents the compacted config object with setting readers, setting writers and setting predicates only - and no any other useful instance-based functionality:
 - setting keys are represented as direct instace methods (`#settings` invokation does not need);
-- no any other useful instance-based functionality - just setting readers, setting writers and setting predicates:
 - support for index-like access methods (`[]`,`[]=`);
 - full support of `Qonfig::DataSet` definition DSL commands:
   - `setting`, `re_setting` [doc](#definition-and-access)
@@ -646,9 +645,9 @@ config.settings.web_api # => "api.google.com"
 - support for validation of potential setting values `.valid_with?` [documentation](#validation-of-potential-setting-values);
 - can be instantiated by:
   - by existing config object: `Qonfig::DataSet#compacted` or `Qonfig::Compacted.build_from(config, &configuration)`;
-  - from existing `Qonfig::DataSet` class: ``Qonfig::DataSet.build_compacted`;
+  - from existing `Qonfig::DataSet` class: `Qonfig::DataSet.build_compacted`;
   - by direct instantiation: `Qonfig::Compacted.new(settings_values = {}, &configuration)`;
-  - by implicit instance building without explicit class definition `Qonfig::Compacted.build(&dsl_commands) # => instance of Qonfig::Compacted`;
+  - by implicit instance building without explicit class definition `Qonfig::Compacted.build(&dsl_commands)`;
 - you can define your own instance methods too;
 
 ---
