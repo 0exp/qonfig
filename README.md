@@ -103,6 +103,7 @@ require 'qonfig'
   - [toml](#plugins-toml) (support for `TOML` format)
   - [pretty_print](#plugins-pretty_print) (beautified/prettified console output)
 - [Roadmap](#roadmap)
+- [Build](#build)
 ---
 
 ## Definition
@@ -3212,6 +3213,13 @@ config = Config.new
   - support for persistent data storages (we want to store configs in multiple databases and files);
   - Rails reload plugin;
 - **Minor**:
+
+## Build
+
+```shell
+bin/rspec -w # test the core functionality and plugins
+bin/rspec -n # test only the core functionality
+```
 
 ## Contributing
 
