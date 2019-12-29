@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.24.0] - 2019-12-29
+### Added
+- Support for **Ruby@2.7**;
+
 ## [0.23.0] - 2019-12-12
 ### Added
 - Support for `Pathname` file path in `.load_from_json`, `.load_from_yaml`, `.load_from_toml`, `.expose_yaml`, `.expose_json`, `.expose_toml`;
