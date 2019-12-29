@@ -40,7 +40,7 @@ describe 'Load from YAML' do
       expect(conf['rubocop']['require']).to eq('rubocop-rspec')
       expect(conf['rubocop']['AllCops']['Include']).to contain_exactly('lib/**/*', 'spec/**/*')
       expect(conf['rubocop']['AllCops']['Exclude']).to contain_exactly('bin/**/*', 'Gemfile')
-      expect(conf['rubocop']['Layout/LineLength']['Max']).to eq(100)
+      expect(conf['rubocop']['Metrics/LineLength']['Max']).to eq(100)
 
       # with_erb_instructions.yml
       expect(conf['with_erb']['user']).to eq('D@iVeR')
