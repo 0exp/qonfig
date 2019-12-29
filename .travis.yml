@@ -4,25 +4,25 @@ matrix:
   include:
   - rvm: 2.4.9
     gemfile: gemfiles/with_external_deps.gemfile
-    env: TEST_PLUGINS=true
+    env: TEST_PLUGINS=true FULL_TEST_COVERAGE_CHECK=true
   - rvm: 2.5.7
     gemfile: gemfiles/with_external_deps.gemfile
-    env: TEST_PLUGINS=true
+    env: TEST_PLUGINS=true FULL_TEST_COVERAGE_CHECK=true
   - rvm: 2.6.5
     gemfile: gemfiles/with_external_deps.gemfile
-    env: TEST_PLUGINS=true
+    env: TEST_PLUGINS=true FULL_TEST_COVERAGE_CHECK=true
   - rvm: 2.7.0
     gemfile: gemfiles/with_external_deps.gemfile
-    env: TEST_PLUGINS=true
+    env: TEST_PLUGINS=true FULL_TEST_COVERAGE_CHECK=true
   - rvm: ruby-head
     gemfile: gemfiles/with_external_deps.gemfile
-    env: TEST_PLUGINS=true
+    env: TEST_PLUGINS=true FULL_TEST_COVERAGE_CHECK=true
   - rvm: jruby-head
     gemfile: gemfiles/with_external_deps.gemfile
-    env: TEST_PLUGINS=true
+    env: TEST_PLUGINS=true FULL_TEST_COVERAGE_CHECK=true
   - rvm: truffleruby
     gemfile: gemfiles/with_external_deps.gemfile
-    env: TEST_PLUGINS=true
+    env: TEST_PLUGINS=true FULL_TEST_COVERAGE_CHECK=true
   - rvm: 2.4.9
     gemfile: gemfiles/without_external_deps.gemfile
   - rvm: 2.5.7
