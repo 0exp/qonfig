@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/LineLength
+# rubocop:disable Layout/LineLength
 describe 'Plugins(toml): .values_file / #load_from_self (with incorrect __END__ data)', plugin: :toml do
   describe 'DSL macros' do
     let(:config_klass) do
@@ -26,7 +26,7 @@ describe 'Plugins(toml): .values_file / #load_from_self (with incorrect __END__ 
     end
   end
 end
-# rubocop:enable Metrics/LineLength
+# rubocop:enable Layout/LineLength
 
 __END__
 

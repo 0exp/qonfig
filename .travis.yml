@@ -4,27 +4,32 @@ matrix:
   include:
   - rvm: 2.4.9
     gemfile: gemfiles/with_external_deps.gemfile
-    env: TEST_PLUGINS=true
+    env: TEST_PLUGINS=true FULL_TEST_COVERAGE_CHECK=true
   - rvm: 2.5.7
     gemfile: gemfiles/with_external_deps.gemfile
-    env: TEST_PLUGINS=true
+    env: TEST_PLUGINS=true FULL_TEST_COVERAGE_CHECK=true
   - rvm: 2.6.5
     gemfile: gemfiles/with_external_deps.gemfile
-    env: TEST_PLUGINS=true
+    env: TEST_PLUGINS=true FULL_TEST_COVERAGE_CHECK=true
+  - rvm: 2.7.0
+    gemfile: gemfiles/with_external_deps.gemfile
+    env: TEST_PLUGINS=true FULL_TEST_COVERAGE_CHECK=true
   - rvm: ruby-head
     gemfile: gemfiles/with_external_deps.gemfile
-    env: TEST_PLUGINS=true
+    env: TEST_PLUGINS=true FULL_TEST_COVERAGE_CHECK=true
   - rvm: jruby-head
     gemfile: gemfiles/with_external_deps.gemfile
-    env: TEST_PLUGINS=true
+    env: TEST_PLUGINS=true FULL_TEST_COVERAGE_CHECK=true
   - rvm: truffleruby
     gemfile: gemfiles/with_external_deps.gemfile
-    env: TEST_PLUGINS=true
+    env: TEST_PLUGINS=true FULL_TEST_COVERAGE_CHECK=true
   - rvm: 2.4.9
     gemfile: gemfiles/without_external_deps.gemfile
   - rvm: 2.5.7
     gemfile: gemfiles/without_external_deps.gemfile
   - rvm: 2.6.5
+    gemfile: gemfiles/without_external_deps.gemfile
+  - rvm: 2.7.0
     gemfile: gemfiles/without_external_deps.gemfile
   - rvm: ruby-head
     gemfile: gemfiles/without_external_deps.gemfile
@@ -40,6 +45,3 @@ sudo: false
 cache: bundler
 before_install: gem install bundler
 script: bundle exec rspec
-notifications:
-  slack:
-    secure: I03SDv+IrKy3IkeGjjHUJ9VneFMiYpLzIgPOixGFO5zGVXgulwmun82KsrPSW5HkK1UEQCahfoXt1hNECPwxcdsY01q6LBYJQx1jD0q17bXHllN/q0C6lx3peRN0KqNAAOU3/mHZxLt3HFV+N3HsSnoxDMuSYJgKbjCL/QVG2L2UYT9vi+JRNM/thj8R6MWKWlOHemik40GbLr2anCOCqiALzxnJzh5nJyGj+9SGvjhHfQq/fAIrg1+Scu+UchG8d+1yS5JWsGTt1/JF08i+Ux4ceTQ7GNBNeA5cj/xuUzvRx6A85renxyTiZMKIL0+jeceUm8c+/46XFcq0F7/kJB36lwjFhX1JRphcu/VouRdEwW/BvH74wnyHtygqOpk0LH4shp7A1DIS1DlnBbeJxrR5hdMDnmV85kTU6w6H0BbncsYY/pH1fji1kgH6jCsdwqDlq4wLB8x8I+eZABBsfb/r55z/HnBmmxlvR7Rt3X5/yR3gJrsgRrDBBZ5LwYy1RSCDu76vMQqWGJKG03FdfqSNqmC5V4MC5Ez8yjGDW0Yle09mwvsL2c6fDXyDPCeB/gwNk+FvgLRXnv7C4BaBNEoG4JnCL/dwauoJNg0lB6uF34BEmYAhZIrdY1CI6BqPWnaVMJfcJSYekBVXDIELDnTFRWjaGU1y8dM6lNzDmYE=

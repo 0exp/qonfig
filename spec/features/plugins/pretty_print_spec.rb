@@ -21,21 +21,42 @@ describe 'Plugins(:pretty_print): Pretty print :)', plugin: :pretty_print do
   end
 
   shared_examples 'pretty printing :)' do
+    subject(:print_to_console!) { PP.pp(config, pretty_printer_output) }
+
     let(:pretty_printer_output) { StringIO.new }
 
-    specify 'shows config settings in beatufied format' do
-      value_space = SpecSupport.from_object_id_space_to_value_space(config)
-      PP.pp(config, pretty_printer_output)
+    if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.7.0')
+      specify 'shows config settings in beatufied format' do
+        print_to_console!
 
-      expect(pretty_printer_output.string).to eq(
-        "#<#{expected_config_klass_name}:0x#{value_space}\n" \
-        " api.domain: \"google\",\n" \
-        " api.creds.token: \"a0sdj10k@\",\n" \
-        " api.creds.login: \"D2\",\n" \
-        " database.adapter: \"pg\",\n" \
-        " logging: false,\n" \
-        " author: nil>\n"
-      )
+        expect(pretty_printer_output.string).to include(
+          "#<#{expected_config_klass_name}:0x"
+        )
+
+        expect(pretty_printer_output.string).to include(
+          " api.domain: \"google\",\n" \
+          " api.creds.token: \"a0sdj10k@\",\n" \
+          " api.creds.login: \"D2\",\n" \
+          " database.adapter: \"pg\",\n" \
+          " logging: false,\n" \
+          " author: nil>\n"
+        )
+      end
+    else
+      specify 'shows config settings in beatufied format' do
+        print_to_console!
+        value_space = SpecSupport.from_object_id_space_to_value_space(config)
+
+        expect(pretty_printer_output.string).to eq(
+          "#<#{expected_config_klass_name}:0x#{value_space}\n" \
+          " api.domain: \"google\",\n" \
+          " api.creds.token: \"a0sdj10k@\",\n" \
+          " api.creds.login: \"D2\",\n" \
+          " database.adapter: \"pg\",\n" \
+          " logging: false,\n" \
+          " author: nil>\n"
+        )
+      end
     end
   end
 

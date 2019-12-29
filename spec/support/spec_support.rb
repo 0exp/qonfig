@@ -29,6 +29,12 @@ module SpecSupport
   # @return [String]
   def from_object_id_space_to_value_space(object)
     # NOTE: see Object#object_id source code for comments
+    # NOTE: it does not work on Ruby >= 2.7.0 (works on Ruby < 2.7.0 only)
+
+    if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.7.0')
+      raise 'Object ID address detection is not supported on Ruby >= 2.7'
+    end
+
     value_space = format('%x', (object.object_id << 1)) # rubocop:disable Style/FormatStringToken
     alignment = '0' * (16 - value_space.size)
     "#{alignment}#{value_space}"

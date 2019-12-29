@@ -1,18 +1,18 @@
 # frozen_string_literal: true
 
 require 'simplecov'
-require 'coveralls'
 
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
-  SimpleCov::Formatter::HTMLFormatter,
-  Coveralls::SimpleCov::Formatter
+  SimpleCov::Formatter::HTMLFormatter
 ])
 
+SimpleCov.minimum_coverage(100) if !!ENV['FULL_TEST_COVERAGE_CHECK']
 SimpleCov.start { add_filter 'spec' }
 
 require 'bundler/setup'
 require 'qonfig'
 require 'pry'
+require 'securerandom'
 
 require_relative 'support/spec_support'
 require_relative 'support/meta_scopes'

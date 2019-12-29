@@ -36,6 +36,7 @@ module QonfigSpecRunner
 
   def run_with_specs_for_plugins!
     ENV['TEST_PLUGINS'] = 'true'
+    ENV['FULL_TEST_COVERAGE_CHECK'] = 'true'
     ENV['BUNDLE_GEMFILE'] = GEMFILES[:with_external_deps]
     run_tests!
   end

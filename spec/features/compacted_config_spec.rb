@@ -164,12 +164,12 @@ describe 'Compacted config' do
       expect(child_compacted_config.db.creds.token).to eq('trututu')
 
       # NOTE: check validators
-      # rubocop:disable Metrics/LineLength
+      # rubocop:disable Layout/LineLength
       expect { child_compacted_config.test = 123 }.to raise_error(Qonfig::ValidationError)
       expect { child_compacted_config.db.creds.user = 123 }.to raise_error(Qonfig::ValidationError)
       expect { child_compacted_config['db.creds.password'] = 123 }.to raise_error(Qonfig::ValidationError)
       expect { child_compacted_config.db.creds.token = 123 }.to raise_error(Qonfig::ValidationError)
-      # rubocop:enable Metrics/LineLength
+      # rubocop:enable Layout/LineLength
     end
 
     describe 'instantiation without definition' do

@@ -217,7 +217,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   #
   # @api private
   # @since 0.1.0
-  # rubocop:disable Metrics/LineLength
+  # rubocop:disable Layout/LineLength
   def __to_hash__(transform_key: BASIC_SETTING_KEY_TRANSFORMER, transform_value: BASIC_SETTING_VALUE_TRANSFORMER)
     unless transform_key.is_a?(Proc)
       ::Kernel.raise(Qonfig::IncorrectKeyTransformerError, 'Key transformer should be a type of proc')
@@ -231,7 +231,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
       __build_hash_representation__(transform_key: transform_key, transform_value: transform_value)
     end
   end
-  # rubocop:enable Metrics/LineLength
+  # rubocop:enable Layout/LineLength
   alias_method :__to_h__, :__to_hash__
 
   # @option all_variants [Boolean]

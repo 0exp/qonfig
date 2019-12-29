@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/LineLength, Style/Semicolon
+# rubocop:disable Layout/LineLength, Style/Semicolon
 shared_examples 'load setting values from file by macros' do |file_name:, file_with_env_name:, file_format:|
   specify "load values from #{file_format} file over existing (non-strict, explicit format, no env)" do
     config = Class.new(Qonfig::DataSet) do
@@ -162,4 +162,4 @@ shared_examples 'load setting values from file by macros' do |file_name:, file_w
     end.to raise_error(Qonfig::ArgumentError)
   end
 end
-# rubocop:enable Metrics/LineLength, Style/Semicolon
+# rubocop:enable Layout/LineLength, Style/Semicolon
