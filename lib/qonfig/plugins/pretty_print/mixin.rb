@@ -35,14 +35,14 @@ class Qonfig::Plugins::PrettyPrint
     # @api public
     # @since 0.21.0
     def pretty_print(pp)
-      pp.object_address_group(self) do
-        pp.seplist(@____data_set____.keys, ::Kernel.proc { pp.text(',') }) do |key|
+      pp.object_address_group(____data_set____) do
+        pp.seplist(____data_set____.keys, ::Kernel.proc { pp.text(',') }) do |key|
           pp.breakable(' ')
           pp.group(1) do
             pp.text(key)
             pp.text(':')
             pp.breakable
-            pp.pp(@____data_set____[key])
+            pp.pp(____data_set____[key])
           end
         end
       end
@@ -81,3 +81,8 @@ class Qonfig::Plugins::PrettyPrint
     end
   end
 end
+
+__END__
+
+pp.rb 2.7.0
+obj = obj.__getobj__ if defined?(::Delegator) and (class << obj; self; end) <= ::Delegator
