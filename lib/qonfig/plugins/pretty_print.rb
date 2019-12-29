@@ -11,7 +11,7 @@ class Qonfig::Plugins::PrettyPrint < Qonfig::Plugins::Abstract
     # @version 0.24.0
     def install!
       if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.7.0')
-        require_relative 'pretty_print/ruby_2_7_patch'
+        require_relative 'pretty_print/ruby_2_7_basic_object_pp_patch'
       end
 
       require_relative 'pretty_print/mixin'
