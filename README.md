@@ -1001,6 +1001,8 @@ config.root_keys
 - method signature: `#reload!(configurations = {}, &configuration)`;
 
 ```ruby
+# -- config example ---
+
 class Config < Qonfig::DataSet
   setting :db do
     setting :adapter, 'postgresql'
@@ -1013,6 +1015,10 @@ config = Config.new
 
 config.settings.db.adapter # => 'postgresql'
 config.settings.logger # => #<Logger:0x00007ff9>
+```
+
+```ruby
+# --- redefine some settings (or add a new one) --
 
 config.configure { |conf| conf.logger = nil } # redefine some settings (will be reloaded)
 
@@ -1024,6 +1030,10 @@ class Config
 
   setting :enable_api, false # append new setting
 end
+```
+
+```ruby
+# --- reload ---
 
 # reload settings
 config.reload!
