@@ -3223,7 +3223,8 @@ config = Config.new
   - support for persistent data storages (we want to store configs in multiple databases and files);
   - Rails reload plugin;
 - **Minor**:
-
+  - An ability to flag `Qonfig::Configurable`'s config object as `compacted` (`Qonfig::Compacted`);
+  
 ## Build
 
 ```shell
