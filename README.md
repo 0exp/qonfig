@@ -3224,6 +3224,7 @@ config = Config.new
   - Rails reload plugin;
 - **Minor**:
   - An ability to flag `Qonfig::Configurable`'s config object as `compacted` (`Qonfig::Compacted`);
+  - External validation class with an importing api for better custom validations;
   
 ## Build
 
