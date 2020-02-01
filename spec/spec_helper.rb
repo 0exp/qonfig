@@ -2,12 +2,12 @@
 
 require 'simplecov'
 
-SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
-  SimpleCov::Formatter::HTMLFormatter
-])
-
-SimpleCov.minimum_coverage(100) if !!ENV['FULL_TEST_COVERAGE_CHECK']
-SimpleCov.start { add_filter 'spec' }
+SimpleCov.formatter = SimpleCov::Formatter::HTMLFormatter
+SimpleCov.minimum_coverage(100) # if !!ENV['FULL_TEST_COVERAGE_CHECK']
+SimpleCov.start do
+  enable_coverage :branch
+  add_filter 'spec'
+end
 
 require 'bundler/setup'
 require 'qonfig'
