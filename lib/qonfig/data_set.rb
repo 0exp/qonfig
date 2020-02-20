@@ -82,6 +82,17 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     thread_safe_access { settings.__is_frozen__ }
   end
 
+  # @param keys [Array<String,Symbol>]
+  # @return [Qonfig::DataSet]
+  #
+  # @api public
+  # @since 0.1.0
+  def sub_config(*keys)
+    thread_safe_access do
+      # TODO: realize
+    end
+  end
+
   # @param settings_map [Hash]
   # @param configurations [Proc]
   # @return [void]
