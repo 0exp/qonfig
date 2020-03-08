@@ -16,6 +16,7 @@ class Qonfig::Plugins::PrettyPrint < Qonfig::Plugins::Abstract
       end
       # :nocov:
 
+      require_relative 'pretty_print/requirements'
       require_relative 'pretty_print/mixin'
       require_relative 'pretty_print/data_set'
       require_relative 'pretty_print/settings'
