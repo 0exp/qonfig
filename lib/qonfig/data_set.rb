@@ -83,11 +83,13 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   end
 
   # @param keys [Array<String,Symbol>]
+  # @option sttings [Hash<String|Symbol,Any>]
+  # @param configurations [Block]
   # @return [Qonfig::DataSet]
   #
   # @api public
   # @since 0.1.0
-  def sub_config(*keys)
+  def sub_config(*keys, settings: {}, &configurations)
     thread_safe_access do
       # TODO: realize
     end
