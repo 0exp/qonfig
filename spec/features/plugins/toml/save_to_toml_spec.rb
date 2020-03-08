@@ -79,7 +79,6 @@ describe 'Plugins(toml): Save to .toml (TOML)', plugin: :toml do
 
     context 'config with supported toml types' do
       let(:config) do
-        # rubocop:disable Style/BracesAroundHashParameters
         Class.new(Qonfig::DataSet) do
           setting :true_boolean, true
           setting :false_boolean, false
@@ -90,7 +89,6 @@ describe 'Plugins(toml): Save to .toml (TOML)', plugin: :toml do
           setting :collection, [%w[1 2], [3, 4], [true, false], []]
           setting :time, Time.utc(2031, 0o5, 27, 0o7, 32, 0)
         end.new
-        # rubocop:enable Style/BracesAroundHashParameters
       end
 
       specify 'correctly represents YAML data types' do

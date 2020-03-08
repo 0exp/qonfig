@@ -111,7 +111,6 @@ describe 'Save to .yml (YAML)' do
     let(:config_file_name) { "#{SecureRandom.uuid}.yml" }
     let(:config_file_path) { SpecSupport.artifact_path(config_file_name) }
     let(:config_klass) do
-      # rubocop:disable Style/BracesAroundHashParameters
       Class.new(Qonfig::DataSet) do
         setting :true_bollean, true
         setting :false_boolean, false
@@ -120,7 +119,6 @@ describe 'Save to .yml (YAML)' do
         setting :null_data, nil
         setting :collection, ['1', 2, true, false, nil, [], {}]
       end
-      # rubocop:enable Style/BracesAroundHashParameters
     end
     let(:config) { config_klass.new }
 
