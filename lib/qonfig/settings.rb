@@ -560,8 +560,22 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   def __deep_access__(*keys)
     ::Kernel.raise(Qonfig::ArgumentError, 'Key list can not be empty') if keys.empty?
 
-    result = __get_value__(keys.first)
-    rest_keys = Array(keys[1..-1])
+    result = nil
+    rest_keys = nil
+    key_parts_count = keys.size
+
+    0.upto(key_parts_count - 1) do |key_parts_slice|
+      begin
+        setting_key = keys[0..key_parts_slice].join(DOT_NOTATION_SEPARATOR)
+        result = __get_value__(setting_key)
+        rest_keys = Array(keys[(key_parts_slice + 1)..-1])
+      rescue Qonfig::UnknownSettingError => error
+        key_parts_count == key_parts_slice ? raise(error) : next
+      end
+    end
+
+    # result = __get_value__(keys.first)
+    # rest_keys = Array(keys[1..-1])
 
     case
     when rest_keys.empty?
