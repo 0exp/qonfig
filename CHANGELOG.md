@@ -1,6 +1,16 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.24.1] - 2020-03-10
+### Changed
+- Enhanced dot-notated key resolving algorithm: now it goes through the all dot-notated key parts
+  until it finds the required setting key (or fails with `Qonfig::UnknowSettingKeyError`);
+
+### Fixed
+- (**Pretty-Print Plugin**):
+  - dot-noted setting keys can not be pretty-printed (they raise `Qonfig::UnknownSettingKeyError`);
+  - added `set` and `pp` dependnecy as pre-reloaded dependencies;
+
 ## [0.24.0] - 2019-12-29
 ### Added
 - Support for **Ruby@2.7**;
