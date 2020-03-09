@@ -507,6 +507,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
     raise(initial_error) if key_set.size == 1
 
     begin
+      # TODO: rewrite with __deep_access__-like key resolving functionality
       setting_value = __get_value__(key_set.first)
       required_key = key_set[1..-1].join(DOT_NOTATION_SEPARATOR)
       setting_value[required_key] = value # NOTE: pseudo-recoursive assignment
@@ -562,21 +563,18 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
 
     result = nil
     rest_keys = nil
-    key_parts_count = keys.size
+    key_parts_boundary = keys.size - 1
 
-    0.upto(key_parts_count - 1) do |key_parts_slice|
+    0.upto(key_parts_boundary) do |key_parts_slice_boundary|
       begin
-        setting_key = keys[0..key_parts_slice].join(DOT_NOTATION_SEPARATOR)
+        setting_key = keys[0..key_parts_slice_boundary].join(DOT_NOTATION_SEPARATOR)
         result = __get_value__(setting_key)
-        rest_keys = Array(keys[(key_parts_slice + 1)..-1])
+        rest_keys = Array(keys[(key_parts_slice_boundary + 1)..-1])
         break
       rescue Qonfig::UnknownSettingError => error
-        (key_parts_count - 1) == key_parts_slice ? raise(error) : next
+        key_parts_boundary == key_parts_slice_boundary ? raise(error) : next
       end
     end
-
-    # result = __get_value__(keys.first)
-    # rest_keys = Array(keys[1..-1])
 
     case
     when rest_keys.empty?
