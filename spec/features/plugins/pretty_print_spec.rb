@@ -13,6 +13,7 @@ describe 'Plugins(:pretty_print): Pretty print :)', plugin: :pretty_print do
 
       setting :database do
         setting :adapter, 'pg'
+        setting 'logging.queries', nil
       end
 
       setting :logging, false
@@ -38,6 +39,7 @@ describe 'Plugins(:pretty_print): Pretty print :)', plugin: :pretty_print do
           " api.creds.token: \"a0sdj10k@\",\n" \
           " api.creds.login: \"D2\",\n" \
           " database.adapter: \"pg\",\n" \
+          " database.logging.queries: nil,\n" \
           " logging: false,\n" \
           " author: nil>\n"
         )
@@ -53,6 +55,7 @@ describe 'Plugins(:pretty_print): Pretty print :)', plugin: :pretty_print do
           " api.creds.token: \"a0sdj10k@\",\n" \
           " api.creds.login: \"D2\",\n" \
           " database.adapter: \"pg\",\n" \
+          " database.logging.queries: nil,\n" \
           " logging: false,\n" \
           " author: nil>\n"
         )

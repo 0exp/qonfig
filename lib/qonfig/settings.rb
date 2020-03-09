@@ -507,6 +507,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
     raise(initial_error) if key_set.size == 1
 
     begin
+      # TODO: rewrite with __deep_access__-like key resolving functionality
       setting_value = __get_value__(key_set.first)
       required_key = key_set[1..-1].join(DOT_NOTATION_SEPARATOR)
       setting_value[required_key] = value # NOTE: pseudo-recoursive assignment
@@ -557,11 +558,23 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   #
   # @api private
   # @since 0.2.0
-  def __deep_access__(*keys)
+  def __deep_access__(*keys) # rubocop:disable Metrics/AbcSize
     ::Kernel.raise(Qonfig::ArgumentError, 'Key list can not be empty') if keys.empty?
 
-    result = __get_value__(keys.first)
-    rest_keys = Array(keys[1..-1])
+    result = nil
+    rest_keys = nil
+    key_parts_boundary = keys.size - 1
+
+    0.upto(key_parts_boundary) do |key_parts_slice_boundary|
+      begin
+        setting_key = keys[0..key_parts_slice_boundary].join(DOT_NOTATION_SEPARATOR)
+        result = __get_value__(setting_key)
+        rest_keys = Array(keys[(key_parts_slice_boundary + 1)..-1])
+        break
+      rescue Qonfig::UnknownSettingError => error
+        key_parts_boundary == key_parts_slice_boundary ? raise(error) : next
+      end
+    end
 
     case
     when rest_keys.empty?
