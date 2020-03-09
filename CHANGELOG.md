@@ -9,7 +9,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - (**Pretty-Print Plugin**):
   - dot-noted setting keys can not be pretty-printed (they raise `Qonfig::UnknownSettingKeyError`);
-  - added `set` and `pp` dependnecy as pre-reloaded dependencies;
+  - added `set` and `pp` as preloaded dependencies;
 
 ## [0.24.0] - 2019-12-29
 ### Added
