@@ -3217,15 +3217,14 @@ config = Config.new
 ## Roadmap
 
 - **Major**:
-  - distributed configuration server;
-  - cli toolchain;
   - support for Rails-like secrets;
   - support for persistent data storages (we want to store configs in multiple databases and files);
-  - Rails reload plugin;
+  - rails plugin;
+  - support for pattern matching;
 - **Minor**:
   - An ability to flag `Qonfig::Configurable`'s config object as `compacted` (`Qonfig::Compacted`);
   - External validation class with an importing api for better custom validations;
-  
+
 ## Build
 
 ```shell
