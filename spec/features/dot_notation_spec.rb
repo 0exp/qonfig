@@ -58,7 +58,7 @@ describe 'Dot-notation' do
       'kek' => {
         'frek' => { 'jek' => { 'bek' => 123456 } },
         'pek' => { 'cheburek'=>'test' },
-        'foo.bar' => 100_500,
+        'foo.bar' => 100_500
       },
       'frek' => {
         'jek' => { 'bek' => 123_456 }

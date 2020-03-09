@@ -558,7 +558,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   #
   # @api private
   # @since 0.2.0
-  def __deep_access__(*keys)
+  def __deep_access__(*keys) # rubocop:disable Metrics/AbcSize
     ::Kernel.raise(Qonfig::ArgumentError, 'Key list can not be empty') if keys.empty?
 
     result = nil
