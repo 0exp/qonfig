@@ -569,8 +569,9 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
         setting_key = keys[0..key_parts_slice].join(DOT_NOTATION_SEPARATOR)
         result = __get_value__(setting_key)
         rest_keys = Array(keys[(key_parts_slice + 1)..-1])
+        break
       rescue Qonfig::UnknownSettingError => error
-        key_parts_count == key_parts_slice ? raise(error) : next
+        (key_parts_count - 1) == key_parts_slice ? raise(error) : next
       end
     end
 
