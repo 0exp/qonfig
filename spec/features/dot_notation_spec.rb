@@ -30,14 +30,14 @@ describe 'Dot-notation' do
     expect(config.option?('kek.pek.cheburek')).to eq(true)
     expect(config.option?('kek.pek')).to eq(true)
     expect(config.option?('kek')).to eq(true)
-    expect(config.option?('kek.cheburek.pek')).to eq(false)
+    expect(config.option?('kek.foo.bar')).to eq(true)
     expect(config.option?('kek.cheburek.pek')).to eq(false)
     expect(config.option?('kek.cheburek')).to eq(false)
 
     expect(config.setting?('kek.pek.cheburek')).to eq(true)
     expect(config.setting?('kek.pek')).to eq(true)
     expect(config.setting?('kek')).to eq(true)
-    expect(config.setting?('kek.cheburek.pek')).to eq(false)
+    expect(config.setting?('kek.foo.bar')).to eq(true)
     expect(config.setting?('kek.cheburek.pek')).to eq(false)
     expect(config.setting?('kek.cheburek')).to eq(false)
   end
