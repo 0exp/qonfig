@@ -40,6 +40,9 @@ require 'qonfig'
   - [Inheritance](#inheritance)
   - [Composition](#composition)
   - [Hash representation](#hash-representation)
+    - [Default behaviour (without options)](#without-options-default-behavior)
+    - [With transformations](#with-transformations)
+    - [Dot-style format](#dot-style-format)
   - [Smart Mixin](#smart-mixin) (`Qonfig::Configurable`)
   - [Instantiation without class definition](#instantiation-without-class-definition) (`Qonfig::DataSet.build(&definitions)`)
 - [Compacted config](#compacted-config)
@@ -497,7 +500,7 @@ Config.new.to_h(
 }
 ```
 
-#### Dot-style
+#### Dot-style format
 
 - transformations are supported too (`key_transformer` and `value_transformer`);
 
@@ -514,7 +517,9 @@ Config.new.to_h(dot_style: true)
 
 ```ruby
 transformer = -> (value) { "$$#{value}$$" }
+
 Config.new.to_h(dot_style: true, key_transformer: transformer, value_transformer: transformer)
+
 # => "#<Logger:0x00007fcde799f158>??"
 {
   "$$serializers.json.engine$$" => "$$ok$$",
