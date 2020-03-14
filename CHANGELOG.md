@@ -1,6 +1,35 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+### Added
+- An ability to represent the config hash in dot-notated style (all config keys are represented in dot-notated format):
+  - works via `#to_h(dot_style: true)`;
+  - `key_transformer:` and `value_transfomer:` options are supported too;
+
+```ruby
+class Config << Qonfig::DataSet
+  setting :database do
+    setting :host, 'localhost'
+    setting :port, 6432
+  end
+
+  setting :api do
+    setting :rest_enabled, true
+    setting :rpc_enabled, false
+  end
+end
+
+Config.new.to_h(dot_style: true)
+# =>
+{
+  'database.host' => 'localhost',
+  'database.port' => 6432,
+  'api.rest_enabled' => true,
+  'api.rpc_enabled' => false,
+}
+```
+
 ## [0.24.1] - 2020-03-10
 ### Changed
 - Enhanced dot-notated key resolving algorithm: now it goes through the all dot-notated key parts
