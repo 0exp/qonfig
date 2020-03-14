@@ -184,6 +184,7 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     end
   end
 
+  # @option dot_style [Boolean]
   # @option key_transformer [Proc]
   # @option value_transformer [Proc]
   # @return [Hash]
@@ -191,11 +192,13 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   # @api public
   # @since 0.1.0
   def to_h(
+    dot_style: Qonfig::Settings::REPRESENT_HASH_IN_DOT_STYLE,
     key_transformer: Qonfig::Settings::BASIC_SETTING_KEY_TRANSFORMER,
     value_transformer: Qonfig::Settings::BASIC_SETTING_VALUE_TRANSFORMER
   )
     thread_safe_access do
       settings.__to_hash__(
+        dot_notation: dot_style,
         transform_key: key_transformer,
         transform_value: value_transformer
       )

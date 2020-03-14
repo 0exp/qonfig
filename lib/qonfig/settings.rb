@@ -22,6 +22,12 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   # @since 0.11.0
   BASIC_SETTING_VALUE_TRANSFORMER = (proc { |value| value }).freeze
 
+  # @return [Boolean]
+  #
+  # @api private
+  # @since 0.25.0
+  REPRESENT_HASH_IN_DOT_STYLE = false
+
   # @return [String]
   #
   # @api private
@@ -135,14 +141,9 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   #
   # @api public
   # @since 0.1.0
+  # @version 0.25.0
   def [](key)
-    __lock__.thread_safe_access do
-      begin
-        __get_value__(key)
-      rescue Qonfig::UnknownSettingError
-        __deep_access__(*__parse_dot_notated_key__(key))
-      end
-    end
+    __lock__.thread_safe_access { __resolve_value__(key) }
   end
 
   # @param key [String, Symbol]
@@ -211,27 +212,47 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
     __lock__.thread_safe_access { __deep_subset__(*keys) }
   end
 
+  # @option dot_notation [Boolean]
   # @option transform_key [Proc]
   # @option transform_value [Proc]
   # @return [Hash]
   #
   # @api private
   # @since 0.1.0
-  # rubocop:disable Layout/LineLength
-  def __to_hash__(transform_key: BASIC_SETTING_KEY_TRANSFORMER, transform_value: BASIC_SETTING_VALUE_TRANSFORMER)
+  # @version 0.25.0
+  def __to_hash__(
+    dot_notation: REPRESENT_HASH_IN_DOT_STYLE,
+    transform_key: BASIC_SETTING_KEY_TRANSFORMER,
+    transform_value: BASIC_SETTING_VALUE_TRANSFORMER
+  )
     unless transform_key.is_a?(Proc)
-      ::Kernel.raise(Qonfig::IncorrectKeyTransformerError, 'Key transformer should be a type of proc')
+      ::Kernel.raise(
+        Qonfig::IncorrectKeyTransformerError,
+        'Key transformer should be a type of proc'
+      )
     end
 
     unless transform_value.is_a?(Proc)
-      ::Kernel.raise(Qonfig::IncorrectValueTransformerError, 'Value transformer should be a type of proc')
+      ::Kernel.raise(
+        Qonfig::IncorrectValueTransformerError,
+        'Value transformer should be a type of proc'
+      )
     end
 
     __lock__.thread_safe_access do
-      __build_hash_representation__(transform_key: transform_key, transform_value: transform_value)
+      if dot_notation
+        __build_dot_notated_hash_representation__(
+          transform_key: transform_key,
+          transform_value: transform_value
+        )
+      else
+        __build_hash_representation__(
+          transform_key: transform_key,
+          transform_value: transform_value
+        )
+      end
     end
   end
-  # rubocop:enable Layout/LineLength
   alias_method :__to_h__, :__to_hash__
 
   # @option all_variants [Boolean]
@@ -491,6 +512,19 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   end
 
   # @param key [String, Symbol]
+  # @return [Object]
+  #
+  # @raise [Qonfig::UnknownSettingError]
+  #
+  # @api private
+  # @since 0.25.0
+  def __resolve_value__(key)
+    __get_value__(key)
+  rescue Qonfig::UnknownSettingError
+    __deep_access__(*__parse_dot_notated_key__(key))
+  end
+
+  # @param key [String, Symbol]
   # @param value [Any]
   # @return [void]
   #
@@ -701,6 +735,21 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
         final_value = transform_value.call(value)
         hash[final_key] = final_value
       end
+    end
+  end
+
+  # @option transform_key [Proc]
+  # @option transform_value [Proc]
+  # @return [Hash]
+  #
+  # @api private
+  # @since 0.25.0
+  def __build_dot_notated_hash_representation__(transform_key:, transform_value:)
+    __setting_keys__.each_with_object({}) do |key, hash|
+      final_key = transform_key.call(key)
+      final_value = transform_value.call(__resolve_value__(key))
+
+      hash[final_key] = final_value
     end
   end
 

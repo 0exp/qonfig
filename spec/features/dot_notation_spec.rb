@@ -106,4 +106,52 @@ describe 'Dot-notation' do
     expect { config['kek.frek']['bek'] }.to raise_error(Qonfig::UnknownSettingError)
     expect { config['lel'] }.to raise_error(Qonfig::UnknownSettingError)
   end
+
+  describe '#to_h' do
+    specify 'default behavior' do
+      expect(config.to_h(dot_style: true)).to match(
+        'kek.pek.cheburek' => 'test',
+        'kek.foo.bar' => 100_500,
+        'kek.frek.jek.bek' => 123_456
+      )
+    end
+
+    specify 'with key and value transformations' do
+      transformer = -> (value) { "#{value}!!" }
+
+      # transformations: key ONLY
+      hash = config.to_h(
+        dot_style: true,
+        key_transformer: transformer
+      )
+      expect(hash).to match(
+        'kek.pek.cheburek!!' => 'test',
+        'kek.foo.bar!!' => 100_500,
+        'kek.frek.jek.bek!!' => 123_456
+      )
+
+      # transformations: value ONLY
+      hash = config.to_h(
+        dot_style: true,
+        value_transformer: transformer
+      )
+      expect(hash).to match(
+        'kek.pek.cheburek' => 'test!!',
+        'kek.foo.bar' => '100500!!',
+        'kek.frek.jek.bek' => '123456!!'
+      )
+
+      # transformations: key AND value
+      hash = config.to_h(
+        dot_style: true,
+        key_transformer: transformer,
+        value_transformer: transformer
+      )
+      expect(hash).to match(
+        'kek.pek.cheburek!!' => 'test!!',
+        'kek.foo.bar!!' => '100500!!',
+        'kek.frek.jek.bek!!' => '123456!!'
+      )
+    end
+  end
 end
