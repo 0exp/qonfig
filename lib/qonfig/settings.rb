@@ -745,11 +745,13 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   # @api private
   # @since 0.25.0
   def __build_dot_notated_hash_representation__(transform_key:, transform_value:)
-    __setting_keys__.each_with_object({}) do |key, hash|
-      final_key = transform_key.call(key)
-      final_value = transform_value.call(__resolve_value__(key))
+    {}.tap do |hash|
+      __deep_each_key_value_pair__ do |setting_key, setting_value|
+        final_key = transform_key.call(setting_key)
+        final_value = transform_value.call(setting_value)
 
-      hash[final_key] = final_value
+        hash[final_key] = final_value
+      end
     end
   end
 
