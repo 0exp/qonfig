@@ -436,6 +436,12 @@ project_config.settings.db.password # => 'testpaswd'
 
 ### Hash representation
 
+- works via `#to_h` and `#to_hash`;
+- supported options:
+  - `key_transformer:` - an optional proc that accepts setting key and makes your custom transformations;
+  - `value_transformer:` - an optional proc that accepts setting value and makes your custom transformations;
+  - `dot_style:` - (`false` by default) represent setting keys in dot-notation (transformations are supported too);
+
 ```ruby
 class Config < Qonfig::DataSet
   setting :serializers do
@@ -454,7 +460,11 @@ class Config < Qonfig::DataSet
 
   setting :logger, Logger.new(STDOUT)
 end
+```
 
+#### Without options (default behavior)
+
+```ruby
 Config.new.to_h
 
 {
@@ -464,6 +474,53 @@ Config.new.to_h
   },
   "adapter" => { "default" => :memory_sync },
   "logger" => #<Logger:0x4b0d79fc>
+}
+```
+
+#### With transformations
+
+- with `key_transformer` and/or `value_transformer`;
+
+```ruby
+Config.new.to_h(
+  key_transformer: -> (key) { "#{key}!!" }
+  value_transformer: -> (value) { "#{value}??" }
+)
+
+{
+  "serializers!!": {
+    "json!!" => { "engine!!" => "ok??" },
+    "hash!!" => { "engine!!" => "native??" },
+  },
+  "adapter!!" => { "default!!" => "memory_sync??" },
+  "logger!!" => "#<Logger:0x00007fcde799f158>??"
+}
+```
+
+#### Dot-style
+
+- transformations are supported too (`key_transformer` and `value_transformer`);
+
+```ruby
+Config.new.to_h(dot_style: true)
+# =>
+{
+  "serializers.json.engine" => :ok,
+  "serializers.hash.engine" => :native,
+  "adapter.default" => :memory_sync,
+  "logger" => #<Logger:0x4b0d79fc>,
+}
+```
+
+```ruby
+transformer = -> (value) { "$$#{value}$$" }
+Config.new.to_h(dot_style: true, key_transformer: transformer, value_transformer: transformer)
+# => "#<Logger:0x00007fcde799f158>??"
+{
+  "$$serializers.json.engine$$" => "$$ok$$",
+  "$$serializers.hash.engine$$" => "$$native$$",
+  "$$adapter.default$$" => "$$memory_sync$$",
+  "$$logger$$" => "$$#<Logger:0x00007fcde799f158>$$",
 }
 ```
 
