@@ -40,7 +40,7 @@ require 'qonfig'
   - [Inheritance](#inheritance)
   - [Composition](#composition)
   - [Hash representation](#hash-representation)
-    - [Default behaviour (without options)](#without-options-default-behavior)
+    - [Default behaviour (without options)](#default-behavior-without-options)
     - [With transformations](#with-transformations)
     - [Dot-style format](#dot-style-format)
   - [Smart Mixin](#smart-mixin) (`Qonfig::Configurable`)
@@ -465,11 +465,11 @@ class Config < Qonfig::DataSet
 end
 ```
 
-#### Without options (default behavior)
+#### Default behavior (without-options)
 
 ```ruby
 Config.new.to_h
-
+# =>
 {
   "serializers": {
     "json" => { "engine" => :ok },
@@ -485,11 +485,11 @@ Config.new.to_h
 - with `key_transformer` and/or `value_transformer`;
 
 ```ruby
-Config.new.to_h(
-  key_transformer: -> (key) { "#{key}!!" }
-  value_transformer: -> (value) { "#{value}??" }
-)
+key_transformer = -> (key) { "#{key}!!" }
+value_transformer = -> (value) { "#{value}??" }
 
+Config.new.to_h(key_transformer: key_transformer, value_transformer: value_transformer)
+# =>
 {
   "serializers!!": {
     "json!!" => { "engine!!" => "ok??" },
