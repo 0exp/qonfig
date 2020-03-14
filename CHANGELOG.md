@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
-- An ability to represent the config hash in dot-notated style (all config keys will be represented as dot-notated keys):
+- An ability to represent the config hash in dot-notated style (all config keys are represented in dot-notated format):
   - works via `#to_h(dot_style: true)`;
   - `key_transformer:` and `value_transfomer:` options are supported too;
 
