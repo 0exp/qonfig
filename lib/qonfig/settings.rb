@@ -246,7 +246,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
           transform_value: transform_value
         )
       else
-        __build_hash_representation__(
+        __build_basic_hash_representation__(
           transform_key: transform_key,
           transform_value: transform_value
         )
@@ -714,14 +714,15 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   # @return [Hash]
   #
   # @api private
-  # @since 0.2.0
-  def __build_hash_representation__(options_part = __options__, transform_key:, transform_value:)
+  # @since 0.25.0
+  # rubocop:disable Layout/LineLength
+  def __build_basic_hash_representation__(options_part = __options__, transform_key:, transform_value:)
     options_part.each_with_object({}) do |(key, value), hash|
       final_key = transform_key.call(key)
 
       case
       when value.is_a?(Hash)
-        hash[final_key] = __build_hash_representation__(
+        hash[final_key] = __build_basic_hash_representation__(
           value,
           transform_key: transform_key,
           transform_value: transform_value
@@ -737,6 +738,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
       end
     end
   end
+  # rubocop:enable Layout/LineLength
 
   # @option transform_key [Proc]
   # @option transform_value [Proc]
