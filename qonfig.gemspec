@@ -6,7 +6,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'qonfig/version'
 
 Gem::Specification.new do |spec|
-  spec.required_ruby_version = '>= 2.4.9'
+  spec.required_ruby_version = '>= 2.4.10'
 
   spec.name        = 'qonfig'
   spec.version     = Qonfig::VERSION
@@ -31,7 +31,7 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency 'simplecov',        '~> 0.18'
   spec.add_development_dependency 'rspec',            '~> 3.9'
-  spec.add_development_dependency 'armitage-rubocop', '~> 0.79'
+  spec.add_development_dependency 'armitage-rubocop', '~> 0.81'
 
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'rake', '>= 13'

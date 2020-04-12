@@ -1,17 +1,22 @@
 language: ruby
-matrix:
+os: linux
+distr: xenial
+cache: bundler
+before_install: gem install bundler
+script: bundle exec rspec
+jobs:
   fast_finish: true
   include:
-  - rvm: 2.4.9
+  - rvm: 2.4.10
     gemfile: gemfiles/with_external_deps.gemfile
     env: TEST_PLUGINS=true FULL_TEST_COVERAGE_CHECK=true
-  - rvm: 2.5.7
+  - rvm: 2.5.8
     gemfile: gemfiles/with_external_deps.gemfile
     env: TEST_PLUGINS=true FULL_TEST_COVERAGE_CHECK=true
-  - rvm: 2.6.5
+  - rvm: 2.6.6
     gemfile: gemfiles/with_external_deps.gemfile
     env: TEST_PLUGINS=true FULL_TEST_COVERAGE_CHECK=true
-  - rvm: 2.7.0
+  - rvm: 2.7.1
     gemfile: gemfiles/with_external_deps.gemfile
     env: TEST_PLUGINS=true FULL_TEST_COVERAGE_CHECK=true
   - rvm: ruby-head
@@ -23,13 +28,13 @@ matrix:
   - rvm: truffleruby
     gemfile: gemfiles/with_external_deps.gemfile
     env: TEST_PLUGINS=true FULL_TEST_COVERAGE_CHECK=true
-  - rvm: 2.4.9
+  - rvm: 2.4.10
     gemfile: gemfiles/without_external_deps.gemfile
-  - rvm: 2.5.7
+  - rvm: 2.5.8
     gemfile: gemfiles/without_external_deps.gemfile
-  - rvm: 2.6.5
+  - rvm: 2.6.6
     gemfile: gemfiles/without_external_deps.gemfile
-  - rvm: 2.7.0
+  - rvm: 2.7.1
     gemfile: gemfiles/without_external_deps.gemfile
   - rvm: ruby-head
     gemfile: gemfiles/without_external_deps.gemfile
@@ -41,7 +46,3 @@ matrix:
   - rvm: ruby-head
   - rvm: jruby-head
   - rvm: truffleruby
-sudo: false
-cache: bundler
-before_install: gem install bundler
-script: bundle exec rspec
