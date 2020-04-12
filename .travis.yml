@@ -1,6 +1,6 @@
 language: ruby
 os: linux
-distr: xenial
+dist: xenial
 cache: bundler
 before_install: gem install bundler
 script: bundle exec rspec
