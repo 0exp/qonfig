@@ -530,7 +530,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   #
   # @api private
   # @since 0.21.0
-  # rubocop:disable Naming/RescuedExceptionsVariableName
+  # rubocop:disable Naming/RescuedExceptionsVariableName, Style/SlicingWithRange
   def __assign_value__(key, value)
     key = __indifferently_accessable_option_key__(key)
     __set_value__(key, value)
@@ -549,7 +549,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
       raise(initial_error)
     end
   end
-  # rubocop:enable Naming/RescuedExceptionsVariableName
+  # rubocop:enable Naming/RescuedExceptionsVariableName, Style/SlicingWithRange
 
   # @param key [String, Symbol]
   # @param value [Object]
@@ -592,7 +592,8 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   #
   # @api private
   # @since 0.2.0
-  def __deep_access__(*keys) # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/AbcSize, Style/SlicingWithRange
+  def __deep_access__(*keys)
     ::Kernel.raise(Qonfig::ArgumentError, 'Key list can not be empty') if keys.empty?
 
     result = nil
@@ -622,6 +623,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
       result.__dig__(*rest_keys)
     end
   end
+  # rubocop:enable Metrics/AbcSize, Style/SlicingWithRange
 
   # @param keys [Array<Symbol, String>]
   # @return [Hash]

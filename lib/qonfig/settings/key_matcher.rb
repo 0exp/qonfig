@@ -147,12 +147,14 @@ class Qonfig::Settings::KeyMatcher
   #
   # @api private
   # @since 0.13.0
+  # rubocop:disable Style/SlicingWithRange
   def strip_regexp_string(regexp_string, left: false, right: false)
     pattern = regexp_string
     pattern = pattern[2..-1] if left && pattern[0..1] == MATCHER_SCOPE_SPLITTER
     pattern = pattern[0..-3] if right && pattern[-2..-1] == MATCHER_SCOPE_SPLITTER
     pattern
   end
+  # rubocop:enable Style/SlicingWithRange
 
   # @param scope_pattern [String]
   # @return [Regexp]
