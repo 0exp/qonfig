@@ -3286,6 +3286,8 @@ config = Config.new
 - **Minor**:
   - An ability to flag `Qonfig::Configurable`'s config object as `compacted` (`Qonfig::Compacted`);
   - External validation class with an importing api for better custom validations;
+  - Setting value changement trace (in `anyway_config` manner);
+  - Instantiation and reloading callbacks;
 
 ## Build
 
