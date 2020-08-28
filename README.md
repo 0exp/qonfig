@@ -105,6 +105,7 @@ require 'qonfig'
 - [Plugins](#plugins)
   - [toml](#plugins-toml) (support for `TOML` format)
   - [pretty_print](#plugins-pretty_print) (beautified/prettified console output)
+  - [vault](#plugins-vault) (support for `Vault` store)
 - [Roadmap](#roadmap)
 - [Build](#build)
 ---
@@ -3153,6 +3154,7 @@ dynamic: 10
 
 - [toml](#plugins-toml) (provides `load_from_toml`, `save_to_toml`, `expose_toml`);
 - [pretty_print](#plugins-pretty_print) (beautified/prettified console output);
+- [vault](#plugins-vault) (provides `load_from_vault`, `expose_vault`)
 
 ---
 
@@ -3272,6 +3274,31 @@ config = Config.new
 # -- or --
 
 => #<Config:0x00007f9b6c01dab0 api.domain: "google.ru", api.creds.account: "D@iVeR", api.creds.password: "test123", log_requests: true, use_proxy: true>
+```
+
+---
+
+### Plugins: vault
+
+- `Qonfig.plugin(:vault)`
+- adds support for `vault kv store`, [more info](https://www.vaultproject.io/docs/secrets/kv/kv-v2)
+- depends on `vault` gem ([link](https://github.com/hashicorp/vault-ruby)) (tested on `>= 0.1`);
+- provides `.load_from_vault` (works in `.load_from_yaml` manner ([doc](#load-from-yaml-file)));
+- provides `.expose_vault` (works in `.expose_yaml` manner ([doc](#expose-yaml)));
+
+```ruby
+# 1) require external dependency
+require 'vault'
+
+# 2) Setup vault client
+
+Vault.address = 'http://localhost:8200'
+Vault.token = 'super-duper-token-here'
+
+# 3) enable plugin
+Qonfig.plugin(:vault)
+
+# 3) use vault :)
 ```
 
 ---

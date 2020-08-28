@@ -64,4 +64,6 @@ module Qonfig
   register_plugin('toml', Qonfig::Plugins::TOML)
   # @since 0.19.0
   register_plugin('pretty_print', Qonfig::Plugins::PrettyPrint)
+  # @since 0.21.0
+  register_plugin('vault', Qonfig::Plugins::Vault)
 end

@@ -9,6 +9,9 @@ RSpec.configure do |config|
         Qonfig.plugin(:toml)
       when :pretty_print
         Qonfig.plugin(:pretty_print)
+      when :vault
+        require 'vault'
+        Qonfig.plugin(:vault)
       end
 
       example.call
