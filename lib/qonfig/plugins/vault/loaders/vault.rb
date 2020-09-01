@@ -58,7 +58,9 @@ class Qonfig::Loaders::Vault < Qonfig::Loaders::Basic
     # @since 0.25.0
     def safely_evaluate(str_expr)
       parsed_expr = ERB.new(str_expr).result
-      EVAL_CONTEXT.eval(parsed_expr) rescue parsed_expr
+      EVAL_CONTEXT.eval(parsed_expr)
+    rescue Exception
+      parsed_expr
     end
   end
 end
