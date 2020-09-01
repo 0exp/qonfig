@@ -88,11 +88,10 @@ class Qonfig::Commands::Definition::ExposeVault < Qonfig::Commands::Base
   def expose_path!(settings)
     # NOTE: transform path (insert environment name into a secret name)
     #   from: kv/data/secret_name
-    #   to:   kv/data/env_name.secret_name
+    #   to:   kv/data/env_name/secret_name
 
     splitted_path = path.split('/')
-    splitted_path[-1] = [env.to_s, splitted_path[-1]].reject(&:empty?).join('.')
-    real_path = splitted_path.join('/')
+    real_path = splitted_path.insert(-2, env.to_s).join('/')
 
     vault_data = load_vault_data(real_path)
     vault_based_settings = build_data_set_class(vault_data).new.settings

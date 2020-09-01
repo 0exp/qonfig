@@ -30,7 +30,7 @@ describe 'Plugins(vault): expose vault', plugin: :vault do
 
   specify 'defines config object by vault instructions and specific environment settings' do
     expect(Vault.logical).to(
-      receive(:read).with('kv/data/production.path_based').and_return(returned_data)
+      receive(:read).with('kv/data/production/path_based').and_return(returned_data)
     )
     expect(Vault.logical).to receive(:read).with('kv/data/env_key').and_return(returned_data)
 
