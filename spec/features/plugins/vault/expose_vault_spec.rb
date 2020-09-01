@@ -13,7 +13,7 @@ describe 'Plugins(vault): expose vault', plugin: :vault do
     end
   end
   let(:secret_data) do
-    { data: { production: { kek: 'pek', cheburek: true }, other_key: false } }
+    { data: { production: { kek: 'pek', cheburek: true }, other_key: "<%= 1 + 1 %>" } }
   end
 
   let(:vault_class) do
@@ -35,7 +35,7 @@ describe 'Plugins(vault): expose vault', plugin: :vault do
     expect(Vault.logical).to receive(:read).with('kv/data/env_key').and_return(returned_data)
 
     VaultConfig.new.settings.tap do |conf|
-      expect(conf.based_on_path.other_key).to eq(false)
+      expect(conf.based_on_path.other_key).to eq(2)
       expect(conf.based_on_path.production).to be_a(Qonfig::Settings)
       expect(conf.based_on_env_key).to have_attributes(kek: 'pek', cheburek: true)
     end
