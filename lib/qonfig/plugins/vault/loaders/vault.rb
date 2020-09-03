@@ -51,15 +51,15 @@ class Qonfig::Loaders::Vault < Qonfig::Loaders::Basic
       end
     end
 
-    # @param str_expr [String]
+    # @param vault_expr [String]
     # @return [Object]
     #
     # @api private
     # @since 0.25.0
-    def safely_evaluate(str_expr)
-      parsed_expr = ERB.new(str_expr).result
+    def safely_evaluate(vault_expr)
+      parsed_expr = ERB.new(vault_expr).result
       EVAL_CONTEXT.eval(parsed_expr)
-    rescue Exception
+    rescue StandardError, ScriptError
       parsed_expr
     end
   end

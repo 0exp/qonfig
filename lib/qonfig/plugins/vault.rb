@@ -16,8 +16,8 @@ class Qonfig::Plugins::Vault < Qonfig::Plugins::Abstract
 
       require_relative 'vault/errors'
       require_relative 'vault/loaders/vault'
-      require_relative 'vault/commands/load_from_vault'
-      require_relative 'vault/commands/expose_vault'
+      require_relative 'vault/commands/definition/load_from_vault'
+      require_relative 'vault/commands/definition/expose_vault'
       require_relative 'vault/dsl'
     end
   end

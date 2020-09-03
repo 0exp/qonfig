@@ -6,7 +6,7 @@ class Qonfig::Commands::Definition::ExposeVault < Qonfig::Commands::Base
   # @since 0.25.0
   self.inheritable = true
 
-  # @return [Hash]
+  # @return [Hash<Symbol,Symbol>]
   #
   # @api private
   # @since 0.25.0
@@ -21,31 +21,32 @@ class Qonfig::Commands::Definition::ExposeVault < Qonfig::Commands::Base
   # @return [String, Pathname]
   #
   # @api private
-  # @since 0.12.0
+  # @since 0.25.0
   attr_reader :path
 
   # @return [Boolean]
   #
   # @api private
-  # @since 0.12.0
+  # @since 0.25.0
   attr_reader :strict
 
   # @return [Symbol]
   #
   # @api private
-  # @since 0.12.0
+  # @since 0.25.0
   attr_reader :via
 
   # @return [Symbol, String]
   #
   # @api private
-  # @since 0.12.0
+  # @since 0.25.0
   attr_reader :env
 
-  # @param path [String]
+  # @param path [String Pathname]
   # @option strict [Boolean]
   # @option via [Symbol]
   # @option env [String, Symbol]
+  # @return [void]
   #
   # @api private
   # @since 0.25.0

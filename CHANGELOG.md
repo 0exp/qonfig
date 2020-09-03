@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.25.0] - 2020-10-03
+### Added
+- Support for **Vault** config provider
+  - realized as a plugin (`Qonfig.plugin(:vault)`);
+  - provides `#load_from_vault`, `#expose_vault` methods and works in `#*_yaml`-like manner);
+  - depends on `gem vault (>= 0.1)`
+- `Qonfig::Settings#[]` behave like `Qonfig::Settings#__dig__`
+
 ## [Unreleased]
 ### Added
 - An ability to represent the config hash in dot-notated style (all config keys are represented in dot-notated format):

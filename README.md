@@ -192,6 +192,10 @@ config.settings['vendor_api']['domain'] # => 'app.service.com'
 config.settings['vendor_api']['login'] # => 'test_user'
 config.settings['enable_graphql'] # => false
 
+# dig to value
+config.settings[:vendor_api, :domain] # => 'app.service.com'
+config.settings[:vendor_api, 'login'] # => 'test_user'
+
 # get option value directly via index (with indifferent access)
 config['project_id'] # => nil
 config['enable_graphql'] # => false
@@ -3312,6 +3316,7 @@ Qonfig.plugin(:vault)
   - support for pattern matching;
 - **Minor**:
   - An ability to flag `Qonfig::Configurable`'s config object as `compacted` (`Qonfig::Compacted`);
+  - Instance-based behavior for `Vault` plugin, also use instance of `Vault` client instead of `Singleton`;
   - External validation class with an importing api for better custom validations;
   - Setting value changement trace (in `anyway_config` manner);
   - Instantiation and reloading callbacks;
