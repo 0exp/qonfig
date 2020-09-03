@@ -139,11 +139,20 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   # @param key [Symbol, String]
   # @return [Object]
   #
+  # @raise [Qonfig::ArgumentError]
+  #
   # @api public
   # @since 0.1.0
   # @version 0.25.0
-  def [](key)
-    __lock__.thread_safe_access { __resolve_value__(key) }
+  def [](*keys)
+    case keys.size
+    when 0
+      raise Qonfig::ArgumentError, "wrong number of arguments (given 0, expected more than 0)"
+    when 1
+      __lock__.thread_safe_access { __resolve_value__(keys.first) }
+    else
+      __dig__(*keys)
+    end
   end
 
   # @param key [String, Symbol]
