@@ -3,7 +3,13 @@
 # @api private
 # @since 0.25.0
 class Qonfig::Loaders::Vault < Qonfig::Loaders::Basic
-  EVAL_CONTEXT = BasicObject.new.__binding__
+  # @return [Binding]
+  #
+  # @api private
+  # @since 0.25.0
+  VAULT_EXPR_EVAL_SCOPE = BasicObject.new.__binding__.tap do |binding|
+    Object.new.method(:freeze).unbind.bind_call(binding.receiver)
+  end
 
   class << self
     # @param path [String, Pathname]
@@ -15,8 +21,8 @@ class Qonfig::Loaders::Vault < Qonfig::Loaders::Basic
     # @api private
     # @since 0.25.0
     def load_file(path, fail_on_unexist: true)
-      data = Vault.with_retries(Vault::HTTPError) do
-        Vault.logical.read(path.to_s)&.data&.dig(:data)
+      data = ::Vault.with_retries(Vault::HTTPError) do
+        ::Vault.logical.read(path.to_s)&.data&.dig(:data)
       end
       raise Qonfig::FileNotFoundError, "Path #{path} not exist" if data.nil? && fail_on_unexist
       result = data || empty_data
@@ -37,14 +43,15 @@ class Qonfig::Loaders::Vault < Qonfig::Loaders::Basic
 
     private
 
+    # @param vault_data [Hash<Object,Object>]
     # @return [Object]
     #
     # @api private
     # @since 0.25.0
-    def deep_transform_values(obj)
-      return obj unless obj.is_a?(Hash)
+    def deep_transform_values(vault_data)
+      return vault_data unless vault_data.is_a?(Hash)
 
-      obj.transform_values do |value|
+      vault_data.transform_values do |value|
         next safely_evaluate(value) if value.is_a?(String)
 
         deep_transform_values(value)
@@ -58,7 +65,7 @@ class Qonfig::Loaders::Vault < Qonfig::Loaders::Basic
     # @since 0.25.0
     def safely_evaluate(vault_expr)
       parsed_expr = ERB.new(vault_expr).result
-      EVAL_CONTEXT.eval(parsed_expr)
+      VAULT_EXPR_EVAL_SCOPE.eval(parsed_expr)
     rescue StandardError, ScriptError
       parsed_expr
     end
