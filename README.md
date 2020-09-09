@@ -274,7 +274,7 @@ config.slice_value('vendor_api.port') # => Qonfig::UnknownSettingError # (key do
 # - get a subset (a set of sets) of config settings represented as a hash;
 # - each key (or key set) represents a requirement of a certain setting key;
 
-config.subet(:vendor_api, :enable_graphql)
+config.subset(:vendor_api, :enable_graphql)
 # => { 'vendor_api' => { 'login' => ..., 'domain' => ... }, 'enable_graphql' => false }
 
 config.subset(:project_id, [:vendor_api, :domain], [:credentials, :user, :login])
