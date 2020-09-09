@@ -64,7 +64,7 @@ class Qonfig::Loaders::Vault < Qonfig::Loaders::Basic
     # @api private
     # @since 0.25.0
     def safely_evaluate(vault_expr)
-      parsed_expr = ERB.new(vault_expr).result
+      parsed_expr = ::ERB.new(vault_expr).result
       VAULT_EXPR_EVAL_SCOPE.eval(parsed_expr)
     rescue StandardError, ScriptError
       parsed_expr
