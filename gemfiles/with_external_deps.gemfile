@@ -4,5 +4,7 @@ source 'https://rubygems.org'
 
 # @since 0.17.0 (qonfig: :toml plugin)
 gem 'toml-rb', '>= 2'
+# @since 0.25.0 (qonfig: :vault plugin)
+gem 'vault', '>= 0.1'
 
 gemspec path: '..'
