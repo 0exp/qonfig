@@ -20,12 +20,14 @@ class Qonfig::Loaders::Vault < Qonfig::Loaders::Basic
     #
     # @api private
     # @since 0.25.0
-    def load_file(path, fail_on_unexist: true)
+    def load_file(path, fail_on_unexist: true, transform_values: true)
       data = ::Vault.with_retries(Vault::HTTPError) do
         ::Vault.logical.read(path.to_s)&.data&.dig(:data)
       end
       raise Qonfig::FileNotFoundError, "Path #{path} not exist" if data.nil? && fail_on_unexist
       result = data || empty_data
+      return result unless transform_values
+
       deep_transform_values(result)
     rescue Vault::VaultError => error
       raise(Qonfig::VaultLoaderError.new(error.message).tap do |exception|

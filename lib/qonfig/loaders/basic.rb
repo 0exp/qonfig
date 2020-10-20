@@ -30,9 +30,10 @@ class Qonfig::Loaders::Basic
     # @api private
     # @since 0.5.0
     def load_file(file_path, fail_on_unexist: true)
-      load(::File.read(file_path))
-    rescue Errno::ENOENT => error
-      fail_on_unexist ? (raise Qonfig::FileNotFoundError, error.message) : load_empty_data
+      data = Qonfig::FileDataResolving::Resolver.resolve!(file_path)
+      load(data)
+    rescue Qonfig::FileNotFoundError
+      fail_on_unexist ? raise : load_empty_data
     end
   end
 end
