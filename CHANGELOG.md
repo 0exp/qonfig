@@ -1,6 +1,23 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.25.0] - 2020-10-20
+### Added
+- Added file data resolver functionality:
+  - Added resolver for `file`
+  - Added resolver for `vault`
+  - Added DSL methods for defining custom resolvers
+
+```ruby
+Qonfig.define_resolver(:https) do |file_path|
+  Net::HTTP.get(URI("https:://#{file_path}"))
+end
+
+class Config < Qonfig::DataSet
+  load_from_yaml "https://yamlhost.com/cool.yaml"
+end
+```
+
 ## [0.25.0] - 2020-09-15
 ### Added
 - Support for **Vault** config provider:
