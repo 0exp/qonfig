@@ -21,7 +21,7 @@ class Qonfig::FileDataResolving::Resolver
     # @api private
     # @since 0.25.1
     def set_default_resolver!(scheme_name)
-      self.default_resolver = resolvers[scheme_name.to_sym]
+      self.default_resolver = resolvers.fetch(scheme_name.to_sym)
     end
 
     # @param file_path [String,Pathname]

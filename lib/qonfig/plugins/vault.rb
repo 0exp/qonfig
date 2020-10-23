@@ -31,8 +31,9 @@ class Qonfig::Plugins::Vault < Qonfig::Plugins::Abstract
     # @api private
     def define_resolvers!
       ::Qonfig.define_resolver(:vault) do |file_path|
-        *vault_path, file_name = file_path.split('/')
-        result = Qonfig::Loaders::Vault.load_file(vault_path.join('/'))[file_name.to_sym]
+        *vault_path, file_name = file_path.split(File::SEPARATOR)
+        vault_path = vault_path.join(File::SEPARATOR)
+        result = Qonfig::Loaders::Vault.load_file(vault_path)[file_name.to_sym]
         if result == nil
           raise Qonfig::FileNotFoundError, "Can't load file with name #{file_name}"
         end
