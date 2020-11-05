@@ -32,7 +32,7 @@ class Qonfig::FileDataResolving::Resolver
     # @since 0.25.1
     def resolve!(file_path)
       scheme_name = URI(file_path.to_s).scheme
-      scheme_name = scheme_name.nil? ? nil : scheme_name.to_sym
+      scheme_name = scheme_name.to_sym if scheme_name != nil
       resolver = resolvers[scheme_name] || default_resolver
       resolver.call(file_path.to_s.split('://').last)
     end
