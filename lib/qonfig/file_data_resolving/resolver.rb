@@ -11,8 +11,8 @@ class Qonfig::FileDataResolving::Resolver
     # @api private
     # @since 0.25.1
     def add_resolver!(scheme, resolver_proc)
-      self.resolvers ||= {}
-      resolvers[scheme.to_sym] = resolver_proc
+      @resolvers ||= {}
+      @resolvers[scheme.to_sym] = resolver_proc
     end
 
     # @param scheme_name [Symbol,String]
@@ -21,7 +21,7 @@ class Qonfig::FileDataResolving::Resolver
     # @api private
     # @since 0.25.1
     def set_default_resolver!(scheme_name)
-      self.default_resolver = resolvers.fetch(scheme_name.to_sym)
+      @default_resolver = resolvers.fetch(scheme_name.to_sym)
     end
 
     # @param file_path [String,Pathname]
@@ -31,7 +31,8 @@ class Qonfig::FileDataResolving::Resolver
     # @api private
     # @since 0.25.1
     def resolve!(file_path)
-      scheme_name = URI(file_path.to_s).scheme&.to_sym
+      scheme_name = URI(file_path.to_s).scheme
+      scheme_name = scheme_name.nil? ? nil : scheme_name.to_sym
       resolver = resolvers[scheme_name] || default_resolver
       resolver.call(file_path.to_s.split('://').last)
     end
@@ -42,12 +43,12 @@ class Qonfig::FileDataResolving::Resolver
     #
     # @api private
     # @since 0.25.1
-    attr_accessor :resolvers
+    attr_reader :resolvers
 
     # @return [Proc]
     #
     # @api private
     # @since 0.25.1
-    attr_accessor :default_resolver
+    attr_reader :default_resolver
   end
 end
