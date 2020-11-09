@@ -5,5 +5,5 @@ module Qonfig
   #
   # @api public
   # @since 0.1.0
-  VERSION = '0.23.0'
+  VERSION = '0.25.0'
 end

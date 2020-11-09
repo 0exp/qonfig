@@ -256,10 +256,10 @@ describe 'Validation' do
       expect { deep_config_klass.new }.not_to raise_error
 
       # NOTE: change validated setting to incorrect value
-      # rubocop:disable Metrics/LineLength
+      # rubocop:disable Layout/LineLength
       expect { deep_config_klass.new(db: { user: 123 }) }.to raise_error(Qonfig::ValidationError)
       expect { deep_config_klass.new.settings.db.user = 123 }.to raise_error(Qonfig::ValidationError)
-      # rubocop:enable Metrics/LineLength
+      # rubocop:enable Layout/LineLength
 
       # NOTE: change non-validated setting to any value
       expect { deep_config_klass.new(db: { password: 123 }) }.not_to raise_error
@@ -288,12 +288,12 @@ describe 'Validation' do
       end.not_to raise_error
 
       # NOTE: inherited validations
-      # rubocop:disable Metrics/LineLength
+      # rubocop:disable Layout/LineLength
       expect { child_config_klass.new(adapter: 123) }.to raise_error(Qonfig::ValidationError)
       expect { child_config_klass.new.settings.adapter = 123 }.to raise_error(Qonfig::ValidationError)
       expect { child_config_klass.new { |conf| conf.adapter = 123 } }.to raise_error(Qonfig::ValidationError)
       expect { child_config_klass.new.reload!(adapter: 123) }.to raise_error(Qonfig::ValidationError)
-      # rubocop:enable Metrics/LineLength
+      # rubocop:enable Layout/LineLength
 
       config = child_config_klass.new
       expect(config.valid?).to eq(true)
@@ -305,13 +305,13 @@ describe 'Validation' do
       expect(config.settings.adapter).to eq(123)
 
       # NOTE: own validations
-      # rubocop:disable Metrics/LineLength
+      # rubocop:disable Layout/LineLength
       expect { child_config_klass.new(enabled: '123') }.to raise_error(Qonfig::ValidationError)
       expect { child_config_klass.new.settings.enabled = '123' }.to raise_error(Qonfig::ValidationError)
       expect { child_config_klass.new { |conf| conf.enabled = '123' } }.to raise_error(Qonfig::ValidationError)
       expect { child_config_klass.new.reload!(enabled: '123') }.to raise_error(Qonfig::ValidationError)
       expect { child_config_klass.new.clear! }.to raise_error(Qonfig::ValidationError)
-      # rubocop:enable Metrics/LineLength
+      # rubocop:enable Layout/LineLength
 
       config = child_config_klass.new
       expect(config.valid?).to eq(true)
@@ -409,7 +409,7 @@ describe 'Validation' do
       # NOTE: all right (originally)
       expect { config_klass.new }.not_to raise_error
 
-      # rubocop:disable Metrics/LineLength
+      # rubocop:disable Layout/LineLength
       expect { config_klass.new.settings.db.creds.user = 123 }.to raise_error(Qonfig::ValidationError)
       expect { config_klass.new.settings.sidekiq.admin.user = 123 }.to raise_error(Qonfig::ValidationError)
       expect { config_klass.new.settings.sidekiq.admin.password = 123 }.to raise_error(Qonfig::ValidationError)
@@ -417,7 +417,7 @@ describe 'Validation' do
       expect { config_klass.new.settings.db.creds.password = 123 }.to raise_error(Qonfig::ValidationError)
       expect { config_klass.new.settings.adapter = 'que' }.to raise_error(Qonfig::ValidationError)
       expect { config_klass.new.settings.port = '555' }.to raise_error(Qonfig::ValidationError)
-      # rubocop:enable Metrics/LineLength
+      # rubocop:enable Layout/LineLength
 
       expect { config_klass.new.settings.db.creds.user = '123' }.not_to raise_error
       expect { config_klass.new.settings.sidekiq.admin.user = '123' }.not_to raise_error

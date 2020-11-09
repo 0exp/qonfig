@@ -74,7 +74,7 @@ describe 'Plugins(toml): Load from .toml (TOML)', plugin: :toml do
   end
 
   describe ':strict mode option (when file does not exist)' do
-    context 'when :strict => true (by fefault)' do
+    context 'when :strict => true (by default)' do
       specify 'fails with corresponding error' do
         # check default behaviour (strict: true)
         class FailingTomlConfig < Qonfig::DataSet

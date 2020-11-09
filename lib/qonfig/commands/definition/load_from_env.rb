@@ -55,6 +55,8 @@ class Qonfig::Commands::Definition::LoadFromENV < Qonfig::Commands::Base
     @convert_values = convert_values
     @prefix_pattern = prefix.is_a?(Regexp) ? prefix : /\A#{Regexp.escape(prefix.to_s)}.*\z/m
     @trim_prefix    = trim_prefix
+
+    # TODO: mb trim_prefix ?
     @trim_pattern   = prefix.is_a?(Regexp) ? prefix : /\A(#{Regexp.escape(prefix.to_s)})/m
   end
 

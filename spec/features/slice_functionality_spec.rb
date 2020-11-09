@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/LineLength
+# rubocop:disable Layout/LineLength
 describe '(#slice/#slice_value)-functionality' do
   specify '#slice/#slice_value functionality works as expected :)' do
     class SlicingConfig < Qonfig::DataSet
@@ -66,4 +66,4 @@ describe '(#slice/#slice_value)-functionality' do
     expect { config.slice_value(:a, :b, :c, :d) }.to raise_error(Qonfig::UnknownSettingError)
   end
 end
-# rubocop:enable Metrics/LineLength
+# rubocop:enable Layout/LineLength

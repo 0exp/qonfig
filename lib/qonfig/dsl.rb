@@ -15,7 +15,7 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
     # @api private
     # @since 0.1.0
     # @version 0.20.0
-    # rubocop:disable Metrics/LineLength, Metrics/AbcSize
+    # rubocop:disable Layout/LineLength, Metrics/AbcSize
     def extended(child_klass)
       child_klass.instance_variable_set(:@definition_commands, Qonfig::CommandSet.new)
       child_klass.instance_variable_set(:@instance_commands, Qonfig::CommandSet.new)
@@ -33,7 +33,7 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
         end
       end)
     end
-    # rubocop:enable Metrics/LineLength, Metrics/AbcSize
+    # rubocop:enable Layout/LineLength, Metrics/AbcSize
   end
 
   # @return [Qonfig::CommandSet]

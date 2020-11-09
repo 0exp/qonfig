@@ -101,7 +101,7 @@ class Qonfig::Commands::Definition::ExposeTOML < Qonfig::Commands::Base
     realfile = dirname.join(envfile).to_s
 
     toml_data = load_toml_data(realfile)
-    toml_based_settings = builde_data_set_klass(toml_data).new.settings
+    toml_based_settings = build_data_set_klass(toml_data).new.settings
 
     settings.__append_settings__(toml_based_settings)
   end
@@ -125,7 +125,7 @@ class Qonfig::Commands::Definition::ExposeTOML < Qonfig::Commands::Base
       "#{file_path} file does not contain settings with <#{env}> environment key!"
     ) unless toml_data_slice
 
-    toml_based_settings = builde_data_set_klass(toml_data_slice).new.settings
+    toml_based_settings = build_data_set_klass(toml_data_slice).new.settings
 
     settings.__append_settings__(toml_based_settings)
   end
@@ -145,7 +145,7 @@ class Qonfig::Commands::Definition::ExposeTOML < Qonfig::Commands::Base
   #
   # @api private
   # @since 0.12.0
-  def builde_data_set_klass(toml_data)
+  def build_data_set_klass(toml_data)
     Qonfig::DataSet::ClassBuilder.build_from_hash(toml_data)
   end
 end

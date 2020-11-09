@@ -1,6 +1,54 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.25.0] - 2020-09-15
+### Added
+- Support for **Vault** config provider:
+  - realized as a plugin (`Qonfig.plugin(:vault)`);
+  - provides `#load_from_vault`, `#expose_vault` methods and works in `#*_yaml`-like manner);
+  - depends on `gem vault (>= 0.1)`
+- `Qonfig::Settings#[]` behave like `Qonfig::Settings#__dig__`;
+- An ability to represent the config hash in dot-notated style (all config keys are represented in dot-notated format):
+  - works via `#to_h(dot_style: true)`;
+  - `key_transformer:` and `value_transfomer:` options are supported too;
+
+```ruby
+class Config << Qonfig::DataSet
+  setting :database do
+    setting :host, 'localhost'
+    setting :port, 6432
+  end
+
+  setting :api do
+    setting :rest_enabled, true
+    setting :rpc_enabled, false
+  end
+end
+
+Config.new.to_h(dot_style: true)
+# =>
+{
+  'database.host' => 'localhost',
+  'database.port' => 6432,
+  'api.rest_enabled' => true,
+  'api.rpc_enabled' => false,
+}
+```
+
+## [0.24.1] - 2020-03-10
+### Changed
+- Enhanced dot-notated key resolving algorithm: now it goes through the all dot-notated key parts
+  until it finds the required setting key (or fails with `Qonfig::UnknowSettingKeyError`);
+
+### Fixed
+- (**Pretty-Print Plugin**):
+  - dot-noted setting keys can not be pretty-printed (they raise `Qonfig::UnknownSettingKeyError`);
+  - added `set` and `pp` as preloaded dependencies;
+
+## [0.24.0] - 2019-12-29
+### Added
+- Support for **Ruby@2.7**;
+
 ## [0.23.0] - 2019-12-12
 ### Added
 - Support for `Pathname` file path in `.load_from_json`, `.load_from_yaml`, `.load_from_toml`, `.expose_yaml`, `.expose_json`, `.expose_toml`;

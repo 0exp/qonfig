@@ -40,6 +40,9 @@ require 'qonfig'
   - [Inheritance](#inheritance)
   - [Composition](#composition)
   - [Hash representation](#hash-representation)
+    - [Default behaviour (without options)](#default-behavior-without-options)
+    - [With transformations](#with-transformations)
+    - [Dot-style format](#dot-style-format)
   - [Smart Mixin](#smart-mixin) (`Qonfig::Configurable`)
   - [Instantiation without class definition](#instantiation-without-class-definition) (`Qonfig::DataSet.build(&definitions)`)
 - [Compacted config](#compacted-config)
@@ -102,6 +105,7 @@ require 'qonfig'
 - [Plugins](#plugins)
   - [toml](#plugins-toml) (support for `TOML` format)
   - [pretty_print](#plugins-pretty_print) (beautified/prettified console output)
+  - [vault](#plugins-vault) (support for `Vault` store)
 - [Roadmap](#roadmap)
 - [Build](#build)
 ---
@@ -188,6 +192,10 @@ config.settings['vendor_api']['domain'] # => 'app.service.com'
 config.settings['vendor_api']['login'] # => 'test_user'
 config.settings['enable_graphql'] # => false
 
+# dig to value
+config.settings[:vendor_api, :domain] # => 'app.service.com'
+config.settings[:vendor_api, 'login'] # => 'test_user'
+
 # get option value directly via index (with indifferent access)
 config['project_id'] # => nil
 config['enable_graphql'] # => false
@@ -271,7 +279,7 @@ config.slice_value('vendor_api.port') # => Qonfig::UnknownSettingError # (key do
 # - get a subset (a set of sets) of config settings represented as a hash;
 # - each key (or key set) represents a requirement of a certain setting key;
 
-config.subet(:vendor_api, :enable_graphql)
+config.subset(:vendor_api, :enable_graphql)
 # => { 'vendor_api' => { 'login' => ..., 'domain' => ... }, 'enable_graphql' => false }
 
 config.subset(:project_id, [:vendor_api, :domain], [:credentials, :user, :login])
@@ -436,6 +444,12 @@ project_config.settings.db.password # => 'testpaswd'
 
 ### Hash representation
 
+- works via `#to_h` and `#to_hash`;
+- supported options:
+  - `key_transformer:` - an optional proc that accepts setting key and makes your custom transformations;
+  - `value_transformer:` - an optional proc that accepts setting value and makes your custom transformations;
+  - `dot_style:` - (`false` by default) represent setting keys in dot-notation (transformations are supported too);
+
 ```ruby
 class Config < Qonfig::DataSet
   setting :serializers do
@@ -454,9 +468,13 @@ class Config < Qonfig::DataSet
 
   setting :logger, Logger.new(STDOUT)
 end
+```
 
+#### Default behavior (without-options)
+
+```ruby
 Config.new.to_h
-
+# =>
 {
   "serializers": {
     "json" => { "engine" => :ok },
@@ -464,6 +482,55 @@ Config.new.to_h
   },
   "adapter" => { "default" => :memory_sync },
   "logger" => #<Logger:0x4b0d79fc>
+}
+```
+
+#### With transformations
+
+- with `key_transformer` and/or `value_transformer`;
+
+```ruby
+key_transformer = -> (key) { "#{key}!!" }
+value_transformer = -> (value) { "#{value}??" }
+
+Config.new.to_h(key_transformer: key_transformer, value_transformer: value_transformer)
+# =>
+{
+  "serializers!!": {
+    "json!!" => { "engine!!" => "ok??" },
+    "hash!!" => { "engine!!" => "native??" },
+  },
+  "adapter!!" => { "default!!" => "memory_sync??" },
+  "logger!!" => "#<Logger:0x00007fcde799f158>??"
+}
+```
+
+#### Dot-style format
+
+- transformations are supported too (`key_transformer` and `value_transformer`);
+
+```ruby
+Config.new.to_h(dot_style: true)
+# =>
+{
+  "serializers.json.engine" => :ok,
+  "serializers.hash.engine" => :native,
+  "adapter.default" => :memory_sync,
+  "logger" => #<Logger:0x4b0d79fc>,
+}
+```
+
+```ruby
+transformer = -> (value) { "$$#{value}$$" }
+
+Config.new.to_h(dot_style: true, key_transformer: transformer, value_transformer: transformer)
+
+# => "#<Logger:0x00007fcde799f158>??"
+{
+  "$$serializers.json.engine$$" => "$$ok$$",
+  "$$serializers.hash.engine$$" => "$$native$$",
+  "$$adapter.default$$" => "$$memory_sync$$",
+  "$$logger$$" => "$$#<Logger:0x00007fcde799f158>$$",
 }
 ```
 
@@ -1001,6 +1068,8 @@ config.root_keys
 - method signature: `#reload!(configurations = {}, &configuration)`;
 
 ```ruby
+# -- config example ---
+
 class Config < Qonfig::DataSet
   setting :db do
     setting :adapter, 'postgresql'
@@ -1013,6 +1082,10 @@ config = Config.new
 
 config.settings.db.adapter # => 'postgresql'
 config.settings.logger # => #<Logger:0x00007ff9>
+```
+
+```ruby
+# --- redefine some settings (or add a new one) --
 
 config.configure { |conf| conf.logger = nil } # redefine some settings (will be reloaded)
 
@@ -1024,6 +1097,10 @@ class Config
 
   setting :enable_api, false # append new setting
 end
+```
+
+```ruby
+# --- reload ---
 
 # reload settings
 config.reload!
@@ -3081,6 +3158,7 @@ dynamic: 10
 
 - [toml](#plugins-toml) (provides `load_from_toml`, `save_to_toml`, `expose_toml`);
 - [pretty_print](#plugins-pretty_print) (beautified/prettified console output);
+- [vault](#plugins-vault) (provides `load_from_vault`, `expose_vault`)
 
 ---
 
@@ -3204,15 +3282,44 @@ config = Config.new
 
 ---
 
+### Plugins: vault
+
+- `Qonfig.plugin(:vault)`
+- adds support for `vault kv store`, [more info](https://www.vaultproject.io/docs/secrets/kv/kv-v2)
+- depends on `vault` gem ([link](https://github.com/hashicorp/vault-ruby)) (tested on `>= 0.1`);
+- provides `.load_from_vault` (works in `.load_from_yaml` manner ([doc](#load-from-yaml-file)));
+- provides `.expose_vault` (works in `.expose_yaml` manner ([doc](#expose-yaml)));
+
+```ruby
+# 1) require external dependency
+require 'vault'
+
+# 2) Setup vault client
+
+Vault.address = 'http://localhost:8200'
+Vault.token = 'super-duper-token-here'
+
+# 3) enable plugin
+Qonfig.plugin(:vault)
+
+# 3) use vault :)
+```
+
+---
+
 ## Roadmap
 
 - **Major**:
-  - distributed configuration server;
-  - cli toolchain;
   - support for Rails-like secrets;
   - support for persistent data storages (we want to store configs in multiple databases and files);
-  - Rails reload plugin;
+  - rails plugin;
+  - support for pattern matching;
 - **Minor**:
+  - An ability to flag `Qonfig::Configurable`'s config object as `compacted` (`Qonfig::Compacted`);
+  - Instance-based behavior for `Vault` plugin, also use instance of `Vault` client instead of `Singleton`;
+  - External validation class with an importing api for better custom validations;
+  - Setting value changement trace (in `anyway_config` manner);
+  - Instantiation and reloading callbacks;
 
 ## Build
 

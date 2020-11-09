@@ -47,7 +47,7 @@ class Qonfig::Uploaders::YAML < Qonfig::Uploaders::File
     # @since 0.11.0
     def represent_settings(settings, options, &value_processor)
       settings_hash_opts = hash_representation_options(options, &value_processor)
-      settings_hash = settings.__to_hash__(settings_hash_opts)
+      settings_hash = settings.__to_hash__(**settings_hash_opts)
       to_yaml_string(settings_hash, options)
     end
 
