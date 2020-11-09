@@ -11,13 +11,14 @@ class Qonfig::Validation::Validators::ProcBased < Qonfig::Validation::Validators
 
   # @param setting_key_matcher [Qonfig::Settings::KeyMatcher, NilClass]
   # @param strict [Boolean]
-  # @param vaidation [Proc]
+  # @param validation [Proc]
+  # @param error_message [NilClass, String, Proc]
   # @return [void]
   #
   # @api private
   # @since 0.20.0
-  def initialize(setting_key_matcher, strict, validation)
-    super(setting_key_matcher, strict)
+  def initialize(setting_key_matcher, strict, validation, error_message = nil)
+    super(setting_key_matcher, strict, error_message)
     @validation = validation
   end
 
@@ -35,9 +36,10 @@ class Qonfig::Validation::Validators::ProcBased < Qonfig::Validation::Validators
 
       raise(
         Qonfig::ValidationError,
-        "Invalid value of setting <#{setting_key}> (#{setting_value})"
+        build_error_message(setting_key: setting_key, setting_value: setting_value)
       ) unless data_set.instance_exec(setting_value, &validation)
     end
+    false
   end
 
   # @param data_set [Qonfig::DataSet]
@@ -49,7 +51,17 @@ class Qonfig::Validation::Validators::ProcBased < Qonfig::Validation::Validators
   # @since 0.20.0
   def validate_full(data_set)
     unless data_set.instance_eval(&validation)
-      raise(Qonfig::ValidationError, 'Invalid config object')
+      raise(Qonfig::ValidationError, build_error_message)
     end
+  end
+
+  # @param context [Object, NilClass]
+  # @return [String]
+  #
+  # @api private
+  # @since 0.26.0
+  def default_error_message(context = nil)
+    return 'Invalid config object' if context.nil?
+    "Invalid value of setting <#{context[:setting_key]}> (#{context[:setting_value]})"
   end
 end

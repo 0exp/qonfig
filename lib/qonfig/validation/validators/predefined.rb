@@ -12,12 +12,13 @@ class Qonfig::Validation::Validators::Predefined < Qonfig::Validation::Validator
   # @param setting_key_matcher [Qonfig::Settings::KeyMatcher]
   # @param strict [Boolean]
   # @param validation [Proc]
+  # @param error_message [NilClass, String, Proc]
   # @return [void]
   #
   # @api private
   # @since 0.20.0
-  def initialize(setting_key_matcher, strict, validation)
-    super(setting_key_matcher, strict)
+  def initialize(setting_key_matcher, strict, validation, error_message = nil)
+    super(setting_key_matcher, strict, error_message)
     @validation = validation
   end
 
@@ -35,7 +36,7 @@ class Qonfig::Validation::Validators::Predefined < Qonfig::Validation::Validator
 
       raise(
         Qonfig::ValidationError,
-        "Invalid value of setting <#{setting_key}> (#{setting_value})"
+        build_error_message(setting_key: setting_key, setting_value: setting_value)
       ) unless validation.call(setting_value)
     end
   end
@@ -51,5 +52,14 @@ class Qonfig::Validation::Validators::Predefined < Qonfig::Validation::Validator
     # :nocov:
     raise Qonfig::Error, 'Predefined validator can be used with a setting key only'
     # :nocov:
+  end
+
+  # @param context [Object, NilClass]
+  # @return [String]
+  #
+  # @api private
+  # @since 0.26.0
+  def default_error_message(context = nil)
+    "Invalid value of setting <#{context[:setting_key]}> (#{context[:setting_value]})"
   end
 end

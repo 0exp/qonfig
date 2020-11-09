@@ -93,6 +93,7 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
       setting_key_pattern: setting_key_pattern,
       predefined_validator: predefined,
       runtime_validation_method: by,
+      error_message: error_message,
       strict: strict,
       validation_logic: custom_validation
     )
