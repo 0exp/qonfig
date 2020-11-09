@@ -35,11 +35,18 @@ class Qonfig::Validation::Building::InstanceBuilder
   # @since 0.17.0
   DEFAULT_STRICT_BEHAVIOUR = false
 
+  # @return [Boolean]
+  #
+  # @api private
+  # @since 0.26.0
+  DEFAULT_ERROR_MESSAGE = nil
+
   class << self
     # @param data_set_klass [Class<Qonfig::DataSet>]
     # @option setting_key_pattern [String, Symbol, NilClass]
     # @option predefined_validator [String, Symbol, NilClass]
     # @option runtime_validation_method [String, Symbol, NilClass]
+    # @option error_message [NilClass, String, Proc]
     # @option validation_logic [Proc, NilClass]
     # @option strict [Boolean]
     # @return [Qonfig::Validator::MethodBased, Qonfig::Validator::ProcBased]
@@ -50,6 +57,7 @@ class Qonfig::Validation::Building::InstanceBuilder
       data_set_klass,
       setting_key_pattern: EMPTY_SETTING_KEY_PATTERN,
       runtime_validation_method: NO_RUNTIME_VALIDATION_METHOD,
+      error_message: DEFAULT_ERROR_MESSAGE,
       validation_logic: NO_VALIDATION_LOGIC,
       strict: DEFAULT_STRICT_BEHAVIOUR,
       predefined_validator: NO_PREDEFINED_VALIDATOR
@@ -59,6 +67,7 @@ class Qonfig::Validation::Building::InstanceBuilder
         setting_key_pattern,
         predefined_validator,
         runtime_validation_method,
+        error_message,
         strict,
         validation_logic
       ).build
@@ -69,6 +78,7 @@ class Qonfig::Validation::Building::InstanceBuilder
   # @param setting_key_pattern [String, Symbol, NilClass]
   # @param predefined_validator_name [String, Symbol, NilClass]
   # @param runtime_validation_method [String, Symbol, NilClass]
+  # @param error_message [NilClass, String, Proc]
   # @param strict [Boolean]
   # @param validation_logic [Proc, NilClass]
   # @return [void]
@@ -80,6 +90,7 @@ class Qonfig::Validation::Building::InstanceBuilder
     setting_key_pattern,
     predefined_validator_name,
     runtime_validation_method,
+    error_message,
     strict,
     validation_logic
   )
@@ -87,6 +98,7 @@ class Qonfig::Validation::Building::InstanceBuilder
     @setting_key_pattern = setting_key_pattern
     @predefined_validator_name = predefined_validator_name
     @runtime_validation_method = runtime_validation_method
+    @error_message = error_message
     @strict = strict
     @validation_logic = validation_logic
   end
@@ -140,6 +152,12 @@ class Qonfig::Validation::Building::InstanceBuilder
   # @since 0.20.0
   attr_reader :validation_logic
 
+  # @return [NilClass, String, Proc]
+  #
+  # @api private
+  # @since 0.26.0
+  attr_reader :error_message
+
   # @return [void]
   #
   # @raise [Qonfig::ArgumentError]
@@ -184,7 +202,7 @@ class Qonfig::Validation::Building::InstanceBuilder
   # @since 0.20.0
   def build_method_based_validator
     Qonfig::Validation::Validators::MethodBased.new(
-      build_setting_key_matcher, strict, runtime_validation_method
+      build_setting_key_matcher, strict, runtime_validation_method, error_message
     )
   end
 
@@ -194,7 +212,7 @@ class Qonfig::Validation::Building::InstanceBuilder
   # @since 0.20.0
   def build_proc_based_validator
     Qonfig::Validation::Validators::ProcBased.new(
-      build_setting_key_matcher, strict, validation_logic
+      build_setting_key_matcher, strict, validation_logic, error_message
     )
   end
 
@@ -213,7 +231,7 @@ class Qonfig::Validation::Building::InstanceBuilder
       end
 
     Qonfig::Validation::Validators::Predefined.new(
-      build_setting_key_matcher, strict, predefined_validation_logic
+      build_setting_key_matcher, strict, predefined_validation_logic, error_message
     )
   end
 end

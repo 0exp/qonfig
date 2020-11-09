@@ -913,4 +913,89 @@ describe 'Validation' do
       end.not_to raise_error
     end
   end
+
+  describe 'Custom error messages' do
+    specify 'instnation with string' do
+      config_klass = Class.new(Qonfig::DataSet) do
+        setting :telegraf_url, 12345 # NOTE: should be a string
+        validate 'telegraf_url', error_message: 'My awesome error' do |value|
+          value.is_a?(String)
+        end
+      end
+
+      expect { config_klass.new }.to raise_error(Qonfig::ValidationError, 'My awesome error')
+    end
+
+    specify 'instnation with proc' do
+      message_proc = proc { |context| "Bad key = #{context[:setting_key]}" }
+
+      config_klass = Class.new(Qonfig::DataSet) do
+        setting :telegraf_url, 12345 # NOTE: should be a string
+        validate 'telegraf_url', error_message: message_proc do |value|
+          value.is_a?(String)
+        end
+      end
+
+      expect { config_klass.new }.to raise_error(Qonfig::ValidationError, 'Bad key = telegraf_url')
+    end
+
+    specify '`validate` works right' do
+      config_klass = Class.new(Qonfig::DataSet) do
+        setting :namespace do
+          setting :enabled, :true
+        end
+
+        setting :go_for_cybersport, 'NO'
+
+        # NOTE: no setting key pattern => full dataset object validation
+        validate error_message: 'Error Message - global block' do
+          settings.namespace.enabled.is_a?(Symbol)
+        end
+
+        # NOTE: no setting key pattern => full dataset object validation
+        validate by: :check_all, error_message: 'Error message - method call'
+
+        def check_all
+          settings.go_for_cybersport == 'NO'
+        end
+      end
+      expect { config_klass.new }.not_to raise_error
+
+      expect do
+        config_klass.new.settings.namespace.enabled = 123
+      end.to raise_error(Qonfig::ValidationError, 'Error Message - global block')
+
+      expect do
+        config_klass.new.settings.go_for_cybersport = 'YES'
+      end.to raise_error(Qonfig::ValidationError, 'Error message - method call')
+    end
+
+    specify 'predefined validators messages change' do
+      config_klass = Class.new(Qonfig::DataSet) do
+        setting :enabled, false
+        setting :count, 123
+        validate :enabled, :boolean, strict: true, error_message: 'You must use boolean types'
+        validate :count,
+                 :integer,
+                 strict: true,
+                 error_message: proc { |context|
+                   "Error with context key #{context[:setting_key]}"
+                 }
+      end
+
+      # NOTE: all right (originally)
+      expect { config_klass.new }.not_to raise_error
+
+      # NOTE: invalid values
+      # NOTE: invalid values
+      expect do
+        config_klass.new.settings.enabled = nil
+      end.to raise_error(Qonfig::ValidationError,
+                         'You must use boolean types')
+      expect do
+        config_klass.new.settings.count = '5'
+      end.to raise_error(Qonfig::ValidationError,
+                         'Error with context key count')
+    end
+  end
 end

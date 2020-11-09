@@ -26,3 +26,8 @@ Style/RedundantBegin:
 # NOTE: too situative
 Metrics/ParameterLists:
   Enabled: false
+
+# Conflicts with current project style
+Style/NilComparison:
+  Enabled: true
+  EnforcedStyle: predicate
