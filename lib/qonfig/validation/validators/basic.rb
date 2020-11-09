@@ -18,7 +18,7 @@ class Qonfig::Validation::Validators::Basic
   # @return [NilClass, String, Proc]
   #
   # @api private
-  # @since 0.20.0
+  # @since 0.26.0
   attr_reader :error_message
 
   # @param setting_key_matcher [Qonfig::Settings::KeyMatcher, NilClass]
