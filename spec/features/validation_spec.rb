@@ -975,9 +975,12 @@ describe 'Validation' do
         setting :enabled, false
         setting :count, 123
         validate :enabled, :boolean, strict: true, error_message: 'You must use boolean types'
-        validate :count, :integer, strict: true, error_message: proc { |context|
-                                                                  "Error with context key #{context[:setting_key]}"
-                                                                }
+        validate :count,
+                 :integer,
+                 strict: true,
+                 error_message: proc { |context|
+                   "Error with context key #{context[:setting_key]}"
+                 }
       end
 
       # NOTE: all right (originally)
