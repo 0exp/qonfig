@@ -14,6 +14,7 @@ class Qonfig::Loaders::Vault < Qonfig::Loaders::Basic
   class << self
     # @param path [String, Pathname]
     # @option fail_on_unexist [Boolean]
+    # @option version [String, Integer]
     # @return [Object]
     #
     # @raise [Qonfig::FileNotFoundError]
@@ -48,7 +49,7 @@ class Qonfig::Loaders::Vault < Qonfig::Loaders::Basic
     # @return [Object]
     #
     # @api private
-    # @since 0.25.1
+    # @since 0.26.0
     def load_data(file_path, version, use_kv)
       response = ::Vault.with_retries(::Vault::HTTPError) do
         if use_kv

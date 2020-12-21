@@ -33,7 +33,7 @@ module Qonfig
   extend Validation::PredefinitionMixin
 
   # @api public
-  # @since 0.25.1
+  # @since 0.26.0
   extend FileDataResolving::Mixin
 
   # @since 0.20.0
@@ -65,13 +65,13 @@ module Qonfig
   # @since 0.20.0
   define_validator(:not_nil) { |value| !value.nil? }
 
-  # @since 0.25.1
+  # @since 0.26.0
   define_resolver(:file) do |file_path|
     ::File.read(file_path)
   rescue Errno::ENOENT => error
     raise Qonfig::FileNotFoundError, error.message
   end
-  # @since 0.25.1
+  # @since 0.26.0
   set_default_resolver :file
 
   # @since 0.12.0

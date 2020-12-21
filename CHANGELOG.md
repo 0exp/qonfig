@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.25.0] - 2020-12-22
+## [0.26.0] - 2020-12-22
 ### Added
 - Added file data resolver functionality:
   - Added resolver for `file`

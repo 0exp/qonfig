@@ -64,7 +64,7 @@ class Qonfig::Commands::Instantiation::ValuesFile < Qonfig::Commands::Base
   # @return [Hash]
   #
   # @api private
-  # @since 0.25.1
+  # @since 0.26.0
   attr_reader :file_resolve_options
 
   # @param file_path [String, Symbol, Pathname]
@@ -77,7 +77,7 @@ class Qonfig::Commands::Instantiation::ValuesFile < Qonfig::Commands::Base
   #
   # @api private
   # @since 0.17.0
-  # @version 0.25.1
+  # @version 0.26.0
   def initialize(
     file_path,
     caller_location,

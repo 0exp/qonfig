@@ -45,7 +45,7 @@ class Qonfig::Commands::Definition::ExposeVault < Qonfig::Commands::Base
   # @return [Hash]
   #
   # @api private
-  # @since 0.25.1
+  # @since 0.26.0
   attr_reader :file_resolve_options
 
   # @param path [String Pathname]

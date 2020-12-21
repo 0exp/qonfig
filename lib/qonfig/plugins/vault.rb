@@ -27,7 +27,7 @@ class Qonfig::Plugins::Vault < Qonfig::Plugins::Abstract
 
     # @return [void]
     #
-    # @since 0.25.1
+    # @since 0.26.0
     # @api private
     def define_resolvers!
       ::Qonfig.define_resolver(:vault) do |file_path, **options|
