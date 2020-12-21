@@ -11,17 +11,17 @@ describe 'Plugins(vault): expose vault', plugin: :vault do
     end
   end
   let(:secret_data) do
-    { data: { production: { kek: 'pek', cheburek: true }, other_key: '<%= 1 + 1 %>' } }
+    { production: { kek: 'pek', cheburek: true }, other_key: '<%= 1 + 1 %>' }
   end
 
   let(:vault_class) do
     Class.new(Qonfig::DataSet) do
       setting :based_on_path do
-        expose_vault 'kv/data/path_based', via: :path, env: :production
+        expose_vault 'kv/data/path_based', via: :path, env: :production, use_kv: false
       end
 
       setting :based_on_env_key do
-        expose_vault 'kv/data/env_key', via: :env_key, env: 'production'
+        expose_vault 'kv/data/env_key', via: :env_key, env: 'production', use_kv: false
       end
     end
   end
@@ -43,7 +43,7 @@ describe 'Plugins(vault): expose vault', plugin: :vault do
     specify 'raises an error' do
       expect do
         Class.new(Qonfig::DataSet) do
-          expose_vault 'kv/data/path_based', via: Object.new, env: :production
+          expose_vault 'kv/data/path_based', via: Object.new, env: :production, use_kv: false
         end
       end.to raise_error(Qonfig::ArgumentError)
     end
@@ -53,7 +53,7 @@ describe 'Plugins(vault): expose vault', plugin: :vault do
     specify 'raises an error' do
       expect do
         Class.new(Qonfig::DataSet) do
-          expose_vault 'kv/data/path_based', via: :path, env: Object.new
+          expose_vault 'kv/data/path_based', via: :path, env: Object.new, use_kv: false
         end
       end.to raise_error(Qonfig::ArgumentError)
     end
@@ -63,7 +63,7 @@ describe 'Plugins(vault): expose vault', plugin: :vault do
     specify 'raises an error' do
       expect do
         Class.new(Qonfig::DataSet) do
-          expose_vault 'kv/data/path_based', via: :kek, env: :production
+          expose_vault 'kv/data/path_based', via: :kek, env: :production, use_kv: false
         end
       end.to raise_error(Qonfig::ArgumentError)
     end
@@ -73,7 +73,7 @@ describe 'Plugins(vault): expose vault', plugin: :vault do
     specify 'raises an error' do
       expect do
         Class.new(Qonfig::DataSet) do
-          expose_vault 'kv/data/path_based', via: :path, env: ''
+          expose_vault 'kv/data/path_based', via: :path, env: '', use_kv: false
         end
       end.to raise_error(Qonfig::ArgumentError)
     end
@@ -82,7 +82,7 @@ describe 'Plugins(vault): expose vault', plugin: :vault do
   context "when provided key doesn't exist" do
     let(:vault_class) do
       Class.new(Qonfig::DataSet) do
-        expose_vault 'kv/data/env_key', via: :env_key, env: 'kekduction'
+        expose_vault 'kv/data/env_key', via: :env_key, env: 'kekduction', use_kv: false
       end
     end
 
@@ -97,7 +97,8 @@ describe 'Plugins(vault): expose vault', plugin: :vault do
     let(:vault_class) do
       Class.new(Qonfig::DataSet) do
         setting :based_on_env_key do
-          expose_vault 'kv/data/env_key', via: :env_key, env: 'production', strict: false
+          expose_vault 'kv/data/env_key',
+                       via: :env_key, env: 'production', strict: false, use_kv: false
         end
       end
     end

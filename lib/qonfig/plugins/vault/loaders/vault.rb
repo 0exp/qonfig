@@ -20,8 +20,8 @@ class Qonfig::Loaders::Vault < Qonfig::Loaders::Basic
     #
     # @api private
     # @since 0.25.0
-    def load_file(path, fail_on_unexist: true, transform_values: true, version: nil)
-      data = load_data(path, version)
+    def load_file(path, fail_on_unexist: true, transform_values: true, version: nil, use_kv: true)
+      data = load_data(path, version, use_kv)
       raise Qonfig::FileNotFoundError, "Path #{path} not exist" if data == nil && fail_on_unexist
       result = data || empty_data
       return result unless transform_values
@@ -49,17 +49,17 @@ class Qonfig::Loaders::Vault < Qonfig::Loaders::Basic
     #
     # @api private
     # @since 0.25.1
-    def load_data(file_path, version)
+    def load_data(file_path, version, use_kv)
       response = ::Vault.with_retries(::Vault::HTTPError) do
-        if version == nil
-          ::Vault.logical.read(file_path.to_s)
-        else
+        if use_kv
           mount_path, secret_path = file_path.to_s.split(::File::Separator, 2)
           ::Vault.kv(mount_path).read(secret_path, version)
+        else
+          ::Vault.logical.read(file_path.to_s)
         end
       end
 
-      response&.data&.dig(:data)
+      response&.data
     end
 
     # @param vault_data [Hash<Object,Object>]

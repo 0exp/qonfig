@@ -13,24 +13,24 @@ describe 'Plugins(vault): Load yaml from vault kv store', plugin: :vault do
     end
   end
 
-  let(:secret_data) { Hash[data: { "file.yml": yaml_content }] }
-  let(:yaml_content) { YAML.dump(kek: "pek") }
+  let(:secret_data) { Hash["file.yml": yaml_content] }
+  let(:yaml_content) { YAML.dump(kek: 'pek') }
 
   let(:vault_class) do
     Class.new(Qonfig::DataSet) do
-      load_from_yaml 'vault://kv/data/development/file.yml'
+      load_from_yaml 'vault://kv/data/development/file.yml', use_kv: false
     end
   end
 
   specify 'defines config object by yaml instructions' do
     expect(Vault.logical).to receive(:read).with('kv/data/development').and_return(returned_data)
     VaultConfig.new.settings.tap do |conf|
-      expect(conf).to have_attributes(kek: "pek")
+      expect(conf).to have_attributes(kek: 'pek')
     end
   end
 
   context "when key doesn't exist" do
-    let(:secret_data) { Hash[data: { "other_file.yml": yaml_content }] }
+    let(:secret_data) { Hash[data: { 'other_file.yml': yaml_content }] }
 
     specify 'raises error' do
       expect(Vault.logical).to receive(:read).with('kv/data/development').and_return(returned_data)

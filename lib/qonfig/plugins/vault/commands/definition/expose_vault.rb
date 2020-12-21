@@ -42,6 +42,12 @@ class Qonfig::Commands::Definition::ExposeVault < Qonfig::Commands::Base
   # @since 0.25.0
   attr_reader :env
 
+  # @return [Hash]
+  #
+  # @api private
+  # @since 0.25.1
+  attr_reader :file_resolve_options
+
   # @param path [String Pathname]
   # @option strict [Boolean]
   # @option via [Symbol]
@@ -50,7 +56,7 @@ class Qonfig::Commands::Definition::ExposeVault < Qonfig::Commands::Base
   #
   # @api private
   # @since 0.25.0
-  def initialize(path, strict: true, via:, env:)
+  def initialize(path, strict: true, via:, env:, file_resolve_options: {})
     unless env.is_a?(Symbol) || env.is_a?(String) || env.is_a?(Numeric)
       raise Qonfig::ArgumentError, ':env should be a string or a symbol'
     end
@@ -58,10 +64,11 @@ class Qonfig::Commands::Definition::ExposeVault < Qonfig::Commands::Base
     raise Qonfig::ArgumentError, ':env should be provided'  if env.to_s.empty?
     raise Qonfig::ArgumentError, 'used :via is unsupported' unless EXPOSERS.key?(via)
 
-    @path   = path
-    @strict = strict
-    @via    = via
-    @env    = env
+    @path                 = path
+    @strict               = strict
+    @via                  = via
+    @env                  = env
+    @file_resolve_options = file_resolve_options
   end
 
   # @param data_set [Qonfig::DataSet]
@@ -128,7 +135,7 @@ class Qonfig::Commands::Definition::ExposeVault < Qonfig::Commands::Base
   # @api private
   # @since 0.25.0
   def load_vault_data(path)
-    Qonfig::Loaders::Vault.load_file(path, fail_on_unexist: strict)
+    Qonfig::Loaders::Vault.load_file(path, fail_on_unexist: strict, **file_resolve_options)
   end
 
   # @param vault_data [Hash]

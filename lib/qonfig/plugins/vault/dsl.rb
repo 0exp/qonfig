@@ -22,15 +22,16 @@ module Qonfig::DSL
   # @option strict [Boolean]
   # @option via [Symbol]
   # @option env [Symbol, String]
+  # @option **resolve_options [Hash]
   # @return [void]
   #
   # @see Qonfig::Commands::Definition::ExposeVault
   #
   # @api public
   # @since 0.25.0
-  def expose_vault(path, strict: true, via:, env:)
+  def expose_vault(path, strict: true, via:, env:, **file_resolve_options)
     definition_commands << Qonfig::Commands::Definition::ExposeVault.new(
-      path, strict: strict, via: via, env: env
+      path, strict: strict, via: via, env: env, file_resolve_options: file_resolve_options
     )
   end
 end

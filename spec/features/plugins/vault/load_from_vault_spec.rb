@@ -12,11 +12,11 @@ describe 'Plugins(vault): Load from vault kv store', plugin: :vault do
       allow(instance).to receive(:data).and_return(secret_data)
     end
   end
-  let(:secret_data) { Hash[data: { kek: true, pek: 'cheburek', nested: Hash[key: 123] }] }
+  let(:secret_data) { Hash[kek: true, pek: 'cheburek', nested: { key: 123 }] }
 
   let(:vault_class) do
     Class.new(Qonfig::DataSet) do
-      load_from_vault 'kv/data/development'
+      load_from_vault 'kv/data/development', use_kv: false
     end
   end
 
@@ -43,7 +43,7 @@ describe 'Plugins(vault): Load from vault kv store', plugin: :vault do
   context 'with Pathname at path argument' do
     let(:vault_class) do
       Class.new(Qonfig::DataSet) do
-        load_from_vault Pathname('kv/data/development')
+        load_from_vault Pathname('kv/data/development'), use_kv: false
       end
     end
 
@@ -57,7 +57,7 @@ describe 'Plugins(vault): Load from vault kv store', plugin: :vault do
   context 'when strict set to false' do
     let(:vault_class) do
       Class.new(Qonfig::DataSet) do
-        load_from_vault 'kv/data/development', strict: false
+        load_from_vault 'kv/data/development', strict: false, use_kv: false
       end
     end
 
@@ -82,7 +82,7 @@ describe 'Plugins(vault): Load from vault kv store', plugin: :vault do
   context 'when version specified' do
     let(:vault_class) do
       Class.new(Qonfig::DataSet) do
-        load_from_vault 'kv/data/development', version: 2
+        load_from_vault 'kv/data/development', version: 2, use_kv: true
       end
     end
 

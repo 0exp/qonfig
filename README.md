@@ -3322,6 +3322,7 @@ config = Config.new
 - provides `.expose_vault` (works in `.expose_yaml` manner ([doc](#expose-yaml)));
 - provides custom file data resolver `vault://path/to/file/key.yml`;
 - you can use version option to use specific version of config in kv storage (dsl and resolver);
+- kv storage is used by default, but you can use logical storage by setting `use_kv` to `false`;
 
 ```ruby
 # 1) require external dependency

@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
   - Added resolver for `vault`
   - Added DSL methods for defining custom resolvers
 - Added support for kv storage for vault
+- Fix using of non-kv storage
 
 ```ruby
 Qonfig.define_resolver(:https) do |file_path|
