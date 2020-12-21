@@ -19,6 +19,28 @@ class Qonfig::Plugins::Vault < Qonfig::Plugins::Abstract
       require_relative 'vault/commands/definition/load_from_vault'
       require_relative 'vault/commands/definition/expose_vault'
       require_relative 'vault/dsl'
+
+      define_resolvers!
+    end
+
+    private
+
+    # @return [void]
+    #
+    # @since 0.26.0
+    # @api private
+    def define_resolvers!
+      ::Qonfig.define_resolver(:vault) do |file_path, **options|
+        *vault_path, file_name = file_path.split(File::SEPARATOR)
+        vault_path = vault_path.join(File::SEPARATOR)
+        files = Qonfig::Loaders::Vault
+          .load_file(vault_path, **options, transform_values: false)
+        result = files[file_name.to_sym]
+        if result == nil
+          raise Qonfig::FileNotFoundError, "Can't load file with name #{file_name}"
+        end
+        result
+      end
     end
   end
 end

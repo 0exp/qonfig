@@ -12,9 +12,9 @@ module Qonfig::DSL
   # @api public
   # @since 0.12.0
   # @version 0.20.0
-  def load_from_toml(file_path, strict: true)
+  def load_from_toml(file_path, strict: true, **file_resolve_options)
     definition_commands << Qonfig::Commands::Definition::LoadFromTOML.new(
-      file_path, strict: strict
+      file_path, strict: strict, file_resolve_options: file_resolve_options
     )
   end
 

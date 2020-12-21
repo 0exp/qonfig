@@ -156,15 +156,16 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
 
   # @param file_path [String, Pathname]
   # @option strict [Boolean]
+  # @option **file_resolve_options [Hash]
   # @return [void]
   #
   # @see Qonfig::Commands::Definition::LoadFromYAML
   #
   # @api public
   # @since 0.2.0
-  def load_from_yaml(file_path, strict: true)
+  def load_from_yaml(file_path, strict: true, **file_resolve_options)
     definition_commands << Qonfig::Commands::Definition::LoadFromYAML.new(
-      file_path, strict: strict
+      file_path, strict: strict, file_resolve_options: file_resolve_options
     )
   end
 
@@ -202,14 +203,17 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
 
   # @param file_path [String, Pathname]
   # @option strict [Boolean]
+  # @option **file_resolve_options [Hash]
   # @return [void]
   #
   # @see Qonfig::Commands::Definition::LoadFromJSON
   #
   # @api public
   # @since 0.5.0
-  def load_from_json(file_path, strict: true)
-    definition_commands << Qonfig::Commands::Definition::LoadFromJSON.new(file_path, strict: strict)
+  def load_from_json(file_path, strict: true, **file_resolve_options)
+    definition_commands << Qonfig::Commands::Definition::LoadFromJSON.new(
+      file_path, strict: strict, file_resolve_options: file_resolve_options
+    )
   end
 
   # @param file_path [String, Pathname]

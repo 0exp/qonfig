@@ -20,6 +20,7 @@ class Qonfig::DataSet
   # @param file_path [String, Pathmame]
   # @option strict [Boolean]
   # @option expose [NilClass, String, Symbol] Environment key
+  # @option **file_resolve_options [Hash]
   # @param configuration [Block]
   # @return [void]
   #
@@ -28,7 +29,10 @@ class Qonfig::DataSet
   # @api public
   # @since 0.17.0
   # @version 0.21.0
-  def load_from_toml(file_path, strict: true, expose: nil, &configuration)
-    load_from_file(file_path, format: :toml, strict: strict, expose: expose, &configuration)
+  def load_from_toml(file_path, strict: true, expose: nil, **file_resolve_options, &configuration)
+    load_from_file(
+      file_path, format: :toml, strict: strict,
+      expose: expose, **file_resolve_options, &configuration
+    )
   end
 end
