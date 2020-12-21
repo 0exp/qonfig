@@ -18,14 +18,22 @@ class Qonfig::Commands::Definition::LoadFromJSON < Qonfig::Commands::Base
   # @sicne 0.5.0
   attr_reader :strict
 
+  # @return [Hash]
+  #
+  # @api private
+  # @since 0.25.1
+  attr_reader :file_resolve_options
+
   # @param file_path [String, Pathname]
   # @option strict [Boolean]
+  # @option file_resolve_options [Hash]
   #
   # @api private
   # @since 0.5.0
-  def initialize(file_path, strict: true)
+  def initialize(file_path, strict: true, file_resolve_options: {})
     @file_path = file_path
     @strict = strict
+    @file_resolve_options = file_resolve_options
   end
 
   # @param data_set [Qonfig::DataSet]

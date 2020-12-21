@@ -19,14 +19,21 @@ class Qonfig::Commands::Definition::LoadFromTOML < Qonfig::Commands::Base
   # @since 0.12.0
   attr_reader :strict
 
+  # @return [Hash]
+  #
+  # @api private
+  # @since 0.25.1
+  attr_reader :file_resolve_options
+
   # @param file_path [String]
   # @option strict [Boolean]
   #
   # @api private
   # @since 0.12.0
-  def initialize(file_path, strict: true)
+  def initialize(file_path, strict: true, file_resolve_options: {})
     @file_path = file_path
     @strict = strict
+    @file_resolve_options = file_resolve_options
   end
 
   # @param data_set [Qonfig::DataSet]
@@ -36,7 +43,8 @@ class Qonfig::Commands::Definition::LoadFromTOML < Qonfig::Commands::Base
   # @api private
   # @since 0.12.0
   def call(data_set, settings)
-    toml_data = Qonfig::Loaders::TOML.load_file(file_path, fail_on_unexist: strict)
+    toml_data = Qonfig::Loaders::TOML
+      .load_file(file_path, fail_on_unexist: strict, **file_resolve_options)
     toml_based_settings = build_data_set_klass(toml_data).new.settings
     settings.__append_settings__(toml_based_settings)
   end

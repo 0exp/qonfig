@@ -3321,6 +3321,7 @@ config = Config.new
 - provides `.load_from_vault` (works in `.load_from_yaml` manner ([doc](#load-from-yaml-file)));
 - provides `.expose_vault` (works in `.expose_yaml` manner ([doc](#expose-yaml)));
 - provides custom file data resolver `vault://path/to/file/key.yml`;
+- you can use version option to use specific version of config in kv storage (dsl and resolver);
 
 ```ruby
 # 1) require external dependency
@@ -3352,6 +3353,9 @@ Qonfig.plugin(:vault)
   - External validation class with an importing api for better custom validations;
   - Setting value changement trace (in `anyway_config` manner);
   - Instantiation and reloading callbacks;
+  - Add supported formats for resolvers: for example, if you use vault resolver, you can't use json format;
+  - Refactor params passed to methods: use value objects instead;
+  - Refactor loaders: use base class for them;
 
 ## Build
 

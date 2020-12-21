@@ -18,14 +18,22 @@ class Qonfig::Commands::Definition::LoadFromYAML < Qonfig::Commands::Base
   # @since 0.2.0
   attr_reader :strict
 
+  # @return [Hash]
+  #
+  # @api private
+  # @since 0.25.1
+  attr_reader :file_resolve_options
+
   # @param file_path [String, Pathname]
   # @option strict [Boolean]
+  # @option file_resolve_options [Hash]
   #
   # @api private
   # @since 0.2.0
-  def initialize(file_path, strict: true)
+  def initialize(file_path, strict: true, file_resolve_options: {})
     @file_path = file_path
     @strict = strict
+    @file_resolve_options = file_resolve_options
   end
 
   # @param data_set [Qonfig::DataSet]
@@ -37,7 +45,8 @@ class Qonfig::Commands::Definition::LoadFromYAML < Qonfig::Commands::Base
   # @api private
   # @since 0.2.0
   def call(data_set, settings)
-    yaml_data = Qonfig::Loaders::YAML.load_file(file_path, fail_on_unexist: strict)
+    yaml_data = Qonfig::Loaders::YAML
+      .load_file(file_path, fail_on_unexist: strict, **file_resolve_options)
 
     raise(
       Qonfig::IncompatibleYAMLStructureError,

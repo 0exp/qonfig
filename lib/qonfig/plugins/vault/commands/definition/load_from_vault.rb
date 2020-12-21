@@ -18,14 +18,22 @@ class Qonfig::Commands::Definition::LoadFromVault < Qonfig::Commands::Base
   # @since 0.25.0
   attr_reader :strict
 
+  # @return [Hash]
+  #
+  # @api private
+  # @since 0.25.1
+  attr_reader :file_resolve_options
+
   # @param path [String]
   # @option strict [Boolean]
+  # @option file_resolve_options [Hash]
   #
   # @api private
   # @since 0.25.0
-  def initialize(path, strict: true)
+  def initialize(path, strict: true, file_resolve_options: {})
     @path = path
     @strict = strict
+    @file_resolve_options = file_resolve_options
   end
 
   # @param data_set [Qonfig::DataSet]
@@ -35,7 +43,8 @@ class Qonfig::Commands::Definition::LoadFromVault < Qonfig::Commands::Base
   # @api private
   # @since 0.25.0
   def call(_data_set, settings)
-    vault_data = Qonfig::Loaders::Vault.load_file(path, fail_on_unexist: strict)
+    vault_data = Qonfig::Loaders::Vault
+      .load_file(path, fail_on_unexist: strict, **file_resolve_options)
     vault_based_settings = build_data_set_klass(vault_data).new.settings
     settings.__append_settings__(vault_based_settings)
   end

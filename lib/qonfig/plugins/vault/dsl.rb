@@ -5,15 +5,16 @@
 module Qonfig::DSL
   # @param path [String, Pathname]
   # @option strict [Boolean]
+  # @option **file_resolve_options [Hash]
   # @return [void]
   #
   # @see Qonfig::Commands::Definition::LoadFromVault
   #
   # @api public
   # @since 0.25.0
-  def load_from_vault(path, strict: true)
+  def load_from_vault(path, strict: true, **file_resolve_options)
     definition_commands << Qonfig::Commands::Definition::LoadFromVault.new(
-      path, strict: strict
+      path, strict: strict, file_resolve_options: file_resolve_options
     )
   end
 

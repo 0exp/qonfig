@@ -61,22 +61,30 @@ class Qonfig::Commands::Instantiation::ValuesFile < Qonfig::Commands::Base
   # @since 0.17.0
   attr_reader :expose
 
+  # @return [Hash]
+  #
+  # @api private
+  # @since 0.25.1
+  attr_reader :file_resolve_options
+
   # @param file_path [String, Symbol, Pathname]
   # @param caller_location [String]
   # @option format [String, Symbol]
   # @option strict [Boolean]
   # @option expose [NilClass, String, Symbol]
+  # @option file_resolve_options [Hash]
   # @return [void]
   #
   # @api private
   # @since 0.17.0
-  # @version 0.22.0
+  # @version 0.25.1
   def initialize(
     file_path,
     caller_location,
     format: DEFAULT_FORMAT,
     strict: DEFAULT_STRICT_BEHAVIOR,
-    expose: NO_EXPOSE
+    expose: NO_EXPOSE,
+    file_resolve_options: {}
   )
     prevent_incompatible_attributes!(file_path, format, strict, expose)
 
@@ -85,6 +93,7 @@ class Qonfig::Commands::Instantiation::ValuesFile < Qonfig::Commands::Base
     @format = format
     @strict = strict
     @expose = expose
+    @file_resolve_options = file_resolve_options
   end
 
   # @param data_set [Qonfig::DataSet]
@@ -117,7 +126,8 @@ class Qonfig::Commands::Instantiation::ValuesFile < Qonfig::Commands::Base
   # @api private
   # @since 0.17.0
   def load_from_file
-    Qonfig::Loaders.resolve(format).load_file(file_path, fail_on_unexist: strict).tap do |values|
+    load_args = [file_path, { fail_on_unexist: strict, **file_resolve_options }]
+    Qonfig::Loaders.resolve(format).load_file(*load_args).tap do |values|
       raise(
         Qonfig::IncompatibleDataStructureError,
         'Setting values must be a hash-like structure'

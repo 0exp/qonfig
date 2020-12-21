@@ -1,12 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.25.0] - 2020-10-20
+## [0.25.0] - 2020-12-22
 ### Added
 - Added file data resolver functionality:
   - Added resolver for `file`
   - Added resolver for `vault`
   - Added DSL methods for defining custom resolvers
+- Added support for kv storage for vault
 
 ```ruby
 Qonfig.define_resolver(:https) do |file_path|

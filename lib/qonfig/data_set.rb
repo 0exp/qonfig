@@ -101,6 +101,7 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   # @option format [String, Symbol]
   # @option strict [Boolean]
   # @option expose [NilClass, String, Symbol] Environment key
+  # @option **file_resolve_options [Hash]
   # @param configurations [Block]
   # @return [void]
   #
@@ -109,10 +110,18 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   # @api public
   # @since 0.17.0
   # @version 0.22.0
-  def load_from_file(file_path, format: :dynamic, strict: true, expose: nil, &configurations)
+  def load_from_file(
+    file_path,
+    format: :dynamic,
+    strict: true,
+    expose: nil,
+    **file_resolve_options,
+    &configurations
+  )
     thread_safe_access do
       load_setting_values_from_file(
-        file_path, format: format, strict: strict, expose: expose, &configurations
+        file_path, format: format, strict: strict,
+        expose: expose, file_resolve_options: file_resolve_options, &configurations
       )
     end
   end
@@ -120,6 +129,7 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   # @param file_path [String, Symbol, Pathname]
   # @option strict [Boolean]
   # @option expose [NilClass, String, Symbol] Environment key
+  # @option **file_resolve_options [Hash]
   # @param configurations [Block]
   # @return [void]
   #
@@ -128,8 +138,11 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   # @api public
   # @since 0.17.0
   # @version 0.22.0
-  def load_from_yaml(file_path, strict: true, expose: nil, &configurations)
-    load_from_file(file_path, format: :yml, strict: strict, expose: expose, &configurations)
+  def load_from_yaml(file_path, strict: true, expose: nil, **file_resolve_options, &configurations)
+    load_from_file(
+      file_path, format: :yml, strict: strict,
+      expose: expose, **file_resolve_options, &configurations
+    )
   end
 
   # @param file_path [String, Symbol, Pathname]
@@ -521,6 +534,7 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
   # @option strict [Boolean]
   # @option expose [NilClass, String, Symbol]
   # @option callcer_location [NilClass, String]
+  # @option **file_resolve_options [Hash]
   # @param configurations [Block]
   # @return [void]
   #
@@ -535,10 +549,12 @@ class Qonfig::DataSet # rubocop:disable Metrics/ClassLength
     strict: true,
     expose: nil,
     caller_location: nil,
+    file_resolve_options: {},
     &configurations
   )
     Qonfig::Commands::Instantiation::ValuesFile.new(
-      file_path, caller_location, format: format, strict: strict, expose: expose
+      file_path, caller_location, format: format,
+      strict: strict, expose: expose, file_resolve_options: file_resolve_options
     ).call(self, settings)
     apply_settings(&configurations)
   end

@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
+require_relative 'context'
+
 describe 'Plugins(vault): expose vault', plugin: :vault do
   before { stub_const('VaultConfig', vault_class) }
-
-  before { allow(Vault).to receive(:logical).and_return(logical_double) }
-
-  let(:logical_double) { instance_double(Vault::Logical) }
 
   let(:returned_data) do
     instance_double(Vault::Secret).tap do |instance|
@@ -13,7 +11,7 @@ describe 'Plugins(vault): expose vault', plugin: :vault do
     end
   end
   let(:secret_data) do
-    { data: { production: { kek: 'pek', cheburek: true }, other_key: "<%= 1 + 1 %>" } }
+    { data: { production: { kek: 'pek', cheburek: true }, other_key: '<%= 1 + 1 %>' } }
   end
 
   let(:vault_class) do
