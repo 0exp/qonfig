@@ -100,6 +100,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
 
       __prevent_core_method_intersection__(key)
 
+      # rubocop:disable Lint/DuplicateBranch
       case
       when with_redefinition || !__options__.key?(key)
         __options__[key] = value
@@ -108,6 +109,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
       else
         __options__[key] = value
       end
+      # rubocop:enable Lint/DuplicateBranch
 
       __define_option_reader__(key)
       __define_option_writer__(key)
@@ -622,6 +624,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   #
   # @api private
   # @since 0.9.0
+  # rubocop:disable Metrics/AbcSize
   def __deep_slice__(*keys)
     {}.tap do |result|
       begin
@@ -642,6 +645,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
       end
     end
   end
+  # rubocop:enable Metrics/AbcSize
 
   # @param keys [Array<Symbol, String>]
   # @return [Hash]
@@ -685,7 +689,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
             # TODO: support for patterns
             __indifferently_accessable_option_key__(key_set)
           when Array
-            key_set.map(&method(:__indifferently_accessable_option_key__))
+            key_set.map { |key| __indifferently_accessable_option_key__(key) }
           else
             raise(
               Qonfig::ArgumentError,

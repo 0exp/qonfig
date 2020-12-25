@@ -16,7 +16,10 @@ jobs:
   - rvm: 2.6.6
     gemfile: gemfiles/with_external_deps.gemfile
     env: TEST_PLUGINS=true FULL_TEST_COVERAGE_CHECK=true
-  - rvm: 2.7.1
+  - rvm: 2.7.2
+    gemfile: gemfiles/with_external_deps.gemfile
+    env: TEST_PLUGINS=true FULL_TEST_COVERAGE_CHECK=true
+  - rvm: 3.0.0
     gemfile: gemfiles/with_external_deps.gemfile
     env: TEST_PLUGINS=true FULL_TEST_COVERAGE_CHECK=true
   - rvm: ruby-head
@@ -34,7 +37,9 @@ jobs:
     gemfile: gemfiles/without_external_deps.gemfile
   - rvm: 2.6.6
     gemfile: gemfiles/without_external_deps.gemfile
-  - rvm: 2.7.1
+  - rvm: 2.7.2
+    gemfile: gemfiles/without_external_deps.gemfile
+  - rvm: 3.0.0
     gemfile: gemfiles/without_external_deps.gemfile
   - rvm: ruby-head
     gemfile: gemfiles/without_external_deps.gemfile

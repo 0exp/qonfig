@@ -4,10 +4,10 @@ require 'simplecov'
 
 SimpleCov.formatter = SimpleCov::Formatter::HTMLFormatter
 SimpleCov.minimum_coverage(100) if !!ENV['FULL_TEST_COVERAGE_CHECK']
-SimpleCov.start do
-  enable_coverage :branch
-  add_filter 'spec'
-end
+SimpleCov.enable_coverage(:branch)
+SimpleCov.enable_coverage(:line)
+SimpleCov.add_filter('spec')
+SimpleCov.start
 
 require 'bundler/setup'
 require 'qonfig'

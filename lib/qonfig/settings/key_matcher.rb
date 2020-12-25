@@ -181,6 +181,6 @@ class Qonfig::Settings::KeyMatcher
 
     regexp_string = strip_regexp_string(regexp_string, left: true, right: true)
 
-    Regexp.new('\A' + regexp_string + '\z')
+    Regexp.new("\\A#{regexp_string}\\z")
   end
 end

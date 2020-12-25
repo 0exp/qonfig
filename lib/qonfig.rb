@@ -58,7 +58,7 @@ module Qonfig
   # @since 0.20.0
   define_validator(:module) { |value| value.is_a?(Module) }
   # @since 0.20.0
-  define_validator(:not_nil) { |value| !value.nil? }
+  define_validator(:not_nil) { |value| value == nil }
 
   # @since 0.12.0
   register_plugin('toml', Qonfig::Plugins::TOML)

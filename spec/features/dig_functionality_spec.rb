@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Style/SingleArgumentDig
 describe '#dig-functionality (Hash#dig-like behaviour)' do
   specify '#dig functionality works as expected :)' do
     class DiggingConfig < Qonfig::DataSet
@@ -43,3 +44,4 @@ describe '#dig-functionality (Hash#dig-like behaviour)' do
     end.to raise_error(Qonfig::UnknownSettingError)
   end
 end
+# rubocop:enable Style/SingleArgumentDig

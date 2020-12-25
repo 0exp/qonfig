@@ -25,13 +25,11 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.files = `git ls-files -z`.split("\x0").reject do |f|
-    f.match(%r{^(test|spec|features)/})
-  end
+  spec.files = `git ls-files -z`.split("\x0")
 
-  spec.add_development_dependency 'simplecov',        '~> 0.19'
-  spec.add_development_dependency 'rspec',            '~> 3.9'
-  spec.add_development_dependency 'armitage-rubocop', '~> 0.89'
+  spec.add_development_dependency 'simplecov',        '~> 0.20'
+  spec.add_development_dependency 'rspec',            '~> 3.10'
+  spec.add_development_dependency 'armitage-rubocop', '~> 1.7'
 
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'rake', '>= 13'

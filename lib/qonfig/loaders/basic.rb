@@ -2,6 +2,7 @@
 
 # @api private
 # @since 0.2.0
+# rubocop:disable Style/StaticClass
 class Qonfig::Loaders::Basic
   class << self
     # @param data [String]
@@ -36,3 +37,4 @@ class Qonfig::Loaders::Basic
     end
   end
 end
+# rubocop:enable Style/StaticClass

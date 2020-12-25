@@ -251,6 +251,7 @@ describe 'Expose JSON file' do
               'expose_json', 'nonexistent.json'
             ), via: :file_name, env: :production
           end
+
           # NOTE: file does not exist
           class StrictFileViaEnvKeyJSONConfig < Qonfig::DataSet
             expose_json SpecSupport.fixture_path(

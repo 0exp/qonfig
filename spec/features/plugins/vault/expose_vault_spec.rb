@@ -13,7 +13,7 @@ describe 'Plugins(vault): expose vault', plugin: :vault do
     end
   end
   let(:secret_data) do
-    { data: { production: { kek: 'pek', cheburek: true }, other_key: "<%= 1 + 1 %>" } }
+    { data: { production: { kek: 'pek', cheburek: true }, other_key: '<%= 1 + 1 %>' } }
   end
 
   let(:vault_class) do
