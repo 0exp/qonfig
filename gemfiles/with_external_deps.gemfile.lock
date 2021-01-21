@@ -84,6 +84,7 @@ GEM
       simplecov-html (~> 0.11)
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.12.3)
+    simplecov-lcov (0.8.0)
     simplecov_json_formatter (0.1.2)
     toml-rb (2.0.1)
       citrus (~> 3.0, > 3.0)
@@ -96,6 +97,7 @@ GEM
 
 PLATFORMS
   x86_64-darwin-19
+  x86_64-linux
 
 DEPENDENCIES
   armitage-rubocop (~> 1.7)
@@ -105,6 +107,7 @@ DEPENDENCIES
   rake (>= 13)
   rspec (~> 3.10)
   simplecov (~> 0.20)
+  simplecov-lcov
   toml-rb (>= 2)
   vault (>= 0.1)
 

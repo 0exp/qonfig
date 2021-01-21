@@ -32,6 +32,7 @@ RSpec.configure do |config|
   config.filter_run_when_matching :focus
   config.order = :random
   config.disable_monkey_patching!
+  config.expose_dsl_globally = true
   config.shared_context_metadata_behavior = :apply_to_host_groups
   Kernel.srand config.seed
   config.expect_with(:rspec) { |c| c.syntax = :expect }
