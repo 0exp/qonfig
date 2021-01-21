@@ -34,4 +34,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'rake', '>= 13'
   spec.add_development_dependency 'pry'
+  spec.add_development_dependency 'simplecov-lcov'
 end
