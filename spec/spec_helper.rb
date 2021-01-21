@@ -2,7 +2,7 @@
 
 require 'bundler/setup'
 require 'simplecov'
-require "simplecov-lcov"
+require 'simplecov-lcov'
 
 require 'pry'
 require 'securerandom'
@@ -15,12 +15,14 @@ end
 
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
   SimpleCov::Formatter::HTMLFormatter,
-  SimpleCov::Formatter::LcovFormatter,
+  SimpleCov::Formatter::LcovFormatter
+
 ])
 
-SimpleCov.minimum_coverage(100) if !!ENV['FULL_TEST_COVERAGE_CHECK']
+SimpleCov.minimum_coverage(100) if ENV['FULL_TEST_COVERAGE_CHECK'] == 'true'
 SimpleCov.enable_coverage(:branch)
 SimpleCov.enable_coverage(:line)
+SimpleCov.add_filter 'spec'
 SimpleCov.start
 
 require 'qonfig'

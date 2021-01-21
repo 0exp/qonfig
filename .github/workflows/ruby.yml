@@ -12,7 +12,7 @@ env:
   BUNDLE_GEMFILE: gemfiles/with_external_deps.gemfile
 
 jobs:
-  full-test:
+  full-check:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,7 +22,7 @@ jobs:
           ruby-version: 3.0.0
           bundler-cache: true
       - name: Run Linter
-        run: bundle exec rubocop || true
+        run: bundle exec rubocop
       - name: Run specs
         run: bundle exec rspec
       - name: Coveralls
@@ -31,11 +31,18 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
   specs:
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental }}
+    env:
+      FULL_TEST_COVERAGE_CHECK: false
 
     strategy:
       fail-fast: false
       matrix:
-        ruby: [2.4, 2.5, 2.6, 2.7]
+        ruby: [2.5, 2.6, 2.7]
+        experimental: [false]
+        include:
+          - ruby: jruby
+            experimental: true
 
     steps:
       - uses: actions/checkout@v2
