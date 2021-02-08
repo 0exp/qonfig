@@ -43,6 +43,8 @@ jobs:
         include:
           - ruby: jruby
             experimental: true
+          - ruby: head
+            experimental: true
 
     steps:
       - uses: actions/checkout@v2
