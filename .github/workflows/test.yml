@@ -1,30 +1,31 @@
 name: Test
 
-on:
-  push:
-    branches: [master]
-  pull_request:
-    branches: [master]
+on: [push, pull_request]
 
 env:
-  FULL_TEST_COVERAGE_CHECK: true
-  TEST_PLUGINS: true
-  BUNDLE_GEMFILE: gemfiles/with_external_deps.gemfile
+  FULL_COVERAGE_CHECK: true
 
 jobs:
   full-check:
     runs-on: ubuntu-latest
 
+    # We want to run on external PRs, but not on our own internal PRs as they'll be run on push event
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != '0exp/qonfig'
+
     steps:
       - uses: actions/checkout@v2
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.0.0
+          ruby-version: 3
           bundler-cache: true
       - name: Run Linter
-        run: bundle exec rubocop
+        run: bundle exec ci-helper RubocopLint
+      - name: Check missed spec suffixes
+        run: bundle exec ci-helper CheckSpecSuffixes --extra-paths spec/*.rb --ignored-paths spec/*_helper.rb
       - name: Run specs
-        run: bundle exec rspec
+        run: bundle exec ci-helper RunSpecs
+      - name: Audit
+        run: bundle exec ci-helper BundlerAudit
       - name: Coveralls
         uses: coverallsapp/github-action@master
         with:
@@ -32,8 +33,12 @@ jobs:
   specs:
     runs-on: ubuntu-latest
     continue-on-error: ${{ matrix.experimental }}
+
     env:
-      FULL_TEST_COVERAGE_CHECK: false
+      FULL_COVERAGE_CHECK: false
+
+    # We want to run on external PRs, but not on our own internal PRs as they'll be run on push event
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != '0exp/qonfig'
 
     strategy:
       fail-fast: false
@@ -41,10 +46,11 @@ jobs:
         ruby: [2.5, 2.6, 2.7]
         experimental: [false]
         include:
-          - ruby: jruby
-            experimental: true
           - ruby: head
             experimental: true
+          - ruby: jruby
+            experimental: true
+
 
     steps:
       - uses: actions/checkout@v2
@@ -53,4 +59,4 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
       - name: Run specs
-        run: bundle exec rspec
+        run: bundle exec ci-helper RunSpecs

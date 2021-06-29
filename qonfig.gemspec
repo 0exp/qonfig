@@ -32,7 +32,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'armitage-rubocop', '~> 1.7'
 
   spec.add_development_dependency 'bundler'
-  spec.add_development_dependency 'rake', '>= 13'
+  spec.add_development_dependency 'ci-helper'
   spec.add_development_dependency 'pry'
+  spec.add_development_dependency 'rake', '>= 13'
   spec.add_development_dependency 'simplecov-lcov'
 end

@@ -19,11 +19,11 @@ SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
 
 ])
 
-SimpleCov.minimum_coverage(100) if ENV['FULL_TEST_COVERAGE_CHECK'] == 'true'
-SimpleCov.enable_coverage(:branch)
-SimpleCov.enable_coverage(:line)
-SimpleCov.add_filter 'spec'
-SimpleCov.start
+SimpleCov.start do
+  enable_coverage :branch
+  minimum_coverage(line: 100) if ENV['FULL_COVERAGE_CHECK'] == 'true'
+  add_filter 'spec'
+end
 
 require 'qonfig'
 
