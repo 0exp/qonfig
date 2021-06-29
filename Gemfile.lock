@@ -19,6 +19,9 @@ GEM
       rubocop-rake (= 0.5.1)
       rubocop-rspec (= 2.1.0)
     ast (2.4.1)
+    bundler-audit (0.8.0)
+      bundler (>= 1.2.0, < 3)
+      thor (~> 1.0)
     ci-helper (0.4.2)
       colorize (~> 0.8)
       dry-inflector (~> 0.2)
@@ -97,6 +100,7 @@ GEM
     spoon (0.0.6)
       ffi
     symbiont-ruby (0.7.0)
+    thor (1.1.0)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
     umbrellio-sequel-plugins (0.5.1.27)
@@ -112,6 +116,7 @@ PLATFORMS
 DEPENDENCIES
   armitage-rubocop (~> 1.7)
   bundler
+  bundler-audit
   ci-helper
   pry
   qonfig!
