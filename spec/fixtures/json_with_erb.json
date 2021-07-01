@@ -1,0 +1,6 @@
+{
+  "count": <%= 10_000 %>,
+  "credentials": {
+    "excluded": "<%= 'some string here' %>"
+  }
+}

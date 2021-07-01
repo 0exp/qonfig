@@ -12,7 +12,7 @@ class Qonfig::Loaders::JSON < Qonfig::Loaders::Basic
     # @api private
     # @since 0.5.0
     def load(data)
-      ::JSON.parse(data, max_nesting: false, allow_nan: true)
+      ::JSON.parse(ERB.new(data).result, max_nesting: false, allow_nan: true)
     rescue ::JSON::ParserError => error
       raise(Qonfig::JSONLoaderParseError.new(error.message).tap do |exception|
         exception.set_backtrace(error.backtrace)
