@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.26.0] - 2021-07-01
+### Added
+- Support `ERB` in `load_from_json` method;
+
 ## [0.25.0] - 2020-09-15
 ### Added
 - Support for **Vault** config provider:

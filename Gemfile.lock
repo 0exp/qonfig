@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    qonfig (0.25.0)
+    qonfig (0.26.0)
 
 GEM
   remote: https://rubygems.org/
@@ -99,4 +99,4 @@ DEPENDENCIES
   simplecov (~> 0.20)
 
 BUNDLED WITH
-   2.2.3
+   2.2.21
