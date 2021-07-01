@@ -11,6 +11,7 @@ class Qonfig::Loaders::JSON < Qonfig::Loaders::Basic
     #
     # @api private
     # @since 0.5.0
+    # @version 0.26.0
     def load(data)
       ::JSON.parse(ERB.new(data).result, max_nesting: false, allow_nan: true)
     rescue ::JSON::ParserError => error

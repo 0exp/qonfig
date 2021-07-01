@@ -2240,6 +2240,7 @@ config.settings.web.password # => staging_password (from sidekiq.staging.yml)
 
 ### Load from JSON file
 
+- supports `ERB`;
 - `:strict` mode (fail behaviour when the required yaml file doesnt exist):
   - `true` (by default) - causes `Qonfig::FileNotFoundError`;
   - `false` - do nothing, ignore current command;
