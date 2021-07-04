@@ -212,6 +212,19 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
     definition_commands << Qonfig::Commands::Definition::LoadFromJSON.new(file_path, strict: strict)
   end
 
+  # @option file_path [String, Pathname]
+  # @option strict [Boolean]
+  # @option format [Symbol, String]
+  # @return [void]
+  #
+  # @api public
+  # @version 0.24.0
+  def load_from_file(file_path, strict: true, format: :dynamic)
+    definition_commands << Qonfig::Commands::Definition::LoadFroMfile.new(
+      file_path, strict: strict, format: format
+    )
+  end
+
   # @param file_path [String, Pathname]
   # @option strict [Boolean]
   # @option via [Symbol]
@@ -258,6 +271,21 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
 
     definition_commands << Qonfig::Commands::Definition::ExposeSelf.new(
       caller_location, env: env, format: format
+    )
+  end
+
+  # @option [String, Pathname]
+  # @option via [Symbol]
+  # @option env [Symbol, String]
+  # @option strict [Boolean]
+  # @option format [Symbol, String]
+  # @return [void]
+  #
+  # @api public
+  # @version 0.24.0
+  def expose_file(file_path, via:, env:, strict: true, format: :dynamic)
+    definition_commands << Qonfig::Commands::Definition::ExposeFile.new(
+      file_path, strict: strict, via: via, env: env, format: format
     )
   end
 
