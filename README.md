@@ -3316,6 +3316,7 @@ Qonfig.plugin(:vault)
   - rails plugin;
   - support for pattern matching;
   - support for type checking (via `rbs`, `typeprof`, `steep`);
+  - console utilities;
 - **Minor**:
   - An ability to flag `Qonfig::Configurable`'s config object as `compacted` (`Qonfig::Compacted`);
   - Instance-based behavior for `Vault` plugin, also use instance of `Vault` client instead of `Singleton`;
