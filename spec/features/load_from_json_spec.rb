@@ -35,7 +35,7 @@ describe 'Load from JSON' do
       expect(conf.with_empty_objects.credentials.excluded).to eq({})
 
       expect(conf.with_erb.count).to eq(10_000)
-      expect(conf.with_erb.credentials.excluded).to eq("some string here")
+      expect(conf.with_erb.credentials.excluded).to eq('some string here')
     end
   end
 

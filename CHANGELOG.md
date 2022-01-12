@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.27.0] - 2022-01-12
+### Changed
+- Drop Ruby 2.5 support.
+- Fix YAML loading in Psych v4 (#132).
+
 ## [0.26.0] - 2021-07-01
 ### Added
 - Support `ERB` in `load_from_json` method;
