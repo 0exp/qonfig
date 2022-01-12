@@ -144,7 +144,8 @@ module Qonfig
   #
   # @api public
   # @since 0.17.0
-  YAMLLoaderParseError = Class.new(::Psych::SyntaxError)
+  # @version 0.27.0
+  YAMLLoaderParseError = Class.new(::YAML::Exception)
 
   # @see Qonfig::Loaders::Dynamic
   #
