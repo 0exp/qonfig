@@ -11,6 +11,7 @@ class Qonfig::Loaders::YAML < Qonfig::Loaders::Basic
     #
     # @api private
     # @since 0.2.0
+    # @version 0.27.0
     def load(data)
       ::YAML.safe_load(ERB.new(data).result, permitted_classes: [Symbol], aliases: true)
     rescue ::Psych::SyntaxError => error
