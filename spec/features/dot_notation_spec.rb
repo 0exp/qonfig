@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Style/SingleArgumentDig
 describe 'Dot-notation' do
   let(:config) do
     Qonfig::DataSet.build do
@@ -155,3 +156,4 @@ describe 'Dot-notation' do
     end
   end
 end
+# rubocop:enable Style/SingleArgumentDig

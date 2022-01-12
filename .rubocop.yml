@@ -5,13 +5,15 @@ inherit_gem:
     - lib/rubocop.rspec.yml
 
 AllCops:
-  TargetRubyVersion: 2.7.1
+  TargetRubyVersion: 2.6.0
+  NewCops: enable
   Include:
     - lib/**/*.rb
     - spec/**/*.rb
     - Gemfile
     - Rakefile
     - qonfig.gemspec
+    - gemfiles/*.gemfile
     - bin/console
     - bin/rspec
 
@@ -25,4 +27,20 @@ Style/RedundantBegin:
 
 # NOTE: too situative
 Metrics/ParameterLists:
+  Enabled: false
+
+# NOTE: too situative in current code base
+Style/NilComparison:
+  Enabled: false
+
+# NOTE: too situative in current code base
+Style/NonNilCheck:
+  Enabled: false
+
+# NOTE: too situative in current code base
+Lint/MissingSuper:
+  Enabled: false
+
+# NOTE: too situative in current code base
+Lint/EmptyBlock:
   Enabled: false

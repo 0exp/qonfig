@@ -126,8 +126,8 @@ class Qonfig::Commands::Instantiation::ValuesFile < Qonfig::Commands::Base
   # @api private
   # @since 0.17.0
   def load_from_file
-    load_args = [file_path, { fail_on_unexist: strict, **file_resolve_options }]
-    Qonfig::Loaders.resolve(format).load_file(*load_args).tap do |values|
+    load_options = { fail_on_unexist: strict, **file_resolve_options }
+    Qonfig::Loaders.resolve(format).load_file(file_path, **load_options).tap do |values|
       raise(
         Qonfig::IncompatibleDataStructureError,
         'Setting values must be a hash-like structure'

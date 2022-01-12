@@ -2,6 +2,7 @@
 
 # @api private
 # @since 0.11.0
+# rubocop:disable Style/StaticClass
 class Qonfig::Uploaders::Base
   class << self
     # @param settings [Qonfig::Settings]
@@ -16,3 +17,4 @@ class Qonfig::Uploaders::Base
     end
   end
 end
+# rubocop:enable Style/StaticClass

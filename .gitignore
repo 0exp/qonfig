@@ -7,10 +7,8 @@
 /spec/reports/
 /tmp/
 .rspec_status
-Gemfile.lock
 /.idea
 .ruby-version
 /.vscode/
 /spec/artifacts/
-/gemfiles/*.gemfile.lock
 *.gem

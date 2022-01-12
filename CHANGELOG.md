@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.26.0] - 2020-12-22
+## Unreleased
 ### Added
 - Added file data resolver functionality:
   - Added resolver for `file`
@@ -19,6 +19,15 @@ class Config < Qonfig::DataSet
   load_from_yaml "https://yamlhost.com/cool.yaml"
 end
 ```
+
+## [0.27.0] - 2022-01-12
+### Changed
+- Drop Ruby 2.5 support.
+- Fix YAML loading in Psych v4 (#132).
+
+## [0.26.0] - 2021-07-01
+### Added
+- Support `ERB` in `load_from_json` method;
 
 ## [0.25.0] - 2020-09-15
 ### Added

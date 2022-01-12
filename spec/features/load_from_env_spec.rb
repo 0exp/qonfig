@@ -55,7 +55,7 @@ describe 'Load from ENV' do
 
     config = EnvConfig.new
 
-    # rubocop:disable Layout/LineLength
+    # rubocop:disable Layout/LineLength, Naming/VariableNumber
     expect(config[:default][:QONFIG_SPEC_TRUE_VALUE_V1]).to          eq('true')
     expect(config[:default][:QONFIG_SPEC_TRUE_VALUE_V2]).to          eq('t')
     expect(config[:default][:QONFIG_SPEC_TRUE_VALUE_V3]).to          eq('TRUE')
@@ -169,7 +169,7 @@ describe 'Load from ENV' do
     expect(config[:all_in][:QUOTED_STRING_VALUE_V1]).to eq('test, please')
     expect(config[:all_in][:QUOTED_STRING_VALUE_V2]).to eq('please, test')
     expect { config[:all_in][:NON_QONFIG_SPEC_GENERIC_VALUE] }.to raise_error(Qonfig::UnknownSettingError)
-    # rubocop:enable Layout/LineLength
+    # rubocop:enable Layout/LineLength, Naming/VariableNumber
   end
 
   specify 'incorrect definition' do

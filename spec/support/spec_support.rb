@@ -35,7 +35,7 @@ module SpecSupport
       raise 'Object ID address detection is not supported on Ruby >= 2.7'
     end
 
-    value_space = format('%x', (object.object_id << 1)) # rubocop:disable Style/FormatStringToken
+    value_space = format('%x', (object.object_id << 1))
     alignment = '0' * (16 - value_space.size)
     "#{alignment}#{value_space}"
   end

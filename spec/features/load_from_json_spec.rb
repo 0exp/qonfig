@@ -12,6 +12,10 @@ describe 'Load from JSON' do
       setting :with_empty_objects do
         load_from_json SpecSupport.fixture_path('json_with_empty_object.json')
       end
+
+      setting :with_erb do
+        load_from_json SpecSupport.fixture_path('json_with_erb.json')
+      end
     end
 
     JSONBasedConfig.new.settings.tap do |conf|
@@ -29,6 +33,9 @@ describe 'Load from JSON' do
 
       expect(conf.with_empty_objects.requirements).to eq({})
       expect(conf.with_empty_objects.credentials.excluded).to eq({})
+
+      expect(conf.with_erb.count).to eq(10_000)
+      expect(conf.with_erb.credentials.excluded).to eq('some string here')
     end
   end
 

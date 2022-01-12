@@ -40,7 +40,10 @@ class Qonfig::Imports::Mappings < Qonfig::Imports::Abstract
   # @api private
   # @since 0.18.0
   # @version 0.21.0
-  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/BlockLength
+  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
+  # rubocop:disable Metrics/BlockLength
+  # rubocop:disable Metrics/PerceivedComplexity
   def import!(settings_interface = Module.new) # rubocop:disable Metrics/AbcSize
     key_matchers.each_pair do |(mapped_method_name, key_matcher)|
       raise(
@@ -85,7 +88,10 @@ class Qonfig::Imports::Mappings < Qonfig::Imports::Abstract
       end
     end
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/BlockLength
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/BlockLength
+  # rubocop:enable Metrics/PerceivedComplexity
 
   private
 

@@ -233,6 +233,7 @@ describe 'Expose YAML file' do
               'expose_yaml', 'nonexistent.yml'
             ), via: :file_name, env: :production
           end
+
           # NOTE: file does not exist
           class StrictFileViaEnvKeyYAMLConfig < Qonfig::DataSet
             expose_yaml SpecSupport.fixture_path(

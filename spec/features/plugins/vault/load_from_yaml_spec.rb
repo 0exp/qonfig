@@ -13,7 +13,7 @@ describe 'Plugins(vault): Load yaml from vault kv store', plugin: :vault do
     end
   end
 
-  let(:secret_data) { Hash["file.yml": yaml_content] }
+  let(:secret_data) { Hash['file.yml': yaml_content] }
   let(:yaml_content) { YAML.dump(kek: 'pek') }
 
   let(:vault_class) do

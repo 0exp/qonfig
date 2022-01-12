@@ -191,6 +191,7 @@ describe 'Plugins(toml): expose TOML file', plugin: :toml do
               'plugins', 'toml', 'expose_toml', 'nonexistent.toml'
             ), via: :file_name, env: :production
           end
+
           # NOTE: file does not exist
           class StrictFileViaEnvKeyConfig < Qonfig::DataSet
             expose_toml SpecSupport.fixture_path(

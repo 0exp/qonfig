@@ -60,6 +60,7 @@ class Qonfig::Uploaders::YAML < Qonfig::Uploaders::File
     def hash_representation_options(options, &value_processor)
       {}.tap do |representation_opts|
         # NOTE: this case/when with the same logic is only used for better code readbility
+        # rubocop:disable Lint/DuplicateBranch
         case
         # NOTE: options has :symbolize_keys key
         when options.key?(:symbolize_keys) && !!options[:symbolize_keys]
@@ -70,6 +71,7 @@ class Qonfig::Uploaders::YAML < Qonfig::Uploaders::File
           representation_opts[:transform_key] = KEY_SYMBOLIZER
           # :nocov:
         end
+        # rubocop:enable Lint/DuplicateBranch
 
         # NOTE: provide value transformer
         if block_given?

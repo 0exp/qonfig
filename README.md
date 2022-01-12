@@ -2242,6 +2242,7 @@ config.settings.web.password # => staging_password (from sidekiq.staging.yml)
 
 ### Load from JSON file
 
+- supports `ERB`;
 - `:strict` mode (fail behaviour when the required yaml file doesnt exist):
   - `true` (by default) - causes `Qonfig::FileNotFoundError`;
   - `false` - do nothing, ignore current command;
@@ -3348,6 +3349,8 @@ Qonfig.plugin(:vault)
   - support for persistent data storages (we want to store configs in multiple databases and files);
   - rails plugin;
   - support for pattern matching;
+  - support for type checking (via `rbs`, `typeprof`, `steep`);
+  - console utilities;
 - **Minor**:
   - An ability to flag `Qonfig::Configurable`'s config object as `compacted` (`Qonfig::Compacted`);
   - Instance-based behavior for `Vault` plugin, also use instance of `Vault` client instead of `Singleton`;

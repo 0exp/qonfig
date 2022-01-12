@@ -2,6 +2,7 @@
 
 # @api private
 # @since 0.2.0
+# rubocop:disable Performance/MethodObjectAsBlock
 module Qonfig::Commands::Definition::LoadFromENV::ValueConverter
   # @return [Regexp]
   #
@@ -80,3 +81,4 @@ module Qonfig::Commands::Definition::LoadFromENV::ValueConverter
     end
   end
 end
+# rubocop:enable Performance/MethodObjectAsBlock
