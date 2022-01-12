@@ -8,7 +8,7 @@ class Qonfig::Loaders::Vault < Qonfig::Loaders::Basic
   # @api private
   # @since 0.25.0
   VAULT_EXPR_EVAL_SCOPE = BasicObject.new.__binding__.tap do |binding|
-    Object.new.method(:freeze).unbind.bind(binding.receiver).call
+    Object.new.method(:freeze).unbind.bind_call(binding.receiver)
   end
 
   class << self

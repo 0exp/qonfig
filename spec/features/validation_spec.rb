@@ -236,6 +236,7 @@ describe 'Validation' do
       begin
         config.clear! # NOTE: set telegraf_url to nil (to incorrect value)
       rescue Qonfig::ValidationError
+        # NOOP
       end
 
       expect(config.valid?).to eq(false)
@@ -300,6 +301,7 @@ describe 'Validation' do
       begin
         config.settings.adapter = 123
       rescue Qonfig::ValidationError
+        # NOOP
       end
       expect(config.valid?).to eq(false)
       expect(config.settings.adapter).to eq(123)
@@ -318,6 +320,7 @@ describe 'Validation' do
       begin
         config.settings.enabled = '123'
       rescue Qonfig::ValidationError
+        # NOOP
       end
       expect(config.valid?).to eq(false)
       expect(config.settings.enabled).to eq('123')

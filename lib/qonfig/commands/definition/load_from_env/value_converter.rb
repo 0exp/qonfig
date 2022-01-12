@@ -2,7 +2,7 @@
 
 # @api private
 # @since 0.2.0
-# rubocop:disable Style/RedundantFreeze, Performance/MethodObjectAsBlock
+# rubocop:disable Performance/MethodObjectAsBlock
 module Qonfig::Commands::Definition::LoadFromENV::ValueConverter
   # @return [Regexp]
   #
@@ -81,4 +81,4 @@ module Qonfig::Commands::Definition::LoadFromENV::ValueConverter
     end
   end
 end
-# rubocop:enable Style/RedundantFreeze, Performance/MethodObjectAsBlock
+# rubocop:enable Performance/MethodObjectAsBlock
