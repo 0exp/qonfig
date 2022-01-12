@@ -12,7 +12,7 @@ class Qonfig::Loaders::YAML < Qonfig::Loaders::Basic
     # @api private
     # @since 0.2.0
     def load(data)
-      ::YAML.load(ERB.new(data).result)
+      ::YAML.load(ERB.new(data).result, aliases: true)
     rescue ::Psych::SyntaxError => error
       raise(
         Qonfig::YAMLLoaderParseError.new(
