@@ -15,7 +15,7 @@ class Qonfig::Loaders::YAML < Qonfig::Loaders::Basic
     def load(data)
       yaml = ERB.new(data).result
       ::YAML.respond_to?(:unsafe_load) ? ::YAML.unsafe_load(yaml) : ::YAML.load(yaml)
-    rescue ::YAML::Exception => error
+    rescue ::Psych::SyntaxError => error
       raise(
         Qonfig::YAMLLoaderParseError.new(
           error.file,
