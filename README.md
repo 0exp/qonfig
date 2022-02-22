@@ -2,7 +2,7 @@
 
 Config. Defined as a class. Used as an instance. Support for inheritance and composition.
 Lazy instantiation. Thread-safe. Command-style DSL. Validation layer. **Dot-notation**) And pretty-print :) Support for **YAML**, **TOML**, **JSON**, **\_\_END\_\_**, **ENV**.
-Extremely simple to define. Extremely simple to use. That's all? **NOT** :)
+Extremely simple to define. Extremely simple to use. That's all? **Not** :)
 
 ## Installation
 
