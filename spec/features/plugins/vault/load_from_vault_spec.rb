@@ -1,21 +1,22 @@
 # frozen_string_literal: true
 
-describe 'Plugins(vault): Load from vault kv store', plugin: :vault do
-  before { stub_const('VaultConfig', vault_class) }
+require_relative 'context'
 
-  before { allow(Vault).to receive(:logical).and_return(logical_double) }
+describe 'Plugins(vault): Load from vault kv store', plugin: :vault do
+  include_context 'vault context'
+
+  before { stub_const('VaultConfig', vault_class) }
 
   let(:returned_data) do
     instance_double(Vault::Secret).tap do |instance|
       allow(instance).to receive(:data).and_return(secret_data)
     end
   end
-  let(:logical_double) { instance_double(Vault::Logical) }
-  let(:secret_data) { Hash[data: { kek: true, pek: 'cheburek', nested: Hash[key: 123] }] }
+  let(:secret_data) { Hash[kek: true, pek: 'cheburek', nested: { key: 123 }] }
 
   let(:vault_class) do
     Class.new(Qonfig::DataSet) do
-      load_from_vault 'kv/data/development'
+      load_from_vault 'kv/data/development', use_kv: false
     end
   end
 
@@ -42,7 +43,7 @@ describe 'Plugins(vault): Load from vault kv store', plugin: :vault do
   context 'with Pathname at path argument' do
     let(:vault_class) do
       Class.new(Qonfig::DataSet) do
-        load_from_vault Pathname('kv/data/development')
+        load_from_vault Pathname('kv/data/development'), use_kv: false
       end
     end
 
@@ -56,7 +57,7 @@ describe 'Plugins(vault): Load from vault kv store', plugin: :vault do
   context 'when strict set to false' do
     let(:vault_class) do
       Class.new(Qonfig::DataSet) do
-        load_from_vault 'kv/data/development', strict: false
+        load_from_vault 'kv/data/development', strict: false, use_kv: false
       end
     end
 
@@ -75,6 +76,26 @@ describe 'Plugins(vault): Load from vault kv store', plugin: :vault do
       expect(Vault.logical).to receive(:read).with('kv/data/development').and_raise(raised_error)
 
       expect { VaultConfig.new }.to raise_error(Qonfig::VaultLoaderError, 'Cool error')
+    end
+  end
+
+  context 'when version specified' do
+    let(:vault_class) do
+      Class.new(Qonfig::DataSet) do
+        load_from_vault 'kv/data/development', version: 2, use_kv: true
+      end
+    end
+
+    let(:expected_path) { 'data/development' }
+
+    specify 'uses kv store engine' do
+      expect(Vault).to receive(:kv).with('kv').and_return(kv_double)
+      expect(kv_double).to receive(:read).with(expected_path, 2).and_return(returned_data)
+
+      VaultConfig.new.settings.tap do |conf|
+        expect(conf).to have_attributes(kek: true, pek: 'cheburek')
+        expect(conf.nested.key).to eq(123)
+      end
     end
   end
 end

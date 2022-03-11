@@ -2049,6 +2049,8 @@ end
 - **Daily work**
   - [Save to JSON file](#save-to-json-file) (`save_to_json`)
   - [Save to YAML file](#save-to-yaml-file) (`save_to_yaml`)
+- **Define file data resolvers**
+  - [Working with file data resolvers](#working-with-file-data-resolvers)
 
 ---
 
@@ -3155,6 +3157,35 @@ dynamic: 10
 
 ---
 
+### Working with file data resolvers
+
+You can define custom file data resolver
+
+```ruby
+Qonfig.define_resolver(:http) do |file_path|
+  final_url = URI("http://#{file_path}")
+  Net::HTTP.get(final_url)
+rescue SocketError => error
+  raise Qonfig::FileNotFoundError, error.message
+end
+
+class AppConfig < Qonfig::DataSet
+  load_from_yaml "http://content-holder.com/settings.yml"
+end
+```
+
+Also, you can set this file data resolver to default resolver.
+
+```ruby
+Qonfig.set_default_resolver :http
+
+class AppConfig < Qonfig::DataSet
+  load_from_yaml "content-holder.com/settings.yml" # same as previous example
+end
+```
+
+---
+
 ### Plugins
 
 - [toml](#plugins-toml) (provides `load_from_toml`, `save_to_toml`, `expose_toml`);
@@ -3290,6 +3321,9 @@ config = Config.new
 - depends on `vault` gem ([link](https://github.com/hashicorp/vault-ruby)) (tested on `>= 0.1`);
 - provides `.load_from_vault` (works in `.load_from_yaml` manner ([doc](#load-from-yaml-file)));
 - provides `.expose_vault` (works in `.expose_yaml` manner ([doc](#expose-yaml)));
+- provides custom file data resolver `vault://path/to/file/key.yml`;
+- you can use version option to use specific version of config in kv storage (dsl and resolver);
+- kv storage is used by default, but you can use logical storage by setting `use_kv` to `false`;
 
 ```ruby
 # 1) require external dependency
@@ -3323,6 +3357,9 @@ Qonfig.plugin(:vault)
   - External validation class with an importing api for better custom validations;
   - Setting value changement trace (in `anyway_config` manner);
   - Instantiation and reloading callbacks;
+  - Add supported formats for resolvers: for example, if you use vault resolver, you can't use json format;
+  - Refactor params passed to methods: use value objects instead;
+  - Refactor loaders: use base class for them;
 
 ## Build
 

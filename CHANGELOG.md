@@ -1,6 +1,25 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+### Added
+- Added file data resolver functionality:
+  - Added resolver for `file`
+  - Added resolver for `vault`
+  - Added DSL methods for defining custom resolvers
+- Added support for kv storage for vault
+- Fix using of non-kv storage
+
+```ruby
+Qonfig.define_resolver(:https) do |file_path|
+  Net::HTTP.get(URI("https:://#{file_path}"))
+end
+
+class Config < Qonfig::DataSet
+  load_from_yaml "https://yamlhost.com/cool.yaml"
+end
+```
+
 ## [0.27.0] - 2022-01-12
 ### Changed
 - Drop Ruby 2.5 support.

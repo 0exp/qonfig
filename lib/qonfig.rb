@@ -22,6 +22,7 @@ module Qonfig
   require_relative 'qonfig/imports'
   require_relative 'qonfig/plugins'
   require_relative 'qonfig/compacted'
+  require_relative 'qonfig/file_data_resolving'
 
   # @api public
   # @since 0.4.0
@@ -30,6 +31,10 @@ module Qonfig
   # @api public
   # @since 0.20.0
   extend Validation::PredefinitionMixin
+
+  # @api public
+  # @since 0.26.0
+  extend FileDataResolving::Mixin
 
   # @since 0.20.0
   define_validator(:integer) { |value| value.is_a?(Integer) }
@@ -59,6 +64,15 @@ module Qonfig
   define_validator(:module) { |value| value.is_a?(Module) }
   # @since 0.20.0
   define_validator(:not_nil) { |value| value == nil }
+
+  # @since 0.26.0
+  define_resolver(:file) do |file_path|
+    ::File.read(file_path)
+  rescue Errno::ENOENT => error
+    raise Qonfig::FileNotFoundError, error.message
+  end
+  # @since 0.26.0
+  set_default_resolver :file
 
   # @since 0.12.0
   register_plugin('toml', Qonfig::Plugins::TOML)
