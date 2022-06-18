@@ -23,7 +23,7 @@ describe 'Plugins(toml): #expose_self => format: :toml', plugin: :toml do
     expect(config.settings.prod_env.credentials.password).to eq('123')
     expect(config.settings.prod_env.credentials.enabled).to eq(true)
     expect(config.settings.prod_env.api).to eq('google.com')
-    expect(config.settings.prod_env.ports).to eq([10001, 10002, 10003])
+    expect(config.settings.prod_env.ports).to eq([10_001, 10_002, 10_003])
 
     # NOTE: test env
     expect(config.settings.test_env.credentials.user).to eq('megaman')

@@ -30,11 +30,11 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'simplecov',        '~> 0.21'
   spec.add_development_dependency 'rspec',            '~> 3.11'
   spec.add_development_dependency 'armitage-rubocop', '~> 1.30'
-
-  spec.add_development_dependency 'bundler'
-  spec.add_development_dependency 'bundler-audit'
-  spec.add_development_dependency 'ci-helper'
-  spec.add_development_dependency 'pry'
-  spec.add_development_dependency 'rake', '>= 13'
-  spec.add_development_dependency 'simplecov-lcov'
+  spec.add_development_dependency 'steep',            '~> 1.0'
+  spec.add_development_dependency 'bundler',          '>= 1'
+  spec.add_development_dependency 'bundler-audit',    '~> 0.9'
+  spec.add_development_dependency 'ci-helper',        '~> 0.5'
+  spec.add_development_dependency 'pry',              '~> 0.14'
+  spec.add_development_dependency 'rake',             '>= 13'
+  spec.add_development_dependency 'simplecov-lcov',   '~> 0.8'
 end

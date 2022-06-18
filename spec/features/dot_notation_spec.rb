@@ -57,7 +57,7 @@ describe 'Dot-notation' do
   specify '#subset' do
     expect(config.subset('kek', 'kek.frek')).to match(
       'kek' => {
-        'frek' => { 'jek' => { 'bek' => 123456 } },
+        'frek' => { 'jek' => { 'bek' => 123_456 } },
         'pek' => { 'cheburek'=>'test' },
         'foo.bar' => 100_500
       },

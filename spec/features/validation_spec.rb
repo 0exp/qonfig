@@ -47,7 +47,7 @@ describe 'Validation' do
       # NOTE: incorrect name => error
       expect do
         Class.new(Qonfig::DataSet) do
-          validate '*', 1923923
+          validate '*', 1_923_923
         end
       end.to raise_error(Qonfig::ValidatorArgumentError)
 
@@ -178,7 +178,7 @@ describe 'Validation' do
 
     specify 'validates invalid settings on instnation' do
       config_klass = Class.new(Qonfig::DataSet) do
-        setting :telegraf_url, 12345 # NOTE: should be a string
+        setting :telegraf_url, 12_345 # NOTE: should be a string
         validate 'telegraf_url' do |value|
           value.is_a?(String)
         end
