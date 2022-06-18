@@ -3325,6 +3325,7 @@ Qonfig.plugin(:vault)
   - External validation class with an importing api for better custom validations;
   - Setting value changement trace (in `anyway_config` manner);
   - Instantiation and reloading callbacks;
+  - File geneartors (.rb-files with a pre-filled code (and (maybe) with a pre-generated yaml/json/etc files));
 
 ## Build
 
