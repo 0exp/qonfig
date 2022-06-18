@@ -27,9 +27,9 @@ Gem::Specification.new do |spec|
 
   spec.files = `git ls-files -z`.split("\x0")
 
-  spec.add_development_dependency 'simplecov',        '~> 0.20'
-  spec.add_development_dependency 'rspec',            '~> 3.10'
-  spec.add_development_dependency 'armitage-rubocop', '~> 1.7'
+  spec.add_development_dependency 'simplecov',        '~> 0.21'
+  spec.add_development_dependency 'rspec',            '~> 3.11'
+  spec.add_development_dependency 'armitage-rubocop', '~> 1.30'
 
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'bundler-audit'
