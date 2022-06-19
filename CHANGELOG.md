@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Support for the new `toml-rb` release;
 - Updated dev-dependencies;
+- Adopt the code to the new rubocop cops;
 
 ## [0.27.0] - 2022-01-12
 ### Changed
