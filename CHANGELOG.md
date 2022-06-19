@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [0.28.0]
 ### Changed
-- Support for the new `toml-rb` release;
+- Support for the new `toml-rb` release (`2.1`);
 - Updated dev-dependencies;
 - Adopt the code to the new rubocop cops;
 
