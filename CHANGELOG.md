@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.28.0]
+## [0.28.0] - 2022-06-12
 ### Changed
 - Support for the new `toml-rb` release (`2.1`);
 - Updated dev-dependencies;
