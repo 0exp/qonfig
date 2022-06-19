@@ -57,14 +57,14 @@ module TomlRB::Dumper::ObjectConverterFix
   def dump_simple_pairs(simple_pairs)
     simple_pairs.each do |key, val|
       key = quote_key(key) unless bare_key? key
-      # NOTE: our fix (original code: `@toml_str << "#{key} = #{to_toml(val)}\n"`)
+      # NOTE: our fix (original code: `@toml_str += "#{key} = #{to_toml(val)}\n"`)
       fixed_toml_value_append(key, val)
     end
   end
 
   # NOTE: our fix
   def fixed_toml_value_append(key, val)
-    @toml_str << "#{key} = #{fixed_to_toml(val)}\n" unless val.nil?
+    @toml_str += "#{key} = #{fixed_to_toml(val)}\n" unless val.nil?
   end
 
   # NOTE our fix
