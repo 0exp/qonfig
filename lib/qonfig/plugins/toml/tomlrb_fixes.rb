@@ -50,6 +50,7 @@ end
 #
 # @api private
 # @since 0.12.0
+# @version 0.28.0
 module TomlRB::Dumper::ObjectConverterFix
   private
 
