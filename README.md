@@ -1,8 +1,14 @@
 # Qonfig &middot; [![Gem Version](https://badge.fury.io/rb/qonfig.svg)](https://badge.fury.io/rb/qonfig) [![Build Status](https://travis-ci.org/0exp/qonfig.svg?branch=master)](https://travis-ci.org/0exp/qonfig) [![Coverage Status](https://coveralls.io/repos/github/0exp/qonfig/badge.svg?branch=master)](https://coveralls.io/github/0exp/qonfig?branch=master)
 
+Powerful configuration framework with a support for many commonly used config formats with a multi-functional API, developer-friendly DSL and object-oriented behavior.
+
+```
+# in the past...:
+
 Config. Defined as a class. Used as an instance. Support for inheritance and composition.
 Lazy instantiation. Thread-safe. Command-style DSL. Validation layer. **Dot-notation**) And pretty-print :) Support for **YAML**, **TOML**, **JSON**, **\_\_END\_\_**, **ENV**.
 Extremely simple to define. Extremely simple to use. That's all? **Not** :)
+```
 
 ## Installation
 
