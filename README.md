@@ -5,7 +5,8 @@ Powerful configuration Ruby-framework with a support for many commonly used conf
 - Support for: **YAML**, **TOML**, **JSON**, **ENV**, **\_\_END\_\_**-instructions;
 - Fully thread-safe;
 - Object-oriented behavior (config as an object, inhertance, composition, etc), with an abilities of lazy-instantiation;
-- Pluggable and extendable API;
+- Pluggable and extendable multi-functional API;
+- Developer-friendly DSL :)
 
 ```
 # in the past...:
