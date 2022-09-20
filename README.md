@@ -2,11 +2,17 @@
 
 Powerful configuration Ruby-framework with a support for many commonly used config formats with a multi-functional API, developer-friendly DSL and object-oriented behavior.
 
+- Support for: **YAML**, **TOML**, **JSON**, **ENV**, **\_\_END\_\_**-instructions;
+- Fully thread-safe;
+- Object-oriented behavior (config as an object, inhertance, composition, etc), with an abilities of lazy-instantiation;
+- Pluggable and extendable API;
+
 ```
 # in the past...:
 
 Config. Defined as a class. Used as an instance. Support for inheritance and composition.
-Lazy instantiation. Thread-safe. Command-style DSL. Validation layer. **Dot-notation**) And pretty-print :) Support for **YAML**, **TOML**, **JSON**, **\_\_END\_\_**, **ENV**.
+Lazy instantiation. Thread-safe. Command-style DSL. Validation layer. **Dot-notation**)
+And pretty-print :) Support for **YAML**, **TOML**, **JSON**, **\_\_END\_\_**, **ENV**.
 Extremely simple to define. Extremely simple to use. That's all? **Not** :)
 ```
 
