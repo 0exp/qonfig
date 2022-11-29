@@ -3339,7 +3339,8 @@ Qonfig.plugin(:vault)
   - Setting value changement trace (in `anyway_config` manner);
   - Instantiation and reloading callbacks;
   - File geneartors (.rb-files with a pre-filled code (and (maybe) with a pre-generated yaml/json/etc files));
-
+  - Setting value changement subscriptions and callbacks;
+  
 ## Build
 
 ```shell
