@@ -2,18 +2,21 @@
 
 # @api private
 # @since 0.25.0
+# @since 0.29.0
 module Qonfig::DSL
   # @param path [String, Pathname]
   # @option strict [Boolean]
+  # @option redefine_on_merge [Boolean]
   # @return [void]
   #
   # @see Qonfig::Commands::Definition::LoadFromVault
   #
   # @api public
   # @since 0.25.0
-  def load_from_vault(path, strict: true)
+  # @version 0.29.0
+  def load_from_vault(path, strict: true, redefine_on_merge: false)
     definition_commands << Qonfig::Commands::Definition::LoadFromVault.new(
-      path, strict: strict
+      path, strict: strict, redefine_on_merge: redefine_on_merge
     )
   end
 

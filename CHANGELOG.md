@@ -1,11 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.29.0] - 2024-05-06
+### Added
+- `redefine_on_merge` option for load_from-like methods that allows to configure behaviour on the conflicting key: deep merge (by default) or redefining.
+
 ## [0.28.0] - 2022-06-12
 ### Changed
 - Support for the new `toml-rb` release (`2.1`);
 - Updated dev-dependencies;
-- Existing code base was adopted to the new rubocop ruleses;
+- Existing code base was adopted to the new rubocop ruleset;
 
 ## [0.27.0] - 2022-01-12
 ### Changed

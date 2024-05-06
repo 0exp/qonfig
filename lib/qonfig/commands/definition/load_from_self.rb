@@ -2,6 +2,7 @@
 
 # @api private
 # @since 0.2.0
+# @version 0.29.0
 class Qonfig::Commands::Definition::LoadFromSelf < Qonfig::Commands::Base
   # @since 0.19.0
   self.inheritable = true
@@ -18,18 +19,27 @@ class Qonfig::Commands::Definition::LoadFromSelf < Qonfig::Commands::Base
   # @since 0.2.0
   attr_reader :caller_location
 
+  # @return [Boolean]
+  #
+  # @api private
+  # @since 0.29.0
+  attr_reader :redefine_on_merge
+
   # @param caller_location [String]
   # @option format [String, Symbol]
+  # @option redefine_on_merge [Boolean]
   #
   # @api private
   # @since 0.2.0
-  def initialize(caller_location, format:)
+  # @version 0.29.0
+  def initialize(caller_location, format:, redefine_on_merge: false)
     unless format.is_a?(String) || format.is_a?(Symbol)
       raise Qonfig::ArgumentError, 'Format should be a symbol or a string'
     end
 
     @caller_location = caller_location
     @format = format.tap { Qonfig::Loaders.resolve(format) }
+    @redefine_on_merge = redefine_on_merge
   end
 
   # @param data_set [Qonfig::DataSet]
@@ -38,11 +48,12 @@ class Qonfig::Commands::Definition::LoadFromSelf < Qonfig::Commands::Base
   #
   # @api private
   # @since 0.2.0
+  # @version 0.29.0
   def call(data_set, settings)
     self_placed_end_data = load_self_placed_end_data
     self_placed_settings = build_data_set_klass(self_placed_end_data).new.settings
 
-    settings.__append_settings__(self_placed_settings)
+    settings.__append_settings__(self_placed_settings, with_redefinition: redefine_on_merge)
   end
 
   private
