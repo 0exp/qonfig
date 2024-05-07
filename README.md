@@ -2168,6 +2168,7 @@ Config.new.to_h # => { "nonexistent_yaml" => {}, "another_key" => nil }
     - `false`:
         - file is not required;
         - root key with `:env` name is not required (if `via: :env_key` is used);
+- `:replace_on_merge` - whether the setting should be replaced on the key conflict, otherwise, it will be deep merged (default);
 
 #### Environment is defined as a root key of YAML file
 
@@ -2334,6 +2335,7 @@ Config.new.to_h # => { "nonexistent_json" => {}, "another_key" => nil }
     - `false`:
         - file is not required;
         - root key with `:env` name is not required (if `via: :env_key` is used);
+- `:replace_on_merge` - whether the setting should be replaced on the key conflict, otherwise, it will be deep merged (default);
 
 #### Environment is defined as a root key of JSON file
 
@@ -2554,6 +2556,7 @@ connection_timeout:
   - `format: :yaml` - **YAML** format;
   - `format: :json` - **JSON** format;
   - `format: :toml` - **TOML** format (via `toml`-plugin);
+- `:replace_on_merge` - whether the setting should be replaced on the key conflict, otherwise, it will be deep merged (default);
 
 ```ruby
 class Config < Qonfig::DataSet
