@@ -19,6 +19,9 @@ GEM
       rubocop-rake (= 0.6.0)
       rubocop-rspec (= 2.11.1)
     ast (2.4.2)
+    aws-eventstream (1.3.0)
+    aws-sigv4 (1.8.0)
+      aws-eventstream (~> 1, >= 1.0.2)
     bundler-audit (0.9.1)
       bundler (>= 1.2.0, < 3)
       thor (~> 1.0)
@@ -26,6 +29,7 @@ GEM
       colorize (~> 0.8)
       dry-inflector (~> 0.2)
       umbrellio-sequel-plugins (~> 0.4)
+    citrus (3.0.2)
     coderay (1.1.3)
     colorize (0.8.1)
     concurrent-ruby (1.1.10)
@@ -47,6 +51,7 @@ GEM
     pry (0.14.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
+    racc (1.7.3)
     rack (2.2.3.1)
     rainbow (3.1.1)
     rake (13.0.6)
@@ -113,12 +118,17 @@ GEM
     terminal-table (3.0.2)
       unicode-display_width (>= 1.1.1, < 3)
     thor (1.2.1)
+    toml-rb (3.0.1)
+      citrus (~> 3.0, > 3.0)
+      racc (~> 1.7)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
     umbrellio-sequel-plugins (0.6.0.36)
       sequel
       symbiont-ruby
     unicode-display_width (2.1.0)
+    vault (0.18.2)
+      aws-sigv4
     zeitwerk (2.6.0)
 
 PLATFORMS
@@ -138,6 +148,8 @@ DEPENDENCIES
   simplecov (~> 0.21)
   simplecov-lcov (~> 0.8)
   steep (~> 1.0)
+  toml-rb (~> 3.0)
+  vault (~> 0.18)
 
 BUNDLED WITH
    2.3.15

@@ -37,4 +37,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'pry',              '~> 0.14'
   spec.add_development_dependency 'rake',             '>= 13'
   spec.add_development_dependency 'simplecov-lcov',   '~> 0.8'
+  spec.add_development_dependency 'toml-rb',          '~> 3.0'
+  spec.add_development_dependency 'vault',            '~> 0.18'
 end

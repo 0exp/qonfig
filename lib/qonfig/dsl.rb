@@ -197,12 +197,11 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
   # @api public
   # @since 0.2.0
   # @version 0.29.0
-  def load_from_env(convert_values: false, prefix: nil, trim_prefix: false, replace_on_merge: false)
+  def load_from_env(convert_values: false, prefix: nil, trim_prefix: false)
     definition_commands << Qonfig::Commands::Definition::LoadFromENV.new(
       convert_values: convert_values,
       prefix: prefix,
       trim_prefix: trim_prefix,
-      replace_on_merge: replace_on_merge
     )
   end
 

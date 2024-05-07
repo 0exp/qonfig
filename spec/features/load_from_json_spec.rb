@@ -48,11 +48,11 @@ describe 'Load from JSON' do
   end
 
   specify 'support for Pathname in file path' do
-    class PathanmeJSONLoadCheckConfig < Qonfig::DataSet
+    class PathnameJSONLoadCheckConfig < Qonfig::DataSet
       load_from_json Pathname.new(SpecSupport.fixture_path('json_object_sample.json'))
     end
 
-    config = PathanmeJSONLoadCheckConfig.new
+    config = PathnameJSONLoadCheckConfig.new
 
     expect(config.settings.user).to eq('D@iVeR')
     expect(config.settings.maxAuthCount).to eq(55)
@@ -71,11 +71,11 @@ describe 'Load from JSON' do
 
         expect { FailingJSONConfig.new }.to raise_error(Qonfig::FileNotFoundError)
 
-        class ExplicitlyStrictedJSONCOnfig < Qonfig::DataSet
+        class ExplicitlyStrictJSONConfig < Qonfig::DataSet
           load_from_json 'no_file.json', strict: true
         end
 
-        expect { ExplicitlyStrictedJSONCOnfig.new }.to raise_error(Qonfig::FileNotFoundError)
+        expect { ExplicitlyStrictJSONConfig.new }.to raise_error(Qonfig::FileNotFoundError)
       end
     end
 
@@ -91,6 +91,26 @@ describe 'Load from JSON' do
 
         expect { NonFailingJSONConfig.new }.not_to raise_error
         expect(NonFailingJSONConfig.new.to_h).to eq('nested' => {})
+      end
+    end
+  end
+
+  describe ':replace_on_merge mode option (when file does not exist)' do
+    context 'when :replace_on_merge => true' do
+      specify 'replaces the key (does not merge)' do
+        class ConflictingSettings < Qonfig::DataSet
+          load_from_json Pathname.new(SpecSupport.fixture_path('conflicting_settings/json_1.json'))
+          load_from_json Pathname.new(SpecSupport.fixture_path('conflicting_settings/json_2.json')),
+                         replace_on_merge: true
+        end
+
+        expect(ConflictingSettings.new.to_h).to eq({
+          'kek' => 'zek',
+          'mek' => {
+            'sek' => 'tek'
+          },
+          'nek' => 'lek'
+        })
       end
     end
   end
