@@ -47,6 +47,7 @@ class Qonfig::Commands::Definition::LoadFromENV < Qonfig::Commands::Base
   # @api private
   # @since 0.2.0
   # @version 0.29.0
+  # rubocop:disable Metrics/AbcSize
   def initialize(convert_values: false, prefix: nil, trim_prefix: false, replace_on_merge: false)
     unless convert_values.is_a?(FalseClass) || convert_values.is_a?(TrueClass)
       raise Qonfig::ArgumentError, ':convert_values option should be a boolean'
@@ -68,6 +69,7 @@ class Qonfig::Commands::Definition::LoadFromENV < Qonfig::Commands::Base
     # TODO: mb trim_prefix ?
     @trim_pattern = prefix.is_a?(Regexp) ? prefix : /\A(#{Regexp.escape(prefix.to_s)})/m
   end
+  # rubocop:enable Metrics/AbcSize
 
   # @param data_set [Qonfig::DataSet]
   # @param settings [Qonfig::Settings]

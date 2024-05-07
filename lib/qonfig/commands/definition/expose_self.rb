@@ -63,6 +63,7 @@ class Qonfig::Commands::Definition::ExposeSelf < Qonfig::Commands::Base
   # @api private
   # @since 0.14.0
   # @version 0.29.0
+  # rubocop:disable Metrics/AbcSize
   def call(data_set, settings)
     self_placed_data = load_self_placed_end_data
     env_based_data_slice =
@@ -81,6 +82,7 @@ class Qonfig::Commands::Definition::ExposeSelf < Qonfig::Commands::Base
     self_placed_settings = build_data_set_klass(env_based_data_slice).new.settings
     settings.__append_settings__(self_placed_settings, with_redefinition: replace_on_merge)
   end
+  # rubocop:enable Metrics/AbcSize
 
   private
 
