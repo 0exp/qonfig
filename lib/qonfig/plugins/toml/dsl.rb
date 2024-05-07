@@ -6,7 +6,7 @@
 module Qonfig::DSL
   # @param file_path [String, Pathname]
   # @option strict [Boolean]
-  # @option redefine_on_merge [Boolean]
+  # @option replace_on_merge [Boolean]
   # @return [void]
   #
   # @see Qonfig::Commands::Definition::LoadFromTOML
@@ -14,9 +14,9 @@ module Qonfig::DSL
   # @api public
   # @since 0.12.0
   # @version 0.29.0
-  def load_from_toml(file_path, strict: true, redefine_on_merge: false)
+  def load_from_toml(file_path, strict: true, replace_on_merge: false)
     definition_commands << Qonfig::Commands::Definition::LoadFromTOML.new(
-      file_path, strict: strict, redefine_on_merge: redefine_on_merge
+      file_path, strict: strict, replace_on_merge: replace_on_merge
     )
   end
 

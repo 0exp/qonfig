@@ -37,7 +37,7 @@ class Qonfig::Commands::Definition::LoadFromENV < Qonfig::Commands::Base
   #
   # @api private
   # @since 0.29.0
-  attr_reader :redefine_on_merge
+  attr_reader :replace_on_merge
 
   # @option convert_values [Boolean]
   # @opion prefix [NilClass, String, Regexp]
@@ -47,7 +47,7 @@ class Qonfig::Commands::Definition::LoadFromENV < Qonfig::Commands::Base
   # @api private
   # @since 0.2.0
   # @version 0.29.0
-  def initialize(convert_values: false, prefix: nil, trim_prefix: false, redefine_on_merge: false)
+  def initialize(convert_values: false, prefix: nil, trim_prefix: false, replace_on_merge: false)
     unless convert_values.is_a?(FalseClass) || convert_values.is_a?(TrueClass)
       raise Qonfig::ArgumentError, ':convert_values option should be a boolean'
     end
@@ -63,7 +63,7 @@ class Qonfig::Commands::Definition::LoadFromENV < Qonfig::Commands::Base
     @convert_values = convert_values
     @prefix_pattern = prefix.is_a?(Regexp) ? prefix : /\A#{Regexp.escape(prefix.to_s)}.*\z/m
     @trim_prefix = trim_prefix
-    @redefine_on_merge = redefine_on_merge
+    @replace_on_merge = replace_on_merge
 
     # TODO: mb trim_prefix ?
     @trim_pattern = prefix.is_a?(Regexp) ? prefix : /\A(#{Regexp.escape(prefix.to_s)})/m
@@ -71,7 +71,7 @@ class Qonfig::Commands::Definition::LoadFromENV < Qonfig::Commands::Base
 
   # @param data_set [Qonfig::DataSet]
   # @param settings [Qonfig::Settings]
-  # @option redefine_on_merge [Boolean]
+  # @option replace_on_merge [Boolean]
   # @return [void]
   #
   # @api private
@@ -80,7 +80,7 @@ class Qonfig::Commands::Definition::LoadFromENV < Qonfig::Commands::Base
   def call(data_set, settings)
     env_data = extract_env_data
     env_based_settings = build_data_set_klass(env_data).new.settings
-    settings.__append_settings__(env_based_settings, with_redefinition: redefine_on_merge)
+    settings.__append_settings__(env_based_settings, with_redefinition: replace_on_merge)
   end
 
   private

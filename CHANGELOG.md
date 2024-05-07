@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [0.29.0] - 2024-05-06
 ### Added
-- `redefine_on_merge` option for load_from-like methods that allows to configure behaviour on the conflicting key: deep merge (by default) or redefining.
+- `replace_on_merge` option for load_from, expose-like methods that allows to configure behaviour on the conflicting key: deep merge (by default) or replacing.
 
 ## [0.28.0] - 2022-06-12
 ### Changed

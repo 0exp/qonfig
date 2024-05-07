@@ -23,19 +23,19 @@ class Qonfig::Commands::Definition::LoadFromYAML < Qonfig::Commands::Base
   #
   # @api private
   # @since 0.29.0
-  attr_reader :redefine_on_merge
+  attr_reader :replace_on_merge
 
   # @param file_path [String, Pathname]
   # @option strict [Boolean]
-  # @option redefine_on_merge [Boolean]
+  # @option replace_on_merge [Boolean]
   #
   # @api private
   # @since 0.2.0
   # @version 0.29.0
-  def initialize(file_path, strict: true, redefine_on_merge: false)
+  def initialize(file_path, strict: true, replace_on_merge: false)
     @file_path = file_path
     @strict = strict
-    @redefine_on_merge = redefine_on_merge
+    @replace_on_merge = replace_on_merge
   end
 
   # @param data_set [Qonfig::DataSet]
@@ -56,7 +56,7 @@ class Qonfig::Commands::Definition::LoadFromYAML < Qonfig::Commands::Base
     ) unless yaml_data.is_a?(Hash)
 
     yaml_based_settings = build_data_set_klass(yaml_data).new.settings
-    settings.__append_settings__(yaml_based_settings, with_redefinition: redefine_on_merge)
+    settings.__append_settings__(yaml_based_settings, with_redefinition: replace_on_merge)
   end
 
   private

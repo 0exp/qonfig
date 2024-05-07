@@ -2,6 +2,7 @@
 
 # @api private
 # @since 0.25.0
+# @version 0.29.0
 class Qonfig::Commands::Definition::ExposeVault < Qonfig::Commands::Base
   # @since 0.25.0
   self.inheritable = true
@@ -42,15 +43,22 @@ class Qonfig::Commands::Definition::ExposeVault < Qonfig::Commands::Base
   # @since 0.25.0
   attr_reader :env
 
+  # @return [Boolean]
+  #
+  # @api private
+  # @since 0.29.0
+  attr_reader :replace_on_merge
+
   # @param path [String Pathname]
   # @option strict [Boolean]
   # @option via [Symbol]
   # @option env [String, Symbol]
-  # @return [void]
+  # @option replace_on_merge [Boolean]
   #
   # @api private
   # @since 0.25.0
-  def initialize(path, strict: true, via:, env:)
+  # @version 0.29.0
+  def initialize(path, via:, env:, strict: true, replace_on_merge: false)
     unless env.is_a?(Symbol) || env.is_a?(String) || env.is_a?(Numeric)
       raise Qonfig::ArgumentError, ':env should be a string or a symbol'
     end
@@ -58,10 +66,11 @@ class Qonfig::Commands::Definition::ExposeVault < Qonfig::Commands::Base
     raise Qonfig::ArgumentError, ':env should be provided'  if env.to_s.empty?
     raise Qonfig::ArgumentError, 'used :via is unsupported' unless EXPOSERS.key?(via)
 
-    @path   = path
+    @path = path
+    @via = via
+    @env = env
     @strict = strict
-    @via    = via
-    @env    = env
+    @replace_on_merge = replace_on_merge
   end
 
   # @param data_set [Qonfig::DataSet]
@@ -86,6 +95,7 @@ class Qonfig::Commands::Definition::ExposeVault < Qonfig::Commands::Base
   #
   # @api private
   # @since 0.25.0
+  # @version 0.29.0
   def expose_path!(settings)
     # NOTE: transform path (insert environment name into a secret name)
     #   from: kv/data/secret_name
@@ -97,7 +107,7 @@ class Qonfig::Commands::Definition::ExposeVault < Qonfig::Commands::Base
     vault_data = load_vault_data(real_path)
     vault_based_settings = build_data_set_class(vault_data).new.settings
 
-    settings.__append_settings__(vault_based_settings)
+    settings.__append_settings__(vault_based_settings, with_redefinition: replace_on_merge)
   end
 
   # @param settings [Qonfig::Settings]
@@ -107,6 +117,7 @@ class Qonfig::Commands::Definition::ExposeVault < Qonfig::Commands::Base
   #
   # @api private
   # @since 0.25.0
+  # @version 0.29.0
   def expose_env_key!(settings)
     vault_data       = load_vault_data(path)
     vault_data_slice = vault_data[env.to_sym]
@@ -119,7 +130,7 @@ class Qonfig::Commands::Definition::ExposeVault < Qonfig::Commands::Base
 
     vault_based_settings = build_data_set_class(vault_data_slice).new.settings
 
-    settings.__append_settings__(vault_based_settings)
+    settings.__append_settings__(vault_based_settings, with_redefinition: replace_on_merge)
   end
 
   # @param path [String]

@@ -23,19 +23,19 @@ class Qonfig::Commands::Definition::LoadFromVault < Qonfig::Commands::Base
   #
   # @api private
   # @since 0.29.0
-  attr_reader :redefine_on_merge
+  attr_reader :replace_on_merge
 
   # @param path [String]
   # @option strict [Boolean]
-  # @option redefine_on_merge [Boolean]
+  # @option replace_on_merge [Boolean]
   #
   # @api private
   # @since 0.25.0
   # @version 0.29.0
-  def initialize(path, strict: true, redefine_on_merge: false)
+  def initialize(path, strict: true, replace_on_merge: false)
     @path = path
     @strict = strict
-    @redefine_on_merge = redefine_on_merge
+    @replace_on_merge = replace_on_merge
   end
 
   # @param data_set [Qonfig::DataSet]
@@ -48,7 +48,7 @@ class Qonfig::Commands::Definition::LoadFromVault < Qonfig::Commands::Base
   def call(_data_set, settings)
     vault_data = Qonfig::Loaders::Vault.load_file(path, fail_on_unexist: strict)
     vault_based_settings = build_data_set_klass(vault_data).new.settings
-    settings.__append_settings__(vault_based_settings, with_redefinition: redefine_on_merge)
+    settings.__append_settings__(vault_based_settings, with_redefinition: replace_on_merge)
   end
 
   private

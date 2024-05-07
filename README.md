@@ -2071,7 +2071,7 @@ end
 - `:strict` mode (fail behaviour when the required yaml file doesnt exist):
   - `true` (by default) - causes `Qonfig::FileNotFoundError`;
   - `false` - do nothing, ignore current command;
-- `:redefine_on_merge` - whether the setting should be redefined on the key conflict, otherwise, it will be deep merged (default);
+- `:replace_on_merge` - whether the setting should be replaced on the key conflict, otherwise, it will be deep merged (default);
 
 ```yaml
 # travis.yml
@@ -2258,7 +2258,7 @@ config.settings.web.password # => staging_password (from sidekiq.staging.yml)
 - `:strict` mode (fail behaviour when the required yaml file doesnt exist):
   - `true` (by default) - causes `Qonfig::FileNotFoundError`;
   - `false` - do nothing, ignore current command;
-- `:redefine_on_merge` - whether the setting should be redefined on the key conflict, otherwise, it will be deep merged (default);
+- `:replace_on_merge` - whether the setting should be replaced on the key conflict, otherwise, it will be deep merged (default);
 
 ```json
 // options.json
@@ -2443,7 +2443,7 @@ config.settings.web.password # => "staging_password" (from sidekiq.staging.json)
   - `Regexp` - names that match the regexp pattern;
   - `String` - names which starts with a passed string;
 - `:trim_prefix` (`false` by default);
-- `:redefine_on_merge` - whether the setting should be redefined on the key conflict, otherwise, it will be deep merged (default);
+- `:replace_on_merge` - whether the setting should be replaced on the key conflict, otherwise, it will be deep merged (default);
 
 ```ruby
 # some env variables
@@ -2505,7 +2505,7 @@ config.settings['RUN_CI'] # => '1'
   - `format: :yaml` - **YAML** format;
   - `format: :json` - **JSON** format;
   - `format: :toml` - **TOML** format (via `toml`-plugin);
-- `:redefine_on_merge` - whether the setting should be redefined on the key conflict, otherwise, it will be deep merged (default);
+- `:replace_on_merge` - whether the setting should be replaced on the key conflict, otherwise, it will be deep merged (default);
 
 ```ruby
 class Config < Qonfig::DataSet
