@@ -2445,7 +2445,6 @@ config.settings.web.password # => "staging_password" (from sidekiq.staging.json)
   - `Regexp` - names that match the regexp pattern;
   - `String` - names which starts with a passed string;
 - `:trim_prefix` (`false` by default);
-- `:replace_on_merge` - whether the setting should be replaced on the key conflict, otherwise, it will be deep merged (default);
 
 ```ruby
 # some env variables

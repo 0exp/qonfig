@@ -114,4 +114,52 @@ describe 'Plugins(vault): expose vault', plugin: :vault do
       expect(conf.to_h['based_on_env_key']).to be_empty
     end
   end
+
+  context 'when replace_on_merge set to true' do
+    let(:vault_class) do
+      Class.new(Qonfig::DataSet) do
+        expose_vault 'kv/data/conflicting_settings_1',
+                     via: :env_key, env: 'production'
+        expose_vault 'kv/data/conflicting_settings_2',
+                     via: :env_key, env: 'production', replace_on_merge: true
+      end
+    end
+
+    let(:conflicting_data_1) do
+      instance_double(Vault::Secret).tap do |instance|
+        allow(instance).to receive(:data).and_return(conflicting_secret_1)
+      end
+    end
+
+    let(:conflicting_data_2) do
+      instance_double(Vault::Secret).tap do |instance|
+        allow(instance).to receive(:data).and_return(conflicting_secret_2)
+      end
+    end
+
+    let(:conflicting_secret_1) do
+      { data: { production: { kek: 'pek', mek: { sek: 'dek' }, nek: 'lek' } } }
+    end
+
+    let(:conflicting_secret_2) do
+      { data: { production: { kek: 'zek', mek: { sek: 'tek' } } } }
+    end
+
+    specify 'replaces the key (does not merge)' do
+      expect(Vault.logical).to(
+        receive(:read).with('kv/data/conflicting_settings_1').and_return(conflicting_data_1)
+      )
+      expect(Vault.logical).to(
+        receive(:read).with('kv/data/conflicting_settings_2').and_return(conflicting_data_2)
+      )
+
+      expect(VaultConfig.new.to_h).to eq({
+        'kek' => 'zek',
+        'mek' => {
+          'sek' => 'tek'
+        },
+        'nek' => 'lek'
+      })
+    end
+  end
 end
