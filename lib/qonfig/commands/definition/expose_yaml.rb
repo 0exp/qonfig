@@ -50,9 +50,9 @@ class Qonfig::Commands::Definition::ExposeYAML < Qonfig::Commands::Base
   attr_reader :replace_on_merge
 
   # @param file_path [String, Pathname]
-  # @option strict [Boolean]
   # @option via [Symbol]
   # @option env [String, Symbol]
+  # @option strict [Boolean]
   # @option replace_on_merge [Boolean]
   #
   # @api private

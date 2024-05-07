@@ -223,51 +223,56 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
   end
 
   # @param file_path [String, Pathname]
-  # @option strict [Boolean]
   # @option via [Symbol]
   # @option env [Symbol, String]
+  # @option strict [Boolean]
+  # @option replace_on_merge [Boolean]
   # @return [void]
   #
   # @see Qonfig::Commands::Definition::ExposeYAML
   #
   # @api public
   # @since 0.7.0
-  def expose_yaml(file_path, strict: true, via:, env:)
+  # @version 0.29.0
+  def expose_yaml(file_path, via:, env:, strict: true, replace_on_merge: false)
     definition_commands << Qonfig::Commands::Definition::ExposeYAML.new(
-      file_path, strict: strict, via: via, env: env
+      file_path, via: via, env: env, strict: strict, replace_on_merge: replace_on_merge
     )
   end
 
   # @param file_path [String, Pathname]
-  # @option strict [Boolean]
   # @option via [Symbol]
   # @option env [Symbol, String]
+  # @option strict [Boolean]
+  # @option replace_on_merge [Boolean]
   # @return [void]
   #
   # @see Qonfig::Commands::Definition::ExposeJSON
   #
   # @api public
   # @since 0.14.0
-  def expose_json(file_path, strict: true, via:, env:)
+  # @version 0.29.0
+  def expose_json(file_path, via:, env:, strict: true, replace_on_merge: false)
     definition_commands << Qonfig::Commands::Definition::ExposeJSON.new(
-      file_path, strict: strict, via: via, env: env
+      file_path, via: via, env: env, strict: strict, replace_on_merge: replace_on_merge
     )
   end
 
   # @option env [Symbol, String]
   # @option format [Symbol, String]
+  # @option replace_on_merge [Boolean]
   # @return [void]
   #
   # @see Qonfig::Commands::Definition::ExposeSelf
   #
   # @api public
   # @since 0.14.0
-  # @version 0.21.0
-  def expose_self(env:, format: :dynamic)
+  # @version 0.29.0
+  def expose_self(env:, format: :dynamic, replace_on_merge: false)
     caller_location = ::Kernel.caller(1, 1).first
 
     definition_commands << Qonfig::Commands::Definition::ExposeSelf.new(
-      caller_location, env: env, format: format
+      caller_location, env: env, format: format, replace_on_merge: replace_on_merge
     )
   end
 
