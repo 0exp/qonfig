@@ -278,4 +278,30 @@ describe 'Expose JSON file' do
       end
     end
   end
+
+  describe ':replace_on_merge mode option (when file does not exist)' do
+    context 'when :replace_on_merge => true' do
+      specify 'replaces the key (does not merge)' do
+        class ConflictingSettings < Qonfig::DataSet
+          expose_json Pathname.new(
+            SpecSupport.fixture_path('conflicting_settings/expose_json_1.json')
+          ),
+                      via: :env_key, env: :production
+          expose_json Pathname.new(
+            SpecSupport.fixture_path('conflicting_settings/expose_json_2.json')
+          ),
+                      via: :env_key, env: :production,
+                      replace_on_merge: true
+        end
+
+        expect(ConflictingSettings.new.to_h).to eq({
+          'kek' => 'zek',
+          'mek' => {
+            'sek' => 'tek'
+          },
+          'nek' => 'lek'
+        })
+      end
+    end
+  end
 end

@@ -260,4 +260,30 @@ describe 'Expose YAML file' do
       end
     end
   end
+
+  describe ':replace_on_merge mode option (when file does not exist)' do
+    context 'when :replace_on_merge => true' do
+      specify 'replaces the key (does not merge)' do
+        class ConflictingSettings < Qonfig::DataSet
+          expose_yaml Pathname.new(
+            SpecSupport.fixture_path('conflicting_settings/expose_yaml_1.yml')
+          ),
+                      via: :env_key, env: :production
+          expose_yaml Pathname.new(
+            SpecSupport.fixture_path('conflicting_settings/expose_yaml_2.yml')
+          ),
+                      via: :env_key, env: :production,
+                      replace_on_merge: true
+        end
+
+        expect(ConflictingSettings.new.to_h).to eq({
+          'kek' => 'zek',
+          'mek' => {
+            'sek' => 'tek'
+          },
+          'nek' => 'lek'
+        })
+      end
+    end
+  end
 end

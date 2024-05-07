@@ -125,32 +125,32 @@ describe 'Plugins(vault): expose vault', plugin: :vault do
       end
     end
 
-    let(:conflicting_data_1) do
+    let(:conflicting_data1) do
       instance_double(Vault::Secret).tap do |instance|
-        allow(instance).to receive(:data).and_return(conflicting_secret_1)
+        allow(instance).to receive(:data).and_return(conflicting_secret1)
       end
     end
 
-    let(:conflicting_data_2) do
+    let(:conflicting_data2) do
       instance_double(Vault::Secret).tap do |instance|
-        allow(instance).to receive(:data).and_return(conflicting_secret_2)
+        allow(instance).to receive(:data).and_return(conflicting_secret2)
       end
     end
 
-    let(:conflicting_secret_1) do
+    let(:conflicting_secret1) do
       { data: { production: { kek: 'pek', mek: { sek: 'dek' }, nek: 'lek' } } }
     end
 
-    let(:conflicting_secret_2) do
+    let(:conflicting_secret2) do
       { data: { production: { kek: 'zek', mek: { sek: 'tek' } } } }
     end
 
     specify 'replaces the key (does not merge)' do
       expect(Vault.logical).to(
-        receive(:read).with('kv/data/conflicting_settings_1').and_return(conflicting_data_1)
+        receive(:read).with('kv/data/conflicting_settings_1').and_return(conflicting_data1)
       )
       expect(Vault.logical).to(
-        receive(:read).with('kv/data/conflicting_settings_2').and_return(conflicting_data_2)
+        receive(:read).with('kv/data/conflicting_settings_2').and_return(conflicting_data2)
       )
 
       expect(VaultConfig.new.to_h).to eq({

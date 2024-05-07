@@ -201,7 +201,7 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
     definition_commands << Qonfig::Commands::Definition::LoadFromENV.new(
       convert_values: convert_values,
       prefix: prefix,
-      trim_prefix: trim_prefix,
+      trim_prefix: trim_prefix
     )
   end
 
