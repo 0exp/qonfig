@@ -118,14 +118,16 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   end
 
   # @param settings [Qonfig::Settings]
+  # @option with_redefinition [Boolean]
   # @return [void]
   #
   # @api private
   # @since 0.1.0
-  def __append_settings__(settings)
+  # @version 0.29.0
+  def __append_settings__(settings, with_redefinition: false)
     __lock__.thread_safe_merge do
       settings.__options__.each_pair do |key, value|
-        __define_setting__(key, value)
+        __define_setting__(key, value, with_redefinition: with_redefinition)
       end
     end
   end

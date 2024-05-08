@@ -84,11 +84,11 @@ describe 'Load from YAML' do
 
         expect { FailingYAMLConfig.new }.to raise_error(Qonfig::FileNotFoundError)
 
-        class ExplicitlyStrictedYAMLConfig < Qonfig::DataSet
+        class ExplicitlyStrictYAMLConfig < Qonfig::DataSet
           load_from_yaml 'no_file.yml', strict: true
         end
 
-        expect { ExplicitlyStrictedYAMLConfig.new }.to raise_error(Qonfig::FileNotFoundError)
+        expect { ExplicitlyStrictYAMLConfig.new }.to raise_error(Qonfig::FileNotFoundError)
       end
     end
 
@@ -104,6 +104,26 @@ describe 'Load from YAML' do
 
         expect { NonFailingYAMLConfig.new }.not_to raise_error
         expect(NonFailingYAMLConfig.new.to_h).to eq('nested' => {})
+      end
+    end
+  end
+
+  describe ':replace_on_merge mode option (when file does not exist)' do
+    context 'when :replace_on_merge => true' do
+      specify 'replaces the key (does not merge)' do
+        class LoadFromYAMLConflict < Qonfig::DataSet
+          load_from_yaml Pathname.new(SpecSupport.fixture_path('conflicting_settings/yaml_1.yml'))
+          load_from_yaml Pathname.new(SpecSupport.fixture_path('conflicting_settings/yaml_2.yml')),
+                         replace_on_merge: true
+        end
+
+        expect(LoadFromYAMLConflict.new.to_h).to eq({
+          'kek' => 'zek',
+          'mek' => {
+            'sek' => 'tek'
+          },
+          'nek' => 'lek'
+        })
       end
     end
   end

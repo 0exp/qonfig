@@ -60,12 +60,12 @@ describe 'Plugins(toml): Load from .toml (TOML)', plugin: :toml do
     end
   end
 
-  specify 'support for Pathanme in filepath' do
-    class PathanmeTomlLoadCheckConfig < Qonfig::DataSet
+  specify 'support for Pathname in filepath' do
+    class PathnameTomlLoadCheckConfig < Qonfig::DataSet
       load_from_toml Pathname.new(SpecSupport.fixture_path('plugins', 'toml', 'mini_file.toml'))
     end
 
-    config = PathanmeTomlLoadCheckConfig.new
+    config = PathnameTomlLoadCheckConfig.new
 
     expect(config.settings.enabled).to eq(false)
     expect(config.settings.adapter).to eq('sidekiq')
@@ -83,11 +83,11 @@ describe 'Plugins(toml): Load from .toml (TOML)', plugin: :toml do
 
         expect { FailingTomlConfig.new }.to raise_error(Qonfig::FileNotFoundError)
 
-        class ExplicitlyStrictedTomlConfig < Qonfig::DataSet
+        class ExplicitlyStrictTomlConfig < Qonfig::DataSet
           load_from_toml 'no_file.toml', strict: true
         end
 
-        expect { ExplicitlyStrictedTomlConfig.new }.to raise_error(Qonfig::FileNotFoundError)
+        expect { ExplicitlyStrictTomlConfig.new }.to raise_error(Qonfig::FileNotFoundError)
       end
     end
 
@@ -103,6 +103,29 @@ describe 'Plugins(toml): Load from .toml (TOML)', plugin: :toml do
 
         expect { NonFailingTomlConfig.new }.not_to raise_error
         expect(NonFailingTomlConfig.new.to_h).to eq('nested' => {})
+      end
+    end
+  end
+
+  describe ':replace_on_merge mode option (when file does not exist)' do
+    context 'when :replace_on_merge => true' do
+      specify 'replaces the key (does not merge)' do
+        class LoadFromTomlConflict < Qonfig::DataSet
+          load_from_toml Pathname.new(
+            SpecSupport.fixture_path('plugins', 'toml', 'conflicting_settings/toml_1.toml')
+          )
+          load_from_toml Pathname.new(
+            SpecSupport.fixture_path('plugins', 'toml', 'conflicting_settings/toml_2.toml')
+          ), replace_on_merge: true
+        end
+
+        expect(LoadFromTomlConflict.new.to_h).to eq({
+          'kek' => 'zek',
+          'mek' => {
+            'sek' => 'tek'
+          },
+          'nek' => 'lek'
+        })
       end
     end
   end

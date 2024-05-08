@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    qonfig (0.27.0)
+    qonfig (0.29.0)
 
 GEM
   remote: https://rubygems.org/
@@ -123,6 +123,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-21
+  arm64-darwin-23
 
 DEPENDENCIES
   activesupport (~> 6.0)

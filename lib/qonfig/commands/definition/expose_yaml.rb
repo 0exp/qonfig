@@ -2,6 +2,7 @@
 
 # @api private
 # @since 0.7.0
+# @version 0.29.0
 class Qonfig::Commands::Definition::ExposeYAML < Qonfig::Commands::Base
   # @since 0.19.0
   self.inheritable = true
@@ -42,14 +43,22 @@ class Qonfig::Commands::Definition::ExposeYAML < Qonfig::Commands::Base
   # @since 0.7.0
   attr_reader :env
 
+  # @return [Boolean]
+  #
+  # @api private
+  # @since 0.29.0
+  attr_reader :replace_on_merge
+
   # @param file_path [String, Pathname]
-  # @option strict [Boolean]
   # @option via [Symbol]
   # @option env [String, Symbol]
+  # @option strict [Boolean]
+  # @option replace_on_merge [Boolean]
   #
   # @api private
   # @since 0.7.0
-  def initialize(file_path, strict: true, via:, env:)
+  # @version 0.29.0
+  def initialize(file_path, via:, env:, strict: true, replace_on_merge: false)
     unless env.is_a?(Symbol) || env.is_a?(String) || env.is_a?(Numeric)
       raise Qonfig::ArgumentError, ':env should be a string or a symbol'
     end
@@ -58,9 +67,10 @@ class Qonfig::Commands::Definition::ExposeYAML < Qonfig::Commands::Base
     raise Qonfig::ArgumentError, 'used :via is unsupported' unless EXPOSERS.key?(via)
 
     @file_path = file_path
-    @strict    = strict
-    @via       = via
-    @env       = env
+    @strict = strict
+    @via = via
+    @env = env
+    @replace_on_merge = replace_on_merge
   end
 
   # @param data_set [Qonfig::DataSet]
@@ -85,6 +95,7 @@ class Qonfig::Commands::Definition::ExposeYAML < Qonfig::Commands::Base
   #
   # @api private
   # @since 0.7.0
+  # @version 0.29.0
   # rubocop:disable Metrics/AbcSize
   def expose_file_name!(settings)
     # NOTE: transform file name (insert environment name into the file name)
@@ -102,7 +113,7 @@ class Qonfig::Commands::Definition::ExposeYAML < Qonfig::Commands::Base
     yaml_data = load_yaml_data(realfile)
     yaml_based_settings = build_data_set_klass(yaml_data).new.settings
 
-    settings.__append_settings__(yaml_based_settings)
+    settings.__append_settings__(yaml_based_settings, with_redefinition: replace_on_merge)
   end
   # rubocop:enable Metrics/AbcSize
 
@@ -114,6 +125,7 @@ class Qonfig::Commands::Definition::ExposeYAML < Qonfig::Commands::Base
   #
   # @api private
   # @since 0.7.0
+  # @version 0.29.0
   # rubocop:disable Metrics/AbcSize
   def expose_env_key!(settings)
     yaml_data       = load_yaml_data(file_path)
@@ -132,7 +144,7 @@ class Qonfig::Commands::Definition::ExposeYAML < Qonfig::Commands::Base
 
     yaml_based_settings = build_data_set_klass(yaml_data_slice).new.settings
 
-    settings.__append_settings__(yaml_based_settings)
+    settings.__append_settings__(yaml_based_settings, with_redefinition: replace_on_merge)
   end
   # rubocop:enable Metrics/AbcSize
 

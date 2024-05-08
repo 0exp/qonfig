@@ -68,6 +68,47 @@ describe 'Plugins(vault): Load from vault kv store', plugin: :vault do
     end
   end
 
+  context 'when replace_on_merge set to true' do
+    let(:vault_class) do
+      Class.new(Qonfig::DataSet) do
+        load_from_vault 'kv/data/conflicting_settings_1'
+        load_from_vault 'kv/data/conflicting_settings_2', replace_on_merge: true
+      end
+    end
+
+    let(:conflicting_data1) do
+      instance_double(Vault::Secret).tap do |instance|
+        allow(instance).to receive(:data).and_return(conflicting_secret1)
+      end
+    end
+
+    let(:conflicting_data2) do
+      instance_double(Vault::Secret).tap do |instance|
+        allow(instance).to receive(:data).and_return(conflicting_secret2)
+      end
+    end
+
+    let(:conflicting_secret1) { Hash[data: { kek: 'pek', mek: { sek: 'dek' }, nek: 'lek' }] }
+    let(:conflicting_secret2) { Hash[data: { kek: 'zek', mek: { sek: 'tek' } }] }
+
+    specify 'replaces the key (does not merge)' do
+      expect(Vault.logical).to(
+        receive(:read).with('kv/data/conflicting_settings_1').and_return(conflicting_data1)
+      )
+      expect(Vault.logical).to(
+        receive(:read).with('kv/data/conflicting_settings_2').and_return(conflicting_data2)
+      )
+
+      expect(VaultConfig.new.to_h).to eq({
+        'kek' => 'zek',
+        'mek' => {
+          'sek' => 'tek'
+        },
+        'nek' => 'lek'
+      })
+    end
+  end
+
   context 'when VaultError is raised' do
     let(:raised_error) { Vault::VaultError.new('Cool error') }
 
