@@ -98,13 +98,13 @@ describe 'Load from JSON' do
   describe ':replace_on_merge mode option (when file does not exist)' do
     context 'when :replace_on_merge => true' do
       specify 'replaces the key (does not merge)' do
-        class ConflictingSettings < Qonfig::DataSet
+        class LoadFromJSONConflict < Qonfig::DataSet
           load_from_json Pathname.new(SpecSupport.fixture_path('conflicting_settings/json_1.json'))
           load_from_json Pathname.new(SpecSupport.fixture_path('conflicting_settings/json_2.json')),
                          replace_on_merge: true
         end
 
-        expect(ConflictingSettings.new.to_h).to eq({
+        expect(LoadFromJSONConflict.new.to_h).to eq({
           'kek' => 'zek',
           'mek' => {
             'sek' => 'tek'

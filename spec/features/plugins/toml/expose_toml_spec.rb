@@ -222,7 +222,7 @@ describe 'Plugins(toml): expose TOML file', plugin: :toml do
   describe ':replace_on_merge mode option (when file does not exist)' do
     context 'when :replace_on_merge => true' do
       specify 'replaces the key (does not merge)' do
-        class ConflictingSettings < Qonfig::DataSet
+        class ExposeTOMLConflict < Qonfig::DataSet
           expose_toml Pathname.new(
             SpecSupport.fixture_path('plugins', 'toml', 'conflicting_settings/expose_toml_1.toml')
           ), via: :env_key, env: :production
@@ -231,7 +231,7 @@ describe 'Plugins(toml): expose TOML file', plugin: :toml do
           ), via: :env_key, env: :production
         end
 
-        expect(ConflictingSettings.new.to_h).to eq({
+        expect(ExposeTOMLConflict.new.to_h).to eq({
           'kek' => 'zek',
           'mek' => {
             'sek' => 'tek'

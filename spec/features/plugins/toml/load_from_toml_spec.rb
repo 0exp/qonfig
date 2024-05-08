@@ -110,7 +110,7 @@ describe 'Plugins(toml): Load from .toml (TOML)', plugin: :toml do
   describe ':replace_on_merge mode option (when file does not exist)' do
     context 'when :replace_on_merge => true' do
       specify 'replaces the key (does not merge)' do
-        class ConflictingSettings < Qonfig::DataSet
+        class LoadFromTomlConflict < Qonfig::DataSet
           load_from_toml Pathname.new(
             SpecSupport.fixture_path('plugins', 'toml', 'conflicting_settings/toml_1.toml')
           )
@@ -119,7 +119,7 @@ describe 'Plugins(toml): Load from .toml (TOML)', plugin: :toml do
           ), replace_on_merge: true
         end
 
-        expect(ConflictingSettings.new.to_h).to eq({
+        expect(LoadFromTomlConflict.new.to_h).to eq({
           'kek' => 'zek',
           'mek' => {
             'sek' => 'tek'
