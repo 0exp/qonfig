@@ -116,11 +116,12 @@ class Qonfig::Commands::Instantiation::ValuesFile < Qonfig::Commands::Base
   #
   # @api private
   # @since 0.17.0
+  # @version 0.24.0
   def load_from_file
     Qonfig::Loaders.resolve(format).load_file(file_path, fail_on_unexist: strict).tap do |values|
       raise(
         Qonfig::IncompatibleDataStructureError,
-        'Setting values must be a hash-like structure'
+        'Setting values should be represented as a hash-like structure'
       ) unless values.is_a?(Hash)
     end
   end
@@ -129,13 +130,14 @@ class Qonfig::Commands::Instantiation::ValuesFile < Qonfig::Commands::Base
   #
   # @api private
   # @since 0.17.0
+  # @version 0.24.0
   def load_from_self
     end_data = Qonfig::Loaders::EndData.extract(caller_location)
 
     Qonfig::Loaders.resolve(format).load(end_data).tap do |values|
       raise(
         Qonfig::IncompatibleDataStructureError,
-        'Setting values must be a hash-like structure'
+        'Setting values should be represented as a hash-like structure'
       ) unless values.is_a?(Hash)
     end
   rescue Qonfig::SelfDataNotFoundError => error
