@@ -72,7 +72,8 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
   # @param predefined [String, Symbol]
   # @option by [String, Symbol, NilClass]
   # @option stict [Boolean]
-  # @param custom_validation [Proc]
+  # @option error_message [NilClass, String, Proc]
+  # @param custom_validation [Block]
   # @return [void]
   #
   # @see Qonfig::Validation::Building::InstanceBuilder
@@ -84,6 +85,7 @@ module Qonfig::DSL # rubocop:disable Metrics/ModuleLength
     predefined = nil,
     strict: false,
     by: nil,
+    error_message: nil,
     &custom_validation
   )
     validators << Qonfig::Validation::Building::InstanceBuilder.build(
