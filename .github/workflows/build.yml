@@ -13,14 +13,14 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.3"
-          bundler-cache: false
+          bundler-cache: true
       - name: (Bundler) Install dependencies
         run: bundle install
       - name: (Rubocop) Check for codestyle
         run: bundle exec rake rubocop
       - name: (RSpec) Tests
         run: bundle exec rake rspec
-  specs-only-on-relevant-rubies:
+  specs-on-relevant-rubies:
     runs-on: ubuntu-latest
     continue-on-error: ${{ matrix.experimental }}
     env:
@@ -36,14 +36,12 @@ jobs:
         include:
           - ruby: head
             experimental: true
-          - ruby: truffleruby
-            experimental: true
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-          bundler-cache: false
+          bundler-cache: true
       - name: (Bundler) Install dependencies
         run: bundle install
       - name: (RSpec) Tests
