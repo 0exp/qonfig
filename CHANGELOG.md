@@ -11,7 +11,7 @@ All notable changes to this project will be documented in this file.
 - CI: returned separated plugin-related specs (`bin/rspec -w` + `bin/rspec -n` (with- and without- plugins respectively));
 - CI: dropped coveralls (temporary);
 - CI: droppet java-based rubies support (temporary);
-- Simplified CI;
+- Simplified CI (temporary);
 
 ## [0.29.0] - 2024-05-06
 ### Added
