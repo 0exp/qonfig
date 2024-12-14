@@ -27,9 +27,11 @@ Gem::Specification.new do |spec|
 
   spec.files = `git ls-files -z`.split("\x0")
 
+  spec.add_dependency 'base64', '>= 0.2'
+
   spec.add_development_dependency 'simplecov',        '~> 0.22'
   spec.add_development_dependency 'rspec',            '~> 3.2'
-  spec.add_development_dependency 'armitage-rubocop', '~> 1.68'
+  spec.add_development_dependency 'armitage-rubocop', '~> 1.59'
   spec.add_development_dependency 'activesupport',    '~> 6', '< 8'
   spec.add_development_dependency 'bundler',          '>= 1'
   spec.add_development_dependency 'pry',              '~> 0.15'

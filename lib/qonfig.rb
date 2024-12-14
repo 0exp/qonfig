@@ -5,6 +5,7 @@ require 'yaml'
 require 'json'
 require 'erb'
 require 'pathname'
+require 'base64'
 
 # @api public
 # @since 0.1.0

@@ -6,5 +6,7 @@ source 'https://rubygems.org'
 gem 'toml-rb', '>= 2'
 # @since 0.25.0 (qonfig: :vault plugin)
 gem 'vault', '>= 0.1'
+# @since 0.30.0 (qonfig: :vault plugin dependency)
+gem 'base64'
 
 gemspec path: '..'
