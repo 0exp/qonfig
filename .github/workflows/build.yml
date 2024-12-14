@@ -5,6 +5,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       FULL_COVERAGE_CHECK: true
+      TEST_PLUGINS: true
+      FULL_TEST_COVERAGE_CHECK: true
+      BUNDLE_GEMFILE: gemfiles/with_external_deps.gemfile
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
@@ -12,16 +15,17 @@ jobs:
           ruby-version: "3.3"
           bundler-cache: false
       - name: (Linter) Rubocop
-        run: bundle exec rubocop
-      - name: (Test) RSpec (with plugin tests)
-        run: bin/rspec -w
-      - name: (Test) RSpec (without plugin tests)
-        run: bin/rspec -n
+        run: bundle exec rake rubocop
+      - name: (Test) RSpec
+        run: bundle exec rake rspec
   specs-only-on-relevant-rubies:
     runs-on: ubuntu-latest
     continue-on-error: ${{ matrix.experimental }}
     env:
       FULL_COVERAGE_CHECK: false
+      TEST_PLUGINS: true
+      FULL_TEST_COVERAGE_CHECK: true
+      BUNDLE_GEMFILE: gemfiles/with_external_deps.gemfile
     strategy:
       fail-fast: false
       matrix:
@@ -38,7 +42,7 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: false
-      - name: Run Specs (with dependencies)
-        run: bin/rspec -w
-      - name: Run Specs (without dependencies)
-        run: bin/rspec -n
+      - name: (Linter) Rubocop
+        run: bundle exec rake rubocop
+      - name: (Test) RSpec
+        run: bundle exec rake rspec
