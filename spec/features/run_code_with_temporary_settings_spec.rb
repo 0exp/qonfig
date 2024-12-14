@@ -22,7 +22,7 @@ describe 'Run code with temporary settings' do
     expect(config.settings.api.login).to eq('D@iVeR')
   end
 
-  unless RUBY_ENGINE.include?("truffleruby")
+  unless RUBY_ENGINE.include?('truffleruby')
     specify 'thread-safety' do
       config = Qonfig::DataSet.build do
         setting :api do
