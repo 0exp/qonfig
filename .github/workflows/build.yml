@@ -10,7 +10,7 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.3"
-          bundler-cache: true
+          bundler-cache: false
       - name: (Linter) Rubocop
         run: bundle exec rubocop
       - name: (Test) RSpec (with plugin tests)
@@ -37,7 +37,7 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-          bundler-cache: true
+          bundler-cache: false
       - name: Run Specs (with dependencies)
         run: bin/rspec -w
       - name: Run Specs (without dependencies)
