@@ -104,7 +104,7 @@ describe 'Plugins(vault): expose vault', plugin: :vault do
       end
     end
 
-    let(:secret_data) { Hash[] }
+    let(:secret_data) { {} }
 
     specify "doesn't fail and uses empty config" do
       expect(Vault.logical).to receive(:read).with('kv/data/env_key').and_return(returned_data)

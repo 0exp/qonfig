@@ -142,7 +142,7 @@ describe 'Plugins(toml): Save to .toml (TOML)', plugin: :toml do
       end
 
       specify 'fails with parser error' do
-        expect { config.save_to_toml(path: config_file_path) }.to raise_error(::TomlRB::ParseError)
+        expect { config.save_to_toml(path: config_file_path) }.to raise_error(TomlRB::ParseError)
       end
     end
   end
