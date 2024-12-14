@@ -1,7 +1,7 @@
 PATH
   remote: ..
   specs:
-    qonfig (0.29.1)
+    qonfig (0.30.0)
       base64 (>= 0.2)
 
 GEM

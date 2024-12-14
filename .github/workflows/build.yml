@@ -36,6 +36,8 @@ jobs:
         include:
           - ruby: head
             experimental: true
+          - ruby: truffleruby
+            experimental: true
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
