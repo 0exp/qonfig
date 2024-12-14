@@ -1,23 +1,23 @@
 name: Build
 on: [push]
 jobs:
-  full-check:
+  mainstream-ruby-full-check:
     runs-on: ubuntu-latest
-  env:
-    FULL_COVERAGE_CHECK: true
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: "3.3"
-          bundler-cache: true
-      - name: (Linter) Rubocop
-        run: bundle exec rubocop
-      - name: (Test) RSpec (with plugin tests)
-        run: bin/rspec -w
-      - name: (Test) RSpec (without plugin tests)
-        run: bin/rspec -n
-  specs:
+    env:
+      FULL_COVERAGE_CHECK: true
+      steps:
+        - uses: actions/checkout@v4
+        - uses: ruby/setup-ruby@v1
+          with:
+            ruby-version: "3.3"
+            bundler-cache: true
+        - name: (Linter) Rubocop
+          run: bundle exec rubocop
+        - name: (Test) RSpec (with plugin tests)
+          run: bin/rspec -w
+        - name: (Test) RSpec (without plugin tests)
+          run: bin/rspec -n
+  specs-only-on-relevant-rubies:
     runs-on: ubuntu-latest
     continue-on-error: ${{ matrix.experimental }}
     env:
