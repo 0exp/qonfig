@@ -15,9 +15,9 @@ jobs:
           ruby-version: "3.3"
           bundler-cache: false
       - name: (Linter) Rubocop
-        run: bundle exec rake rubocop
+        run: bundle install && bundle exec rake rubocop
       - name: (Test) RSpec
-        run: bundle exec rake rspec
+        run: bundle install && bundle exec rake rspec
   specs-only-on-relevant-rubies:
     runs-on: ubuntu-latest
     continue-on-error: ${{ matrix.experimental }}
@@ -43,6 +43,6 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: false
       - name: (Linter) Rubocop
-        run: bundle exec rake rubocop
+        run: bundle install && bundle exec rake rubocop
       - name: (Test) RSpec
-        run: bundle exec rake rspec
+        run: bundle install && bundle exec rake rspec
