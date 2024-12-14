@@ -76,7 +76,7 @@ describe 'Config definition and representation' do
     )
 
     # hash representation (with key transformation)
-    expect(config.to_h(key_transformer: proc { |value| value.to_sym })).to match(
+    expect(config.to_h(key_transformer: proc(&:to_sym))).to match(
       serializers: {
         json: :native,
         xml: :native
@@ -94,7 +94,7 @@ describe 'Config definition and representation' do
     )
 
     # hash representation (with value transformation)
-    expect(config.to_h(value_transformer: proc { |value| value.to_s })).to match(
+    expect(config.to_h(value_transformer: proc(&:to_s))).to match(
       'serializers' => {
         'json' => 'native',
         'xml' => 'native'
@@ -114,8 +114,8 @@ describe 'Config definition and representation' do
     # hash representation (with key and value transformations)
     expect(
       config.to_h(
-        key_transformer: proc { |value| value.to_sym },
-        value_transformer: proc { |value| value.to_s }
+        key_transformer: proc(&:to_sym),
+        value_transformer: proc(&:to_s)
       )
     ).to match(
       serializers: {
@@ -381,7 +381,7 @@ describe 'Config definition and representation' do
     end.to raise_error(Qonfig::AmbiguousSettingValueError)
 
     # attempt to use non-hash object
-    [1, 1.0, Object.new, true, false, Class.new, Module.new, (proc {}), (-> {})].each do |non_hash|
+    [1, 1.0, Object.new, true, false, Class.new, Module.new, proc {}, -> {}].each do |non_hash|
       expect do
         # without proc
         HashConfigurableConfig.new(non_hash)
@@ -435,7 +435,7 @@ describe 'Config definition and representation' do
   end
 
   specify 'only string and symbol keys are supported' do
-    [1, 1.0, Object.new, true, false, Class.new, Module.new, (proc {}), (-> {})].each do |key|
+    [1, 1.0, Object.new, true, false, Class.new, Module.new, proc {}, -> {}].each do |key|
       expect do
         Class.new(Qonfig::DataSet) { setting(key) }
       end.to raise_error(Qonfig::ArgumentError)
@@ -477,7 +477,7 @@ describe 'Config definition and representation' do
   end
 
   specify 'fails when tries to use a non-string/non-symbol value as a setting key' do
-    incorrect_key_values = [123, Object.new, 15.1, (proc {}), Class.new, true, false]
+    incorrect_key_values = [123, Object.new, 15.1, proc {}, Class.new, true, false]
     correct_key_values   = ['test', :test]
 
     incorrect_key_values.each do |incorrect_key|

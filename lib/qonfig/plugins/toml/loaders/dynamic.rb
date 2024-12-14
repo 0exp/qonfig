@@ -13,7 +13,7 @@ class Qonfig::Loaders::Dynamic < Qonfig::Loaders::Basic
       def load(data)
         try_to_load_toml_data(data)
       rescue Qonfig::TOMLLoaderParseError
-        super(data)
+        super
       end
 
       private

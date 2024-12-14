@@ -8,37 +8,37 @@ module Qonfig::Commands::Definition::LoadFromENV::ValueConverter
   #
   # @api private
   # @since 0.2.0
-  INTEGER_PATTERN = /\A\d+\z/.freeze
+  INTEGER_PATTERN = /\A\d+\z/
 
   # @return [Regexp]
   #
   # @api private
   # @since 0.2.0
-  FLOAT_PATTERN = /\A\d+\.\d+\z/.freeze
+  FLOAT_PATTERN = /\A\d+\.\d+\z/
 
   # @return [Regexp]
   #
   # @api private
   # @since 0.2.0
-  TRUE_PATTERN = /\A(t|true)\z/i.freeze
+  TRUE_PATTERN = /\A(t|true)\z/i
 
   # @return [Regexp]
   #
   # @api private
   # @since 0.2.0
-  FALSE_PATTERN = /\A(f|false)\z/i.freeze
+  FALSE_PATTERN = /\A(f|false)\z/i
 
   # @return [Regexp]
   #
   # @api private
   # @since 0.2.0
-  ARRAY_PATTERN = /\A[^'"].*\s*,\s*.*[^'"]\z/.freeze
+  ARRAY_PATTERN = /\A[^'"].*\s*,\s*.*[^'"]\z/
 
   # @return [Regexp]
   #
   # @api private
   # @since 0.2.0
-  QUOTED_STRING_PATTERN = /\A['"].*['"]\z/.freeze
+  QUOTED_STRING_PATTERN = /\A['"].*['"]\z/
 
   class << self
     # @param env_data [Hash]

@@ -6,7 +6,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'qonfig/version'
 
 Gem::Specification.new do |spec|
-  spec.required_ruby_version = '>= 2.6.0'
+  spec.required_ruby_version = '>= 3.1'
 
   spec.name        = 'qonfig'
   spec.version     = Qonfig::VERSION
@@ -27,14 +27,14 @@ Gem::Specification.new do |spec|
 
   spec.files = `git ls-files -z`.split("\x0")
 
-  spec.add_development_dependency 'simplecov',        '~> 0.21'
-  spec.add_development_dependency 'rspec',            '~> 3.11'
-  spec.add_development_dependency 'armitage-rubocop', '~> 1.30'
-  spec.add_development_dependency 'steep',            '~> 1.0'
+  spec.add_development_dependency 'simplecov',        '~> 0.22'
+  spec.add_development_dependency 'rspec',            '~> 3.2'
+  spec.add_development_dependency 'armitage-rubocop', '~> 1.68'
+  spec.add_development_dependency 'steep',            '~> 1.9'
   spec.add_development_dependency 'bundler',          '>= 1'
   spec.add_development_dependency 'bundler-audit',    '~> 0.9'
-  spec.add_development_dependency 'ci-helper',        '~> 0.5'
-  spec.add_development_dependency 'pry',              '~> 0.14'
+  spec.add_development_dependency 'ci-helper',        '~> 0.7'
+  spec.add_development_dependency 'pry',              '~> 0.15'
   spec.add_development_dependency 'rake',             '>= 13'
   spec.add_development_dependency 'simplecov-lcov',   '~> 0.8'
 end

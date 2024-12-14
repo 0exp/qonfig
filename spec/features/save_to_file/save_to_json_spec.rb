@@ -112,8 +112,7 @@ describe 'Save to .json (JSON)' do
         {
          "true_bollean": true,
          "false_boolean": false,
-         "empty_object": {
-         },
+         "empty_object": {},
          "filled_object": {
           "a": 1,
           "b": null,
@@ -122,8 +121,7 @@ describe 'Save to .json (JSON)' do
           "e": false
          },
          "null_data": null,
-         "collection": [  "1",  2,  true,  false,  null,  [],  {
-          }]
+         "collection": [  "1",  2,  true,  false,  null,  [],  {}]
         }
       JSON
     end

@@ -31,10 +31,8 @@ module Qonfig::Plugins
     # @since 0.19.0
     def loaded_plugins
       thread_safe do
-        plugin_registry.select do |_plugin_name, plugin_module|
-          plugin_module.loaded?
-        end.map do |plugin_name, _plugin_module|
-          plugin_name
+        plugin_registry.filter_map do |plugin_name, plugin_module|
+          plugin_name if plugin_module.loaded?
         end
       end
     end

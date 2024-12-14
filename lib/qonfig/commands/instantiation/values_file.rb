@@ -96,7 +96,7 @@ class Qonfig::Commands::Instantiation::ValuesFile < Qonfig::Commands::Base
   def call(data_set, settings)
     settings_values = load_settings_values
     return unless settings_values
-    settings_values = (settings_values[expose.to_sym] || settings_values[expose.to_s]) if expose
+    settings_values = settings_values[expose.to_sym] || settings_values[expose.to_s] if expose
     data_set.configure(settings_values) if settings_values
   end
 
@@ -156,11 +156,9 @@ class Qonfig::Commands::Instantiation::ValuesFile < Qonfig::Commands::Base
   # @version 0.22.0
   # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   def prevent_incompatible_attributes!(file_path, format, strict, expose)
-    unless (
-      file_path.is_a?(String) ||
-      file_path.is_a?(Pathname) ||
-      file_path == SELF_LOCATED_FILE_DEFINITION
-    )
+    unless file_path.is_a?(String) ||
+           file_path.is_a?(Pathname) ||
+           file_path == SELF_LOCATED_FILE_DEFINITION
       raise Qonfig::ArgumentError, 'Incorrect file path'
     end
 

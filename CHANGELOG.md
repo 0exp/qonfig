@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.30.0] - 2024-12-14
+### Changed
+- Updated development dependencies;
+- Updated code style;
+- Dropped EOL rubies support. Now Qonfig supports ruby with version `>= 3.1`;
+- CI: returned separated plugin-related specs (`bin/rspec -w` + `bin/rspec -n` (with- and without- plugins respectively));
+
 ## [0.29.0] - 2024-05-06
 ### Added
 - `replace_on_merge` option for load_from, expose-like methods that allows to configure behaviour on the conflicting key: deep merge (by default) or replacing.

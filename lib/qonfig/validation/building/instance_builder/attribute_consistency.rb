@@ -114,8 +114,8 @@ class Qonfig::Validation::Building::InstanceBuilder::AttributesConsistency
       )
     end
 
-    if ((runtime_validation_method && validation_logic) ||
-       (predefined_validator && (runtime_validation_method || validation_logic)))
+    if (runtime_validation_method && validation_logic) ||
+       (predefined_validator && (runtime_validation_method || validation_logic))
       raise(
         Qonfig::ValidatorArgumentError,
         'Incosistent validation (you should use: dataset method OR proc OR predefined validator)'

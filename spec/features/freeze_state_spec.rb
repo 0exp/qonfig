@@ -36,13 +36,13 @@ describe 'Freeze state' do
         expect { conf.additionals = true }.to       raise_error(Qonfig::FrozenSettingsError)
 
         if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.5.0')
-          expect { conf.api_mode_enabled = false }.to raise_error(::FrozenError)
-          expect { conf.api.format = :xml }.to        raise_error(::FrozenError)
-          expect { conf.additionals = true }.to       raise_error(::FrozenError)
+          expect { conf.api_mode_enabled = false }.to raise_error(FrozenError)
+          expect { conf.api.format = :xml }.to        raise_error(FrozenError)
+          expect { conf.additionals = true }.to       raise_error(FrozenError)
         else
-          expect { conf.api_mode_enabled = false }.to raise_error(::RuntimeError)
-          expect { conf.api.format = :xml }.to        raise_error(::RuntimeError)
-          expect { conf.additionals = true }.to       raise_error(::RuntimeError)
+          expect { conf.api_mode_enabled = false }.to raise_error(RuntimeError)
+          expect { conf.api.format = :xml }.to        raise_error(RuntimeError)
+          expect { conf.additionals = true }.to       raise_error(RuntimeError)
         end
       end
 
@@ -55,11 +55,11 @@ describe 'Freeze state' do
       expect { frozen_config.clear! }.to raise_error(Qonfig::FrozenSettingsError)
 
       if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.5.0')
-        expect { frozen_config.reload! }.to raise_error(::FrozenError)
-        expect { frozen_config.clear! }.to raise_error(::FrozenError)
+        expect { frozen_config.reload! }.to raise_error(FrozenError)
+        expect { frozen_config.clear! }.to raise_error(FrozenError)
       else
-        expect { frozen_config.reload! }.to raise_error(::RuntimeError)
-        expect { frozen_config.clear! }.to raise_error(::RuntimeError)
+        expect { frozen_config.reload! }.to raise_error(RuntimeError)
+        expect { frozen_config.clear! }.to raise_error(RuntimeError)
       end
 
       expect(frozen_config.to_h).to match(

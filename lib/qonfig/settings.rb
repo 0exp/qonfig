@@ -14,13 +14,13 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   #
   # @api private
   # @since 0.11.0
-  BASIC_SETTING_KEY_TRANSFORMER = (proc { |value| value }).freeze
+  BASIC_SETTING_KEY_TRANSFORMER = proc { |value| value }.freeze
 
   # @return [Proc]
   #
   # @api private
   # @since 0.11.0
-  BASIC_SETTING_VALUE_TRANSFORMER = (proc { |value| value }).freeze
+  BASIC_SETTING_VALUE_TRANSFORMER = proc { |value| value }.freeze
 
   # @return [Boolean]
   #
@@ -100,7 +100,6 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
 
       __prevent_core_method_intersection__(key)
 
-      # rubocop:disable Lint/DuplicateBranch
       case
       when with_redefinition || !__options__.key?(key)
         __options__[key] = value
@@ -109,7 +108,6 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
       else
         __options__[key] = value
       end
-      # rubocop:enable Lint/DuplicateBranch
 
       __define_option_reader__(key)
       __define_option_writer__(key)
@@ -600,7 +598,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
         rest_keys = Array(keys[(key_parts_slice_boundary + 1)..-1])
         break
       rescue Qonfig::UnknownSettingError => error
-        key_parts_boundary == key_parts_slice_boundary ? raise(error) : next
+        (key_parts_boundary == key_parts_slice_boundary) ? raise(error) : next
       end
     end
 
@@ -771,7 +769,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   # @api private
   # @since 0.13.0
   def __define_option_writer__(key)
-    define_singleton_method("#{key}=") do |value|
+    define_singleton_method(:"#{key}=") do |value|
       self.[]=(key, value)
     end
   end
@@ -782,7 +780,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   # @api private
   # @since 0.13.0
   def __define_option_predicate__(key)
-    define_singleton_method("#{key}?") do
+    define_singleton_method(:"#{key}?") do
       !!self.[](key)
     end
   end

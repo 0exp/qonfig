@@ -35,7 +35,7 @@ class Qonfig::Uploaders::YAML < Qonfig::Uploaders::File
   #
   # @api private
   # @since 0.11.0
-  KEY_SYMBOLIZER = -> (value) { value.to_sym }.freeze
+  KEY_SYMBOLIZER = lambda(&:to_sym).freeze
 
   class << self
     # @param settings [Qonfig::Settings]
