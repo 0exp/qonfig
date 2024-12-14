@@ -31,7 +31,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec',            '~> 3.2'
   spec.add_development_dependency 'armitage-rubocop', '~> 1.68'
   spec.add_development_dependency 'activesupport',    '~> 6', '< 8'
-  spec.add_development_dependency 'bundler',          '>= 1'
+  spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'bundler-audit',    '~> 0.9'
   spec.add_development_dependency 'ci-helper',        '~> 0.7'
   spec.add_development_dependency 'pry',              '~> 0.15'
