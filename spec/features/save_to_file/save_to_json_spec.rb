@@ -109,7 +109,7 @@ describe 'Save to .json (JSON)' do
       file_data = File.read(config_file_path)
 
       expected_json =
-        if RUBY_ENGINE.include?("truffleruby")
+        if RUBY_ENGINE.include?('truffleruby')
           <<~JSON.strip
             {
              "true_bollean": true,
