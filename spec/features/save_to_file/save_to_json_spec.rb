@@ -108,22 +108,44 @@ describe 'Save to .json (JSON)' do
       # NOTE: step 2) read saved file
       file_data = File.read(config_file_path)
 
-      expect(file_data).to eq(<<~JSON.strip)
-        {
-         "true_bollean": true,
-         "false_boolean": false,
-         "empty_object": {},
-         "filled_object": {
-          "a": 1,
-          "b": null,
-          "c": true,
-          "d": "1",
-          "e": false
-         },
-         "null_data": null,
-         "collection": [  "1",  2,  true,  false,  null,  [],  {}]
-        }
-      JSON
+      expected_json =
+        if RUBY_ENGINE.include?("truffleruby")
+          <<~JSON.strip
+            {
+             "true_bollean": true,
+             "false_boolean": false,
+             "empty_object": {},
+             "filled_object": {
+              "a": 1,
+              "b": null,
+              "c": true,
+              "d": "1",
+              "e": false
+             },
+             "null_data": null,
+             "collection": ["1",2,true,false,null,[],{}]
+            }
+          JSON
+        else
+          <<~JSON.strip
+            {
+             "true_bollean": true,
+             "false_boolean": false,
+             "empty_object": {},
+             "filled_object": {
+              "a": 1,
+              "b": null,
+              "c": true,
+              "d": "1",
+              "e": false
+             },
+             "null_data": null,
+             "collection": [  "1",  2,  true,  false,  null,  [],  {}]
+            }
+          JSON
+        end
+
+      expect(file_data).to eq(expected_json)
     end
   end
 
