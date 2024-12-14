@@ -14,10 +14,12 @@ jobs:
         with:
           ruby-version: "3.3"
           bundler-cache: false
-      - name: (Linter) Rubocop
-        run: bundle install && bundle exec rake rubocop
-      - name: (Test) RSpec
-        run: bundle install && bundle exec rake rspec
+      - name: (Bundler) Install dependencies
+        run: bundle install
+      - name: (Rubocop) Check for codestyle
+        run: bundle exec rake rubocop
+      - name: (RSpec) Tests
+        run: bundle exec rake rspec
   specs-only-on-relevant-rubies:
     runs-on: ubuntu-latest
     continue-on-error: ${{ matrix.experimental }}
@@ -42,7 +44,7 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: false
-      - name: (Linter) Rubocop
-        run: bundle install && bundle exec rake rubocop
-      - name: (Test) RSpec
-        run: bundle install && bundle exec rake rspec
+      - name: (Bundler) Install dependencies
+        run: bundle install
+      - name: (RSpec) Tests
+        run: bundle exec rake rspec
