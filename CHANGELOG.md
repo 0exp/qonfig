@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file.
 - Updated code style;
 - Dropped EOL rubies support. Now Qonfig supports ruby with version `>= 3.1`;
 - CI: returned separated plugin-related specs (`bin/rspec -w` + `bin/rspec -n` (with- and without- plugins respectively));
+- CI: dropped coveralls (temporary);
+- CI: droppet java-based rubies support (temporary);
+- Simplified CI;
 
 ## [0.29.0] - 2024-05-06
 ### Added

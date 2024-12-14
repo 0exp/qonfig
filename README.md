@@ -1,4 +1,4 @@
-# Qonfig &middot; [![Gem Version](https://badge.fury.io/rb/qonfig.svg)](https://badge.fury.io/rb/qonfig) [![Coverage Status](https://coveralls.io/repos/github/0exp/qonfig/badge.svg?branch=master)](https://coveralls.io/github/0exp/qonfig?branch=master)
+# Qonfig &middot; [![Gem Version](https://badge.fury.io/rb/qonfig.svg)](https://badge.fury.io/rb/qonfig) [![Build](https://github.com/0exp/qonfig/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/0exp/qonfig/actions)
 
 Powerful configuration Ruby-framework with a support for many commonly used config formats with a multi-functional API, developer-friendly DSL and object-oriented behavior.
 
@@ -3346,7 +3346,8 @@ Qonfig.plugin(:vault)
   - Instantiation and reloading callbacks;
   - File geneartors (.rb-files with a pre-filled code (and (maybe) with a pre-generated yaml/json/etc files));
   - Setting value changement subscriptions and callbacks;
-  
+  - CI rework (new configs, new steps, no strange dependencies);
+
 ## Build
 
 ```shell
