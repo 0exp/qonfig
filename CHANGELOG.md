@@ -1,6 +1,8 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
 ## [0.30.0] - 2024-12-14
 ### Changed
 - Updated development dependencies;
