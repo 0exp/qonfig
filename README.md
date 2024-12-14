@@ -3347,6 +3347,7 @@ Qonfig.plugin(:vault)
   - File geneartors (.rb-files with a pre-filled code (and (maybe) with a pre-generated yaml/json/etc files));
   - Setting value changement subscriptions and callbacks;
   - CI rework (new configs, new steps, no strange dependencies);
+  - CI: thread-safety specs for `thruffleruby`;
 
 ## Build
 
