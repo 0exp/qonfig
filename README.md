@@ -3329,9 +3329,8 @@ Qonfig.plugin(:vault)
 
 ## Roadmap
 
-- **General**:
-  - documentation rework;
 - **Major**:
+  - Runtime Configuration (with in-memory cache);
   - support for Rails-like secrets;
   - support for persistent data storages (we want to store configs in multiple databases and files);
   - rails plugin;
