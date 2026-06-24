@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Support for `truffleruby`;
 
+## [0.31.0] - 2026-06-24
 ### Changed
 - Performance: nested / dot-notated reads (`config['a.b.c.d.e.f']`, `config.dig(...)`)
   are now memoized inside each config instance instead of re-splitting and re-digging
