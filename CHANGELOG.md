@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Support for `truffleruby`;
 
+### Changed
+- Performance: nested / dot-notated reads (`config['a.b.c.d.e.f']`, `config.dig(...)`)
+  are now memoized inside each config instance instead of re-splitting and re-digging
+  the key on every access. The cache is dropped on any mutation and the invalidation
+  cascades up through all parent config instances ("matryoshka" cache invalidation),
+  so nested configs (which are separate instances) never serve stale values.
+
 ## [0.30.0] - 2024-12-14
 ### Changed
 - Updated development dependencies;

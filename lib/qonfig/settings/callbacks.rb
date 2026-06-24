@@ -35,6 +35,15 @@ class Qonfig::Settings::Callbacks
     thread_safe { callbacks << callback }
   end
 
+  # @param callback [Proc, Qonfig::Settings::Callbacks, #call]
+  # @return [void]
+  #
+  # @api private
+  # @since 0.30.0
+  def prepend(callback)
+    thread_safe { callbacks.unshift(callback) }
+  end
+
   private
 
   # @return [Array<Proc>]

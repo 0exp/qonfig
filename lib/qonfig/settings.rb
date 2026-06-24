@@ -48,10 +48,25 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
 
   # @api private
   # @since 0.1.0
+  # @version 0.30.0
   def initialize(__mutation_callbacks__)
     @__options__ = {}
     @__lock__ = Lock.new
     @__mutation_callbacks__ = __mutation_callbacks__
+    @__deep_access_cache__ = {}
+
+    # NOTE:
+    #   Register a cache invalidator inside our own mutation callbacks.
+    #   Nested settings add their parent's callbacks object to their own callbacks
+    #   (see Qonfig::Commands::Definition::AddNestedOption), so a mutation of any
+    #   nested config propagates upwards through the chain and drops the cached
+    #   digging results on EACH config instance along the way ("matryoshka"
+    #   cache invalidation).
+    #
+    #   It is prepended so that it runs BEFORE the validation callback — full
+    #   data-set validators read setting values back through #__dig__, so the
+    #   cache must already be dropped by the time they run.
+    @__mutation_callbacks__.prepend(method(:__invalidate_deep_access_cache__))
   end
 
   # @param block [Proc]
@@ -175,16 +190,21 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
   #
   # @api private
   # @since 0.2.0
+  # @version 0.30.0
   def __dig__(*keys)
     __lock__.thread_safe_access do
-      begin
-        __deep_access__(*keys)
-      rescue Qonfig::UnknownSettingError
-        if keys.size == 1
-          __deep_access__(*__parse_dot_notated_key__(keys.first))
-        else
-          raise
-        end
+      # NOTE:
+      #   Resolving a dot-notated/nested key (config['a.b.c.d']) is expensive:
+      #   it splits and re-joins string fragments and digs through every nested
+      #   config instance on each access. We memoize the resolved value per key
+      #   set; the cache is dropped on any mutation (see __invalidate...).
+      cache = @__deep_access_cache__
+      cache_key = __deep_access_cache_key__(keys)
+
+      if cache.key?(cache_key)
+        cache[cache_key]
+      else
+        __resolve_deep_access__(*keys).tap { |value| cache[cache_key] = value }
       end
     end
   end
@@ -573,6 +593,47 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
     (__options__[key] = value)
 
     __invoke_mutation_callbacks__
+  end
+
+  # @param keys [Array<String, Symbol>]
+  # @return [Object]
+  #
+  # @raise [Qonfig::UnknownSettingError]
+  #
+  # @api private
+  # @since 0.30.0
+  def __resolve_deep_access__(*keys)
+    __deep_access__(*keys)
+  rescue Qonfig::UnknownSettingError
+    if keys.size == 1
+      __deep_access__(*__parse_dot_notated_key__(keys.first))
+    else
+      raise
+    end
+  end
+
+  # @param keys [Array<String, Symbol>]
+  # @return [String, Array<String>]
+  #
+  # @api private
+  # @since 0.30.0
+  def __deep_access_cache_key__(keys)
+    # NOTE:
+    #   Stringify keys so that symbol/string variants share a single cache slot
+    #   (indifferent access), while preserving key boundaries — ['a.b', 'c'] and
+    #   ['a', 'b', 'c'] resolve differently and must not collide. The single-key
+    #   case (the dominant config['a.b.c'] form) avoids an extra array allocation.
+    (keys.size == 1) ? keys.first.to_s : keys.map(&:to_s)
+  end
+
+  # @return [void]
+  #
+  # @api private
+  # @since 0.30.0
+  def __invalidate_deep_access_cache__
+    # NOTE: reassign instead of #clear so concurrent readers never observe a
+    #   half-cleared hash (no lock is held when invalidation propagates upwards).
+    @__deep_access_cache__ = {} unless @__deep_access_cache__.empty?
   end
 
   # @param keys [Array<Symbol, String>]
