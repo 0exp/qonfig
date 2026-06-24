@@ -39,7 +39,7 @@ class Qonfig::Settings::Callbacks
   # @return [void]
   #
   # @api private
-  # @since 0.30.0
+  # @since 0.31.0
   def prepend(callback)
     thread_safe { callbacks.unshift(callback) }
   end

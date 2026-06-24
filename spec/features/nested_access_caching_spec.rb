@@ -81,4 +81,54 @@ describe 'Nested access caching (with matryoshka cache invalidation)' do
 
     expect { instance.settings.nested.flag = 123 }.to raise_error(Qonfig::ValidationError)
   end
+
+  specify 'composed nested settings invalidate the host cache on mutation' do
+    shared = Class.new(Qonfig::DataSet) do
+      setting :s do
+        setting :v, 1
+      end
+    end
+
+    host = Qonfig::DataSet.build { compose shared }
+
+    expect(host['s.v']).to eq(1) # warm up the cache through the host
+    host['s.v'] = 88
+    # the nested instance was merged in "by reference"; mutating it must still
+    # cascade invalidation up to the host (otherwise the host serves a stale 1)
+    expect(host['s.v']).to eq(88)
+  end
+
+  specify 're-defined nested settings invalidate the cache on mutation' do
+    redefined_config = Class.new(Qonfig::DataSet) do
+      setting :s do
+        setting :v, 1
+      end
+
+      re_setting :s do
+        setting :v, 10
+      end
+    end
+
+    instance = redefined_config.new
+
+    expect(instance['s.v']).to eq(10) # warm up the cache
+    instance['s.v'] = 77
+    expect(instance['s.v']).to eq(77)
+  end
+
+  specify 'cache invalidation always swaps in a fresh hash, even when already empty' do
+    # Guards the lock-free invalidation contract: invalidation may propagate up
+    # from a nested mutation without holding our access lock, so the swap must be
+    # unconditional. A `unless empty?` guard would let a concurrent reader that has
+    # resolved a stale value (but not yet written it) persist that value forever.
+    settings = config.settings
+    empty_cache = settings.instance_variable_get(:@__deep_access_cache__)
+    expect(empty_cache).to be_empty
+
+    settings.send(:__invalidate_deep_access_cache__)
+
+    swapped_cache = settings.instance_variable_get(:@__deep_access_cache__)
+    expect(swapped_cache).to be_empty
+    expect(swapped_cache).not_to equal(empty_cache)
+  end
 end
