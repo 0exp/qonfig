@@ -3330,6 +3330,7 @@ Qonfig.plugin(:vault)
 ## Roadmap
 
 - **Major**:
+  - `on_change`-hooks (in order to proviade the possibility to change something like "re-initialize redis connection pool on each redis config changement" and so on);
   - Runtime Configuration (with in-memory cache);
   - support for Rails-like secrets;
   - support for persistent data storages (we want to store configs in multiple databases and files);
