@@ -65,7 +65,7 @@ class Qonfig::Settings # NOTE: Layout/ClassStructure is disabled only for CORE_M
     #   It is prepended so that it runs BEFORE the validation callback — full
     #   data-set validators read setting values back through #__dig__, so the
     #   cache must already be dropped by the time they run.
-    @__mutation_callbacks__.prepend(method(:__invalidate_deep_access_cache__))
+    @__mutation_callbacks__.prepend(proc { __invalidate_deep_access_cache__ })
   end
 
   # @param block [Proc]
