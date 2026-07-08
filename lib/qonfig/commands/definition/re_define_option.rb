@@ -48,10 +48,14 @@ class Qonfig::Commands::Definition::ReDefineOption < Qonfig::Commands::Base
   #
   # @api private
   # @since 0.20.0
+  # @version 0.31.0
   def call(data_set, settings)
     if nested_data_set_klass
       nested_settings = nested_data_set_klass.new.settings
-      nested_settings.__mutation_callbacks__.add(settings.__mutation_callbacks__)
+      # NOTE:
+      #   The nested instance is wired into the host's mutation-callback chain by
+      #   Qonfig::Settings#__define_setting__ itself (see __store_setting_value__),
+      #   so every nested-settings entry point shares one wiring path.
       settings.__define_setting__(key, nested_settings, with_redefinition: true)
     else
       settings.__define_setting__(key, value, with_redefinition: true)
