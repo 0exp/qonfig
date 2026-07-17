@@ -34,7 +34,7 @@ class Qonfig::Commands::Definition::LoadFromSelf < Qonfig::Commands::Base
   # @version 0.29.0
   def initialize(caller_location, format:, replace_on_merge: false)
     unless format.is_a?(String) || format.is_a?(Symbol)
-      raise Qonfig::ArgumentError, 'Format should be a symbol or a string'
+      raise Qonfig::ArgumentError, 'Format should be a type of string or symbol'
     end
 
     @caller_location = caller_location
